@@ -5,7 +5,7 @@
 // }
 
 const config = {
-    BASE_URL: "teammer.com"
+    BASE_URL: "https://159.223.3.251/v1/"
 }
 
 export default config
