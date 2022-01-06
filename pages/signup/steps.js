@@ -486,7 +486,7 @@ const StepsComponent = (props) => {
                 <p className="text-center">Before exploring Teammers, make <br /> sure you build your profile.</p>
             </div>
             <div className="steps_form">
-                {/* <Steps current={current} vertical>
+                <Steps current={current} vertical>
                     <Steps.Item title={<>Which one defines you? {current > 0 &&
                         <button className="edit" onClick={() => editButton(0)}><AiOutlineEdit /></button>}</>}
                         description={
@@ -1174,7 +1174,7 @@ const StepsComponent = (props) => {
                                     </div>
                                 } />
                     }
-                </Steps> */}
+                </Steps>
             </div>
         </div>
     </div>
