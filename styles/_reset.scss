@@ -1,0 +1,129 @@
+.bg-transparent {
+    background-color: transparent !important;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.custom-tag {
+    padding: 9px 16px 8px 16px;
+    background: #e0e9fd;
+    border-radius: 92px;
+    span {
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 20px;
+        color: $primary-color;
+    }
+
+    &.tag-sm {
+        padding: 9px 16px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #fff;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d5d5d5;
+}
+
+// rsuite
+
+// .rs-form-control-label {
+//     font-weight: 600;
+//     font-size: 12px;
+//     line-height: 15px;
+//     margin-bottom: 0.5rem;
+// }
+
+// .rs-form-control-wrapper {
+//     width: 100%;
+//     input.rs-input {
+//         width: 100%;
+//         padding: 12px 12px 13px 12px;
+//         font-weight: 500;
+//         font-size: 12px;
+//         line-height: 15px;
+//     }
+// }
+
+// .rs-picker-input {
+//     border-radius: 12px;
+//     .rs-picker-toggle {
+//         border-radius: 12px;
+//     }
+// }
+
+.rs-form-control-label {
+    color: $text-color-primary;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 15px;
+    margin-bottom: 0.5rem;
+}
+
+.rs-form-control-wrapper {
+    width: 100%;
+    .rs-input {
+        width: 100%;
+    }
+}
+
+.rs-input {
+    width: 100%;
+}
+
+.rs-input {
+    width: 100%;
+    border-radius: $button-radius-12;
+    border: 2px solid #eaeaea;
+    padding: 9px;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.rs-picker-input {
+    border-radius: 12px;
+    border: 2px solid #eaeaea;
+    .rs-picker-toggle {
+        border-radius: 12px;
+    }
+}
+
+.rs-checkbox-checker label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.rs-modal-content {
+    .rs-modal-header {
+        h4.rs-modal-title {
+            font-weight: 500;
+            font-size: 20px;
+            line-height: 125%;
+        }
+        span.rs-modal-header-close {
+            svg {
+                color: $text-color-primary;
+                width: 0.75rem;
+                height: 0.75rem;
+            }
+        }
+    }
+    .rs-modal-body {
+        margin-top: 1.5rem;
+    }
+}

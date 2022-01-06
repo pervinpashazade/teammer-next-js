@@ -1,0 +1,116 @@
+.teammer,.owner{
+  .teammer-type-banner{
+    width: 100%;
+    height: 141px;
+    border-radius: 28px;
+    background-color: #FCF9F1;
+    margin-top: 24px;
+    padding: 24px 74px;
+    .product-div {
+      max-width: 100%;
+      height: 93px;
+      margin: auto;
+      border-radius: 12px;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: $box-shadow;
+      justify-content: sp;
+      h3{
+        display: flex;
+        align-items: baseline;
+        font-size: 24px;
+        line-height: 30px;
+        font-weight: 600;
+      }
+    }
+  }
+  h4{
+    font-size: 24px;
+    line-height: 30px;
+    text-align: center;
+    font-weight: 400;
+    margin-top: 60px;
+    margin-bottom: 30px;
+  }
+  .refer{
+    height: 105px !important;
+    box-shadow: $box-shadow;
+    background-color: white;
+    border-radius: 12px;
+    margin-top: 32px;
+    background-image: url("/img/postbox.png");
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: flex;
+    align-items: center;
+    .refer-friend{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 80%;
+      min-width: 70%;
+      margin-left: 40px;
+      h5{
+        font-size: 16px;
+        font-weight: 600;
+      }
+      button{
+        @include button($button-radius-72 , transparent , 13px , 24px , 15px , 24px);
+        color:$primary-color !important;
+        border: 1px solid $primary-color;
+        font-weight: 600;
+      }
+    }
+  }
+}
+.refer-link-h2{
+  font-size: 32px !important;
+  text-align: center;
+  font-weight: 700;
+  margin: 24px 0px;
+}
+.copy-link{
+  font-size: 12px;
+  font-weight: 600;
+}
+.copy-button{
+  @include button($button-radius-12,$primary-color,10px, 14px, 8px ,12px);
+  color: white;
+  margin-left: 5px;
+}
+
+// teammer home
+
+.teammer-home{
+
+  .teammer-home-baner{
+    width: 100%;
+    height: 305px;
+    background-image: url("/img/after_login_banner.png");
+    margin-top:27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    h2{
+      font-size: 48px;
+      font-weight: 600;
+      line-height: 60px;
+    }
+    h3{
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 50px;
+    }
+  }
+  h4{
+    text-align: center;
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 600;
+    margin:40px 0px 24px;
+  }
+}

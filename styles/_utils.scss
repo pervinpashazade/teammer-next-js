@@ -1,0 +1,528 @@
+//login
+.close-tag {
+  background-color: #e0e4fd;
+  border-radius: 72px;
+  color: #7486ff;
+  padding: 8px 40px 8px 16px;
+
+  svg {
+    margin: 6px 0px;
+  }
+}
+@mixin login_form($padding) {
+  width: 100%;
+  padding: $padding 64px;
+  position: relative;
+
+  h2 {
+    @include font-size(40px);
+    font-weight: 700;
+    line-height: 115%;
+    color: $text-color-primary;
+  }
+
+  p {
+    font-size: 16px;
+    color: #7f7f7f;
+    font-weight: 500;
+    margin-top: 16px;
+
+    a {
+      display: inline-block;
+      color: $primary-color;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  .with_google {
+    .signup_google {
+      @include button($button-radius-72, #fff, 12px, 24px, 12px, 24px);
+      border: 2px solid #EAEAEA;
+      color: $text-color-primary;
+      font-size: 14px;
+      font-weight: 600;
+      margin-right: 16px;
+
+      img {
+        margin-right: 9px;
+      }
+    }
+
+    button:not(.signup_google) {
+      @include button($button-radius-12, #fff, 15px, 17px, 15px, 17px);
+      border: 2px solid #eaeaea;
+      margin-right: 16px;
+    }
+  }
+
+  .rs-form-control-label {
+    color: $text-color-primary;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 15px;
+  }
+
+  .rs-form-control-wrapper {
+    width: 100%;
+
+    .rs-input {
+      width: 100%;
+      border-radius: $button-radius-12;
+      border: 2px solid #eaeaea;
+      padding: 12px;
+    }
+  }
+
+  .rs-checkbox-checker label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .rs-btn.login-button {
+    @include button($button-radius-72, $primary-color, 14px, 14px, 14px, 14px);
+    width: 100%;
+    color: white;
+  }
+
+  .forget-password {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+
+    a {
+      font-size: 14px;
+      color: $text-color-primary;
+      line-height: 17px;
+      font-weight: 500;
+    }
+  }
+
+  .goback-btn {
+    position: absolute;
+    top: 0;
+
+    button {
+      @include button($button-radius-8, white, 9px, 10px, 3px, 11px);
+      border: 2px solid #eaeaea;
+
+      svg {
+        font-size: 25px;
+        color: #23ce95;
+      }
+    }
+  }
+  .verification-numbers {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    input {
+      max-width: 88px;
+      margin-right: 17px;
+      border-bottom: 2px solid $primary-color;
+      border-left: none;
+      border-top: none;
+      border-right: none;
+      padding-left: 35px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+  }
+}
+
+.login {
+  .login-header {
+    padding: 39px 0px;
+  }
+
+  a {
+    text-decoration: none;
+    color: #020c40;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 8px;
+    }
+  }
+
+  .authenticate {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+
+    .image {
+      border-radius: 28px;
+      background-size: 110%;
+      background-repeat: no-repeat;
+      width: 100%;
+      height: 877px;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      h2 {
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 40px;
+          margin-right: 5px;
+        }
+
+        span {
+          @include font-size(48px);
+          font-weight: 600;
+          line-height: 125%;
+          color: $text-color-primary;
+        }
+      }
+
+      .banner {
+        font-size: $font-48;
+        font-weight: bold;
+        text-align: center;
+
+        img {
+          width: 211px;
+          height: 78px;
+        }
+      }
+
+      p {
+        @include font-size(18px);
+        font-weight: normal;
+        line-height: 30px;
+        margin-top: 32px;
+      }
+    }
+
+    .form {
+      @include login_form(145px);
+    }
+
+    .signup_form {
+      @include login_form(0px);
+    }
+
+    .steps_form {
+      width: 100%;
+      padding: 0px 64px;
+      position: relative;
+      .summary_person {
+        display: flex;
+        font-size: 14px;
+        line-height: 18px;
+        color: #020c40;
+        opacity: 0.5;
+
+        span:first-child {
+          font-weight: 600;
+          margin-right: 68px;
+        }
+
+        span:last-child {
+          font-weight: 400;
+        }
+      }
+      .rs-input {
+        padding: 11px;
+        width: 100%;
+        border-radius: $button-radius-12;
+        border: 2px solid #eaeaea;
+      }
+
+      .rs-picker-input {
+        width: 100%;
+        border-radius: $button-radius-12;
+        border: 2px solid #eaeaea;
+
+        span {
+          font-size: 12px;
+        }
+      }
+
+      .rs-steps-item-active {
+        .rs-steps-item-icon-wrapper {
+          background-color: #d4f6ff;
+          color: #01aded !important;
+          border: none;
+        }
+
+        .rs-steps-item-content {
+          .rs-steps-item-title {
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 400;
+            color: #020c40;
+          }
+        }
+      }
+
+      .rs-steps-item-status-wait {
+        .rs-steps-item-icon-wrapper {
+          background-color: #f2f2f2;
+          color: #d3d3d3 !important;
+          border: none;
+        }
+
+        .rs-steps-item-content {
+          .rs-steps-item-title {
+            background-color: #f2f2f2;
+            border: none;
+            color: #f2f2f2;
+            width: 202px;
+            height: 20px;
+            margin: 20px 0px;
+          }
+
+          .rs-steps-item-description {
+            display: none;
+          }
+        }
+      }
+
+      .edit {
+        @include button(0px, transparent, 0px, 0px, 0px, 0px);
+        margin-left: 6px;
+
+        svg {
+          font-size: 20px;
+          color: #d3d3d3;
+        }
+      }
+
+      .step_form {
+        padding-top: 24px;
+
+        .rs-form-control-label {
+          color: $text-color-primary;
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 15px;
+        }
+
+        .rs-form-control-wrapper {
+          width: 100%;
+
+          .rs-input {
+            width: 100%;
+            border-radius: $button-radius-12;
+            border: 2px solid #eaeaea;
+            padding: 12px;
+          }
+        }
+        .upload {
+          button {
+            @include button($button-radius-72, transparent, 10px, 24px, 10px, 24px);
+            color: $primary-color;
+            border: 2px solid $primary-color;
+            font-weight: 600;
+            font-size: 16px;
+          }
+        }
+      }
+
+      .position_details {
+        h3 {
+          font-style: normal;
+          font-weight: 500;
+          font-size: 18px;
+          line-height: 125%;
+          color: #020c40;
+          margin-top: 24px;
+        }
+
+        .work-experience-summary {
+          p:first-child {
+            font-style: normal;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 24px;
+            color: $primary-color;
+            margin-bottom: 8px;
+            margin-top: 16px;
+          }
+
+          .edit-header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            .job-title {
+              h3 {
+                margin-top: 0px;
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 24px;
+              }
+
+              p {
+                margin-top: 4px;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 17px;
+                color: $text-color-primary;
+                opacity: 0.5;
+              }
+            }
+
+            button {
+              border: none;
+              background: transparent;
+              color: $primary-color;
+            }
+          }
+
+          .job-section {
+            .job-divs {
+              margin-top: 24px;
+            }
+
+            h4 {
+              font-weight: 600;
+              font-size: 12px;
+              line-height: 15px;
+              color: $text-color-primary;
+            }
+          }
+        }
+
+        .portfolio {
+          .portfolio-add {
+            display: flex;
+            justify-content: space-between;
+
+            button {
+              background-color: $primary-color;
+              padding: 9px 8px 5px 13px;
+              border-radius: 12px;
+
+              svg {
+                color: white;
+                font-size: 18px;
+              }
+            }
+          }
+
+          .portfolio-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            a {
+              text-decoration: underline;
+              font-weight: 400;
+              font-size: 14px;
+              color: #0052b1;
+            }
+            button {
+              background-color: transparent;
+              color: #0052b1;
+            }
+          }
+          .social-media-accounts {
+            .rs-form-control-label {
+              color: $text-color-primary;
+              font-size: 12px;
+              font-weight: 600;
+              line-height: 15px;
+            }
+
+            .rs-form-control-wrapper {
+              width: 100%;
+
+              .rs-input {
+                width: 100% !important;
+                border-radius: $button-radius-12;
+                border: 2px solid #eaeaea;
+                padding: 12px;
+              }
+            }
+          }
+        }
+      }
+
+      .routing-button {
+        margin-top: 24px;
+
+        .next-button {
+          @include button($button-radius-72, $primary-color, 14px, 24px, 14px, 24px);
+          color: white;
+          font-weight: 500;
+        }
+
+        .previous-button {
+          @include button($button-radius-72, transparent, 14px, 24px, 14px, 24px);
+          color: $primary-color;
+          font-weight: 600;
+          margin-right: 45px;
+        }
+      }
+      .profile_information {
+        margin-top: 24px;
+        h4 {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 12px;
+          line-height: 15px;
+          color: $text-color-primary;
+          margin-top: 24px;
+        }
+        div {
+          display: flex;
+          justify-content: flex-start;
+          img {
+            object-fit: cover;
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+          }
+          button {
+            @include button(0px, transparent, 0px, 0px, 0px, 0px);
+            color: $primary-color;
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: 600;
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+
+    .back-to-login {
+      @include button($button-radius-72, white, 14px, 14px, 14px, 14px);
+      width: 100%;
+      border: 2px solid #eaeaea;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+
+      &:hover {
+        text-decoration: none;
+        color: $text-color-primary;
+      }
+    }
+  }
+}
+.add-more-experience {
+  color: $primary-color;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+  margin-top: 25px;
+  background: none;
+
+  svg {
+    padding-top: 2px;
+  }
+}
