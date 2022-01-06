@@ -1183,6 +1183,11 @@ export default StepsComponent
 
 export const getServerSideProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
+    
+    const positions = await fetch(config.BASE_URL + "positions");
+
+    console.log('test pervin', positions);
+    
     // const locations = await axios.get(config.BASE_URL + "locations");
     // const skills = await axios.get(config.BASE_URL + "skills");
     // const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
