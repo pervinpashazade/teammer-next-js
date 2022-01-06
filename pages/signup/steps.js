@@ -1183,11 +1183,11 @@ export default StepsComponent
 
 export const getStaticProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
-    
+
     const positions = await fetch('https://mocki.io/v1/3875a302-ac2d-4268-895a-807f658de37b');
 
     console.log('test pervin', positions);
-    
+
     // const locations = await axios.get(config.BASE_URL + "locations");
     // const skills = await axios.get(config.BASE_URL + "skills");
     // const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
@@ -1200,7 +1200,9 @@ export const getStaticProps = async () => {
             // positions: positions.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
-            positions: [],
+            positions: positions.map(item => {
+                return { label: item.name, value: item.id }
+            }),
             // locations: locations.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
