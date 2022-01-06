@@ -1181,7 +1181,7 @@ const StepsComponent = (props) => {
 }
 export default StepsComponent
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
     
     const positions = await fetch(config.BASE_URL + "positions");
