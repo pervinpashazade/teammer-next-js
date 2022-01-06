@@ -1184,7 +1184,7 @@ export default StepsComponent
 export const getStaticProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
     
-    const positions = await fetch(config.BASE_URL + "positions");
+    const positions = await fetch('https://mocki.io/v1/3875a302-ac2d-4268-895a-807f658de37b');
 
     console.log('test pervin', positions);
     
