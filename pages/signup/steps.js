@@ -1184,7 +1184,7 @@ export default StepsComponent
 export const getStaticProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
 
-    const positions = await fetch('https://mocki.io/v1/3875a302-ac2d-4268-895a-807f658de37b');
+    const positions = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
 
     console.log('test pervin', positions);
 
@@ -1195,6 +1195,8 @@ export const getStaticProps = async () => {
     // const project_types = await axios.get(config.BASE_URL + "project/types");
     // const job_types = await axios.get(config.BASE_URL + "job/types");
     // const payments = await axios.get(config.BASE_URL + "job/payment_types");
+
+    // 123123
     return {
         props: {
             // positions: positions.data.data.items.map(item => {
