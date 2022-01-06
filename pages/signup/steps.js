@@ -1194,30 +1194,38 @@ export const getServerSideProps = async () => {
     const payments = await axios.get(config.BASE_URL + "job/payment_types");
     return {
         props: {
-            positions: positions.data.data.items.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            locations: locations.data.data.items.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            skills: skills.data.data.items.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            experience_levels: experience_levels.data.data.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            roles: roles.data.data.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            project_types: project_types.data.data.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            job_types: job_types.data.data.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            payments: payments.data.data.map(item => {
-                return { label: item.name, value: item.id }
-            })
+            // positions: positions.data.data.items.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            positions: [],
+            // locations: locations.data.data.items.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            locations: [],
+            // skills: skills.data.data.items.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            skills: [],
+            // experience_levels: experience_levels.data.data.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            experience_levels: [],
+            // roles: roles.data.data.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            roles: [],
+            // project_types: project_types.data.data.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            project_types: [],
+            // job_types: job_types.data.data.map(item => {
+            //     return { label: item.name, value: item.id }
+            // }),
+            job_types: [],
+            // payments: payments.data.data.map(item => {
+            //     return { label: item.name, value: item.id }
+            // })
+            payments: []
         }
     }
 
