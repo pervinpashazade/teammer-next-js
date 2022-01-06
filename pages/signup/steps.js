@@ -398,7 +398,7 @@ const StepsComponent = (props) => {
             })
         // router.push('/')
     }
-    console.log(editorText, team.descriptionEditorText)
+    // console.log('log1', editorText, team.descriptionEditorText)
     const submitOwnerData = () => {
 
         let jobs = teamArray.map(item => {
@@ -486,7 +486,7 @@ const StepsComponent = (props) => {
                 <p className="text-center">Before exploring Teammers, make <br /> sure you build your profile.</p>
             </div>
             <div className="steps_form">
-                <Steps current={current} vertical>
+                {/* <Steps current={current} vertical>
                     <Steps.Item title={<>Which one defines you? {current > 0 &&
                         <button className="edit" onClick={() => editButton(0)}><AiOutlineEdit /></button>}</>}
                         description={
@@ -532,7 +532,6 @@ const StepsComponent = (props) => {
                                                     ref={ownerRef}
                                                     onChange={(e) => uploadToClient(e, 'owner')} />
                                                 <div>
-                                                    {/* <img src={createObjectURL.owner} /> */}
                                                     <Image
                                                         src={createObjectURL.owner}
                                                         alt='icon'
@@ -1147,7 +1146,6 @@ const StepsComponent = (props) => {
                                         <input type="file" name="myImage" className="d-none" ref={buttonRef}
                                             onChange={(e) => uploadToClient(e, 'teammer')} />
                                         <div>
-                                            {/* <img src={createObjectURL.teammer} /> */}
                                             <Image
                                                 src={createObjectURL.owner}
                                                 alt='icon'
@@ -1176,7 +1174,7 @@ const StepsComponent = (props) => {
                                     </div>
                                 } />
                     }
-                </Steps>
+                </Steps> */}
             </div>
         </div>
     </div>
@@ -1184,14 +1182,14 @@ const StepsComponent = (props) => {
 export default StepsComponent
 
 export const getServerSideProps = async () => {
-    const positions = await axios.get(config.BASE_URL + "positions");
-    const locations = await axios.get(config.BASE_URL + "locations");
-    const skills = await axios.get(config.BASE_URL + "skills");
-    const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
-    const roles = await axios.get(config.BASE_URL + "project/roles");
-    const project_types = await axios.get(config.BASE_URL + "project/types");
-    const job_types = await axios.get(config.BASE_URL + "job/types");
-    const payments = await axios.get(config.BASE_URL + "job/payment_types");
+    // const positions = await axios.get(config.BASE_URL + "positions");
+    // const locations = await axios.get(config.BASE_URL + "locations");
+    // const skills = await axios.get(config.BASE_URL + "skills");
+    // const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
+    // const roles = await axios.get(config.BASE_URL + "project/roles");
+    // const project_types = await axios.get(config.BASE_URL + "project/types");
+    // const job_types = await axios.get(config.BASE_URL + "job/types");
+    // const payments = await axios.get(config.BASE_URL + "job/payment_types");
     return {
         props: {
             // positions: positions.data.data.items.map(item => {
