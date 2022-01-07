@@ -484,16 +484,22 @@ const StepsComponent = (props) => {
             </Link>
         </div>
         <div className="authenticate">
-            <div className="image" style={{
-                backgroundImage: "url('/img/steps.png')"
-            }}>
+            <div className="image" style={{ backgroundImage: "url('/img/steps.png')" }}>
                 <h2 className="text-center"><span>Tell us more about <br /> yourself</span></h2>
                 <p className="text-center">Before exploring Teammers, make <br /> sure you build your profile.</p>
             </div>
             <div className="steps_form">
                 <Steps current={current} vertical>
-                    <Steps.Item title={<>Which one defines you? {current > 0 &&
-                        <button className="edit" onClick={() => editButton(0)}><AiOutlineEdit /></button>}</>}
+                    <Steps.Item
+                        title={
+                            <>Which one defines you? {current > 0 &&
+                                <button
+                                    className="edit"
+                                    onClick={() => editButton(0)}
+                                >
+                                    <AiOutlineEdit />
+                                </button>}
+                            </>}
                         description={
                             (find && current !== 0) ? <div>
                                 {
@@ -512,8 +518,12 @@ const StepsComponent = (props) => {
 
                             </div>
                         } />
-                    <Steps.Item title={<>Contact Information {current > 1 &&
-                        <button className="edit" onClick={() => editButton(1)}><AiOutlineEdit /></button>}</>}
+                    <Steps.Item
+                        title={
+                            <>
+                                Contact Information {current > 1 &&
+                                    <button className="edit" onClick={() => editButton(1)}><AiOutlineEdit /></button>}
+                            </>}
                         description={
                             <div className="step_form">
                                 {
@@ -568,13 +578,19 @@ const StepsComponent = (props) => {
                                         {find === "1" ?
                                             <Form.Group>
                                                 <Form.ControlLabel>Roles in Startup</Form.ControlLabel>
-                                                <InputPicker size="lg" placeholder="Roles in Startup"
-                                                    name="location" data={props.roles}
+                                                <InputPicker
+                                                    size="lg"
+                                                    placeholder="Roles in Startup"
+                                                    name="location"
+                                                    // data={props.roles}
+                                                    data={props.testData}
                                                     value={person.role}
+                                                    className="w-100 mb-2"
                                                     onChange={(e) => setPerson({
                                                         ...person,
                                                         role: e
-                                                    })} className="w-100 mb-2" />
+                                                    })}
+                                                />
                                             </Form.Group>
                                             :
                                             <Form.Group>
