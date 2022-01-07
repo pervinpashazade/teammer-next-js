@@ -583,7 +583,12 @@ const StepsComponent = (props) => {
                                                     placeholder="Roles in Startup"
                                                     name="location"
                                                     // data={props.roles}
-                                                    data={props.testData}
+                                                    data={props.testData.map(item => {
+                                                        return {
+                                                            label: item.name,
+                                                            value: item.id
+                                                        }
+                                                    })}
                                                     value={person.role}
                                                     className="w-100 mb-2"
                                                     onChange={(e) => setPerson({
