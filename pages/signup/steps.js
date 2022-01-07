@@ -77,7 +77,7 @@ const buildFormData = (formData, data, parentKey) => {
 const StepsComponent = (props) => {
 
     useEffect(() => {
-        console.log('props', props?.testData);
+        console.log('props', props);
     }, [props])
 
     const router = useRouter();
@@ -1075,7 +1075,7 @@ const StepsComponent = (props) => {
                                                     placeholder="Payment"
                                                     onChange={(e) => teamFunction('payment', e, experienceCount, 'add')}
                                                     value={team.payment}
-                                                    data={props.payments}
+                                                    data={props.paymet_types}
                                                     className="w-100 mb-2" />
                                                 {
                                                     team.payment.length > 0 && team.payment.map((item, index) => {
@@ -1084,7 +1084,7 @@ const StepsComponent = (props) => {
                                                                 teamFunction('payment', item, experienceCount, 'remove')
                                                             }
                                                             } closable
-                                                            className="close-tag my-2">{props.payments.find(i => i.value === item)?.label}</Tag>
+                                                            className="close-tag my-2">{props.paymet_types.find(i => i.value === item)?.label}</Tag>
                                                     })
                                                 }
                                             </Form.Group>
@@ -1202,64 +1202,81 @@ const StepsComponent = (props) => {
 export default StepsComponent
 
 export const getServerSideProps = async () => {
-    // const positions = await axios.get(config.BASE_URL + "positions");
+    const fetchPositions = await fetch(config.BASE_URL + "positions");
+    const positionsData = await fetchPositions.json();
 
-    // const testData = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
-    const testData = await fetch(config.BASE_URL + "positions");
+    const fetchRoles = await fetch(config.BASE_URL + "project/roles");
+    const roleData = await fetchRoles.json();
 
-    const data = await testData.json();
+    const fetchProjectTypes = await fetch(config.BASE_URL + "project/types");
+    const projectTypesData = await fetchProjectTypes.json();
 
-    console.log('test pervin', data);
+    const fetchLocations = await fetch(config.BASE_URL + "locations");
+    const locationData = await fetchLocations.json();
 
-    // const locations = await axios.get(config.BASE_URL + "locations");
-    // const skills = await axios.get(config.BASE_URL + "skills");
-    // const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
-    // const roles = await axios.get(config.BASE_URL + "project/roles");
-    // const project_types = await axios.get(config.BASE_URL + "project/types");
-    // const job_types = await axios.get(config.BASE_URL + "job/types");
-    // const payments = await axios.get(config.BASE_URL + "job/payment_types");
+    const fetchJobTypes = await fetch(config.BASE_URL + "job/types");
+    const jobTypesData = await fetchJobTypes.json();
+
+    const fetchPaymentTypes = await fetch(config.BASE_URL + "job/payment_types");
+    const paymentTypesData = await fetchPaymentTypes.json();
+
+    const fetchSkills = await fetch(config.BASE_URL + "skills");
+    const skillsData = await fetchSkills.json();
+
+    const fetchExperienceLevels = await fetch(config.BASE_URL + "experience-levels");
+    const experienceLevelsData = await fetchExperienceLevels.json();
 
     // 123123
     return {
         props: {
-            // positions: positions.data.data.items.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            positions: [],
-            testData: data.data.items.map(item => {
+            positions: positionsData.data.items.map(item => {
                 return {
                     value: item.id,
-                    label: item.label
+                    label: item.name ? item.name : ''
                 }
             }),
-            // locations: locations.data.data.items.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            locations: [],
-            // skills: skills.data.data.items.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            skills: [],
-            // experience_levels: experience_levels.data.data.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            experience_levels: [],
-            // roles: roles.data.data.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            roles: [],
-            // project_types: project_types.data.data.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            project_types: [],
-            // job_types: job_types.data.data.map(item => {
-            //     return { label: item.name, value: item.id }
-            // }),
-            job_types: [],
-            // payments: payments.data.data.map(item => {
-            //     return { label: item.name, value: item.id }
-            // })
-            payments: []
+            roles: roleData.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            project_types: projectTypesData.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            locations: locationData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            job_types: jobTypesData.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            paymet_types: paymentTypesData.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            experience_levels: experienceLevelsData.data.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            skills: skillsData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
         }
     }
 
