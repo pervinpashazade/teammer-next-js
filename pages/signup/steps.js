@@ -1210,7 +1210,7 @@ export const getServerSideProps = async () => {
             //     return { label: item.name, value: item.id }
             // }),
             positions: positions,
-            testData: data,
+            // testData: data,
             // locations: locations.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
