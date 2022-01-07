@@ -1189,11 +1189,13 @@ export default StepsComponent
 export const getServerSideProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
 
-    const positionsFetch = await fetch(config.BASE_URL + "positions");
+    // const positions = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
 
-    const positions = await positionsFetch.json()
+    const testData = await axios.get('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
 
-    console.log('test pervin', positions);
+    const data = await testData.json()
+
+    console.log('test pervin', data);
 
     // const locations = await axios.get(config.BASE_URL + "locations");
     // const skills = await axios.get(config.BASE_URL + "skills");
@@ -1209,8 +1211,8 @@ export const getServerSideProps = async () => {
             // positions: positions.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
-            positions: positions,
-            // testData: data,
+            positions: [],
+            testData: data,
             // locations: locations.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
