@@ -1191,9 +1191,9 @@ export const getServerSideProps = async () => {
 
     // const positions = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
 
-    const testData = await axios.get('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
+    const testData = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
 
-    // const data = await testData.json()
+    const data = await testData.json();
 
     console.log('test pervin', data);
 
@@ -1212,7 +1212,7 @@ export const getServerSideProps = async () => {
             //     return { label: item.name, value: item.id }
             // }),
             positions: [],
-            testData: testData,
+            testData: data,
             // locations: locations.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
