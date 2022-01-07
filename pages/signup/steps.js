@@ -77,7 +77,7 @@ const buildFormData = (formData, data, parentKey) => {
 const StepsComponent = (props) => {
 
     useEffect(() => {
-        console.log('aaa', props?.testData);
+        console.log('props', props?.testData);
     }, [props])
 
     const router = useRouter();
@@ -1226,7 +1226,12 @@ export const getServerSideProps = async () => {
             //     return { label: item.name, value: item.id }
             // }),
             positions: [],
-            testData: data,
+            testData: data.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.label
+                }
+            }),
             // locations: locations.data.data.items.map(item => {
             //     return { label: item.name, value: item.id }
             // }),
