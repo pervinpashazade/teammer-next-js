@@ -582,13 +582,7 @@ const StepsComponent = (props) => {
                                                     size="lg"
                                                     placeholder="Roles in Startup"
                                                     name="location"
-                                                    // data={props.roles}
-                                                    data={props.testData.map(item => {
-                                                        return {
-                                                            label: item.name,
-                                                            value: item.id
-                                                        }
-                                                    })}
+                                                    data={props.roles}
                                                     value={person.role}
                                                     className="w-100 mb-2"
                                                     onChange={(e) => setPerson({
@@ -1210,9 +1204,8 @@ export default StepsComponent
 export const getServerSideProps = async () => {
     // const positions = await axios.get(config.BASE_URL + "positions");
 
-    // const positions = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
-
-    const testData = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
+    // const testData = await fetch('https://mocki.io/v1/624f640b-0d0f-4c64-94a3-b2af52277044');
+    const testData = await fetch(config.BASE_URL + "positions");
 
     const data = await testData.json();
 
