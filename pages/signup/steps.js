@@ -9,7 +9,9 @@ import {
     Radio,
     RadioGroup,
     Steps,
-    Tag, toaster, Uploader
+    Tag,
+    toaster,
+    Uploader
 } from "rsuite";
 import { AiOutlineEdit } from 'react-icons/ai'
 import { MdModeEditOutline } from 'react-icons/md';
@@ -254,6 +256,7 @@ const StepsComponent = (props) => {
         }
     }
     const addMoreJobPosition = () => {
+        // owner
         if (team.location.length > 0 &&
             team.job_position &&
             team.job_type.length > 0 &&
@@ -281,9 +284,15 @@ const StepsComponent = (props) => {
                 descriptionEditorText: ''
             });
             setExperinceCount(experienceCount + 1);
+        } else {
+            toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                <p className="text-danger">An error occurred while filling in the information.
+                    All boxes must be filled correctly</p>
+            </Notification>, 'topEnd')
         }
     }
     const addMoreExperience = () => {
+        // teaamer
         if (exp.position && exp.company && exp.location && exp.start_date.month &&
             exp.start_date.year && exp.end_date.month && exp.end_date.year) {
             setExperience([...experience, {
@@ -313,6 +322,11 @@ const StepsComponent = (props) => {
                 }
             });
             setExperinceCount(experienceCount + 1);
+        } else {
+            toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                <p className="text-danger">An error occurred while filling in the information.
+                    All boxes must be filled correctly</p>
+            </Notification>, 'topEnd')
         }
     }
     const editWorkExperience = (index) => {
@@ -432,7 +446,7 @@ const StepsComponent = (props) => {
                 type_id: ownerInformation.startupType,
                 jobs: jobs
             }
-        }
+        };
         const formData = new FormData();
         buildFormData(formData, body);
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
@@ -542,30 +556,43 @@ const StepsComponent = (props) => {
                                             </p>}
                                     </div> : <Form>
                                         <Form.Group controlId="username">
-                                            {find === "1" && <div className="profile_information mb-4">
-                                                <input type="file" name="myImage" className="d-none"
-                                                    ref={ownerRef}
-                                                    onChange={(e) => uploadToClient(e, 'owner')} />
-                                                <div>
-                                                    <Image
-                                                        src={createObjectURL.owner}
-                                                        alt='icon'
-                                                        width={64}
-                                                        height={64}
+                                            {
+                                                find === "1" && <div className="profile_information mb-4">
+                                                    <input
+                                                        type="file"
+                                                        name="myImage"
+                                                        className="d-none"
+                                                        ref={ownerRef}
+                                                        onChange={(e) => uploadToClient(e, 'owner')}
                                                     />
-                                                    <button onClick={() => {
-                                                        ownerRef.current.click()
-                                                    }
-                                                    }>Upload New Photo
-                                                    </button>
+                                                    <div>
+                                                        <Image
+                                                            src={createObjectURL.owner}
+                                                            alt='icon'
+                                                            width={64}
+                                                            height={64}
+                                                        />
+                                                        <button
+                                                            onClick={() => {
+                                                                ownerRef.current.click()
+                                                            }}
+                                                        >
+                                                            Upload New Photo
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>}
+                                            }
                                             <Form.ControlLabel>Username</Form.ControlLabel>
-                                            <Form.Control name="username" value={person.username}
+                                            <Form.Control
+                                                name="username"
+                                                value={person.username}
                                                 onChange={(e) => setPerson({
                                                     ...person,
                                                     username: e
-                                                })} type="text" placeholder="Username" />
+                                                })}
+                                                type="text"
+                                                placeholder="Username"
+                                            />
                                         </Form.Group>
                                         <Form.Group controlId="first_name">
                                             <Form.ControlLabel>Full Name</Form.ControlLabel>
@@ -573,42 +600,77 @@ const StepsComponent = (props) => {
                                                 onChange={(e) => setPerson({
                                                     ...person,
                                                     full_name: e
-                                                })} type="text" placeholder="Full Name    " />
+                                                })} type="text" placeholder="Full Name" />
                                         </Form.Group>
-                                        {find === "1" ?
+                                        {
+                                            find === "1" ?
+                                                <Form.Group>
+                                                    <Form.ControlLabel>Roles in Startup</Form.ControlLabel>
+                                                    <InputPicker
+                                                        size="lg"
+                                                        placeholder="Roles in Startup"
+                                                        name="location"
+                                                        data={props.roles}
+                                                        value={person.role}
+                                                        className="w-100 mb-2"
+                                                        onChange={(e) => setPerson({
+                                                            ...person,
+                                                            role: e
+                                                        })}
+                                                    />
+                                                </Form.Group>
+                                                :
+                                                <Form.Group>
+                                                    <Form.ControlLabel>Location</Form.ControlLabel>
+                                                    <InputPicker
+                                                        size="lg"
+                                                        placeholder="Location"
+                                                        name="location" data={props.locations}
+                                                        value={person.location}
+                                                        className="w-100 mb-2"
+                                                        onChange={
+                                                            (e) => setPerson({
+                                                                ...person,
+                                                                location: e
+                                                            })
+                                                        }
+                                                    />
+                                                </Form.Group>
+                                        }
+                                        <div className="d-flex justify-content-end routing-button">
+                                            <Button
+                                                onClick={() => setCurrent(0)}
+                                                type="button"
+                                                className="previous-button">
+                                                Previous
+                                            </Button>
                                             <Form.Group>
-                                                <Form.ControlLabel>Roles in Startup</Form.ControlLabel>
-                                                <InputPicker
-                                                    size="lg"
-                                                    placeholder="Roles in Startup"
-                                                    name="location"
-                                                    data={props.roles}
-                                                    value={person.role}
-                                                    className="w-100 mb-2"
-                                                    onChange={(e) => setPerson({
-                                                        ...person,
-                                                        role: e
-                                                    })}
-                                                />
-                                            </Form.Group>
-                                            :
-                                            <Form.Group>
-                                                <Form.ControlLabel>Location</Form.ControlLabel>
-                                                <InputPicker size="lg" placeholder="Location"
-                                                    name="location" data={props.locations}
-                                                    value={person.location}
-                                                    onChange={(e) => setPerson({
-                                                        ...person,
-                                                        location: e
-                                                    })} className="w-100 mb-2" />
-                                            </Form.Group>}
-                                        <div className="d-flex justify-content-end routing-button"><Button
-                                            onClick={() => setCurrent(0)}
-                                            type="button"
-                                            className="previous-button">Previous</Button><Form.Group>
                                                 <ButtonToolbar>
-                                                    <Button className="next-button" type="button"
-                                                        onClick={() => setCurrent(2)}>Next</Button>
+                                                    <Button
+                                                        className="next-button"
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (person.username && person.full_name && person.role && image.owner
+                                                            ) {
+                                                                setCurrent(2)
+                                                            } else {
+                                                                toaster.push(
+                                                                    <Notification
+                                                                        type={"error"}
+                                                                        header="Failed confirmation!"
+                                                                        closable
+                                                                    >
+                                                                        <p className="text-danger">
+                                                                            An error occurred while filling in the information.
+                                                                            All boxes must be filled correctly
+                                                                        </p>
+                                                                    </Notification>, 'topEnd'
+                                                                )
+                                                            }
+                                                        }}
+                                                    >
+                                                        Next
+                                                    </Button>
                                                 </ButtonToolbar>
                                             </Form.Group>
                                         </div>
@@ -617,7 +679,7 @@ const StepsComponent = (props) => {
                             </div>
                         } />
                     {
-                        find === "1" ? <Steps.Item title={<>Stratup information {current > 2 &&
+                        find === "1" ? <Steps.Item title={<>Startup information {current > 2 &&
                             <button className="edit" onClick={() => editButton(2)}><AiOutlineEdit /></button>}</>}
                             description={
                                 (current !== 0 && current !== 1 && current !== 2) ? (
@@ -626,7 +688,7 @@ const StepsComponent = (props) => {
                                             <span>{ownerInformation.startupTitle}</span>
                                         </p>
                                         <p className="summary_person"><span>Startup Type</span>
-                                            <span>{ownerInformation.startupType}</span>
+                                            <span>{props.project_types.find(item => item.value === ownerInformation.startupType)?.label}</span>
                                         </p>
                                         <p className="summary_person"><span>Description</span>
                                             <span>{description}</span>
@@ -669,21 +731,27 @@ const StepsComponent = (props) => {
                                         </Form.Group>
                                         <Form className="Group">
                                             <Form.ControlLabel>Startup type</Form.ControlLabel>
-                                            <InputPicker size="lg" placeholder="Startup type"
-                                                name="type" data={props.project_types}
-                                                value={ownerInformation.startupTitle}
+                                            <InputPicker
+                                                size="lg"
+                                                placeholder="Startup type"
+                                                name="type"
+                                                className="w-100 mb-2"
+                                                data={props.project_types}
+                                                value={ownerInformation.startupType}
                                                 onChange={(e) => setOwnerInformation({
                                                     ...ownerInformation,
                                                     startupType: e
-                                                })} className="w-100 mb-2" />
+                                                })}
+                                            />
                                         </Form>
                                         <Form.Group className="mt-2">
-                                            <Form.ControlLabel>Description about
-                                                startup</Form.ControlLabel>
-                                            <ReactQuill style={{ height: '10rem' }}
+                                            <Form.ControlLabel>Description about startup</Form.ControlLabel>
+                                            <ReactQuill
+                                                className="mt-2"
                                                 value={editorText}
+                                                style={{ height: '10rem' }}
                                                 onChange={handleChange}
-                                                className="mt-2" />
+                                            />
                                         </Form.Group>
                                     </Form>
                                     <div className="d-flex justify-content-end routing-button"
@@ -693,9 +761,30 @@ const StepsComponent = (props) => {
                                         <Button
                                             onClick={() => setCurrent(1)}
                                             type="button"
-                                            className="previous-button">Previous</Button><Form.Group>
+                                            className="previous-button">
+                                            Previous
+                                        </Button>
+                                        <Form.Group>
                                             <ButtonToolbar>
-                                                <Button onClick={() => setCurrent(3)}
+                                                <Button
+                                                    onClick={() => {
+                                                        if (ownerInformation.startupTitle && ownerInformation.startupType) {
+                                                            setCurrent(3)
+                                                        } else {
+                                                            toaster.push(
+                                                                <Notification
+                                                                    type={"error"}
+                                                                    header="Failed confirmation!"
+                                                                    closable
+                                                                >
+                                                                    <p className="text-danger">
+                                                                        An error occurred while filling in the information.
+                                                                        All boxes must be filled correctly
+                                                                    </p>
+                                                                </Notification>, 'topEnd'
+                                                            )
+                                                        }
+                                                    }}
                                                     className="next-button"
                                                     type="submit">Next</Button>
                                             </ButtonToolbar>
@@ -1027,12 +1116,14 @@ const StepsComponent = (props) => {
                                                 <Form.ControlLabel>
                                                     Job Position
                                                 </Form.ControlLabel>
-                                                <InputPicker size="lg"
+                                                <InputPicker
+                                                    size="lg"
+                                                    className="w-100 mb-2"
                                                     placeholder="Job Position"
                                                     onChange={(e) => teamFunction('job_position', e, experienceCount)}
                                                     value={team.job_position}
                                                     data={props.positions}
-                                                    className="w-100 mb-2" />
+                                                />
                                             </Form.Group>
                                             <Form.Group>
                                                 <InputPicker size="lg"
@@ -1040,15 +1131,20 @@ const StepsComponent = (props) => {
                                                     onChange={(e) => teamFunction('location', e, experienceCount, 'add')}
                                                     value={team.location}
                                                     data={props.locations}
-                                                    className="w-100 mb-2" />
+                                                    className="w-100 mb-2"
+                                                />
                                                 {
                                                     team.location.length > 0 && team.location.map((item, index) => {
-                                                        return <Tag key={index}
+                                                        return <Tag
+                                                            closable
+                                                            key={index}
+                                                            className="close-tag my-2"
                                                             onClose={() => {
                                                                 teamFunction('location', item, experienceCount, 'remove')
-                                                            }
-                                                            } closable
-                                                            className="close-tag my-2">{props.locations.find(i => i.value === item)?.label}</Tag>
+                                                            }}
+                                                        >
+                                                            {props.locations.find(i => i.value === item)?.label}
+                                                        </Tag>
                                                     })
                                                 }
                                             </Form.Group>
@@ -1136,22 +1232,29 @@ const StepsComponent = (props) => {
                                             <button
                                                 style={{ margin: "2rem" }}
                                                 className="add-more-experience"
-                                                onClick={addMoreJobPosition}>
-                                                <BsPlusLg
-                                                    className="mr-2" /> Add More
-                                                Experience
+                                                onClick={() => {
+                                                    addMoreJobPosition()
+                                                }}
+                                            >
+                                                <BsPlusLg className="mr-2" /> Add More Experience
                                             </button>
                                             <div
                                                 className="d-flex justify-content-end routing-button">
                                                 <Button
                                                     onClick={() => setCurrent(2)}
                                                     type="button"
-                                                    className="previous-button">Previous</Button><Form.Group>
+                                                    className="previous-button"
+                                                >
+                                                    Previous
+                                                </Button>
+                                                <Form.Group>
                                                     <ButtonToolbar>
                                                         <Button
                                                             onClick={submitOwnerData}
                                                             className="next-button"
-                                                            type="button">Submit</Button>
+                                                            type="button">
+                                                            Submit
+                                                        </Button>
                                                     </ButtonToolbar>
                                                 </Form.Group>
                                             </div>

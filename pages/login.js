@@ -30,7 +30,7 @@ const Login = () => {
                     dispatch(log_in('STARTUP_TYPE'))
                     dispatch(setData('user', data.user.full_name));
                     console.log(data.user.is_complete_registration)
-                    data.user.is_complete_registration ? router.push('/') : router.push("/signup/steps")
+                    data.user.is_complete_registration ? router.push('/owner/home') : router.push("/signup/steps")
                 } else if (data.user.type === TEAMMER_TYPE) {
                     dispatch(log_in('TEAMMER_TYPE'));
                     dispatch(setData('user', data.user.full_name));
@@ -40,7 +40,6 @@ const Login = () => {
             .catch(error => {
                 console.log(error)
                 setValidation(false)
-
             })
 
     }
@@ -90,9 +89,6 @@ const Login = () => {
                 <p>Not a Member? <Link href="/signup"><a>Sign up</a></Link></p>
                 <div className="with_google">
                     <Button className="signup_google">
-                        {/* <img
-                            src="icons/google.svg"
-                        /> */}
                         <Image
                             src={'/icons/google.svg'}
                             alt='icon'
@@ -102,7 +98,6 @@ const Login = () => {
                         <span>Sign up with Google</span>
                     </Button>
                     <Button>
-                        {/* <img src="social-images/twitter.svg" /> */}
                         <Image
                             src={'/social-images/twitter.svg'}
                             alt='icon'
@@ -111,7 +106,6 @@ const Login = () => {
                         />
                     </Button>
                     <Button>
-                        {/* <img src="social-images/facebook2.svg" /> */}
                         <Image
                             src={'/social-images/facebook2.svg'}
                             alt='icon'
@@ -124,9 +118,7 @@ const Login = () => {
                     color: "#7f7f7f",
                     fontSize: "12px"
                 }}>OR</Divider>
-                <Form onSubmit={(condition, event) => {
-                    login_form(event)
-                }}>
+                <Form onSubmit={(condition, event) => { login_form(event) }}>
                     <Form.Group controlId="email">
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>E-mail or
                             username</Form.ControlLabel>
