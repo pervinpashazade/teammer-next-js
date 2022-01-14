@@ -183,16 +183,11 @@
           color: $text-color-primary;
         }
       }
-
       .banner {
         font-size: $font-48;
         font-weight: bold;
         text-align: center;
-
-        img {
-          width: 211px;
-          height: 78px;
-        }
+        display: block !important;
       }
 
       p {

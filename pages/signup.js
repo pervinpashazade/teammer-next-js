@@ -81,14 +81,16 @@ const Signup = () => {
             }}>
                 <h1 className="banner"> Join your dream
                     {/* <img src="/img/startup.png" alt="startup image" /> */}
-                    <Image
-                        src={'/img/startup.png'}
-                        alt='startup image'
-                        layout={'fixed'}
-                        width={208}
-                        height={68}
-                    />
-                    team in Minutes.</h1>
+                    <div className="d-flex">
+                        <Image
+                            src={'/img/startup.png'}
+                            alt='startup image'
+                            layout={'fixed'}
+                            width={208}
+                            height={68}
+                        />
+                        team in
+                    </div> Minutes.</h1>
                 <p className="text-center">Connect with your future teammates <br />
                     from all over the world.</p>
             </div>
