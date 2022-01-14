@@ -14,14 +14,16 @@ function BannerHome() {
                         <span>Result-aimed platform</span>
                         <h1>
                             Join your dream
-                            {/* <img src="/img/startup.png" alt="startup image" /> */}
-                            <Image
-                                src={'/img/startup.png'}
-                                alt='logo'
-                                width={211}
-                                height={78}
-                            />
-                            team in Minutes.
+                            <div className="d-flex align-items-center">
+                                <Image
+                                    src={'/img/startup.png'}
+                                    alt='logo'
+                                    width={211}
+                                    height={78}
+                                />
+                                team in
+                            </div>
+                            Minutes.
                         </h1>
                         <p>
                             Connect with your future teammates
