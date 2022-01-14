@@ -1,12 +1,12 @@
 //login
 .close-tag {
-  background-color: #e0e4fd;
-  border-radius: 72px;
-  color: #7486ff;
-  padding: 8px 40px 8px 16px;
+  background-color: #e0e4fd !important;
+  border-radius: 72px !important;
+  color: #7486ff !important;
+  padding: 8px 40px 8px 16px !important;
 
   svg {
-    margin: 6px 0px;
+    margin: 6px 0px !important;
   }
 }
 @mixin login_form($padding) {

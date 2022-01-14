@@ -147,8 +147,8 @@ const StepsComponent = (props) => {
     const [team, setTeam] = useState({
         job_position: '',
         location: [],
-        job_type: [],
-        payment: [],
+        job_type: '',
+        payment: '',
         salary: '',
         salary_periods: '',
         year_experience: '',
@@ -157,8 +157,8 @@ const StepsComponent = (props) => {
     const [teamArray, setTeamArray] = useState([{
         job_position: '',
         location: [],
-        job_type: [],
-        payment: [],
+        job_type: '',
+        payment: '',
         salary: '',
         salary_periods: '',
         year_experience: '',
@@ -220,7 +220,7 @@ const StepsComponent = (props) => {
         setExperience(newArray)
     }
     const teamFunction = (key, data, index, type) => {
-        if (key === 'location' || key === 'job_type' || key === 'payment') {
+        if (key === 'location') {
             let element = teamArray.find((item, i) => i === index);
             let newData = [];
             if (type === 'add') {
@@ -1151,41 +1151,21 @@ const StepsComponent = (props) => {
                                             <Form.Group>
                                                 <InputPicker size="lg"
                                                     placeholder="Job type"
-                                                    onChange={(e) => teamFunction('job_type', e, experienceCount, 'add')}
+                                                    onChange={(e) => teamFunction('job_type', e, experienceCount)}
                                                     value={team.job_type}
                                                     data={props.job_types}
                                                     className="w-100 mb-2" />
-                                                {
-                                                    team.job_type.length > 0 && team.job_type.map((item, index) => {
-                                                        return <Tag key={index}
-                                                            onClose={() => {
-                                                                teamFunction('job_type', item, experienceCount, 'remove')
-                                                            }
-                                                            } closable
-                                                            className="close-tag my-2">{props.job_types.find(i => i.value === item)?.label}</Tag>
-                                                    })
-                                                }
                                             </Form.Group>
                                             <Form.Group>
                                                 <InputPicker size="lg"
                                                     placeholder="Payment"
-                                                    onChange={(e) => teamFunction('payment', e, experienceCount, 'add')}
+                                                    onChange={(e) => teamFunction('payment', e, experienceCount)}
                                                     value={team.payment}
                                                     data={props.paymet_types}
                                                     className="w-100 mb-2" />
-                                                {
-                                                    team.payment.length > 0 && team.payment.map((item, index) => {
-                                                        return <Tag key={index}
-                                                            onClose={() => {
-                                                                teamFunction('payment', item, experienceCount, 'remove')
-                                                            }
-                                                            } closable
-                                                            className="close-tag my-2">{props.paymet_types.find(i => i.value === item)?.label}</Tag>
-                                                    })
-                                                }
                                             </Form.Group>
                                             <Form.Group className="d-flex justify-content-between align-items-baseline">
-                                                <Input placeholder='Salary' value={team.salary}
+                                                <Input type="number" min="0" placeholder='Salary' value={team.salary}
                                                     onChange={(e) => teamFunction('salary', e, experienceCount)} />
                                                 <InputPicker style={{
                                                     maxWidth: '100px'
@@ -1213,6 +1193,7 @@ const StepsComponent = (props) => {
                                                     Years of experience
                                                 </Form.ControlLabel>
                                                 <InputNumber value={team.year_experience}
+                                                             min="0"
                                                     className="w-100"
                                                     onChange={(e) =>
                                                         teamFunction('year_experience', e, experienceCount)} />

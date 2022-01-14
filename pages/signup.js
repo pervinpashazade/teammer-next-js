@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -12,6 +12,13 @@ const Signup = () => {
     const [check2, setCheck2] = useState(false);
     const [validation, setValidation] = useState(true)
     const router = useRouter();
+    useEffect(()=>{
+        console.log(localStorage.getItem('type'))
+        if(localStorage.getItem('accessToken') && !JSON.parse(localStorage.getItem('type'))){
+            console.log('ansdjkansdkjansdkjsnd')
+            router.push("/signup/steps");
+        }
+    },[])
     const signup_form = (event) => {
 
         let data = new FormData(event.target);
@@ -35,10 +42,8 @@ const Signup = () => {
                 console.log(res);
                 router.push("/signup/steps")
             }).catch(error => {
-                console.log(error.response);
                 toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
-                    <p className="text-danger">An error occurred while filling in the information.
-                        All boxes must be filled correctly</p>
+                    <p className="text-danger">{error.response.data.error.message}</p>
                 </Notification>, 'topEnd')
             })
         }
