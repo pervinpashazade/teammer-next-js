@@ -168,20 +168,24 @@ const StepsComponent = (props) => {
     const ownerRef = useRef();
     const store = useSelector(store => store);
     useEffect(() => {
-        if (store.isAuth === "STARTUP_TYPE") {
-            router.push('/owner/home');
+        if(!localStorage.getItem('accessToken') && !localStorage.getItem('type')){
+            router.push("/signup");
         }
-        else if (store.isAuth === "TEAMMER_TYPE") {
-            router.push("/teammer/home");
-        }
-        let year_array = [];
-        let nowDate = (new Date()).getFullYear();
-        for (let i = 2000; i <= nowDate; i++) {
-            year_array.push({
-                label: `${i}`,
-                value: i
-            })
-            setYears(year_array);
+       else {
+            if (store.isAuth === "STARTUP_TYPE") {
+                router.push('/owner/home');
+            } else if (store.isAuth === "TEAMMER_TYPE") {
+                router.push("/teammer/home");
+            }
+            let year_array = [];
+            let nowDate = (new Date()).getFullYear();
+            for (let i = 2000; i <= nowDate; i++) {
+                year_array.push({
+                    label: `${i}`,
+                    value: i
+                })
+                setYears(year_array);
+            }
         }
     }, [store.isAuth, router])
 
