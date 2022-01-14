@@ -40,7 +40,7 @@
   .with_google {
     .signup_google {
       @include button($button-radius-72, #fff, 12px, 24px, 12px, 24px);
-      border: 2px solid #EAEAEA;
+      border: 2px solid #eaeaea;
       color: $text-color-primary;
       font-size: 14px;
       font-weight: 600;
@@ -188,6 +188,7 @@
         font-size: $font-48;
         font-weight: bold;
         text-align: center;
+        display: block !important;
 
         img {
           width: 211px;
