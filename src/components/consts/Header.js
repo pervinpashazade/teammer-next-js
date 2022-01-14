@@ -28,8 +28,8 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
                             <Image
                                 src={'/icons/eye.svg'}
                                 alt='img'
-                                width={20}
-                                height={20}
+                                width={136}
+                                height={18}
                                 layout='fixed'
                             />
                             Show all <button><RiArrowRightLine /></button>
