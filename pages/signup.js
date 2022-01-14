@@ -76,7 +76,7 @@ const Signup = () => {
             </Link>
         </div>
         <div className="authenticate">
-            <div className="image" style={{
+            <div className="image d-md-flex d-none" style={{
                 backgroundImage: "url('/img/signup.png')"
             }}>
                 <h1 className="banner"> Join your dream
@@ -97,7 +97,7 @@ const Signup = () => {
             <div className="signup_form">
                 <h2>Sign up</h2>
                 <p>Already a Member? <Link href="/login"><a>Log in</a></Link></p>
-                <div className="with_google">
+                <div className="with_google d-flex">
                     <Button className="signup_google">
                         {/* <img
                             src="icons/google.svg"
