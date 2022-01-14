@@ -73,14 +73,14 @@ const Login = () => {
             <div className="image" style={{
                 backgroundImage: "url('/img/login_1.png')"
             }}>
-                <h2>
+                <h2 className="font-weight-bold">
                     {/* <img src="icons/emoji1.svg" /><span>Welcome back</span> */}
                     <Image
                         src={'/icons/emoji1.svg'}
                         alt='icon'
                         width={40}
                         height={42}
-                    />
+                    /> <span>Welcome back</span>
                 </h2>
                 <p>We’ve glad to see you again!</p>
             </div>
