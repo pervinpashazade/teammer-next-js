@@ -1054,13 +1054,15 @@ const StepsComponent = (props) => {
                                                 }
                                                 <div className="portfolio-add">
                                                     <Input
-                                                        placeholder="Select company"
+                                                        placeholder="Enter link"
                                                         onChange={(e) => setPortfolio(e)}
                                                         className="w-100 mr-2"
                                                         value={portfolio} />
-                                                    <Button><BsPlusLg
-                                                        className="mr-2 "
-                                                        onClick={() => portoflioAdd('add')} /></Button>
+                                                    <Button
+                                                        onClick={() => portoflioAdd('add')}
+                                                    >
+                                                        <BsPlusLg className="mr-2 " />
+                                                    </Button>
                                                 </div>
                                                 <hr />
                                             </div>
