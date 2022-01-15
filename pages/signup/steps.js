@@ -661,9 +661,6 @@ const StepsComponent = (props) => {
                                                         className="next-button"
                                                         type="button"
                                                         onClick={() => {
-
-                                                            console.log('test', find);
-
                                                             if (find === '1') {
                                                                 if (person.username && person.full_name && person.role && image.owner) {
                                                                     setCurrent(2)
@@ -683,7 +680,7 @@ const StepsComponent = (props) => {
                                                                 }
                                                             }
                                                             if (find === '2') {
-                                                                if (person.username && person.full_name && person.role) {
+                                                                if (person.username && person.full_name && person.location) {
                                                                     setCurrent(2)
                                                                 } else {
                                                                     toaster.push(
