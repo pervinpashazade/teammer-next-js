@@ -168,10 +168,10 @@ const StepsComponent = (props) => {
     const ownerRef = useRef();
     const store = useSelector(store => store);
     useEffect(() => {
-        if(!localStorage.getItem('accessToken') && !localStorage.getItem('type')){
+        if (!localStorage.getItem('accessToken') && !localStorage.getItem('type')) {
             router.push("/signup");
         }
-       else {
+        else {
             if (store.isAuth === "STARTUP_TYPE") {
                 router.push('/owner/home');
             } else if (store.isAuth === "TEAMMER_TYPE") {
@@ -245,18 +245,18 @@ const StepsComponent = (props) => {
         //     })
         //     setTeamArray(newArray);
         // } else {
-            setTeam({
-                ...team,
-                [key]: data
-            });
-            let element = teamArray.find((item, i) => i === index);
-            element[key] = data;
-            let newArray = teamArray.filter((item, i) => {
-                if (i === index) {
-                    return element
-                } else return item
-            })
-            setTeamArray(newArray);
+        setTeam({
+            ...team,
+            [key]: data
+        });
+        let element = teamArray.find((item, i) => i === index);
+        element[key] = data;
+        let newArray = teamArray.filter((item, i) => {
+            if (i === index) {
+                return element
+            } else return item
+        })
+        setTeamArray(newArray);
         // }
     }
     const addMoreJobPosition = () => {
@@ -661,23 +661,63 @@ const StepsComponent = (props) => {
                                                         className="next-button"
                                                         type="button"
                                                         onClick={() => {
-                                                            if (person.username && person.full_name && person.role && image.owner
-                                                            ) {
-                                                                setCurrent(2)
-                                                            } else {
-                                                                toaster.push(
-                                                                    <Notification
-                                                                        type={"error"}
-                                                                        header="Failed confirmation!"
-                                                                        closable
-                                                                    >
-                                                                        <p className="text-danger">
-                                                                            An error occurred while filling in the information.
-                                                                            All boxes must be filled correctly
-                                                                        </p>
-                                                                    </Notification>, 'topEnd'
-                                                                )
+
+                                                            console.log('test', find);
+
+                                                            if (find === '1') {
+                                                                if (person.username && person.full_name && person.role && image.owner) {
+                                                                    setCurrent(2)
+                                                                } else {
+                                                                    toaster.push(
+                                                                        <Notification
+                                                                            type={"error"}
+                                                                            header="Failed confirmation!"
+                                                                            closable
+                                                                        >
+                                                                            <p className="text-danger">
+                                                                                An error occurred while filling in the information.
+                                                                                All boxes must be filled correctly
+                                                                            </p>
+                                                                        </Notification>, 'topEnd'
+                                                                    )
+                                                                }
                                                             }
+                                                            if (find === '2') {
+                                                                if (person.username && person.full_name && person.role) {
+                                                                    setCurrent(2)
+                                                                } else {
+                                                                    toaster.push(
+                                                                        <Notification
+                                                                            type={"error"}
+                                                                            header="Failed confirmation!"
+                                                                            closable
+                                                                        >
+                                                                            <p className="text-danger">
+                                                                                An error occurred while filling in the information.
+                                                                                All boxes must be filled correctly
+                                                                            </p>
+                                                                        </Notification>, 'topEnd'
+                                                                    )
+                                                                }
+                                                            }
+
+                                                            // if (person.username && person.full_name && person.role && image.owner
+                                                            // ) {
+                                                            //     setCurrent(2)
+                                                            // } else {
+                                                            //     toaster.push(
+                                                            //         <Notification
+                                                            //             type={"error"}
+                                                            //             header="Failed confirmation!"
+                                                            //             closable
+                                                            //         >
+                                                            //             <p className="text-danger">
+                                                            //                 An error occurred while filling in the information.
+                                                            //                 All boxes must be filled correctly
+                                                            //             </p>
+                                                            //         </Notification>, 'topEnd'
+                                                            //     )
+                                                            // }
                                                         }}
                                                     >
                                                         Next
@@ -1190,7 +1230,7 @@ const StepsComponent = (props) => {
                                                     Years of experience
                                                 </Form.ControlLabel>
                                                 <InputNumber value={team.year_experience}
-                                                             min="0"
+                                                    min="0"
                                                     className="w-100"
                                                     onChange={(e) =>
                                                         teamFunction('year_experience', e, experienceCount)} />
@@ -1214,7 +1254,7 @@ const StepsComponent = (props) => {
                                                     addMoreJobPosition()
                                                 }}
                                             >
-                                                <BsPlusLg className="mr-2" /> Add More New Job Position
+                                                <BsPlusLg className="mr-2" /> Add New Job Position
                                             </button>
                                             <div
                                                 className="d-flex justify-content-end routing-button">
