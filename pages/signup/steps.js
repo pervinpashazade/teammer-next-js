@@ -146,7 +146,7 @@ const StepsComponent = (props) => {
 
     const [team, setTeam] = useState({
         job_position: '',
-        location: [],
+        location: '',
         job_type: '',
         payment: '',
         salary: '',
@@ -156,7 +156,7 @@ const StepsComponent = (props) => {
     });
     const [teamArray, setTeamArray] = useState([{
         job_position: '',
-        location: [],
+        location: '',
         job_type: '',
         payment: '',
         salary: '',
@@ -224,27 +224,27 @@ const StepsComponent = (props) => {
         setExperience(newArray)
     }
     const teamFunction = (key, data, index, type) => {
-        if (key === 'location') {
-            let element = teamArray.find((item, i) => i === index);
-            let newData = [];
-            if (type === 'add') {
-                if (data && !team[key].some(item => item === data)) newData = [...team[key], data]
-                else newData = team[key];
-            } else {
-                newData = team[key].filter(item => item !== data)
-            }
-            setTeam({
-                ...team,
-                [key]: newData
-            });
-            element[key] = newData;
-            let newArray = teamArray.filter((item, i) => {
-                if (i === index) {
-                    return element
-                } else return item
-            })
-            setTeamArray(newArray);
-        } else {
+        // if (key === 'location') {
+        //     let element = teamArray.find((item, i) => i === index);
+        //     let newData = [];
+        //     if (type === 'add') {
+        //         if (data && !team[key].some(item => item === data)) newData = [...team[key], data]
+        //         else newData = team[key];
+        //     } else {
+        //         newData = team[key].filter(item => item !== data)
+        //     }
+        //     setTeam({
+        //         ...team,
+        //         [key]: newData
+        //     });
+        //     element[key] = newData;
+        //     let newArray = teamArray.filter((item, i) => {
+        //         if (i === index) {
+        //             return element
+        //         } else return item
+        //     })
+        //     setTeamArray(newArray);
+        // } else {
             setTeam({
                 ...team,
                 [key]: data
@@ -257,7 +257,7 @@ const StepsComponent = (props) => {
                 } else return item
             })
             setTeamArray(newArray);
-        }
+        // }
     }
     const addMoreJobPosition = () => {
         // owner
@@ -397,8 +397,11 @@ const StepsComponent = (props) => {
             photo: image.teammer,
             cv: cv.blobFile
         }
+        console.log('data body', body);
         const formData = new FormData();
         buildFormData(formData, body);
+
+
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem('accessToken')
@@ -424,18 +427,22 @@ const StepsComponent = (props) => {
     // console.log('log1', editorText, team.descriptionEditorText)
     const submitOwnerData = () => {
 
+
         let jobs = teamArray.map(item => {
             return {
                 salary: item.salary,
                 salary_period: item.salary_periods,
                 years_of_experience: item.year_experience,
-                pay_types: item.payment,
-                types: item.job_type,
-                locations: item.location,
+                payment_type_id: item.payment,
+                type_id: item.job_type,
+                location_id: item.location,
                 position_id: item.job_position,
                 description: "item.descriptionEditorText"
             }
         })
+
+        console.log('teeest', jobs);
+
         let body = {
             type: 1,
             photo: image.owner,
@@ -1132,25 +1139,11 @@ const StepsComponent = (props) => {
                                             <Form.Group>
                                                 <InputPicker size="lg"
                                                     placeholder="Location"
-                                                    onChange={(e) => teamFunction('location', e, experienceCount, 'add')}
+                                                    onChange={(e) => teamFunction('location', e, experienceCount)}
                                                     value={team.location}
                                                     data={props.locations}
                                                     className="w-100 mb-2"
                                                 />
-                                                {
-                                                    team.location.length > 0 && team.location.map((item, index) => {
-                                                        return <Tag
-                                                            closable
-                                                            key={index}
-                                                            className="close-tag my-2"
-                                                            onClose={() => {
-                                                                teamFunction('location', item, experienceCount, 'remove')
-                                                            }}
-                                                        >
-                                                            {props.locations.find(i => i.value === item)?.label}
-                                                        </Tag>
-                                                    })
-                                                }
                                             </Form.Group>
                                             <Form.Group>
                                                 <InputPicker size="lg"
@@ -1221,7 +1214,7 @@ const StepsComponent = (props) => {
                                                     addMoreJobPosition()
                                                 }}
                                             >
-                                                <BsPlusLg className="mr-2" /> Add More Experience
+                                                <BsPlusLg className="mr-2" /> Add More New Job Position
                                             </button>
                                             <div
                                                 className="d-flex justify-content-end routing-button">
