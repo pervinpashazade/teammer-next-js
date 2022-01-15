@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -12,13 +12,13 @@ const Signup = () => {
     const [check2, setCheck2] = useState(false);
     const [validation, setValidation] = useState(true)
     const router = useRouter();
-    useEffect(()=>{
+    useEffect(() => {
         console.log(localStorage.getItem('type'))
-        if(localStorage.getItem('accessToken') && !JSON.parse(localStorage.getItem('type'))){
+        if (localStorage.getItem('accessToken') && !JSON.parse(localStorage.getItem('type'))) {
             console.log('ansdjkansdkjansdkjsnd')
             router.push("/signup/steps");
         }
-    },[])
+    }, [])
     const signup_form = (event) => {
 
         let data = new FormData(event.target);
@@ -26,6 +26,23 @@ const Signup = () => {
         for (let [key, value] of data.entries()) {
             body[key] = value;
         }
+
+        if (!body.password || !body.repeat_password) {
+            setValidation(false)
+        } else if (body.password.length < 8) {
+            setValidation(false);
+            toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                <p className="text-danger">Password must be at least 8 characters</p>
+            </Notification>, 'topEnd');
+            return;
+        } else if (body.password.length > 16) {
+            setValidation(false);
+            toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                <p className="text-danger">Password must be between 8 - 16 characters</p>
+            </Notification>, 'topEnd');
+            return;
+        }
+
         if (body.password !== body.repeat_password) {
             setValidation(false)
         } else {
@@ -43,7 +60,7 @@ const Signup = () => {
                 router.push("/signup/steps")
             }).catch(error => {
                 toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
-                    <p className="text-danger">{error.response.data.error.message}</p>
+                    <p className="text-danger">{error.response?.data.error.message}</p>
                 </Notification>, 'topEnd')
             })
         }
@@ -163,7 +180,7 @@ const Signup = () => {
                             type="password" placeholder="at least 8 characters" />
                     </Form.Group>
                     <Form.Group>
-                        <Checkbox onChange={(e, checked) => setCheck1(checked)}> Yes! Send me
+                        <Checkbox onChange={(e, checked) => setCheck1(checked)}>Yes! Send me
                             genuinely useful emails
                             every now and then to help me get the most out of Teammers.</Checkbox>
                     </Form.Group>
@@ -174,8 +191,7 @@ const Signup = () => {
                     </Form.Group>
                     <Form.Group>
                         <ButtonToolbar>
-                            <Button disabled={!check1 && !check2} className="login-button" type="submit">Sign
-                                up</Button>
+                            <Button disabled={!check2} className="login-button" type="submit">Sign up</Button>
                         </ButtonToolbar>
                     </Form.Group>
                 </Form>
