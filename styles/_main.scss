@@ -120,6 +120,7 @@ div.icon-btn-wrapper {
           color: $text-color-secondary;
           transition: 0.8s;
           margin-right: 32px;
+          cursor: pointer;
           &:hover {
             color: $text-color-primary;
           }

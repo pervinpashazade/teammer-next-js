@@ -1,8 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import LogoFooter from '../../../public/LogoFooter.svg'
 
 const Footer = () => {
+
+    const [isOpenFeedbackModal, setIsOpenFeedbackModal] = useState(false);
+
+    const toggleFeedbackModal = () => {
+        setIsOpenFeedbackModal(!isOpenFeedbackModal);
+    }
+
     return (
         <div className="footer">
             <div>
@@ -80,18 +88,19 @@ const Footer = () => {
                             />
                         </a>
                     </Link></li>
-                    <li><Link href="/">
-                        <a className="icons">
-                            {/* <img src="/social-images/linkedin.svg" /> */}
-                            <Image
-                                src={'/social-images/linkedin.svg'}
-                                alt='linkedin img'
-                                width={12}
-                                height={12}
-                                layout='fixed'
-                            />
-                        </a>
-                    </Link></li>
+                    <li>
+                        <Link href="/">
+                            <a className="icons">
+                                <Image
+                                    src={'/social-images/linkedin.svg'}
+                                    alt='linkedin img'
+                                    width={12}
+                                    height={12}
+                                    layout='fixed'
+                                />
+                            </a>
+                        </Link>
+                    </li>
                     <li>
                         <Link href="/">
                             <a>
@@ -127,12 +136,10 @@ const Footer = () => {
                             </a>
                         </Link>
                     </li>
-                    <li>
-                        <Link href="/">
-                            <a>
-                                Send feedback
-                            </a>
-                        </Link>
+                    <li className="send-feedback">
+                        <a onClick={() => toggleFeedbackModal()}>
+                            Send feedback
+                        </a>
                     </li>
                     <li>
                         <Link href="/">
