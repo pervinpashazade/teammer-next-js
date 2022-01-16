@@ -353,6 +353,9 @@ const StepsComponent = (props) => {
         setCurrent(3)
     }
     const uploadToClient = (event, type) => {
+
+        console.log();
+
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
             setImage({
@@ -364,6 +367,8 @@ const StepsComponent = (props) => {
                 [type]: URL.createObjectURL(i)
             });
         }
+
+        console.log('createObjectURL.owner', createObjectURL.owner);
     };
     const submitData = () => {
         let social_account = [];
@@ -952,7 +957,7 @@ const StepsComponent = (props) => {
                                                     <div className="job-divs">
                                                         <h4>Company</h4>
                                                         <Input
-                                                            placeholder="Select company"
+                                                            placeholder="Enter Company name"
                                                             value={exp.company}
                                                             onChange={(e) => experienceFunction('company', e, experienceCount)} />
                                                     </div>
