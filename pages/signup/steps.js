@@ -164,7 +164,6 @@ const StepsComponent = (props) => {
     const ownerRef = useRef();
     let reactQuillRef = useRef();
     const store = useSelector(store => store);
-
     useEffect(() => {
         if (!localStorage.getItem('accessToken') && !localStorage.getItem('type')) {
             router.push("/signup");
@@ -414,9 +413,9 @@ const StepsComponent = (props) => {
         })
             .then(res => {
                 let data = res.data.data;
-                localStorage.setItem('accessToken', data.token);
+                // localStorage.setItem('accessToken', data.token);
                 localStorage.setItem('type', 2);
-                dispatch(log_in('TEAMMER_TYPE'));
+                // dispatch(log_in('TEAMMER_TYPE'));
                 dispatch(setData('user', person.full_name));
                 router.push('/teammer/subscribe')
             })
@@ -471,7 +470,7 @@ const StepsComponent = (props) => {
                 let data = res.data.data;
                 // localStorage.setItem('accessToken', data.token);
                 localStorage.setItem('type', 1);
-                dispatch(log_in('SIGNUP_TYPE'));
+                // dispatch(log_in('SIGNUP_TYPE'));
                 // dispatch(setData('user', person.full_name));
                 router.push('/signup/add-to-team');
             })
