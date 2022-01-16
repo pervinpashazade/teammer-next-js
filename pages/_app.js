@@ -18,6 +18,7 @@ function MyApp({Component, pageProps}, {props}) {
         router.pathname === "/verification" ||
         router.pathname === "/setpassword" ||
         router.pathname === "/signup" ||
+        router.pathname === "/payment" ||
         router.pathname === "/signup/steps") {
         return <Component {...pageProps} />
     } else return <Layout>
