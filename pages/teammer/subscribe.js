@@ -12,10 +12,10 @@ const Subscribe = () => {
     const store = useSelector(store => store);
     const [open, setOpen] = useState(false)
     useEffect(() => {
-        if (store.isAuth !== "TEAMMER_TYPE") {
+        if (localStorage.getItem('type') !== "2") {
             Router.replace('/login')
         }
-    }, [store.isAuth]);
+    }, []);
 
     const handleClose = () => {
         setOpen(!open);

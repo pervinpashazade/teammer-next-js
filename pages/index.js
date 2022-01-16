@@ -1,7 +1,10 @@
 import Head from 'next/head';
-import '../src/axios-interceptor';
+import '../src/axios-interceptor'
+// import Link from "next/link";
 import Content from './../src/components/common/Content';
 import { useSelector } from "react-redux";
+// import StartupContainer from "../src/containers/Startup/StartupContainer";
+// import TeammerContainer from "../src/containers/Teammer/TeammerContainer";
 import Router from "next/router";
 import { useEffect } from "react";
 
@@ -9,14 +12,13 @@ export default function Home({ props }) {
     const store = useSelector(store => store);
 
     useEffect(() => {
-        console.log(localStorage.getItem('type'))
-        if (localStorage.getItem('type') === "2") {
+        if (store.isAuth === "TEAMMER_TYPE") {
             Router.replace("/teammer/home");
         }
-        else if (localStorage.getItem('type') === "1") {
+        else if (store.isAuth === "STARTUP_TYPE") {
             Router.replace("/owner/home")
         }
-    }, [store.isAuth]);
+    }, []);
     return (
         <div>
             <Head>
