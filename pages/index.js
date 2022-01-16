@@ -1,10 +1,7 @@
 import Head from 'next/head';
-import '../src/axios-interceptor'
-// import Link from "next/link";
+import '../src/axios-interceptor';
 import Content from './../src/components/common/Content';
 import { useSelector } from "react-redux";
-// import StartupContainer from "../src/containers/Startup/StartupContainer";
-// import TeammerContainer from "../src/containers/Teammer/TeammerContainer";
 import Router from "next/router";
 import { useEffect } from "react";
 

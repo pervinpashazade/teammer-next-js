@@ -3,7 +3,8 @@ import {LOGIN , SET_DATA} from './actions';
 
 const initialState = {
     isAuth: auth,
-    user : user
+    user : user,
+    subscribe_viewed : false
 }
 
 const reducers = (state = initialState, action) => {
