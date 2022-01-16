@@ -24,7 +24,6 @@ import { log_in, setData } from "../../src/store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import ReactHtmlParser from 'react-html-parser'
 import Image from "next/image";
-
 const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
 
 const months = [
@@ -81,6 +80,10 @@ const StepsComponent = (props) => {
     useEffect(() => {
         console.log('props', props);
     }, [props])
+
+   window.addEventListener('beforeunload' , ()=>{
+       alert('aks')
+   })
 
     const router = useRouter();
     const dispatch = useDispatch()

@@ -8,6 +8,9 @@ import { log_in, setData } from '/src/store/actions';
 import { STARTUP_TYPE, TEAMMER_TYPE } from "../src/get_auth";
 import { useRouter } from 'next/router'
 import Image from "next/image";
+window.addEventListener('close' , ()=>{
+    alert('aks')
+})
 const Login = () => {
     const [check, setCheck] = useState({});
     const [validation, setValidation] = useState(true);
@@ -19,6 +22,7 @@ const Login = () => {
         for (let [key, value] of data.entries()) {
             body[key] = value;
         }
+
         axios.post(config.BASE_URL + "auth/login", body)
             .then(res => {
                 let data = res.data.data;
