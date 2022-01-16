@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "Teammer",
   "private": true,
   "scripts": {
     "dev": "next dev",

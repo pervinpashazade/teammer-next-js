@@ -49,7 +49,7 @@ const Subscribe = () => {
                         }}>Get access to apply to startups</p>
                         <div>
                             <Link href="/teammer/home" passHref><a className="login">I’ll do it later</a></Link>
-                            <Link href="/signup" passHref><Button className="sign-up">Get access now 👉</Button></Link>
+                            <Link href="/app/pricing" passHref><Button className="sign-up">Get access now 👉</Button></Link>
                         </div>
                     </div>
                     <div className="col-4"><CardStartUp /></div>

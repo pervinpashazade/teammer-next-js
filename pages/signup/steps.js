@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
     Button,
     ButtonToolbar,
@@ -77,17 +77,10 @@ const buildFormData = (formData, data, parentKey) => {
 
 const StepsComponent = (props) => {
 
-    useEffect(() => {
-        console.log('props', props);
-    }, [props])
-
-   window.addEventListener('beforeunload' , ()=>{
-       alert('aks')
-   })
-
     const router = useRouter();
     const dispatch = useDispatch()
     const [find, setFind] = useState();
+    const [back ,setBack] = useState(false);
     const [person, setPerson] = useState({
         username: '',
         full_name: '',
@@ -169,7 +162,9 @@ const StepsComponent = (props) => {
     }])
     const buttonRef = useRef();
     const ownerRef = useRef();
+    let reactQuillRef = useRef();
     const store = useSelector(store => store);
+
     useEffect(() => {
         if (!localStorage.getItem('accessToken') && !localStorage.getItem('type')) {
             router.push("/signup");
@@ -201,7 +196,8 @@ const StepsComponent = (props) => {
         setCurrent(c)
     }
     const handleChange = (content, delta, source, editor) => {
-        setEditorText(content);
+        const text = editor.getText(content);
+        setEditorText(text);
     }
     const portoflioAdd = (type, element) => {
         if (type === "add") {
@@ -264,10 +260,10 @@ const StepsComponent = (props) => {
     }
     const addMoreJobPosition = () => {
         // owner
-        if (team.location.length > 0 &&
+        if (team.location &&
             team.job_position &&
-            team.job_type.length > 0 &&
-            team.payment.length > 0 &&
+            team.job_type &&
+            team.payment &&
             team.salary &&
             team.year_experience && team.salary_periods) {
             setTeamArray([...teamArray, {
@@ -291,6 +287,7 @@ const StepsComponent = (props) => {
                 descriptionEditorText: ''
             });
             setExperinceCount(experienceCount + 1);
+            reactQuillRef.current.editor.history.clear();
         } else {
             toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
                 <p className="text-danger">An error occurred while filling in the information.
@@ -440,12 +437,9 @@ const StepsComponent = (props) => {
                 type_id: item.job_type,
                 location_id: item.location,
                 position_id: item.job_position,
-                description: "item.descriptionEditorText"
+                description: item.descriptionEditorText
             }
         })
-
-        console.log('teeest', jobs);
-
         let body = {
             type: 1,
             photo: image.owner,
@@ -456,7 +450,7 @@ const StepsComponent = (props) => {
             },
             project: {
                 title: ownerInformation.startupTitle,
-                description: "editorText",
+                description: editorText,
                 type_id: ownerInformation.startupType,
                 jobs: jobs
             }
@@ -742,7 +736,7 @@ const StepsComponent = (props) => {
                                             <span>{props.project_types.find(item => item.value === ownerInformation.startupType)?.label}</span>
                                         </p>
                                         <p className="summary_person"><span>Description</span>
-                                            <span>{description}</span>
+                                            <span>{editorText}</span>
                                         </p>
                                     </div> :
                                         <div>
@@ -799,7 +793,7 @@ const StepsComponent = (props) => {
                                             <Form.ControlLabel>Description about startup</Form.ControlLabel>
                                             <ReactQuill
                                                 className="mt-2"
-                                                value={editorText}
+                                                defaultValue={editorText}
                                                 style={{ height: '10rem' }}
                                                 onChange={handleChange}
                                             />
@@ -1204,7 +1198,7 @@ const StepsComponent = (props) => {
                                                     className="w-100 mb-2" />
                                             </Form.Group>
                                             <Form.Group className="d-flex justify-content-between align-items-baseline">
-                                                <Input type="number" min="0" placeholder='Salary' value={team.salary}
+                                                <Input type="number" min={0} placeholder='Salary' value={team.salary}
                                                     onChange={(e) => teamFunction('salary', e, experienceCount)} />
                                                 <InputPicker style={{
                                                     maxWidth: '100px'
@@ -1232,7 +1226,7 @@ const StepsComponent = (props) => {
                                                     Years of experience
                                                 </Form.ControlLabel>
                                                 <InputNumber value={team.year_experience}
-                                                    min="0"
+                                                    min={0}
                                                     className="w-100"
                                                     onChange={(e) =>
                                                         teamFunction('year_experience', e, experienceCount)} />
@@ -1241,11 +1235,16 @@ const StepsComponent = (props) => {
                                                 <Form.ControlLabel>
                                                     Description about Job Position
                                                 </Form.ControlLabel>
+                                                {
+
+                                                }
                                                 <ReactQuill
                                                     style={{ height: '10rem' }}
-                                                    value={team.descriptionEditorText}
-                                                    onBlur={(content, delta, source, editor) => {
-                                                        teamFunction('descriptionEditorText', content, experienceCount)
+                                                    ref={reactQuillRef}
+                                                    defaultValue={team.descriptionEditorText}
+                                                    onChange={(content, delta, source, editor) => {
+                                                        const text = editor.getText(content);
+                                                        teamFunction('descriptionEditorText', text, experienceCount);
                                                     }}
                                                     className="mt-2" />
                                             </Form.Group>
@@ -1290,7 +1289,7 @@ const StepsComponent = (props) => {
                                             onChange={(e) => uploadToClient(e, 'teammer')} />
                                         <div>
                                             <Image
-                                                src={createObjectURL.owner}
+                                                src={createObjectURL.teammer}
                                                 alt='icon'
                                                 width={64}
                                                 height={64}
