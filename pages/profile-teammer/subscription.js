@@ -9,7 +9,7 @@ import { Avatar, Button, Form, Toggle } from 'rsuite';
 import ActionLink from '../../src/components/Lib/ActionLink';
 import Image from 'next/image';
 
-const Subscription =()=> {
+const Subscription = () => {
 
     const [isActiveAnnualy, setIsActiveAnnualy] = useState(false);
 
@@ -127,11 +127,6 @@ const Subscription =()=> {
                     <div className="subscribe-wrapper">
                         <div className="_top">
                             <div className="_top-left">
-                                {/* <img
-                                    src='/img/Monthly.png'
-                                    alt='emoji icon'
-                                    className={`${!isActiveAnnualy ? 'visible' : 'invisible'}`}
-                                /> */}
                                 <Image
                                     src={'/img/Monthly.png'}
                                     alt='img'
@@ -157,11 +152,6 @@ const Subscription =()=> {
                                         <h4 className={`plan-title ${isActiveAnnualy ? '_text-annualy active' : ''}`}>Annualy</h4>
                                     </div>
                                 </div>
-                                {/* <img
-                                    src='/img/Annualy.png'
-                                    alt='emoji icon'
-                                    className={`${isActiveAnnualy ? 'visible' : 'invisible'}`}
-                                /> */}
                                 <Image
                                     src={'/img/Annualy.png'}
                                     alt='img'
@@ -217,7 +207,6 @@ const Subscription =()=> {
                             <div className='price'>
                                 {
                                     isActiveAnnualy ?
-                                        // <img src='/img/price2.png' alt='price' />
                                         <Image
                                             src={'/img/price2.png'}
                                             alt='img'
@@ -226,7 +215,6 @@ const Subscription =()=> {
                                             height={43}
                                         />
                                         :
-                                        // <img src='/img/price1.png' alt='price' />
                                         <Image
                                             src={'/img/price1.png'}
                                             alt='img'
@@ -243,7 +231,6 @@ const Subscription =()=> {
                                         appearance="primary"
                                         className='btn-choose-plan'
                                     >
-                                        {/* <img src="/icons/emoji1.svg" className="mr-2" alt="emoji" /> */}
                                         <Image
                                             src={'/icons/emoji1.svg'}
                                             alt='img'
@@ -259,7 +246,6 @@ const Subscription =()=> {
                                         appearance="primary"
                                         className="btn-custom-outline btn-active-plan"
                                     >
-                                        {/* <img src='/icons/emoji1.svg' alt='emoji' /> */}
                                         <Image
                                             src={'/icons/emoji1.svg'}
                                             alt='img'

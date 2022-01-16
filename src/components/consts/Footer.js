@@ -114,7 +114,7 @@ const Footer = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/">
+                        <Link href="/app" passHref>
                             <a>
                                 About
                             </a>
