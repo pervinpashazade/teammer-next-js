@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, Button, Toggle } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Image from 'next/image';
+import { useRouter } from 'next/router'
 
 function BannerTop() {
     return (
@@ -27,7 +28,7 @@ function BannerTop() {
 function pricing() {
 
     const [isActiveAnnualy, setIsActiveAnnualy] = useState(false);
-
+    const router = useRouter();
     return (
         <div className='app-pricing'>
             <BreadCrumb />
@@ -112,57 +113,48 @@ function pricing() {
                     </div>
                     <div className="app-plan_body">
                         <div className='price'>
-                            {
-                                isActiveAnnualy ?
-                                    <Image
-                                        src={'/img/price2.png'}
-                                        alt='img'
-                                        layout={'fixed'}
-                                        width={89}
-                                        height={43}
-                                    />
-                                    :
-                                    <Image
-                                        src={'/img/price1.png'}
-                                        alt='img'
-                                        layout={'fixed'}
-                                        width={52}
-                                        height={43}
-                                    />
-                            }
+                            <Image
+                                src={'/img/price1.png'}
+                                alt='img'
+                                layout={'fixed'}
+                                width={62}
+                                height={70}
+                            />
+                            <div className="d-flex align-items-center">
+                                <div className="gradient-wrapper">
+                                    <div className="_text-container">
+                                        <p className='font-weight-bold _text-monthly active'>
+                                            Save up to $23
+                                        </p>
+                                    </div>
+                                </div>
+                                <span>👉</span>
+                            </div>
+                            <Image
+                                src={'/img/price2.png'}
+                                alt='img'
+                                layout={'fixed'}
+                                width={104}
+                                height={70}
+                            />
                         </div>
-                        {
-                            isActiveAnnualy ?
-                                <Button
-                                    color="blue"
-                                    appearance="primary"
-                                    className='btn-choose-plan'
-                                >
-                                    <Image
-                                        src={'/icons/emoji1.svg'}
-                                        alt='img'
-                                        layout={'fixed'}
-                                        width={16}
-                                        height={17}
-                                    />
-                                    Choose
-                                </Button>
-                                :
-                                <Button
-                                    color="blue"
-                                    appearance="primary"
-                                    className="btn-custom-outline btn-active-plan"
-                                >
-                                    <Image
-                                        src={'/icons/emoji1.svg'}
-                                        alt='img'
-                                        layout={'fixed'}
-                                        width={16}
-                                        height={17}
-                                    />
-                                    Your active plan
-                                </Button>
-                        }
+                        <Button
+                            color="blue"
+                            appearance="primary"
+                            className='btn-choose-plan'
+                            onClick={() => {
+                                router.push("/payment");
+                            }}
+                        >
+                            <Image
+                                src={'/icons/emoji1.svg'}
+                                alt='img'
+                                layout={'fixed'}
+                                width={16}
+                                height={17}
+                            />
+                            Choose
+                        </Button>
                     </div>
                 </div>
             </div>
