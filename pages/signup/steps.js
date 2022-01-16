@@ -442,7 +442,8 @@ const StepsComponent = (props) => {
                 type_id: item.job_type,
                 location_id: item.location,
                 position_id: item.job_position,
-                description: item.descriptionEditorText
+                // description: item.descriptionEditorText
+                description: 'item.descriptionEditorText'
             }
         })
         let body = {
@@ -455,7 +456,8 @@ const StepsComponent = (props) => {
             },
             project: {
                 title: ownerInformation.startupTitle,
-                description: editorText,
+                // description: editorText,
+                description: 'editorText',
                 type_id: ownerInformation.startupType,
                 jobs: jobs
             }
