@@ -9,10 +9,11 @@ export default function Home({ props }) {
     const store = useSelector(store => store);
 
     useEffect(() => {
-        if (store.isAuth === "TEAMMER_TYPE") {
+        console.log(localStorage.getItem('type'))
+        if (localStorage.getItem('type') === "2") {
             Router.replace("/teammer/home");
         }
-        else if (store.isAuth === "STARTUP_TYPE") {
+        else if (localStorage.getItem('type') === "1") {
             Router.replace("/owner/home")
         }
     }, [store.isAuth]);
