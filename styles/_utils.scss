@@ -45,6 +45,8 @@
       font-size: 14px;
       font-weight: 600;
       margin-right: 16px;
+      display: flex;
+      align-items: center;
 
       img {
         margin-right: 9px;
@@ -246,6 +248,25 @@
 
         span {
           font-size: 12px;
+        }
+      }
+
+      .rs-steps {
+        .rs-steps-item {
+          &.rs-steps-item-status-finish {
+            .rs-steps-item-icon-wrapper {
+              border-color: #ccf6ea;
+              background-color: #ccf6ea;
+            }
+            .rs-steps-item-tail {
+              background-color: #D3D3D3;
+              border: 2px solid #D3D3D3;
+            }
+          }
+        }
+
+        .rs-steps-item-tail{
+          border-color: #D3D3D3;;
         }
       }
 
