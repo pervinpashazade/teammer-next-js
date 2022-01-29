@@ -57,7 +57,7 @@ function BannerHome() {
                         <div className="wrapper">
                             <h1>
                                 Hello , {
-                                    store.user
+                                    store.user?.full_name
                                 }
                                 <br />
                                 Time to reach new heights

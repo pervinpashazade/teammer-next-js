@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
     Button,
     ButtonToolbar,
@@ -80,7 +80,7 @@ const StepsComponent = (props) => {
     const router = useRouter();
     const dispatch = useDispatch()
     const [find, setFind] = useState();
-    const [back ,setBack] = useState(false);
+    const [back, setBack] = useState(false);
     const [person, setPerson] = useState({
         username: '',
         full_name: '',
@@ -165,7 +165,7 @@ const StepsComponent = (props) => {
     let reactQuillRef = useRef();
     const store = useSelector(store => store);
     useEffect(() => {
-        if (!localStorage.getItem('accessToken') && !localStorage.getItem('type')) {
+        if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
             router.push("/signup");
         }
         else {
@@ -408,12 +408,12 @@ const StepsComponent = (props) => {
 
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + localStorage.getItem('teammers-access-token')
             }
         })
             .then(res => {
                 let data = res.data.data;
-                // localStorage.setItem('accessToken', data.token);
+                // localStorage.setItem('teammers-access-token', data.token);
                 localStorage.setItem('type', 2);
                 // dispatch(log_in('TEAMMER_TYPE'));
                 dispatch(setData('user', person.full_name));
@@ -465,12 +465,12 @@ const StepsComponent = (props) => {
         buildFormData(formData, body);
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + localStorage.getItem('teammers-access-token')
             }
         })
             .then(res => {
                 let data = res.data.data;
-                // localStorage.setItem('accessToken', data.token);
+                // localStorage.setItem('teammers-access-token', data.token);
                 localStorage.setItem('type', 1);
                 // dispatch(log_in('SIGNUP_TYPE'));
                 // dispatch(setData('user', person.full_name));
@@ -1231,11 +1231,14 @@ const StepsComponent = (props) => {
                                                 <Form.ControlLabel>
                                                     Years of experience
                                                 </Form.ControlLabel>
-                                                <InputNumber value={team.year_experience}
+                                                <InputNumber
+                                                    value={team.year_experience}
                                                     min={0}
                                                     className="w-100"
                                                     onChange={(e) =>
-                                                        teamFunction('year_experience', e, experienceCount)} />
+                                                        teamFunction('year_experience', e, experienceCount)
+                                                    }
+                                                />
                                             </Form.Group>
                                             <Form.Group>
                                                 <Form.ControlLabel>

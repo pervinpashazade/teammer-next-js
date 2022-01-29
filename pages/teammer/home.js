@@ -11,8 +11,9 @@ import StartUpBlog from "../../src/components/StartUpBlog";
 import HomeSlider from "../../src/components/HomeSlider";
 import Subscribe from "../../src/components/Subscribe";
 import { FaArrowRight } from "react-icons/fa";
+import config from "../../src/configuration";
 
-const Home = () => {
+const Home = (props) => {
     const store = useSelector(store => store);
 
     const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
@@ -29,37 +30,51 @@ const Home = () => {
             Router.replace("/login")
         }
     }, [store.isAuth]);
+
     return <div className="teammer-home">
         <div className="teammer-home-baner">
-            <h2>🖖 Hello , {store.user}</h2>
+            <h2>🖖 Hello , {store.user?.full_name}</h2>
             <h3>Time to reach new heights</h3>
         </div>
         <h4> &#128526; What are you looking for?</h4>
         <SearchHome />
+
         <div className="startup-category">
             <div className="row">
                 <div className="col-md-8 startup-sections">
                     <p>Opportunities for Developers</p>
                     <div className="row">
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
+                        {
+                            props.jobList?.map((item, index) => {
+                                return <div
+                                    key={index}
+                                    className="col-md-6"
+                                >
+                                    <CardStartUp
+                                        title={item.project.title}
+                                        ownerFullname={item.project.user_id}
+                                        position={props.positionList.find(x => x.id === item.position_id)?.name}
+                                    />
+                                </div>
+                            })
+                        }
                     </div>
                     <p className="mt-4">Opportunities for Designers</p>
                     <div className="row">
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
-                        <div className="col-md-6"><CardStartUp /></div>
+                        {
+                            props.jobList?.map((item, index) => {
+                                return <div
+                                    key={index}
+                                    className="col-md-6"
+                                >
+                                    <CardStartUp
+                                        title={item.project.title}
+                                        ownerFullname={item.project.user_id}
+                                        position={props.positionList.find(x => x.id === item.position_id)?.name}
+                                    />
+                                </div>
+                            })
+                        }
                     </div>
                 </div>
                 <div className="col-md-4 p-0">
@@ -93,3 +108,22 @@ const Home = () => {
 }
 
 export default wrapper.withRedux(Home);
+
+export const getServerSideProps = async () => {
+    const fetchPositions = await fetch(config.BASE_URL + "positions");
+    const positionsData = await fetchPositions.json();
+
+    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=6", {
+        headers: {
+            'Authorization': 'Bearer 63|rIwVpWOu69CTXYRSEluQb1qPsaIEFWytF9HdgsK6'
+        }
+    });
+    const jobListData = await fetchJobList.json();
+
+    return {
+        props: {
+            positionList: positionsData.data.items,
+            jobList: jobListData?.data?.items
+        }
+    }
+}

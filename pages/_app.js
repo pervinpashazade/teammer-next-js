@@ -1,12 +1,12 @@
 import 'rsuite/dist/rsuite.min.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
-import '../styles/style.scss';
 import '../styles/bootstrap/bootstrap.scss';
 import Layout from "../src/components/common/Layout";
 import {useRouter} from "next/router";
 import {wrapper} from "../src/store/redux-store";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
+import '../styles/style.scss';
 
 function MyApp({Component, pageProps}, {props}) {
     const router = useRouter();

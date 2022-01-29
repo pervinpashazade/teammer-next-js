@@ -34,7 +34,7 @@ div.icon-btn-wrapper {
 
 .btn-custom-outline {
   color: $primary-color !important;
-  border: 2px solid $primary-color;
+  border: 2px solid $primary-color !important;
   background-color: inherit !important;
 
   &.btn-danger {

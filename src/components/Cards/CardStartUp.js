@@ -1,7 +1,14 @@
 import Image from "next/image";
 import { Avatar } from "rsuite"
 
-const CardStartUp = () => {
+const CardStartUp = (props) => {
+
+    const {
+        title,
+        position,
+        ownerFullname,
+    } = props;
+
     return (
         <div>
             <div className="card-opportunity">
@@ -10,7 +17,7 @@ const CardStartUp = () => {
                     <div className="person">
                         <div>
                             <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
-                            <p className="name">Denis Delton</p>
+                            <p className="name">{ownerFullname}</p>
                         </div>
                         <a>
                             {/* <img src="/icons/save.svg" /> */}
@@ -25,11 +32,11 @@ const CardStartUp = () => {
                     </div>
                     <div className="job-info">
                         <p>Job Position</p>
-                        <p>Junior Graphic Designer</p>
+                        <p>{position}</p>
                     </div>
                     <div className="job-info">
                         <p>Name of the startup</p>
-                        <p>Junior Graphic Spotify</p>
+                        <p>{title}</p>
                     </div>
                 </div>
             </div>

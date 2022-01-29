@@ -1,6 +1,6 @@
 import Link from "next/link";
-import React, {useLayoutEffect, useState} from "react";
-import { Button, ButtonToolbar, Checkbox, Divider, Form } from "rsuite";
+import React, { useLayoutEffect, useState } from "react";
+import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
 import config from "../src/configuration";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -8,6 +8,17 @@ import { log_in, setData } from '/src/store/actions';
 import { STARTUP_TYPE, TEAMMER_TYPE } from "../src/get_auth";
 import { useRouter } from 'next/router'
 import Image from "next/image";
+
+const renderErrorMessages = err => {
+    let errList = [];
+
+    for (const [key, value] of Object.entries(err)) {
+        value.map(item => errList.push(item))
+    }
+
+    return errList;
+}
+
 const Login = () => {
     const [check, setCheck] = useState({});
     const [validation, setValidation] = useState(true);
@@ -16,29 +27,80 @@ const Login = () => {
     const login_form = (event) => {
         let data = new FormData(event.target);
         let body = {};
+
         for (let [key, value] of data.entries()) {
             body[key] = value;
         }
+
+        if (!body.password) {
+            setValidation(false);
+        } else if (body.password.length < 8) {
+            // setValidation(false);
+            toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                <p className="text-danger">Password must be at least 8 characters</p>
+            </Notification>, 'topEnd');
+            return;
+        } else if (body.password.length > 16) {
+            // setValidation(false);
+            toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                <p className="text-danger">Password must be between 8 - 16 characters</p>
+            </Notification>, 'topEnd');
+            return;
+        };
+
         axios.post(config.BASE_URL + "auth/login", body)
             .then(res => {
                 let data = res.data.data;
                 console.log(res)
-                localStorage.setItem('accessToken', data.token);
+
+                localStorage.setItem('teammers-access-token', data.token);
                 localStorage.setItem('type', data.user.type);
-                localStorage.setItem('user', JSON.stringify(data.user))
+                localStorage.setItem('user', JSON.stringify(data.user));
+
                 if (data.user.type === STARTUP_TYPE) {
                     dispatch(log_in('STARTUP_TYPE'))
-                    dispatch(setData('user', data.user.full_name));
-                    console.log(data.user.is_complete_registration)
+
+                    dispatch(setData('user', data.user));
+
+                    dispatch(setData('token', data.token));
+
+                    // console.log(data.user.is_complete_registration)
                     data.user.is_complete_registration ? router.push('/owner/home') : router.push("/signup/steps")
                 } else if (data.user.type === TEAMMER_TYPE) {
+                    
                     dispatch(log_in('TEAMMER_TYPE'));
-                    dispatch(setData('user', data.user.full_name));
+
+                    dispatch(setData('user', data.user));
+
+                    dispatch(setData('token', data.token));
+
                     data.user.is_complete_registration ? router.push('/teammer/home') : router.push("/signup/steps")
                 } else router.push("/signup/steps")
             })
             .catch(error => {
-                console.log(error)
+                console.log('error', error.response)
+
+                if (error.response.status === 422) {
+                    toaster.push(
+                        <Notification type={"error"} header="Failed confirmation!" closable>
+                            {
+                                renderErrorMessages(error.response.data.error.validation).map(item =>
+                                    <p className="text-danger">{item}</p>
+                                )
+                            }
+                        </Notification>, 'topEnd'
+                    );
+                    return;
+                }
+                toaster.push(
+                    <Notification type={"error"} header="Failed confirmation!" closable>
+                        <p className="text-danger">
+                            {
+                                error.response.data.error.message
+                            }
+                        </p>
+                    </Notification>, 'topEnd'
+                )
                 setValidation(false)
             })
 

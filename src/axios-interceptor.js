@@ -1,13 +1,13 @@
 import axios from 'axios';
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
-    // let accessToken = localStorage.getItem('accessToken')
-    console.log(config)
+    // let teammers-access-token = localStorage.getItem('teammers-access-token')
+    console.log('interceptor config request', config)
     return config;
 }, function (error) {
     // Do something with request error
-    console.log(error)
+    console.log('interceptor error', error)
     return Promise.reject(error);
 });
 
@@ -15,13 +15,15 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    console.log('interceptor response');
     return response;
 }, function (error) {
     const router = useRouter();
-    console.log(error.response , 'interceptor')
+    // alert('ok')
+    console.log('interceptor error', error.response)
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
-    if(error.response.code === 403){
+    if (error.response.code === 403) {
         router.push("/login")
     }
 });

@@ -6,6 +6,15 @@ import axios from "axios";
 import config from "../src/configuration";
 import Image from "next/image";
 
+const renderErrorMessages = err => {
+    let errList = [];
+
+    for (const [key, value] of Object.entries(err)) {
+        value.map(item => errList.push(item))
+    }
+
+    return errList;
+}
 
 const Signup = () => {
     const [check1, setCheck1] = useState(false);
@@ -14,7 +23,7 @@ const Signup = () => {
     const router = useRouter();
     useEffect(() => {
         console.log(localStorage.getItem('type'))
-        if (localStorage.getItem('accessToken') && !JSON.parse(localStorage.getItem('type'))) {
+        if (localStorage.getItem('teammers-access-token') && !JSON.parse(localStorage.getItem('type'))) {
             console.log('ansdjkansdkjansdkjsnd')
             router.push("/signup/steps");
         }
@@ -28,7 +37,7 @@ const Signup = () => {
         }
 
         if (!body.password || !body.repeat_password) {
-            setValidation(false)
+            setValidation(false);
         } else if (body.password.length < 8) {
             setValidation(false);
             toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
@@ -41,30 +50,49 @@ const Signup = () => {
                 <p className="text-danger">Password must be between 8 - 16 characters</p>
             </Notification>, 'topEnd');
             return;
-        }
+        };
 
         if (body.password !== body.repeat_password) {
             setValidation(false)
         } else {
             !validation && setValidation(true);
+
             axios.post(config.BASE_URL + "auth/register", {
                 email: body.email,
                 full_name: body.full_name,
                 password: body.password
             }).then(res => {
                 let data = res.data.data;
-                localStorage.setItem('accessToken', data.token);
+
+                localStorage.setItem('teammers-access-token', data.token);
                 localStorage.setItem('type', data.user.type);
                 localStorage.setItem('user', JSON.stringify(data.user))
+
                 console.log(res);
+
                 router.push("/signup/steps")
             }).catch(error => {
+                console.log('error signup', error.response.data);
+
+                if (error.response.status === 422) {
+                    toaster.push(
+                        <Notification type={"error"} header="Failed confirmation!" closable>
+                            {
+                                renderErrorMessages(error.response.data.error.validation).map(item =>
+                                    <p className="text-danger">{item}</p>
+                                )
+                            }
+                        </Notification>, 'topEnd'
+                    );
+                    return;
+                }
+
                 toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
                     <p className="text-danger">{error.response?.data.error.message}</p>
                 </Notification>, 'topEnd')
             })
         }
-        console.log(body)
+        // console.log(body)
     }
     return <div className="container login">
         <div className="d-flex justify-content-between login-header">
@@ -162,7 +190,11 @@ const Signup = () => {
                 }}>
                     <Form.Group controlId="full_name">
                         <Form.ControlLabel>Full Name</Form.ControlLabel>
-                        <Form.Control name="full_name" type="text" placeholder="Full Name" />
+                        <Form.Control
+                            name="full_name"
+                            type="text"
+                            placeholder="Full Name"
+                        />
                     </Form.Group>
                     <Form.Group controlId="email">
                         <Form.ControlLabel>E-mail or username</Form.ControlLabel>
