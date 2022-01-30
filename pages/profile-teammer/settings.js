@@ -6,8 +6,11 @@ import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
 import { RiSettingsLine } from 'react-icons/ri';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form } from 'rsuite';
+import { Cookie, withCookie } from 'next-cookie';
+import config from '../../src/configuration';
 
-function settings() {
+function settings(props) {
+
     return (
         <div className='teammer-profile-edit'>
             <BreadCrumb />
@@ -57,7 +60,7 @@ function settings() {
                             <Avatar
                                 size="lg"
                                 circle
-                                src="/img/avatar2.png"
+                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
@@ -80,13 +83,22 @@ function settings() {
                                 <div className="col-md-12 mb-4">
                                     <Form.Group controlId="name">
                                         <Form.ControlLabel>Username</Form.ControlLabel>
-                                        <Form.Control name="name" placeholder="Enter your username" />
+                                        <Form.Control
+                                            name="name"
+                                            placeholder="Enter your username"
+                                            value={props.userData?.username}
+                                        />
                                     </Form.Group>
                                 </div>
                                 <div className="col-md-12 mb-0">
                                     <Form.Group controlId="email">
                                         <Form.ControlLabel>Email</Form.ControlLabel>
-                                        <Form.Control name="email" placeholder="Enter your email" />
+                                        <Form.Control
+                                            name="email"
+                                            type='email'
+                                            placeholder="Enter your email"
+                                            value={props.userData?.email}
+                                        />
                                     </Form.Group>
                                 </div>
                             </Form>
@@ -124,3 +136,23 @@ function settings() {
 }
 
 export default settings;
+
+export const getServerSideProps = async (context) => {
+
+    const { params, req, res } = context;
+    const cookie = Cookie.fromApiRoute(req, res);
+    let accessToken = cookie.get('teammers-access-token');
+
+    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    const userData = await fetchUserInfo.json();
+
+    return {
+        props: {
+            userData: userData?.data,
+        }
+    }
+};

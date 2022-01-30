@@ -8,8 +8,10 @@ import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form, Toggle } from 'rsuite';
 import ActionLink from '../../src/components/Lib/ActionLink';
 import Image from 'next/image';
+import { Cookie, withCookie } from 'next-cookie';
+import config from '../../src/configuration';
 
-const Subscription = () => {
+const Subscription = (props) => {
 
     const [isActiveAnnualy, setIsActiveAnnualy] = useState(false);
 
@@ -62,7 +64,7 @@ const Subscription = () => {
                             <Avatar
                                 size="lg"
                                 circle
-                                src="/img/avatar2.png"
+                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
@@ -78,7 +80,6 @@ const Subscription = () => {
                                     <p className="_plan">
                                         Your active plan:
                                         <span>Monthly</span>
-                                        {/* <img src='/icons/emoji3.svg' alt='emoji' /> */}
                                         <Image
                                             src={'/icons/emoji3.svg'}
                                             alt='img'
@@ -107,7 +108,6 @@ const Subscription = () => {
                                         padding="7px"
                                         margin="0px 0px 0px 0.5rem"
                                     >
-                                        {/* <img src='/icons/arrow-right.svg' alt='arrow right icon svg' /> */}
                                         <Image
                                             src={'/icons/arrow-right.svg'}
                                             alt='img'
@@ -264,4 +264,24 @@ const Subscription = () => {
     )
 }
 
-export default Subscription
+export default Subscription;
+
+export const getServerSideProps = async (context) => {
+
+    const { params, req, res } = context;
+    const cookie = Cookie.fromApiRoute(req, res);
+    let accessToken = cookie.get('teammers-access-token');
+
+    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    const userData = await fetchUserInfo.json();
+
+    return {
+        props: {
+            userData: userData?.data,
+        }
+    }
+};  

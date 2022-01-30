@@ -8,6 +8,7 @@ import { log_in, setData } from '/src/store/actions';
 import { STARTUP_TYPE, TEAMMER_TYPE } from "../src/get_auth";
 import { useRouter } from 'next/router'
 import Image from "next/image";
+import { setCookie } from "../src/helpers/cookie";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -50,24 +51,28 @@ const Login = () => {
 
         axios.post(config.BASE_URL + "auth/login", body)
             .then(res => {
+
+                console.log('login res', res)
+
                 let data = res.data.data;
-                console.log(res)
 
                 localStorage.setItem('teammers-access-token', data.token);
                 localStorage.setItem('type', data.user.type);
                 localStorage.setItem('user', JSON.stringify(data.user));
 
+                setCookie('teammers-access-token', data.token)
+
                 if (data.user.type === STARTUP_TYPE) {
                     dispatch(log_in('STARTUP_TYPE'))
 
                     dispatch(setData('user', data.user));
-
+                    
                     dispatch(setData('token', data.token));
 
                     // console.log(data.user.is_complete_registration)
                     data.user.is_complete_registration ? router.push('/owner/home') : router.push("/signup/steps")
                 } else if (data.user.type === TEAMMER_TYPE) {
-                    
+
                     dispatch(log_in('TEAMMER_TYPE'));
 
                     dispatch(setData('user', data.user));
@@ -75,7 +80,10 @@ const Login = () => {
                     dispatch(setData('token', data.token));
 
                     data.user.is_complete_registration ? router.push('/teammer/home') : router.push("/signup/steps")
-                } else router.push("/signup/steps")
+                } else {
+                    dispatch(setData('user', data.user));
+                    router.push("/signup/steps");
+                }
             })
             .catch(error => {
                 console.log('error', error.response)

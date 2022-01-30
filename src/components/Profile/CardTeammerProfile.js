@@ -17,7 +17,12 @@ const CardTeammerProfile = (props) => {
         role,
         location,
         about,
+        avatarUrl,
     } = props;
+
+    React.useEffect(() => {
+        console.log('CardTeammerProfile', props);
+    }, [props])
 
     return (
         <div className='profile-card-teammer'>
@@ -25,7 +30,7 @@ const CardTeammerProfile = (props) => {
                 <Avatar
                     size="lg"
                     circle
-                    src="/img/avatar2.png"
+                    src={avatarUrl ? avatarUrl : "/img/avatar2.png"}
                     alt="profile img"
                 />
                 <div className="icons-wrapper">
@@ -87,7 +92,7 @@ const CardTeammerProfile = (props) => {
                     <h1>
                         {fullname}
                     </h1>
-                    <h3>{position} / {experienceYear} years experience</h3>
+                    <h3>{position} / {experienceYear ? `${experienceYear} years experience` : ''}</h3>
                     <p>
                         <Image
                             src={'/icons/work.svg'}

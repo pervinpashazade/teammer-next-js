@@ -1,5 +1,6 @@
+import React, { useEffect, useRef, useState } from "react";
+import { wrapper } from "../../src/store/redux-store";
 import Link from "next/link";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
     Button,
     ButtonToolbar,
@@ -24,46 +25,58 @@ import { log_in, setData } from "../../src/store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import ReactHtmlParser from 'react-html-parser'
 import Image from "next/image";
+import { setCookie } from "../../src/helpers/cookie";
 const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
 
-const months = [
-    {
-        label: 'January',
-        value: 1
-    }, {
-        label: 'February',
-        value: 2
-    }, {
-        label: 'March',
-        value: 3
-    }, {
-        label: 'April',
-        value: 4
-    }, {
-        label: 'May',
-        value: 5
-    }, {
-        label: 'June',
-        value: 6
-    }, {
-        label: 'July',
-        value: 7
-    }, {
-        label: 'August',
-        value: 8
-    }, {
-        label: 'September',
-        value: 9
-    }, {
-        label: 'Octaber',
-        value: 10
-    }, {
-        label: 'November',
-        value: 11
-    }, {
-        label: 'December',
-        value: 12
-    }] // month array
+const renderErrorMessages = err => {
+    let errList = [];
+
+    for (const [key, value] of Object.entries(err)) {
+        value.map(item => errList.push(item))
+    }
+
+    return errList;
+}
+
+// month array
+const months = [{
+    label: 'January',
+    value: 1
+}, {
+    label: 'February',
+    value: 2
+}, {
+    label: 'March',
+    value: 3
+}, {
+    label: 'April',
+    value: 4
+}, {
+    label: 'May',
+    value: 5
+}, {
+    label: 'June',
+    value: 6
+}, {
+    label: 'July',
+    value: 7
+}, {
+    label: 'August',
+    value: 8
+}, {
+    label: 'September',
+    value: 9
+}, {
+    label: 'Octaber',
+    value: 10
+}, {
+    label: 'November',
+    value: 11
+}, {
+    label: 'December',
+    value: 12
+}]
+
 const buildFormData = (formData, data, parentKey) => {
     if (data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File)) {
         Object.keys(data).forEach(key => {
@@ -77,13 +90,17 @@ const buildFormData = (formData, data, parentKey) => {
 
 const StepsComponent = (props) => {
 
+    const store = useSelector(store => store);
+
+    const dispatch = useDispatch();
+
     const router = useRouter();
-    const dispatch = useDispatch()
+
     const [find, setFind] = useState();
     const [back, setBack] = useState(false);
     const [person, setPerson] = useState({
         username: '',
-        full_name: '',
+        full_name: store.user?.full_name ? store.user?.full_name : '',
         location: '',
         role: ''
     })
@@ -159,16 +176,16 @@ const StepsComponent = (props) => {
         salary_periods: '',
         year_experience: '',
         descriptionEditorText: ''
-    }])
+    }]);
+
     const buttonRef = useRef();
     const ownerRef = useRef();
     let reactQuillRef = useRef();
-    const store = useSelector(store => store);
+
     useEffect(() => {
         if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
             router.push("/signup");
-        }
-        else {
+        } else {
             if (store.isAuth === "STARTUP_TYPE") {
                 router.push('/owner/home');
             } else if (store.isAuth === "TEAMMER_TYPE") {
@@ -222,27 +239,6 @@ const StepsComponent = (props) => {
         setExperience(newArray)
     }
     const teamFunction = (key, data, index, type) => {
-        // if (key === 'location') {
-        //     let element = teamArray.find((item, i) => i === index);
-        //     let newData = [];
-        //     if (type === 'add') {
-        //         if (data && !team[key].some(item => item === data)) newData = [...team[key], data]
-        //         else newData = team[key];
-        //     } else {
-        //         newData = team[key].filter(item => item !== data)
-        //     }
-        //     setTeam({
-        //         ...team,
-        //         [key]: newData
-        //     });
-        //     element[key] = newData;
-        //     let newArray = teamArray.filter((item, i) => {
-        //         if (i === index) {
-        //             return element
-        //         } else return item
-        //     })
-        //     setTeamArray(newArray);
-        // } else {
         setTeam({
             ...team,
             [key]: data
@@ -255,7 +251,6 @@ const StepsComponent = (props) => {
             } else return item
         })
         setTeamArray(newArray);
-        // }
     }
     const addMoreJobPosition = () => {
         // owner
@@ -353,8 +348,6 @@ const StepsComponent = (props) => {
     }
     const uploadToClient = (event, type) => {
 
-        console.log();
-
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
             setImage({
@@ -427,10 +420,11 @@ const StepsComponent = (props) => {
                 </Notification>, 'topEnd')
             })
         // router.push('/')
-    }
-    // console.log('log1', editorText, team.descriptionEditorText)
-    const submitOwnerData = () => {
+    };
 
+    // console.log('log1', editorText, team.descriptionEditorText)
+
+    const submitOwnerData = () => {
 
         let jobs = teamArray.map(item => {
             return {
@@ -461,35 +455,60 @@ const StepsComponent = (props) => {
                 jobs: jobs
             }
         };
+
         const formData = new FormData();
+
         buildFormData(formData, body);
+
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('teammers-access-token')
+                "Authorization": "Bearer " + store.user.token
             }
         })
             .then(res => {
                 let data = res.data.data;
-                // localStorage.setItem('teammers-access-token', data.token);
-                localStorage.setItem('type', 1);
-                // dispatch(log_in('SIGNUP_TYPE'));
-                // dispatch(setData('user', person.full_name));
+
+                // localStorage.setItem('type', 1);
+
+                localStorage.setItem('teammers-access-token', data.token);
+                localStorage.setItem('type', data.user.type);
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                setCookie('teammers-access-token', data.token)
+
                 router.push('/signup/add-to-team');
             })
             .catch(error => {
                 console.log(error)
+
+                if (error.response.status === 422) {
+                    toaster.push(
+                        <Notification type={"error"} header="Failed confirmation!" closable>
+                            {
+                                renderErrorMessages(error.response.data.error.validation).map(item =>
+                                    <p className="text-danger">{item}</p>
+                                )
+                            }
+                        </Notification>, 'topEnd'
+                    );
+                    return;
+                }
+
                 toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
                     <p className="text-danger">An error occurred while filling in the information.
                         All boxes must be filled correctly</p>
                 </Notification>, 'topEnd')
             })
-    }
+    };
+
+    useEffect(() => {
+        console.log('steps component props', props);
+    }, [props])
 
     return <div className="container login">
         <div className="d-flex justify-content-between login-header">
             <Link href="/">
                 <a className="navbar-brand">
-                    {/* <img src="/LogoHeader.svg" alt="logo" /> */}
                     <Image
                         src={'/LogoHeader.svg'}
                         alt='logo'
@@ -500,7 +519,6 @@ const StepsComponent = (props) => {
             </Link>
             <Link href="/">
                 <a>
-                    {/* <img src="/icons/help.svg" /> */}
                     <Image
                         src={'/icons/help.svg'}
                         alt='icon'
@@ -610,11 +628,16 @@ const StepsComponent = (props) => {
                                         </Form.Group>
                                         <Form.Group controlId="first_name">
                                             <Form.ControlLabel>Full Name</Form.ControlLabel>
-                                            <Form.Control name="full_name" value={person.full_name}
+                                            <Form.Control
+                                                type="text"
+                                                name="full_name"
+                                                placeholder="Full Name"
+                                                value={person.full_name}
                                                 onChange={(e) => setPerson({
                                                     ...person,
                                                     full_name: e
-                                                })} type="text" placeholder="Full Name" />
+                                                })}
+                                            />
                                         </Form.Group>
                                         {
                                             find === "1" ?
@@ -871,14 +894,16 @@ const StepsComponent = (props) => {
                                             </p>
                                         </div> :
                                         <div className="position_details">
-                                            <InputPicker size="lg"
+                                            <InputPicker
+                                                size="lg"
+                                                className="w-100"
                                                 placeholder="Position"
+                                                data={props.positions}
                                                 onChange={(e) => {
                                                     if (e && !positionDetails.some(i => i === e))
                                                         setPositionDetails([...positionDetails, e])
                                                 }}
-                                                data={props.positions}
-                                                className="w-100" />
+                                            />
                                             {
                                                 positionDetails.length > 0 && positionDetails.map((item, index) => {
                                                     return <Tag key={index}
@@ -1330,7 +1355,7 @@ const StepsComponent = (props) => {
         </div>
     </div>
 }
-export default StepsComponent
+export default wrapper.withRedux(StepsComponent);
 
 export const getServerSideProps = async () => {
     const fetchPositions = await fetch(config.BASE_URL + "positions");

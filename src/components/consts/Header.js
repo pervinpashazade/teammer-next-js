@@ -49,6 +49,7 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
         </Popover>
     );
 });
+
 const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     return (
         <Popover ref={ref} {...props}>
@@ -85,6 +86,7 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
         </Popover>
     );
 });
+
 const CustomComponentNotification = ({ placement, loading, children, count = 3 }) => (
     <Whisper
         trigger="click"
@@ -124,6 +126,7 @@ const CustomComponentNotification = ({ placement, loading, children, count = 3 }
 
     </Whisper>
 );
+
 const CustomComponentMessage = ({ placement, loading, children }) => (
     <Whisper
         trigger="click"
@@ -147,6 +150,7 @@ const CustomComponentMessage = ({ placement, loading, children }) => (
         </li>
     </Whisper>
 );
+
 const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     <InputGroup {...props} inside>
         <Input placeholder={placeholder} />
@@ -163,26 +167,56 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         </InputGroup.Button>
     </InputGroup>
 );
+
 const Header = () => {
-    const [loading, setLoading] = React.useState(false);
+
     const store = useSelector(store => store);
     const dispatch = useDispatch();
+
+    const [loading, setLoading] = React.useState(false);
+
     return (
         <div className="header">
             <div className="row">
                 <div className="col-md-12">
                     <nav className="navbar navbar-expand-lg pl-0">
-                        <Link href="/">
-                            <a className="navbar-brand">
-                                {/* <img src="/LogoHeader.svg" alt="logo" /> */}
-                                <Image
-                                    src={'/LogoHeader.svg'}
-                                    alt='logo'
-                                    width={136}
-                                    height={18}
-                                />
-                            </a>
-                        </Link>
+
+                        {
+                            store.isAuth === "TEAMMER_TYPE" ?
+                                <Link href="/teammer/home">
+                                    <a className="navbar-brand">
+                                        <Image
+                                            src={'/LogoHeader.svg'}
+                                            alt='logo'
+                                            width={136}
+                                            height={18}
+                                        />
+                                    </a>
+                                </Link>
+                                :
+                                store.isAuth === "STARTUP_TYPE" ?
+                                    <Link href="/owner/home">
+                                        <a className="navbar-brand">
+                                            <Image
+                                                src={'/LogoHeader.svg'}
+                                                alt='logo'
+                                                width={136}
+                                                height={18}
+                                            />
+                                        </a>
+                                    </Link>
+                                    :
+                                    <Link href="/">
+                                        <a className="navbar-brand">
+                                            <Image
+                                                src={'/LogoHeader.svg'}
+                                                alt='logo'
+                                                width={136}
+                                                height={18}
+                                            />
+                                        </a>
+                                    </Link>
+                        }
                         <button className="navbar-toggler" type="button">
                             <span className="navbar-toggler-icon"></span>
                         </button>
@@ -212,17 +246,25 @@ const Header = () => {
                                 <CustomComponentMessage placement="bottomEnd" loading={loading} />
                                 <li className="nav-item">
                                     {
-                                        store.isAuth === "GUESS" ? <Link href="/login">
-                                            <a>
-                                                <Avatar circle
-                                                    src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
-                                            </a>
-                                        </Link> : <Link href="/profile-teammer">
-                                            <a>
-                                                <Avatar circle
-                                                    src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
-                                            </a>
-                                        </Link>
+                                        store.isAuth === "GUESS" ?
+                                            <Link href="/login">
+                                                <a>
+                                                    <Avatar circle
+                                                        src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                                </a>
+                                            </Link>
+                                            :
+                                            <Link href="/profile-teammer">
+                                                <a>
+                                                    <Avatar
+                                                        circle
+                                                        src={store.user?.detail?.photo ? store.user.detail.photo
+                                                            :
+                                                            "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                                                        }
+                                                    />
+                                                </a>
+                                            </Link>
                                     }
                                 </li>
                             </ul>

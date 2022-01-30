@@ -6,8 +6,11 @@ import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
 import { RiSettingsLine } from 'react-icons/ri';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form } from 'rsuite';
+import { Cookie, withCookie } from 'next-cookie';
+import config from '../../src/configuration';
 
-function blockedUsers() {
+function blockedUsers(props) {
+
     return (
         <div className='teammer-profile-edit'>
             <BreadCrumb />
@@ -57,7 +60,7 @@ function blockedUsers() {
                             <Avatar
                                 size="lg"
                                 circle
-                                src="/img/avatar2.png"
+                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
@@ -148,4 +151,24 @@ function blockedUsers() {
     )
 }
 
-export default blockedUsers
+export default blockedUsers;
+
+export const getServerSideProps = async (context) => {
+
+    const { params, req, res } = context;
+    const cookie = Cookie.fromApiRoute(req, res);
+    let accessToken = cookie.get('teammers-access-token');
+
+    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    const userData = await fetchUserInfo.json();
+
+    return {
+        props: {
+            userData: userData?.data,
+        }
+    }
+};  

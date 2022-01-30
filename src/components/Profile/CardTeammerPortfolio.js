@@ -1,6 +1,6 @@
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import { IconButton, Input } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 
@@ -10,7 +10,15 @@ function CardTeammerPortfolio(props) {
         title,
         editMode,
         classNames,
+        portfolioUrlList,
+        setPortfolioUrlList,
     } = props;
+
+    React.useEffect(() => {
+        console.log('component card props', props);
+    }, [props]);
+
+    const [newPortfolioLink, setNewPortfolioLink] = useState('');
 
     return (
         <div className={`resume-card ${classNames ? classNames : ''}`}>
@@ -42,7 +50,6 @@ function CardTeammerPortfolio(props) {
                                         padding="7px"
                                         margin="0px 0px 0px .75rem"
                                     >
-                                        {/* <img src='/icons/link.svg' alt='link icon svg' /> */}
                                         <Image
                                             src={'/icons/link.svg'}
                                             alt='img'
@@ -55,7 +62,6 @@ function CardTeammerPortfolio(props) {
                                         size="sm"
                                         className='bg-transparent ml-2'
                                         icon={
-                                            // <img src='/icons/trash.svg' alt='trash icon svg' />
                                             <Image
                                                 src={'/icons/trash.svg'}
                                                 alt='img'
@@ -70,7 +76,6 @@ function CardTeammerPortfolio(props) {
                                     size="md"
                                     className='view-resume-btn'
                                     icon={
-                                        // <img src='/icons/eye_view.svg' alt='eye icon svg' />
                                         <Image
                                             src={'/icons/eye_view.svg'}
                                             alt='img'
@@ -86,29 +91,33 @@ function CardTeammerPortfolio(props) {
             </div>
             <div className="card-content">
                 <ul>
-                    <li>
-                        <Link href="/">
-                            <a>www.linkname.com</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/">
-                            <a>www.linkname.com</a>
-                        </Link>
-                    </li>
+                    {
+                        portfolioUrlList?.map((item, index) => {
+                            return <li key={index}>
+                                <Link href={item}>
+                                    <a>{item}</a>
+                                </Link>
+                            </li>
+                        })
+                    }
+
                 </ul>
             </div>
             {
                 editMode &&
                 <div className="card-bottom">
                     <div className="add-to-list-wrapper">
-                        <Input placeholder='Enter portfolio link' className='mr-3' />
+                        <Input
+                            className='mr-3'
+                            placeholder='Enter portfolio link'
+                            value={newPortfolioLink}
+                            onChange={value => setNewPortfolioLink(value)}
+                        />
                         <IconButton
                             size="sm"
                             color='primary'
                             appearance='blue'
                             icon={
-                                // <img src='/icons/plus.svg' alt='plus icon svg' />
                                 <Image
                                     src={'/icons/plus.svg'}
                                     alt='img'
@@ -117,6 +126,13 @@ function CardTeammerPortfolio(props) {
                                     layout='fixed'
                                 />
                             }
+                            onClick={() => {
+                                setPortfolioUrlList(
+                                    [...portfolioUrlList,
+                                        newPortfolioLink]
+                                );
+                                setNewPortfolioLink('');
+                            }}
                         />
                     </div>
                 </div>

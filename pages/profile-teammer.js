@@ -8,6 +8,7 @@ import CardTeammerWorkExperience from '../src/components/Profile/CardTeammerWork
 import CardStartUp from '../src/components/Cards/CardStartUp';
 import CardTeammerPortfolio from '../src/components/Profile/CardTeammerPortfolio';
 import config from '../src/configuration';
+import { Cookie, withCookie } from 'next-cookie';
 
 const profileTeammer = (props) => {
 
@@ -27,20 +28,22 @@ const profileTeammer = (props) => {
                 <div className="left-side">
                     <CardTeammerProfile
                         isProfile
+                        avatarUrl={props.userData.detail.photo}
                         fullname={props.userData?.full_name}
-                        about={props.userData.detail.about}
+                        about={props.userData?.detail?.about}
                         position={props.positionList.find(x => x.id === props.userData.position_id)?.name}
-                        experienceYear={props.userData.detail.years_of_experience}
-                        role={props.roleList.find(x => x.id === props.userData.detail.project_role_id)?.name}
-                        location={props.locationList.find(x => x.id === props.userData.detail.location_id)?.name}
+                        experienceYear={props.userData.detail?.years_of_experience}
+                        role={props.roleList.find(x => x.id === props.userData.detail?.project_role_id)?.name}
+                        location={props.locationList.find(x => x.id === props.userData.detail?.location_id)?.name}
                     />
-                    {/* <h1>year {props.userData.detail.years_of_experience}</h1> */}
                     <CardTeammerWorkExperience />
                 </div>
                 <div className="content">
                     <div className="portfolio-wrapper">
                         <h5>CV and Portfolio</h5>
-                        <CardTeammerPortfolio />
+                        <CardTeammerPortfolio 
+                            portfolioUrlList={props.userData?.detail?.portfolio}
+                        />
                     </div>
                     <div className="custom-devider"></div>
                     <Panel
@@ -62,13 +65,18 @@ const profileTeammer = (props) => {
 
 export default profileTeammer;
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+
+    const { params, req, res } = context;
+    const cookie = Cookie.fromApiRoute(req, res);
+    let accessToken = cookie.get('teammers-access-token');
+
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
     const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
         headers: {
-            'Authorization': 'Bearer 63|rIwVpWOu69CTXYRSEluQb1qPsaIEFWytF9HdgsK6'
+            'Authorization': `Bearer ${accessToken}`
         }
     });
     const userData = await fetchUserInfo.json();

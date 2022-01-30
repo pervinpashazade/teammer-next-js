@@ -1,24 +1,25 @@
-import auth, {user} from "../get_auth";
-import {LOGIN , SET_DATA} from './actions';
+import auth, { user } from "../get_auth";
+import { LOGIN, SET_DATA } from './actions';
 
 const initialState = {
     isAuth: auth,
-    user : user,
-    subscribe_viewed : false
+    user: user,
+    token: (typeof window !== 'undefined' && localStorage.getItem('teammers-access-token')) ? localStorage.getItem('teammers-access-token') : '',
+    subscribe_viewed: false
 }
 
 const reducers = (state = initialState, action) => {
     switch (action.type) {
-        case LOGIN :
+        case LOGIN:
             return {
                 isAuth: action.payload
             }
-        case SET_DATA :
+        case SET_DATA:
             return {
                 ...state,
-                [action.key] : action.data
+                [action.key]: action.data
             }
-        default :
+        default:
             return state;
     }
 }

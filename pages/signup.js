@@ -5,6 +5,9 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import config from "../src/configuration";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { setData } from '/src/store/actions';
+import { setCookie } from "../src/helpers/cookie";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -17,10 +20,15 @@ const renderErrorMessages = err => {
 }
 
 const Signup = () => {
+
+    const dispatch = useDispatch();
+
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
-    const [validation, setValidation] = useState(true)
+    const [validation, setValidation] = useState(true);
+
     const router = useRouter();
+
     useEffect(() => {
         console.log(localStorage.getItem('type'))
         if (localStorage.getItem('teammers-access-token') && !JSON.parse(localStorage.getItem('type'))) {
@@ -38,6 +46,7 @@ const Signup = () => {
 
         if (!body.password || !body.repeat_password) {
             setValidation(false);
+            // return;
         } else if (body.password.length < 8) {
             setValidation(false);
             toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
@@ -68,11 +77,16 @@ const Signup = () => {
                 localStorage.setItem('type', data.user.type);
                 localStorage.setItem('user', JSON.stringify(data.user))
 
+                setCookie('teammers-access-token', data.token)
+
+                dispatch(setData('user', data.user));
+                dispatch(setData('token', data.token));
+
                 console.log(res);
 
                 router.push("/signup/steps")
             }).catch(error => {
-                console.log('error signup', error.response.data);
+                // console.log('error signup', error.response.data);
 
                 if (error.response.status === 422) {
                     toaster.push(

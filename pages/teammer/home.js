@@ -1,5 +1,5 @@
-import { wrapper } from "../../src/store/redux-store";
 import React, { useEffect } from "react";
+import { wrapper } from "../../src/store/redux-store";
 import { useSelector } from "react-redux";
 import Router from 'next/router';
 import SearchHome from "../../src/components/SearchHome";
@@ -12,6 +12,7 @@ import HomeSlider from "../../src/components/HomeSlider";
 import Subscribe from "../../src/components/Subscribe";
 import { FaArrowRight } from "react-icons/fa";
 import config from "../../src/configuration";
+import { Cookie, withCookie } from 'next-cookie';
 
 const Home = (props) => {
     const store = useSelector(store => store);
@@ -51,9 +52,9 @@ const Home = (props) => {
                                     className="col-md-6"
                                 >
                                     <CardStartUp
-                                        title={item.project.title}
-                                        ownerFullname={item.project.user_id}
-                                        position={props.positionList.find(x => x.id === item.position_id)?.name}
+                                        title={item.project?.title}
+                                        ownerFullname={item.project?.user_id}
+                                        position={item.position?.name}
                                     />
                                 </div>
                             })
@@ -68,8 +69,8 @@ const Home = (props) => {
                                     className="col-md-6"
                                 >
                                     <CardStartUp
-                                        title={item.project.title}
-                                        ownerFullname={item.project.user_id}
+                                        title={item.project?.title}
+                                        ownerFullname={item.project?.user_id}
                                         position={props.positionList.find(x => x.id === item.position_id)?.name}
                                     />
                                 </div>
@@ -109,13 +110,18 @@ const Home = (props) => {
 
 export default wrapper.withRedux(Home);
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+
+    const { params, req, res } = context;
+    const cookie = Cookie.fromApiRoute(req, res);
+    let accessToken = cookie.get('teammers-access-token');
+
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=6", {
+    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,position&per_page=6", {
         headers: {
-            'Authorization': 'Bearer 63|rIwVpWOu69CTXYRSEluQb1qPsaIEFWytF9HdgsK6'
+            'Authorization': `Bearer ${accessToken}`
         }
     });
     const jobListData = await fetchJobList.json();
@@ -123,7 +129,7 @@ export const getServerSideProps = async () => {
     return {
         props: {
             positionList: positionsData.data.items,
-            jobList: jobListData?.data?.items
+            jobList: jobListData?.data?.items ? jobListData.data.items : [], 
         }
     }
 }

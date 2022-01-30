@@ -9,13 +9,18 @@ import { Avatar, Button, Form, Input, InputPicker, Tag } from 'rsuite';
 import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
 import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerWorkExperience';
 import Image from 'next/image';
+import { Cookie, withCookie } from 'next-cookie';
+import config from '../../src/configuration';
 
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
-const EditComponent = () => {
+const EditComponent = (props) => {
 
     const [selectedPositions, setSelectedPositions] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
+
+    const [portfolioUrlList, setPortfolioUrlList] = useState(props.userData?.detail?.portfolio)
+
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
@@ -25,6 +30,10 @@ const EditComponent = () => {
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
+
+    React.useEffect(() => {
+        console.log('user datas', props);
+    }, [props])
 
     return (
         <div>
@@ -76,11 +85,11 @@ const EditComponent = () => {
                                 <Avatar
                                     size="lg"
                                     circle
-                                    src="/img/avatar2.png"
+                                    src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
                                     alt="username surname"
                                 />
                                 <div className="profile-title-content">
-                                    <h4>Margaret Brown</h4>
+                                    <h4>{props.userData?.full_name}</h4>
                                     <span>Edit Profile</span>
                                 </div>
                             </div>
@@ -101,7 +110,7 @@ const EditComponent = () => {
                                     <Avatar
                                         size="lg"
                                         circle
-                                        src="/img/avatar2.png"
+                                        src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
                                         alt="username surname"
                                     />
                                 </div>
@@ -117,8 +126,12 @@ const EditComponent = () => {
                                 <Form className="row">
                                     <div className="col-md-12 mb-4">
                                         <Form.Group controlId="name">
-                                            <Form.ControlLabel>Username</Form.ControlLabel>
-                                            <Form.Control name="name" placeholder="Enter your username" />
+                                            <Form.ControlLabel>Fullname</Form.ControlLabel>
+                                            <Form.Control
+                                                name="name"
+                                                placeholder="Enter your fullname"
+                                                value={props.userData?.full_name}
+                                            />
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-8 mb-4">
@@ -128,24 +141,7 @@ const EditComponent = () => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Position"
-                                                data={
-                                                    [{
-                                                        label: "Developer",
-                                                        value: 'DEVELOPER'
-                                                    },
-                                                    {
-                                                        label: "Designer",
-                                                        value: 'DESIGNER'
-                                                    },
-                                                    {
-                                                        label: "Manager",
-                                                        value: 'MANAGER'
-                                                    },
-                                                    {
-                                                        label: "Director",
-                                                        value: 'DIRECTOR'
-                                                    }]
-                                                }
+                                                data={props.positionList}
                                                 onChange={(e) => {
                                                     if (e && !selectedPositions.some(i => i === e))
                                                         setSelectedPositions([...selectedPositions, e])
@@ -157,7 +153,6 @@ const EditComponent = () => {
                                                         key={index}
                                                         closable
                                                         className="custom-tag mt-2"
-                                                        // className="close-tag my-2"
                                                         onClose={() => {
                                                             let data = selectedPositions.filter(i => i !== item);
                                                             setSelectedPositions(data);
@@ -182,24 +177,7 @@ const EditComponent = () => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Skills"
-                                                data={
-                                                    [{
-                                                        label: "HTML5",
-                                                        value: 'HTML5'
-                                                    },
-                                                    {
-                                                        label: "ReactJS",
-                                                        value: 'ReactJS'
-                                                    },
-                                                    {
-                                                        label: "C#",
-                                                        value: 'C#'
-                                                    },
-                                                    {
-                                                        label: "Photoshop",
-                                                        value: 'Photoshop'
-                                                    }]
-                                                }
+                                                data={props.skillList}
                                                 onChange={(e) => {
                                                     if (e && !selectedSkills.some(i => i === e))
                                                         setSelectedSkills([...selectedSkills, e])
@@ -211,7 +189,6 @@ const EditComponent = () => {
                                                         key={index}
                                                         closable
                                                         className="custom-tag mt-2"
-                                                        // className="close-tag my-2"
                                                         onClose={() => {
                                                             let data = selectedSkills.filter(i => i !== item);
                                                             setSelectedSkills(data);
@@ -230,24 +207,7 @@ const EditComponent = () => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Location"
-                                                data={
-                                                    [{
-                                                        label: "USA",
-                                                        value: 'USA'
-                                                    },
-                                                    {
-                                                        label: "Germany",
-                                                        value: 'Germany'
-                                                    },
-                                                    {
-                                                        label: "Azerbaijan",
-                                                        value: 'Azerbaijan'
-                                                    },
-                                                    {
-                                                        label: "Turkey",
-                                                        value: 'Turkey'
-                                                    }]
-                                                }
+                                                data={props.locationList}
                                             />
                                         </Form.Group>
                                     </div>
@@ -264,6 +224,8 @@ const EditComponent = () => {
                             title="CV"
                             editMode={true}
                             classNames="mb-3"
+                            portfolioUrlList={portfolioUrlList}
+                            setPortfolioUrlList={setPortfolioUrlList}
                         />
                         <CardTeammerWorkExperience
                             editMode={true}
@@ -304,4 +266,51 @@ const EditComponent = () => {
     )
 }
 
-export default EditComponent
+export default EditComponent;
+
+export const getServerSideProps = async (context) => {
+
+    const { params, req, res } = context;
+    const cookie = Cookie.fromApiRoute(req, res);
+    let accessToken = cookie.get('teammers-access-token');
+
+    const fetchPositions = await fetch(config.BASE_URL + "positions");
+    const positionsData = await fetchPositions.json();
+
+    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    const userData = await fetchUserInfo.json();
+
+    const fetchSkills = await fetch(config.BASE_URL + "skills");
+    const skillsData = await fetchSkills.json();
+
+    const fetchLocations = await fetch(config.BASE_URL + "locations");
+    const locationData = await fetchLocations.json();
+
+    return {
+        props: {
+            positionList: positionsData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name
+                }
+            }),
+            userData: userData?.data,
+            skillList: skillsData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            locationList: locationData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+        }
+    }
+};

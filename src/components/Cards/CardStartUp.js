@@ -7,6 +7,7 @@ const CardStartUp = (props) => {
         title,
         position,
         ownerFullname,
+        avatarUrl,
     } = props;
 
     return (
