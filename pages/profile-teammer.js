@@ -17,7 +17,7 @@ const profileTeammer = (props) => {
     } = props;
 
     React.useEffect(() => {
-        console.log('use effect', props.userData);
+        console.log('userData', props.userData);
     }, [props.userData])
 
     return (
@@ -28,20 +28,21 @@ const profileTeammer = (props) => {
                 <div className="left-side">
                     <CardTeammerProfile
                         isProfile
-                        avatarUrl={props.userData.detail.photo}
+                        avatarUrl={props.userData.detail?.photo}
                         fullname={props.userData?.full_name}
                         about={props.userData?.detail?.about}
-                        position={props.positionList.find(x => x.id === props.userData.position_id)?.name}
+                        position={props.userData.positions?.length ? props.userData.positions[0]?.name : []}
                         experienceYear={props.userData.detail?.years_of_experience}
                         role={props.roleList.find(x => x.id === props.userData.detail?.project_role_id)?.name}
                         location={props.locationList.find(x => x.id === props.userData.detail?.location_id)?.name}
+                        skillList={props.userData?.skills}
                     />
                     <CardTeammerWorkExperience />
                 </div>
                 <div className="content">
                     <div className="portfolio-wrapper">
                         <h5>CV and Portfolio</h5>
-                        <CardTeammerPortfolio 
+                        <CardTeammerPortfolio
                             portfolioUrlList={props.userData?.detail?.portfolio}
                         />
                     </div>
@@ -70,6 +71,8 @@ export const getServerSideProps = async (context) => {
     const { params, req, res } = context;
     const cookie = Cookie.fromApiRoute(req, res);
     let accessToken = cookie.get('teammers-access-token');
+
+    console.log('accessToken', accessToken);
 
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();

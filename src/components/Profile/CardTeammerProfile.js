@@ -18,6 +18,7 @@ const CardTeammerProfile = (props) => {
         location,
         about,
         avatarUrl,
+        skillList,
     } = props;
 
     React.useEffect(() => {
@@ -115,12 +116,13 @@ const CardTeammerProfile = (props) => {
                     </p>
                 </div>
                 <div className="tag-wrapper">
-                    <Tag size="lg" className="custom-tag">Teammer</Tag>
-                    <Tag size="lg" className="custom-tag">Teammer</Tag>
-                    <Tag size="lg" className="custom-tag">Teammer</Tag>
-                    <Tag size="lg" className="custom-tag">Teammer</Tag>
-                    <Tag size="lg" className="custom-tag">Teammer</Tag>
-                    <Tag size="lg" className="custom-tag">Teammer</Tag>
+
+                    {
+                        skillList?.map((item, index) => {
+                            return <Tag key={index} size="lg" className="custom-tag">{item.name}</Tag>
+                        })
+                    }
+
                 </div>
                 {isProfile ? <div className="bio-wrapper">
 

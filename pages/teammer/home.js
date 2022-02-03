@@ -112,24 +112,20 @@ export default wrapper.withRedux(Home);
 
 export const getServerSideProps = async (context) => {
 
-    const { params, req, res } = context;
-    const cookie = Cookie.fromApiRoute(req, res);
-    let accessToken = cookie.get('teammers-access-token');
+    // const { params, req, res } = context;
+    // const cookie = Cookie.fromApiRoute(req, res);
+    // let accessToken = cookie.get('teammers-access-token');
 
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,position&per_page=6", {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
+    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,positions&per_page=6");
     const jobListData = await fetchJobList.json();
 
     return {
         props: {
             positionList: positionsData.data.items,
-            jobList: jobListData?.data?.items ? jobListData.data.items : [], 
+            jobList: jobListData?.data?.items ? jobListData.data.items : [],
         }
     }
 }

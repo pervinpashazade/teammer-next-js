@@ -121,11 +121,7 @@ export const getServerSideProps = async (context) => {
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=3", {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
+    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=3");
     const jobListData = await fetchJobList.json();
 
     return {

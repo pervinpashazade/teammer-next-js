@@ -462,7 +462,7 @@ const StepsComponent = (props) => {
 
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
-                "Authorization": "Bearer " + store.user.token
+                "Authorization": "Bearer " + store.token
             }
         })
             .then(res => {
@@ -481,7 +481,7 @@ const StepsComponent = (props) => {
             .catch(error => {
                 console.log(error)
 
-                if (error.response.status === 422) {
+                if (error?.response.status === 422) {
                     toaster.push(
                         <Notification type={"error"} header="Failed confirmation!" closable>
                             {

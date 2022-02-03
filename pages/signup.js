@@ -30,9 +30,9 @@ const Signup = () => {
     const router = useRouter();
 
     useEffect(() => {
-        console.log(localStorage.getItem('type'))
+        // console.log(localStorage.getItem('type'))
         if (localStorage.getItem('teammers-access-token') && !JSON.parse(localStorage.getItem('type'))) {
-            console.log('ansdjkansdkjansdkjsnd')
+            // console.log('ansdjkansdkjansdkjsnd')
             router.push("/signup/steps");
         }
     }, [])
@@ -88,7 +88,7 @@ const Signup = () => {
             }).catch(error => {
                 // console.log('error signup', error.response.data);
 
-                if (error.response.status === 422) {
+                if (error.response?.status === 422) {
                     toaster.push(
                         <Notification type={"error"} header="Failed confirmation!" closable>
                             {

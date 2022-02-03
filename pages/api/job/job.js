@@ -16,11 +16,7 @@ export default async function handleGetJobList(request, response) {
 
     //     })
 
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=6", {
-        headers: {
-            'Authorization': 'Bearer 11|721mtoF7zAKAWwsdUzICkB9drTGUKCCetUGzXJp2'
-        }
-    });
+    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=6");
     const jobListData = await fetchJobList.json();
 
     return jobListData?.data?.items;
