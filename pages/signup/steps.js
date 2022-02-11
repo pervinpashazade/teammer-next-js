@@ -23,9 +23,10 @@ import config from "../../src/configuration";
 import { useRouter } from 'next/router'
 import { log_in, setData } from "../../src/store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import ReactHtmlParser from 'react-html-parser'
 import Image from "next/image";
 import { setCookie } from "../../src/helpers/cookie";
+import getAuth from "../../lib/session";
+import {withCookie} from 'next-cookie'
 const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
 
 const renderErrorMessages = err => {
@@ -89,7 +90,7 @@ const buildFormData = (formData, data, parentKey) => {
 }
 
 const StepsComponent = (props) => {
-
+    const {cookie} = props
     const store = useSelector(store => store);
 
     const dispatch = useDispatch();
@@ -183,14 +184,14 @@ const StepsComponent = (props) => {
     let reactQuillRef = useRef();
 
     useEffect(() => {
-        if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
-            router.push("/signup");
-        } else {
-            if (store.isAuth === "STARTUP_TYPE") {
-                router.push('/owner/home');
-            } else if (store.isAuth === "TEAMMER_TYPE") {
-                router.push("/teammer/home");
-            }
+        // if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
+        //     router.push("/signup");
+        // } else {
+        //     if (store.isAuth === "STARTUP_TYPE") {
+        //         router.push('/owner/home');
+        //     } else if (store.isAuth === "TEAMMER_TYPE") {
+        //         router.push("/teammer/home");
+        //     }
             let year_array = [];
             let nowDate = (new Date()).getFullYear();
             for (let i = 2000; i <= nowDate; i++) {
@@ -200,7 +201,7 @@ const StepsComponent = (props) => {
                 })
                 setYears(year_array);
             }
-        }
+
     }, [store.isAuth, router])
 
     const nextButton = (c) => {
@@ -397,17 +398,19 @@ const StepsComponent = (props) => {
         console.log('data body', body);
         const formData = new FormData();
         buildFormData(formData, body);
-
-
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('teammers-access-token')
+                "Authorization": "Bearer " + cookie.get('teammers-access-token')
             }
         })
             .then(res => {
+                console.log('teammer type token', res.data.data)
                 let data = res.data.data;
                 // localStorage.setItem('teammers-access-token', data.token);
-                localStorage.setItem('type', 2);
+                // localStorage.setItem('type', 2);
+                cookie.remove('teammers-type');
+                cookie.set('teammers-type' , 2);
+                cookies.set('user' , full_name)
                 // dispatch(log_in('TEAMMER_TYPE'));
                 dispatch(setData('user', person.full_name));
                 router.push('/teammer/subscribe')
@@ -462,25 +465,25 @@ const StepsComponent = (props) => {
 
         axios.post(config.BASE_URL + "auth/register-complete", formData, {
             headers: {
-                "Authorization": "Bearer " + store.token
+                "Authorization": "Bearer " + cookie.get('teammers-access-token')
             }
         })
             .then(res => {
+                console.log('startup owner type token',res.data.data)
                 let data = res.data.data;
 
                 // localStorage.setItem('type', 1);
-
-                localStorage.setItem('teammers-access-token', data.token);
-                localStorage.setItem('type', data.user.type);
-                localStorage.setItem('user', JSON.stringify(data.user));
-
-                setCookie('teammers-access-token', data.token)
-
+                cookie.remove('teammers-type');
+                cookie.set('teammers-type' , 1);
+                // localStorage.setItem('teammers-access-token', data.token);
+                // localStorage.setItem('type', data.user.type);
+                // localStorage.setItem('user', JSON.stringify(data.user));
+                cookie.set('user' , data.full_name);
+                // setCookie('teammers-access-token', data.token)
                 router.push('/signup/add-to-team');
             })
             .catch(error => {
                 console.log(error)
-
                 if (error?.response.status === 422) {
                     toaster.push(
                         <Notification type={"error"} header="Failed confirmation!" closable>
@@ -1355,9 +1358,31 @@ const StepsComponent = (props) => {
         </div>
     </div>
 }
-export default wrapper.withRedux(StepsComponent);
+export default withCookie(StepsComponent);
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+    const auth = getAuth(context);
+    if (auth === "1")
+        return {
+            redirect: {
+                destination: "/owner/home",
+                permanent: false,
+            },
+        };
+    else if (auth === "2")
+        return {
+            redirect: {
+                destination: "/teammer/home",
+                permanent: false,
+            },
+        };
+    else if(!auth)
+        return {
+            redirect: {
+                destination: "/signup",
+                permanent: false,
+            },
+        };
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 

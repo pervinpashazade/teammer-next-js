@@ -13,6 +13,7 @@ import Subscribe from "../../src/components/Subscribe";
 import { FaArrowRight } from "react-icons/fa";
 import config from "../../src/configuration";
 import { Cookie, withCookie } from 'next-cookie';
+import getAuth from "../../lib/session";
 
 const Home = (props) => {
     const store = useSelector(store => store);
@@ -107,7 +108,7 @@ const Home = (props) => {
 
     </div>
 }
-
+Home.layout = true
 export default wrapper.withRedux(Home);
 
 export const getServerSideProps = async (context) => {
@@ -115,7 +116,15 @@ export const getServerSideProps = async (context) => {
     // const { params, req, res } = context;
     // const cookie = Cookie.fromApiRoute(req, res);
     // let accessToken = cookie.get('teammers-access-token');
-
+    const auth = getAuth(context);
+    if(auth !== "2"){
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 

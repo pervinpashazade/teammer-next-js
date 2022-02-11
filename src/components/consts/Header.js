@@ -8,12 +8,12 @@ import {
     Popover,
     Badge
 } from 'rsuite';
-import { RiArrowRightLine } from 'react-icons/ri';
-import { wrapper } from "../../store/redux-store";
-import { useDispatch, useSelector } from "react-redux";
+import {RiArrowRightLine} from 'react-icons/ri';
+import {wrapper} from "../../store/redux-store";
+import {useDispatch, useSelector} from "react-redux";
 import Image from "next/image";
 
-const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
+const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -32,13 +32,13 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
                                 height={18}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine /></button>
+                            Show all <button><RiArrowRightLine/></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
                     <div>
-                        <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                        <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/>
                     </div>
                     <div className="message-text">
                         <p>Denis Delton wants to add you to their Netflix team.</p>
@@ -50,7 +50,7 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
     );
 });
 
-const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
+const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -66,12 +66,12 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
                                 height={20}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine /></button>
+                            Show all <button><RiArrowRightLine/></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
-                    <div><Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" /></div>
+                    <div><Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/></div>
                     <div className="message-text">
                         <p>Denis Delton</p>
                         <p>Yeah! I’m interested...</p>
@@ -87,13 +87,13 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     );
 });
 
-const CustomComponentNotification = ({ placement, loading, children, count = 3 }) => (
+const CustomComponentNotification = ({placement, loading, children, count = 3}) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverNotification content={`I am positioned to the ${placement}`} />
+            <DefaultPopoverNotification content={`I am positioned to the ${placement}`}/>
         }
     >
         {
@@ -127,13 +127,13 @@ const CustomComponentNotification = ({ placement, loading, children, count = 3 }
     </Whisper>
 );
 
-const CustomComponentMessage = ({ placement, loading, children }) => (
+const CustomComponentMessage = ({placement, loading, children}) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverMessage content={`I am positioned to the ${placement}`} />
+            <DefaultPopoverMessage content={`I am positioned to the ${placement}`}/>
         }
     >
         <li>
@@ -151,9 +151,9 @@ const CustomComponentMessage = ({ placement, loading, children }) => (
     </Whisper>
 );
 
-const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
+const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
     <InputGroup {...props} inside>
-        <Input placeholder={placeholder} />
+        <Input placeholder={placeholder}/>
         <InputGroup.Button>
             {/* <img src="/icons/search.svg" /> */}
             <Image
@@ -180,7 +180,6 @@ const Header = () => {
             <div className="row">
                 <div className="col-md-12">
                     <nav className="navbar navbar-expand-lg pl-0">
-
                         {
                             store.isAuth === "TEAMMER_TYPE" ?
                                 <Link href="/teammer/home">
@@ -217,9 +216,9 @@ const Header = () => {
                                         </a>
                                     </Link>
                         }
-                        <button className="navbar-toggler" type="button">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
+                        {/*<button className="navbar-toggler" type="button">*/}
+                        {/*    <span className="navbar-toggler-icon"></span>*/}
+                        {/*</button>*/}
                         <CustomInputGroupWidthButton
                             size="lg"
                             placeholder="Search"
@@ -230,27 +229,26 @@ const Header = () => {
                                 <ul className="navbar-nav ml-auto mr-auto">
                                     <li className="nav-item active">
                                         <Link href="/app" passHref>
-                                            <a className="nav-link" >Inspiration</a>
+                                            <a className="nav-link">Inspiration</a>
                                         </Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link href="/app/pricing" passHref>
-                                            <a className="nav-link" >Pricing</a>
+                                            <a className="nav-link">Pricing</a>
                                         </Link>
                                     </li>
                                 </ul>
                             </div>
-
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
-                                <CustomComponentNotification placement="bottomEnd" loading={loading} />
-                                <CustomComponentMessage placement="bottomEnd" loading={loading} />
+                                <CustomComponentNotification placement="bottomEnd" loading={loading}/>
+                                <CustomComponentMessage placement="bottomEnd" loading={loading}/>
                                 <li className="nav-item">
                                     {
                                         store.isAuth === "GUESS" ?
                                             <Link href="/login">
                                                 <a>
                                                     <Avatar circle
-                                                        src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                                            src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/>
                                                 </a>
                                             </Link>
                                             :

@@ -1,10 +1,11 @@
-import auth, { user } from "../get_auth";
-import { LOGIN, SET_DATA } from './actions';
+import auth, {user} from "../get_auth";
+import {LOGIN, SET_DATA} from './actions';
 
 const initialState = {
     isAuth: auth,
     user: user,
-    token: (typeof window !== 'undefined' && localStorage.getItem('teammers-access-token')) ? localStorage.getItem('teammers-access-token') : '',
+    token: (typeof window !== 'undefined' && localStorage.getItem('teammers-access-token')) ?
+        localStorage.getItem('teammers-access-token') : '',
     subscribe_viewed: false
 }
 

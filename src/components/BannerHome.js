@@ -11,15 +11,17 @@ function BannerHome() {
             {
                 store.isAuth === "GUESS" ? <div className="home-banner">
                     <div className="wrapper">
-                        <span>Result-aimed platform</span>
+                        <span className="result">Result-aimed platform</span>
                         <h1>
                             Join your dream
-                            <div className="d-flex align-items-center">
+                            <div style={{position:'relative'}} className="d-flex align-items-center justify-content-center">
                                 <Image
                                     src={'/img/startup.png'}
                                     alt='logo'
                                     width={211}
                                     height={78}
+                                    quality={100}
+                                    layout="responsive"
                                 />
                                 team in
                             </div>
@@ -29,7 +31,7 @@ function BannerHome() {
                             Connect with your future teammates
                             from all over the world.
                         </p>
-                        <div className="buttons">
+                        <div className="buttons flex-column flex-md-row">
                             <Button color="blue" appearance="primary">
                                 {/* <img src="/icons/emoji1.svg" className="mr-2" alt="emoji" /> */}
                                 <Image
@@ -40,7 +42,7 @@ function BannerHome() {
                                 />
                                 Become teammer
                             </Button>
-                            <Button className="btn-custom-outline" color="blue" appearance="primary">
+                            <Button className="btn-custom-outline my-2 my-md-0" color="blue" appearance="primary">
                                 {/* <img style={{ width: '11px', height: '15px' }} src="/icons/play.svg" className="mr-2" alt="emoji" /> */}
                                 <Image
                                     src={'/icons/play.svg'}

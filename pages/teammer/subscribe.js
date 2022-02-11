@@ -109,14 +109,14 @@ const Subscribe = (props) => {
         </div>)
 }
 
-
+Subscribe.layout = true
 export default wrapper.withRedux(Subscribe);
 
 export const getServerSideProps = async (context) => {
 
-    const { params, req, res } = context;
-    const cookie = Cookie.fromApiRoute(req, res);
-    let accessToken = cookie.get('teammers-access-token');
+    // const { params, req, res } = context;
+    // const cookie = Cookie.fromApiRoute(req, res);
+    // let accessToken = cookie.get('teammers-access-token');
 
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();

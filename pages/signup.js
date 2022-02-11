@@ -8,7 +8,8 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { setData } from '/src/store/actions';
 import { setCookie } from "../src/helpers/cookie";
-
+import {withCookie} from 'next-cookie'
+import getAuth from "../lib/session";
 const renderErrorMessages = err => {
     let errList = [];
 
@@ -19,23 +20,22 @@ const renderErrorMessages = err => {
     return errList;
 }
 
-const Signup = () => {
-
-    const dispatch = useDispatch();
-
+const Signup = (props) => {
+    const {cookie} = props
+     const dispatch = useDispatch();
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
     const [validation, setValidation] = useState(true);
 
     const router = useRouter();
 
-    useEffect(() => {
-        // console.log(localStorage.getItem('type'))
-        if (localStorage.getItem('teammers-access-token') && !JSON.parse(localStorage.getItem('type'))) {
-            // console.log('ansdjkansdkjansdkjsnd')
-            router.push("/signup/steps");
-        }
-    }, [])
+    // useEffect(() => {
+    //     // console.log(localStorage.getItem('type'))
+    //     if (localStorage.getItem('teammers-access-token') && !JSON.parse(localStorage.getItem('type'))) {
+    //         // console.log('ansdjkansdkjansdkjsnd')
+    //         router.push("/signup/steps");
+    //     }
+    // }, [])
     const signup_form = (event) => {
 
         let data = new FormData(event.target);
@@ -73,16 +73,19 @@ const Signup = () => {
             }).then(res => {
                 let data = res.data.data;
 
-                localStorage.setItem('teammers-access-token', data.token);
-                localStorage.setItem('type', data.user.type);
-                localStorage.setItem('user', JSON.stringify(data.user))
+                // localStorage.setItem('teammers-access-token', data.token);
+                // localStorage.setItem('type', data.user.type);
+                // localStorage.setItem('user', JSON.stringify(data.user))
+                console.log(res)
+                cookie.remove('teammers-type');
+                cookie.set('teammers-access-token', data.token)
+                cookie.set('teammers-type' , data.user.type)
 
-                setCookie('teammers-access-token', data.token)
 
-                dispatch(setData('user', data.user));
-                dispatch(setData('token', data.token));
+                // dispatch(setData('user', data.user));
+                // dispatch(setData('token', data.token));
 
-                console.log(res);
+                // console.log(res);
 
                 router.push("/signup/steps")
             }).catch(error => {
@@ -245,4 +248,34 @@ const Signup = () => {
         </div>
     </div>
 }
-export default Signup;
+Signup.layout = false;
+export default withCookie(Signup);
+export const getServerSideProps = (context)=>{
+    const auth = getAuth(context);
+    if (auth === "1")
+        return {
+            redirect: {
+                destination: "/owner/home",
+                permanent: false,
+            },
+        };
+    else if (auth === "2")
+        return {
+            redirect: {
+                destination: "/teammer/home",
+                permanent: false,
+            },
+        };
+    else if(auth === "null")
+        return {
+            redirect: {
+                destination: "/signup/steps",
+                permanent: false,
+            },
+        };
+    return {
+        props: {
+            data: 'ajksndkajjsnd'
+        }
+    }
+}

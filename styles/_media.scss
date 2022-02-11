@@ -1,0 +1,45 @@
+@media screen and (max-width: 768px) {
+  //login forms
+  .login {
+    .authenticate {
+      .image {
+        display: none;
+      }
+      .form {
+        h2 {
+          margin-top: 50px;
+          font-size: 20px;
+        }
+
+        padding: 0px;
+
+        .verification-numbers {
+          input {
+            max-width: 70px;
+          }
+        }
+      }
+    }
+  }
+  .home-banner{
+    background-image: url("/img/responsive-banner.png") !important;
+    height: 416px;
+    .wrapper{
+      .result{
+          display: none;
+      }
+      h1 {
+        font-size: 30px;
+        font-weight: 700;
+        margin-top: 1rem;
+        margin-bottom: 20px;
+      }
+      p {
+        font-size: 12px;
+        line-height: 30px;
+        padding: 0px 41px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@
     margin: 6px 0px !important;
   }
 }
+
 @mixin login_form($padding) {
   width: 100%;
   padding: $padding 64px;
@@ -38,6 +39,8 @@
   }
 
   .with_google {
+    display: flex;
+
     .signup_google {
       @include button($button-radius-72, #fff, 12px, 24px, 12px, 24px);
       border: 2px solid #eaeaea;
@@ -218,6 +221,7 @@
       width: 100%;
       padding: 0px 64px;
       position: relative;
+
       .summary_person {
         display: flex;
         font-size: 14px;
@@ -234,6 +238,7 @@
           font-weight: 400;
         }
       }
+
       .rs-input {
         padding: 11px;
         width: 100%;
@@ -258,6 +263,7 @@
               border-color: #ccf6ea;
               background-color: #ccf6ea;
             }
+
             .rs-steps-item-tail {
               background-color: #D3D3D3;
               border: 2px solid #D3D3D3;
@@ -265,7 +271,7 @@
           }
         }
 
-        .rs-steps-item-tail{
+        .rs-steps-item-tail {
           border-color: #D3D3D3;;
         }
       }
@@ -340,6 +346,7 @@
             padding: 12px;
           }
         }
+
         .upload {
           button {
             @include button($button-radius-72, transparent, 10px, 24px, 10px, 24px);
@@ -439,17 +446,20 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
+
             a {
               text-decoration: underline;
               font-weight: 400;
               font-size: 14px;
               color: #0052b1;
             }
+
             button {
               background-color: transparent;
               color: #0052b1;
             }
           }
+
           .social-media-accounts {
             .rs-form-control-label {
               color: $text-color-primary;
@@ -488,8 +498,10 @@
           margin-right: 45px;
         }
       }
+
       .profile_information {
         margin-top: 24px;
+
         h4 {
           font-style: normal;
           font-weight: 600;
@@ -498,15 +510,18 @@
           color: $text-color-primary;
           margin-top: 24px;
         }
+
         div {
           display: flex;
           justify-content: flex-start;
+
           img {
             object-fit: cover;
             border-radius: 50%;
             width: 64px;
             height: 64px;
           }
+
           button {
             @include button(0px, transparent, 0px, 0px, 0px, 0px);
             color: $primary-color;
@@ -536,6 +551,7 @@
     }
   }
 }
+
 .add-more-experience {
   color: $primary-color;
   font-size: 16px;
@@ -548,21 +564,26 @@
     padding-top: 2px;
   }
 }
+
 .app-plan {
   min-height: 164px;
   background: #ffffff;
   box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
   border-radius: 28px;
   position: relative;
+
   .gradient-wrapper {
     position: relative;
+
     ._text-container {
       position: absolute;
+
       ._text-monthly {
         background: linear-gradient(90deg, #0080dc, #00bef6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
+
       ._text-annualy {
         background: linear-gradient(90deg, #00d7ac, #00bbd9);
         -webkit-background-clip: text;
@@ -570,25 +591,31 @@
       }
     }
   }
+
   .app-plan_top {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0px 21px;
     margin-bottom: 2.5rem;
+
     ._top-left {
       display: flex;
       align-items: center;
+
       .gradient-wrapper {
         width: 120px;
         height: 29px;
       }
+
       h4 {
         margin-left: 1rem;
       }
     }
+
     .custom-switch {
       margin: 0 3rem;
+
       span.rs-toggle-presentation {
         background: linear-gradient(90deg, #0080dc, #00bef6);
       }
@@ -599,17 +626,21 @@
         }
       }
     }
+
     ._top-right {
       display: flex;
       align-items: center;
+
       .gradient-wrapper {
         width: 120px;
         height: 29px;
       }
+
       h4 {
         margin-right: 1rem;
       }
     }
+
     h4.plan-title {
       font-weight: 500;
       font-size: 24px;
@@ -622,14 +653,17 @@
       }
     }
   }
+
   .app-plan_body {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     .price {
       margin-bottom: 2rem;
     }
+
     .btn-active-plan {
       border: 1px solid #2a6fff;
       border-radius: 72px;
@@ -644,6 +678,7 @@
         margin-right: 5px;
       }
     }
+
     .btn-choose-plan {
       background: #2a6fff;
       border-radius: 72px;
@@ -669,6 +704,7 @@
       background-image: url("/img/price_plan_subtract-left.png");
       background-repeat: no-repeat;
     }
+
     &::after {
       content: "";
       position: absolute;
@@ -681,24 +717,27 @@
     }
   }
 }
-.card-details{
-  p{
+
+.card-details {
+  p {
     font-size: 9px;
     color: #020C40 !important;
     font-weight: 600;
   }
-  div:first-child{
+
+  div:first-child {
     width: 80%;
     margin-right: 10px;
   }
 }
-.total{
-  p{
+
+.total {
+  p {
     color: #020C40 !important;
     font-size: 13px;
   }
 
-  &+button{
+  & + button {
     background-color: $primary-color !important;
     border-radius: $button-radius-72 !important;
     padding: 15px 24px 17px 24px !important;
@@ -706,7 +745,8 @@
     width: 100%;
   }
 }
-.info-payment{
+
+.info-payment {
   font-size: 10px;
   color: #020C40 !important;
   font-weight: 400 !important;

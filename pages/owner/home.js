@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import CardTeammerProfile from "../../src/components/Profile/CardTeammerProfile";
 import axios from "axios";
 import config from "../../src/configuration";
+import getAuth from "../../lib/session";
 
 const Home = ({project_types,experience_levels , skills , locations})=>{
     const [activePage, setActivePage] = useState(5);
@@ -32,7 +33,6 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
             </InputGroup.Button>
         </InputGroup>
     );
-    console.log(filter)
     return <div className="owner-home">
         <div className="owner-banner">
             <h2>The best future <br/>
@@ -157,9 +157,19 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
 
 
 }
+Home.layout = true;
 export default Home
 
-export const getServerSideProps = async ()=>{
+export const getServerSideProps = async (context)=>{
+    const auth = getAuth(context);
+    if(auth !== "1"){
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
     const project_types = await axios.get(config.BASE_URL+"project/types");
     const experience_levels = await axios.get(config.BASE_URL+"experience-levels");
     const skills = await axios.get(config.BASE_URL + "skills");

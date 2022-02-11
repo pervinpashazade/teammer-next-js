@@ -4,6 +4,8 @@ import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile'
 import {IconButton} from "rsuite";
 import {HiArrowLeft} from "react-icons/hi";
 import Link from 'next/link';
+import getAuth from "../../lib/session";
+
 const AddToTeam = () => {
 
     return (
@@ -16,11 +18,11 @@ const AddToTeam = () => {
                 <div className="breadcrumb-wrapper">
                     <div className="goback-btn">
                         <Link href="/owner/home" passHref>
-                                <IconButton
-                                    size="lg"
-                                    icon={<HiArrowLeft />}
-                                    className="goback-btn"
-                                />
+                            <IconButton
+                                size="lg"
+                                icon={<HiArrowLeft/>}
+                                className="goback-btn"
+                            />
                         </Link>
                     </div>
                 </div>
@@ -32,10 +34,10 @@ const AddToTeam = () => {
                     </h3>
                 </div>
             </div>
-            <p className="text-center my-4" style={{fontSize : '22px'}}>
+            <p className="text-center my-4" style={{fontSize: '22px'}}>
                 You can also add people to your team👇
             </p>
-            <div className="row" style={{marginTop : "170px"}}>
+            <div className="row" style={{marginTop: "170px"}}>
                 <div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>
                 <div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>
                 <div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>
@@ -44,5 +46,19 @@ const AddToTeam = () => {
     )
 
 }
+AddToTeam.layout = true;
+export const getStaticProps = (context) => {
+    const auth = getAuth(context);
+    if (auth !== "1")
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    return {
+        data : "data"
+    }
 
-export default AddToTeam
+}
+export default AddToTeam;

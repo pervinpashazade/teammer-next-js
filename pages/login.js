@@ -9,6 +9,7 @@ import { STARTUP_TYPE, TEAMMER_TYPE } from "../src/get_auth";
 import { useRouter } from 'next/router'
 import Image from "next/image";
 import { setCookie } from "../src/helpers/cookie";
+import {signIn} from "next-auth/react";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -20,7 +21,7 @@ const renderErrorMessages = err => {
     return errList;
 }
 
-const Login = () => {
+const Login = (props) => {
     const [check, setCheck] = useState({});
     const [validation, setValidation] = useState(true);
     const dispatch = useDispatch();
@@ -28,11 +29,9 @@ const Login = () => {
     const login_form = (event) => {
         let data = new FormData(event.target);
         let body = {};
-
         for (let [key, value] of data.entries()) {
             body[key] = value;
         }
-
         if (!body.password) {
             setValidation(false);
         } else if (body.password.length < 8) {
@@ -48,18 +47,13 @@ const Login = () => {
             </Notification>, 'topEnd');
             return;
         };
-
         axios.post(config.BASE_URL + "auth/login", body)
             .then(res => {
-
                 console.log('login res', res)
-
                 let data = res.data.data;
-
-                localStorage.setItem('teammers-access-token', data.token);
-                localStorage.setItem('type', data.user.type);
-                localStorage.setItem('user', JSON.stringify(data.user));
-
+                // localStorage.setItem('teammers-access-token', data.token);
+                // localStorage.setItem('type', data.user.type);
+                // localStorage.setItem('user', JSON.stringify(data.user));
                 setCookie('teammers-access-token', data.token)
 
                 if (data.user.type === STARTUP_TYPE) {
@@ -216,4 +210,6 @@ const Login = () => {
         </div>
     </div>
 }
-export default Login
+Login.layout = false
+
+export default Login;
