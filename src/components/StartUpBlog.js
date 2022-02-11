@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const StartUpBlog = () => {
 
-    return (<div className="startup-blog">
+    return (<div className="startup-blog p-md-0 p-3">
         <div className="check-all">
             <span>Latest blogs</span>
             <Link href="/" className="showAll">

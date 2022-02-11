@@ -21,7 +21,6 @@ function BannerHome() {
                                     width={211}
                                     height={78}
                                     quality={100}
-                                    layout="responsive"
                                 />
                                 team in
                             </div>

@@ -7,7 +7,35 @@ body {
   background-color: linear-gradient(180.62deg, #fcfcfc 2.19%, #eff5fc 99.49%) !important;
   height: 100% !important;
 }
-
+.custom-input-color{
+  input{
+    background-color: #fafafa;
+    padding: 5px;
+  }
+}
+.responsive-menu{
+  position: fixed;
+  width: 90%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height : 100%;
+  background-color: white;
+  z-index: 99999;
+  border-top-right-radius: 48px;
+  border-bottom-right-radius: 48px;
+  margin-left: -90%;
+  transition: all 0.4s;
+  &.add-margin{
+    margin-left: 0%;
+  }
+  .responsive-menu-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+  }
+}
 .c-pointer {
   cursor: pointer;
 }

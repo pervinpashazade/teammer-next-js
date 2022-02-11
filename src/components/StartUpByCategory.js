@@ -24,7 +24,7 @@ const StartUpByCategory = (props) => {
                                 props.jobList?.map((item, index) => {
                                     return <div
                                         key={index}
-                                        className="col-md-6"
+                                        className="col-md-6 col-12"
                                     >
                                         <CardStartUp
                                             title={item.project?.title}
@@ -43,8 +43,8 @@ const StartUpByCategory = (props) => {
                                             <Link href="/signup" passHref><Button className="sign-up">Sign Up</Button></Link>
                                         </div>
                                     </div>
-                                    <div className="col-6"><CardStartUp /></div>
-                                    <div className="col-6"><CardStartUp /></div>
+                                    <div className="col-6 d-none d-md-block"><CardStartUp /></div>
+                                    <div className="col-md-6 col-12"><CardStartUp /></div>
                                 </div>
                             }
                         </div>
@@ -76,8 +76,8 @@ const StartUpByCategory = (props) => {
                                             <Link href={'/signup'} passHref><Button className="sign-up">Sign Up</Button></Link>
                                         </div>
                                     </div>
-                                    <div className="col-6"><CardStartUp /></div>
-                                    <div className="col-6"><CardStartUp /></div>
+                                    <div className="col-6 d-none d-md-block"><CardStartUp /></div>
+                                    <div className="col-md-6 col-12"><CardStartUp /></div>
                                 </div>
                             }
                         </div>

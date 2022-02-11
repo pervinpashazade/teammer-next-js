@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -12,7 +12,8 @@ import {RiArrowRightLine} from 'react-icons/ri';
 import {wrapper} from "../../store/redux-store";
 import {useDispatch, useSelector} from "react-redux";
 import Image from "next/image";
-
+import menu from '../../../public/img/menu.png'
+import cancel from '../../../public/img/cancel.png'
 const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
     return (
         <Popover ref={ref} {...props}>
@@ -172,17 +173,64 @@ const Header = () => {
 
     const store = useSelector(store => store);
     const dispatch = useDispatch();
-
+    const [isOpen , setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
-
+    const toggleMenu = () => {
+        setIsOpen(!isOpen)
+    }
     return (
         <div className="header">
             <div className="row">
                 <div className="col-md-12">
-                    <nav className="navbar navbar-expand-lg pl-0">
-                        {
-                            store.isAuth === "TEAMMER_TYPE" ?
-                                <Link href="/teammer/home">
+                    <nav className="navbar navbar-expand-lg px-0">
+                        {/*{*/}
+                        {/*    store.isAuth === "TEAMMER_TYPE" ?*/}
+                        {/*        <Link href="/teammer/home">*/}
+                        {/*            <a className="navbar-brand">*/}
+                        {/*                <Image*/}
+                        {/*                    src={'/LogoHeader.svg'}*/}
+                        {/*                    alt='logo'*/}
+                        {/*                    width={136}*/}
+                        {/*                    height={18}*/}
+                        {/*                />*/}
+                        {/*            </a>*/}
+                        {/*        </Link>*/}
+                        {/*        :*/}
+                        {/*        store.isAuth === "STARTUP_TYPE" ?*/}
+                        {/*            <Link href="/owner/home">*/}
+                        {/*                <a className="navbar-brand">*/}
+                        {/*                    <Image*/}
+                        {/*                        src={'/LogoHeader.svg'}*/}
+                        {/*                        alt='logo'*/}
+                        {/*                        width={136}*/}
+                        {/*                        height={18}*/}
+                        {/*                    />*/}
+                        {/*                </a>*/}
+                        {/*            </Link>*/}
+                        {/*            :*/}
+                        {/*            <Link href="/">*/}
+                        {/*                <a className="navbar-brand">*/}
+                        {/*                    <Image*/}
+                        {/*                        src={'/LogoHeader.svg'}*/}
+                        {/*                        alt='logo'*/}
+                        {/*                        width={136}*/}
+                        {/*                        height={18}*/}
+                        {/*                    />*/}
+                        {/*                </a>*/}
+                        {/*            </Link>*/}
+                        {/*}*/}
+                        <div className="d-flex justify-content-between w-100">
+                            <div>
+                                <a className="d-inline-block d-md-none" onClick={toggleMenu}>
+                                    <Image
+                                        src={menu}
+                                        alt='logo'
+                                        width={24}
+                                        height={24}
+                                        quality={100}
+                                    />
+                                </a>
+                                <a className="ml-md-0 ml-4"><Link href="/">
                                     <a className="navbar-brand">
                                         <Image
                                             src={'/LogoHeader.svg'}
@@ -191,40 +239,50 @@ const Header = () => {
                                             height={18}
                                         />
                                     </a>
-                                </Link>
-                                :
-                                store.isAuth === "STARTUP_TYPE" ?
-                                    <Link href="/owner/home">
-                                        <a className="navbar-brand">
-                                            <Image
-                                                src={'/LogoHeader.svg'}
-                                                alt='logo'
-                                                width={136}
-                                                height={18}
-                                            />
-                                        </a>
-                                    </Link>
-                                    :
-                                    <Link href="/">
-                                        <a className="navbar-brand">
-                                            <Image
-                                                src={'/LogoHeader.svg'}
-                                                alt='logo'
-                                                width={136}
-                                                height={18}
-                                            />
-                                        </a>
-                                    </Link>
-                        }
+                                </Link></a>
+                            </div>
+                            <div className="d-block d-md-none">
+                                <ul className="d-flex justify-content-between align-items-center">
+                                    <CustomComponentNotification placement="bottomEnd" loading={loading}/>
+                                    <a className="mx-3"><CustomComponentMessage placement="bottomEnd"
+                                                                                loading={loading}/></a>
+                                    <li className="nav-item">
+                                        {
+                                            store.isAuth === "GUESS" ?
+                                                <Link href="/login">
+                                                    <a>
+                                                        <Avatar circle
+                                                                src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/>
+                                                    </a>
+                                                </Link>
+                                                :
+                                                <Link href="/profile-teammer">
+                                                    <a>
+                                                        <Avatar
+                                                            circle
+                                                            src={store.user?.detail?.photo ? store.user.detail.photo
+                                                                :
+                                                                "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                                                            }
+                                                        />
+                                                    </a>
+                                                </Link>
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         {/*<button className="navbar-toggler" type="button">*/}
                         {/*    <span className="navbar-toggler-icon"></span>*/}
                         {/*</button>*/}
-                        <CustomInputGroupWidthButton
-                            size="lg"
-                            placeholder="Search"
-                            className="search-input"
-                        />
-                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div className="d-md-initial d-none">
+                            <CustomInputGroupWidthButton
+                                size="lg"
+                                placeholder="Search"
+                                className="search-input"
+                            />
+                        </div>
+                        <div className="collapse navbar-collapse d-none d-md-initial" id="navbarSupportedContent">
                             <div className="collapse navbar-collapse navbar-middle" id="navbarSupportedContent">
                                 <ul className="navbar-nav ml-auto mr-auto">
                                     <li className="nav-item active">
@@ -268,6 +326,33 @@ const Header = () => {
                             </ul>
                         </div>
                     </nav>
+                    <div className="d-md-none d-block w-100 mb-3">
+                        <CustomInputGroupWidthButton
+                            size="lg"
+                            placeholder="Search"
+                            className="search-input w-100 custom-input-color"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div className={isOpen ? "responsive-menu add-margin" : "responsive-menu"}>
+                <div className="responsive-menu-header">
+                    <a className="navbar-brand">
+                        <Image
+                            src={'/LogoHeader.svg'}
+                            alt='logo'
+                            width={136}
+                            height={18}
+                        />
+                    </a>
+                    <a onClick={toggleMenu}> <Image
+                        src={cancel}
+                        alt='logo'
+                        width={25}
+                        height={25}
+                        quality={100}
+                    /></a>
                 </div>
             </div>
         </div>
