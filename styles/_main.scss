@@ -35,6 +35,32 @@ body {
     align-items: center;
     padding: 25px;
   }
+  .responsive-menu-links{
+    ul{
+      margin: 0px;
+      padding: 0px;
+      li{
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 20px 10px 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #EDF3FF;
+        .text-link{
+          font-size: 18px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+        }
+        .arrowRightButton{
+          border: 2px solid #EAEAEA;
+          padding: 8px 10px 3px;
+          border-radius: 5px;
+        }
+      }
+    }
+  }
 }
 .c-pointer {
   cursor: pointer;

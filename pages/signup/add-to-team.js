@@ -5,9 +5,13 @@ import {IconButton} from "rsuite";
 import {HiArrowLeft} from "react-icons/hi";
 import Link from 'next/link';
 import getAuth from "../../lib/session";
+import config from "../../src/configuration";
+import {getFetchData} from "../../lib/fetchData";
+import {getToken} from "../../lib/session";
 
-const AddToTeam = () => {
-
+const AddToTeam = (props) => {
+    const {items} = props.data;
+    console.log(items);
     return (
         <div className="owner">
             <Head>
@@ -38,27 +42,37 @@ const AddToTeam = () => {
                 You can also add people to your team👇
             </p>
             <div className="row" style={{marginTop: "170px"}}>
-                <div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>
-                <div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>
-                <div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>
+                {
+                    items.map(item => <div className="col-md-4"><CardTeammerProfile props={
+                        {full_name: item.full_name,
+                            photo : item.detail.photo,
+                            location : item.detail.location.name +" , " + item.detail.location.country_code,
+                            skills : item.skills,
+                            positions : item.positions
+                        }
+                    } isProfile={false}/></div>)
+                }
+                {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
+                {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
+                {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
             </div>
         </div>
     )
 
 }
 AddToTeam.layout = true;
-export const getStaticProps = (context) => {
+export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
-    if (auth !== "1")
+    if (auth === "1") {
+        return {
+            props: getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
+        }
+    } else if (auth !== "1")
         return {
             redirect: {
                 destination: "/login",
                 permanent: false,
             },
         };
-    return {
-        data : "data"
-    }
-
 }
 export default AddToTeam;

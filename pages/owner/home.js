@@ -3,31 +3,34 @@ import React, {useState} from "react";
 import CardTeammerProfile from "../../src/components/Profile/CardTeammerProfile";
 import axios from "axios";
 import config from "../../src/configuration";
-import getAuth from "../../lib/session";
+import getAuth, {getToken} from "../../lib/session";
+import {getFetchData} from "../../lib/fetchData";
 
-const Home = ({project_types,experience_levels , skills , locations})=>{
+const Home = ({project_types, experience_levels, skills, locations , items}) => {
     const [activePage, setActivePage] = useState(5);
-    const [filter , setFilter] = useState({
-        project_types : [],
-        experience_levels : [],
-        skills : [],
-        locations : []
+    const [filter, setFilter] = useState({
+        project_types: [],
+        experience_levels: [],
+        skills: [],
+        locations: []
     });
-    const filterFuncation = (key ,e , type)=>{
+    console.log(items)
+    const filterFuncation = (key, e, type) => {
         let array = filter[key];
-        if(type === "add"){
-            if(!array.some(item => item === e))
-                array = [...array,e];
-        }
-        else{
+        if (type === "add") {
+            if (!array.some(item => item === e))
+                array = [...array, e];
+        } else {
             array = array.filter(item => item !== e)
         }
-        setFilter({...filter,
-        [key] : array})
+        setFilter({
+            ...filter,
+            [key]: array
+        })
     }
-    const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
+    const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
         <InputGroup {...props} inside>
-            <Input placeholder={placeholder} />
+            <Input placeholder={placeholder}/>
             <InputGroup.Button className="search-input-btn">
                 Search
             </InputGroup.Button>
@@ -39,13 +42,13 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                 Teammers are here 💫</h2>
         </div>
         <div className="home-search">
-                <div className="wrapper">
-                    <CustomInputGroupWidthButton
-                        size="lg"
-                        placeholder="Search"
-                        className="search-input"
-                    />
-                </div>
+            <div className="wrapper">
+                <CustomInputGroupWidthButton
+                    size="lg"
+                    placeholder="Search"
+                    className="search-input"
+                />
+            </div>
         </div>
         <div className="row">
             <div className="col-md-4">
@@ -53,7 +56,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     size="lg"
                     data={project_types}
                     value={filter.project_types}
-                    onChange={(e) => filterFuncation('project_types',e,'add')}
+                    onChange={(e) => filterFuncation('project_types', e, 'add')}
                     placeholder="Fields"
                     className="w-100"
                 />
@@ -61,7 +64,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     filter.project_types.length > 0 && filter.project_types.map((item, index) => {
                         return <Tag key={index}
                                     onClose={() => {
-                                        filterFuncation('project_types',item,'remove')
+                                        filterFuncation('project_types', item, 'remove')
                                     }
                                     } closable
                                     className="close-tag my-2">{project_types.find(i => i.value === item)?.label}</Tag>
@@ -71,7 +74,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     size="lg"
                     data={experience_levels}
                     value={filter.experience_levels}
-                    onChange={(e) => filterFuncation('experience_levels',e,'add')}
+                    onChange={(e) => filterFuncation('experience_levels', e, 'add')}
                     placeholder="Experience"
                     className="w-100 mt-2"
                 />
@@ -79,7 +82,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     filter.experience_levels.length > 0 && filter.experience_levels.map((item, index) => {
                         return <Tag key={index}
                                     onClose={() => {
-                                        filterFuncation('experience_levels',item,'remove')
+                                        filterFuncation('experience_levels', item, 'remove')
                                     }
                                     } closable
                                     className="close-tag my-2">{experience_levels.find(i => i.value === item)?.label}</Tag>
@@ -89,7 +92,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     size="lg"
                     data={skills}
                     value={filter.skills}
-                    onChange={(e) => filterFuncation('skills',e,'add')}
+                    onChange={(e) => filterFuncation('skills', e, 'add')}
                     placeholder="Skilss"
                     className="w-100 mt-2"
                 />
@@ -97,7 +100,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     filter.skills.length > 0 && filter.skills.map((item, index) => {
                         return <Tag key={index}
                                     onClose={() => {
-                                        filterFuncation('skills',item,'remove')
+                                        filterFuncation('skills', item, 'remove')
                                     }
                                     } closable
                                     className="close-tag my-2">{skills.find(i => i.value === item)?.label}</Tag>
@@ -107,7 +110,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     size="lg"
                     data={locations}
                     value={filter.locations}
-                    onChange={(e) => filterFuncation('locations',e,'add')}
+                    onChange={(e) => filterFuncation('locations', e, 'add')}
                     placeholder="Location"
                     className="w-100 mt-2"
                 />
@@ -115,7 +118,7 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                     filter.locations.length > 0 && filter.locations.map((item, index) => {
                         return <Tag key={index}
                                     onClose={() => {
-                                        filterFuncation('locations',item,'remove')
+                                        filterFuncation('locations', item, 'remove')
                                     }
                                     } closable
                                     className="close-tag my-2">{locations.find(i => i.value === item)?.label}</Tag>
@@ -133,12 +136,24 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
                             <Dropdown.Item>32</Dropdown.Item>
                         </Dropdown>
                     </div>
-                    <div className="col-6" style={{marginTop : "140px"}}><CardTeammerProfile  isProfile={false}/></div>
-                    <div className="col-6" style={{marginTop : "140px"}}><CardTeammerProfile isProfile={false}/></div>
-                    <div className="col-6" style={{marginTop : "140px"}}><CardTeammerProfile isProfile={false}/></div>
-                    <div className="col-6" style={{marginTop : "140px"}}><CardTeammerProfile isProfile={false}/></div>
-                    <div className="col-6" style={{marginTop : "140px"}}><CardTeammerProfile isProfile={false}/></div>
-                    <div className="col-6" style={{marginTop : "140px"}}><CardTeammerProfile isProfile={false}/></div>
+                    <div className="row">
+                        {
+                            items.items.map(item => <div className="col-md-6"><CardTeammerProfile props={
+                                {full_name: item.full_name,
+                                    photo : item.detail.photo,
+                                    location : item.detail.location.name +" , " + item.detail.location.country_code,
+                                    skills : item.skills,
+                                    positions : item.positions
+                                }
+                            } isProfile={false}/></div>)
+                        }
+                    </div>
+                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
+                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
+                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
+                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
+                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
+                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
                 </div>
                 <Pagination
                     prev
@@ -160,9 +175,9 @@ const Home = ({project_types,experience_levels , skills , locations})=>{
 Home.layout = true;
 export default Home
 
-export const getServerSideProps = async (context)=>{
+export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
-    if(auth !== "1"){
+    if (auth !== "1") {
         return {
             redirect: {
                 destination: "/login",
@@ -170,24 +185,27 @@ export const getServerSideProps = async (context)=>{
             },
         };
     }
-    const project_types = await axios.get(config.BASE_URL+"project/types");
-    const experience_levels = await axios.get(config.BASE_URL+"experience-levels");
+    const project_types = await axios.get(config.BASE_URL + "project/types");
+    const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
     const skills = await axios.get(config.BASE_URL + "skills");
     const locations = await axios.get(config.BASE_URL + "locations");
-   return {
-       props : {
-           project_types : project_types.data.data.map(item => {
-               return {label: item.name, value: item.id}
-           }),
-           experience_levels : experience_levels.data.data.map(item => {
-               return {label: item.name, value: item.id}
-           }),
-           skills: skills.data.data.items.map(item => {
-               return {label: item.name, value: item.id}
-           }),
-           locations: locations.data.data.items.map(item => {
-               return {label: item.name, value: item.id}
-           }),
-       }
-   }
+    const item =await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
+    console.log(item)
+    return {
+        props: {
+            project_types: project_types.data.data.map(item => {
+                return {label: item.name, value: item.id}
+            }),
+            experience_levels: experience_levels.data.data.map(item => {
+                return {label: item.name, value: item.id}
+            }),
+            skills: skills.data.data.items.map(item => {
+                return {label: item.name, value: item.id}
+            }),
+            locations: locations.data.data.items.map(item => {
+                return {label: item.name, value: item.id}
+            }),
+            items: item.data
+        }
+    }
 }

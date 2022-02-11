@@ -7,20 +7,21 @@ import {
 import ActionLink from '../Lib/ActionLink';
 import { GrMailOption } from 'react-icons/gr'
 import Image from 'next/image';
-const CardTeammerProfile = (props) => {
+const CardTeammerProfile = ({props,isProfile}) => {
 
     const {
-        isProfile,
-        fullname,
+        full_name,
+        photo,
         position,
         experienceYear,
         role,
         location,
         about,
         avatarUrl,
-        skillList,
+        skills,
+        positions
     } = props;
-
+    console.log(props)
     React.useEffect(() => {
         console.log('CardTeammerProfile', props);
     }, [props])
@@ -31,7 +32,7 @@ const CardTeammerProfile = (props) => {
                 <Avatar
                     size="lg"
                     circle
-                    src={avatarUrl ? avatarUrl : "/img/avatar2.png"}
+                    src={photo ? photo : "/img/avatar2.png"}
                     alt="profile img"
                 />
                 <div className="icons-wrapper">
@@ -91,7 +92,7 @@ const CardTeammerProfile = (props) => {
             <div className="card-content">
                 <div className="profile">
                     <h1>
-                        {fullname}
+                        {full_name}
                     </h1>
                     <h3>{position} / {experienceYear ? `${experienceYear} years experience` : ''}</h3>
                     <p>
@@ -102,7 +103,7 @@ const CardTeammerProfile = (props) => {
                             height={16}
                             layout='fixed'
                         />
-                        {role}
+                        {positions.map(item => item.name +" / ")}
                     </p>
                     <p>
                         <Image
@@ -118,7 +119,7 @@ const CardTeammerProfile = (props) => {
                 <div className="tag-wrapper">
 
                     {
-                        skillList?.map((item, index) => {
+                        skills?.map((item, index) => {
                             return <Tag key={index} size="lg" className="custom-tag">{item.name}</Tag>
                         })
                     }

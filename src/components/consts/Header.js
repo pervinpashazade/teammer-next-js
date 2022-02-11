@@ -13,7 +13,10 @@ import {wrapper} from "../../store/redux-store";
 import {useDispatch, useSelector} from "react-redux";
 import Image from "next/image";
 import menu from '../../../public/img/menu.png'
-import cancel from '../../../public/img/cancel.png'
+import cancel from '../../../public/img/cancel.png';
+import homeIcon from '../../../public/img/home-icon.png'
+import arrowRight from '../../../public/img/arrow-right 1.png'
+
 const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
     return (
         <Popover ref={ref} {...props}>
@@ -173,7 +176,7 @@ const Header = () => {
 
     const store = useSelector(store => store);
     const dispatch = useDispatch();
-    const [isOpen , setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
     const toggleMenu = () => {
         setIsOpen(!isOpen)
@@ -219,7 +222,7 @@ const Header = () => {
                         {/*                </a>*/}
                         {/*            </Link>*/}
                         {/*}*/}
-                        <div className="d-flex justify-content-between w-100">
+                        <div className="d-flex justify-content-between w-md-100">
                             <div>
                                 <a className="d-inline-block d-md-none" onClick={toggleMenu}>
                                     <Image
@@ -275,7 +278,7 @@ const Header = () => {
                         {/*<button className="navbar-toggler" type="button">*/}
                         {/*    <span className="navbar-toggler-icon"></span>*/}
                         {/*</button>*/}
-                        <div className="d-md-initial d-none">
+                        <div className="d-md-inline-block d-none">
                             <CustomInputGroupWidthButton
                                 size="lg"
                                 placeholder="Search"
@@ -353,6 +356,81 @@ const Header = () => {
                         height={25}
                         quality={100}
                     /></a>
+                </div>
+                <div className="responsive-menu-links">
+                    <ul>
+                        <li>
+                            <a className="text-link">Home &nbsp; <Link href="/">
+                                <Image
+                                    src={homeIcon}
+                                    alt='logo'
+                                    width={18}
+                                    height={18}
+                                    quality={100}
+                                />
+                            </Link></a>
+                            <a className="arrowRightButton">
+                                <Link href="/">
+                                    <Image
+                                        src={arrowRight}
+                                        alt='logo'
+                                        width={20}
+                                        height={20}
+                                        quality={100}
+                                    />
+                                </Link>
+                            </a>
+                        </li>
+                        <li>
+                            <a className="text-link">Inspiration &nbsp; <Link href="/">
+                                🌟
+                            </Link>
+                            </a>
+                            <a className="arrowRightButton">
+                                <Link href="/">
+                                    <Image
+                                        src={arrowRight}
+                                        alt='logo'
+                                        width={20}
+                                        height={20}
+                                        quality={100}
+                                    />
+                                </Link>
+                            </a>
+                        </li>
+                        <li>
+                            <a className="text-link">Pricing &nbsp; <Link href="/">
+                                🌟
+                            </Link></a>
+                            <a className="arrowRightButton">
+                                <Link href="/">
+                                    <Image
+                                        src={arrowRight}
+                                        alt='logo'
+                                        width={20}
+                                        height={20}
+                                        quality={100}
+                                    />
+                                </Link>
+                            </a>
+                        </li>
+                        <li>
+                            <a className="text-link">Community &nbsp; <Link href="/">
+                                🌟
+                            </Link></a>
+                            <a className="arrowRightButton">
+                                <Link href="/">
+                                    <Image
+                                        src={arrowRight}
+                                        alt='logo'
+                                        width={20}
+                                        height={20}
+                                        quality={100}
+                                    />
+                                </Link>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
