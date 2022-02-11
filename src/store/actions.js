@@ -14,4 +14,7 @@ export const setData = (key, data) => {
     }
 }
 
+
+
+
 export {LOGIN,SET_DATA}
