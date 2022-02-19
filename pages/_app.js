@@ -8,8 +8,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import '../styles/style.scss';
 import {SessionProvider} from "next-auth/react"
+import {withCookie} from "next-cookie";
 
-function MyApp({Component, pageProps: {session, ...pageProps}}) {
+function MyApp({Component, pageProps}) {
     const router = useRouter();
     const store = useSelector(state => state)
     const dispatch = useDispatch();
@@ -24,15 +25,16 @@ function MyApp({Component, pageProps: {session, ...pageProps}}) {
     //         <Component {...pageProps} />
     //     </SessionProvider>
     // } else
-    console.log(Component)
-    return <SessionProvider session={session}>
+    console.log(router.pathname )
+    console.log(Component.layout)
+    return <div>
         {
             Component.layout ?
                 <Layout>
                     <Component {...pageProps} />
                 </Layout> : <Component {...pageProps} />
         }
-    </SessionProvider>
+    </div>
 }
 
 

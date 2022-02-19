@@ -27,7 +27,6 @@ import Image from "next/image";
 import { setCookie } from "../../src/helpers/cookie";
 import getAuth from "../../lib/session";
 import {withCookie} from 'next-cookie'
-const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -90,6 +89,9 @@ const buildFormData = (formData, data, parentKey) => {
 }
 
 const StepsComponent = (props) => {
+    const editorRef = useRef();
+    const { CKEditor, ClassicEditor } = editorRef.current || {};
+    const [editorLoader, setEditorLoaded] = useState(false)
     const {cookie} = props
     const store = useSelector(store => store);
 
@@ -182,7 +184,6 @@ const StepsComponent = (props) => {
     const buttonRef = useRef();
     const ownerRef = useRef();
     let reactQuillRef = useRef();
-
     useEffect(() => {
         // if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
         //     router.push("/signup");
@@ -192,6 +193,11 @@ const StepsComponent = (props) => {
         //     } else if (store.isAuth === "TEAMMER_TYPE") {
         //         router.push("/teammer/home");
         //     }
+        editorRef.current = {
+            CKEditor: require("@ckeditor/ckeditor5-react").CKEditor, // v3+
+            ClassicEditor: require("@ckeditor/ckeditor5-build-classic")
+        };
+        setEditorLoaded(true)
             let year_array = [];
             let nowDate = (new Date()).getFullYear();
             for (let i = 2000; i <= nowDate; i++) {
@@ -212,9 +218,8 @@ const StepsComponent = (props) => {
     const editButton = (c) => {
         setCurrent(c)
     }
-    const handleChange = (content, delta, source, editor) => {
-        const text = editor.getText(content);
-        setEditorText(text);
+    const handleChange = (data) => {
+        setEditorText(data);
     }
     const portoflioAdd = (type, element) => {
         if (type === "add") {
@@ -348,7 +353,7 @@ const StepsComponent = (props) => {
         setCurrent(3)
     }
     const uploadToClient = (event, type) => {
-
+            console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
             setImage({
@@ -768,7 +773,7 @@ const StepsComponent = (props) => {
                                             <span>{props.project_types.find(item => item.value === ownerInformation.startupType)?.label}</span>
                                         </p>
                                         <p className="summary_person"><span>Description</span>
-                                            <span>{editorText}</span>
+                                            <span>{editorText.length > 10 ? editorText.slice(0,10)+"..." : editorText}</span>
                                         </p>
                                     </div> :
                                         <div>
@@ -823,12 +828,25 @@ const StepsComponent = (props) => {
                                         </Form>
                                         <Form.Group className="mt-2">
                                             <Form.ControlLabel>Description about startup</Form.ControlLabel>
-                                            <ReactQuill
-                                                className="mt-2"
-                                                defaultValue={editorText}
-                                                style={{ height: '10rem' }}
-                                                onChange={handleChange}
-                                            />
+                                            {/*<ReactQuill*/}
+                                            {/*    className="mt-2"*/}
+                                            {/*    defaultValue={editorText}*/}
+                                            {/*    style={{ height: '10rem' }}*/}
+                                            {/*    onChange={handleChange}*/}
+                                            {/*/>*/}
+                                            {editorLoader ? <CKEditor
+                                                style={{maxWidth : "400px"}}
+                                                name={"name"}
+                                                editor={ClassicEditor}
+                                                data={editorText}
+                                                onChange={(event, editor) => {
+                                                    const data = editor.getData();
+                                                    // console.log({ event, editor, data })
+                                                    // onChange(data);
+                                                    console.log(data)
+                                                    handleChange(data)
+                                                }}
+                                            /> : ''}
                                         </Form.Group>
                                     </Form>
                                     <div className="d-flex justify-content-end routing-button"
@@ -1150,7 +1168,7 @@ const StepsComponent = (props) => {
                                                     </Form.Group>
                                                     <Uploader className="upload"
                                                         onChange={(fileList, fileType) => setCv(fileList[0])}
-                                                        action="">
+                                                        action="" maxPreviewFileSize={2}>
                                                         <button type="button">
                                                             Import from Linkedin
                                                         </button>
@@ -1235,7 +1253,8 @@ const StepsComponent = (props) => {
                                                 <Input type="number" min={0} placeholder='Salary' value={team.salary}
                                                     onChange={(e) => teamFunction('salary', e, experienceCount)} />
                                                 <InputPicker style={{
-                                                    maxWidth: '100px'
+                                                    maxWidth: '100px',
+                                                    marginLeft : "5px"
                                                 }} size="lg"
                                                     placeholder="Salary periods"
                                                     onChange={(e) => teamFunction('salary_periods', e, experienceCount)}
@@ -1272,18 +1291,26 @@ const StepsComponent = (props) => {
                                                 <Form.ControlLabel>
                                                     Description about Job Position
                                                 </Form.ControlLabel>
-                                                {
-
-                                                }
-                                                <ReactQuill
-                                                    style={{ height: '10rem' }}
-                                                    ref={reactQuillRef}
-                                                    defaultValue={team.descriptionEditorText}
-                                                    onChange={(content, delta, source, editor) => {
-                                                        const text = editor.getText(content);
-                                                        teamFunction('descriptionEditorText', text, experienceCount);
+                                                {/*<ReactQuill*/}
+                                                {/*    style={{ height: '10rem' }}*/}
+                                                {/*    ref={reactQuillRef}*/}
+                                                {/*    defaultValue={team.descriptionEditorText}*/}
+                                                {/*    onChange={(content, delta, source, editor) => {*/}
+                                                {/*        const text = editor.getText(content);*/}
+                                                {/*        teamFunction('descriptionEditorText', text, experienceCount);*/}
+                                                {/*    }}*/}
+                                                {/*    className="mt-2" />*/}
+                                                {editorLoader ? <CKEditor
+                                                    name={"name"}
+                                                    editor={ClassicEditor}
+                                                    data={team.descriptionEditorText}
+                                                    onChange={(event, editor) => {
+                                                        const data = editor.getData();
+                                                        // console.log({ event, editor, data })
+                                                        // onChange(data);
+                                                        teamFunction('descriptionEditorText', data, experienceCount);
                                                     }}
-                                                    className="mt-2" />
+                                                /> : ''}
                                             </Form.Group>
                                             <button
                                                 style={{ margin: "2rem" }}

@@ -5,7 +5,9 @@
 ul {
     list-style-type: none;
 }
-
+.ck.ck-reset.ck-editor{
+    max-width: 450px !important;
+}
 .custom-tag {
     padding: 9px 16px 8px 16px;
     background: #e0e9fd;

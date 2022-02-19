@@ -17,7 +17,7 @@ import getAuth from "../../lib/session";
 
 const Home = (props) => {
     const store = useSelector(store => store);
-
+    console.log(props)
     const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         <InputGroup {...props} inside>
             <Input placeholder={placeholder} className="input-wrap" />
@@ -27,11 +27,11 @@ const Home = (props) => {
         </InputGroup>
     );
 
-    useEffect(() => {
-        if (store.isAuth !== "TEAMMER_TYPE") {
-            Router.replace("/login")
-        }
-    }, [store.isAuth]);
+    // useEffect(() => {
+    //     if (store.isAuth !== "TEAMMER_TYPE") {
+    //         Router.replace("/login")
+    //     }
+    // }, [store.isAuth]);
 
     return <div className="teammer-home">
         <div className="teammer-home-baner">
@@ -109,7 +109,7 @@ const Home = (props) => {
     </div>
 }
 Home.layout = true
-export default wrapper.withRedux(Home);
+export default Home;
 
 export const getServerSideProps = async (context) => {
 
@@ -117,7 +117,7 @@ export const getServerSideProps = async (context) => {
     // const cookie = Cookie.fromApiRoute(req, res);
     // let accessToken = cookie.get('teammers-access-token');
     const auth = getAuth(context);
-    if(auth !== "2"){
+    if (auth !== "2") {
         return {
             redirect: {
                 destination: "/login",

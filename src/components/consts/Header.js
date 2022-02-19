@@ -242,7 +242,8 @@ const Header = () => {
                                             height={18}
                                         />
                                     </a>
-                                </Link></a>
+                                </Link>
+                                </a>
                             </div>
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
@@ -282,7 +283,7 @@ const Header = () => {
                             <CustomInputGroupWidthButton
                                 size="lg"
                                 placeholder="Search"
-                                className="search-input"
+                                className="search-input custom-input-color"
                             />
                         </div>
                         <div className="collapse navbar-collapse d-none d-md-initial" id="navbarSupportedContent">
