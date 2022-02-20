@@ -10,10 +10,8 @@ import getAuth from "../lib/session";
 import config from '../src/configuration';
 
 export default function Home(props) {
-    const store = useSelector(store => store);
     // const {data: session} = useSession();
 
-    console.log(props)
     // useEffect(() => {
     //     if (store.isAuth === "TEAMMER_TYPE") {
     //         Router.replace("/teammer/home");
@@ -34,6 +32,7 @@ export default function Home(props) {
         </div>
     )
 }
+
 Home.layout = true;
 
 export const getServerSideProps = async (context) => {

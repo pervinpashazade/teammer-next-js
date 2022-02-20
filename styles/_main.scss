@@ -7,54 +7,54 @@ body {
   background-color: linear-gradient(180.62deg, #fcfcfc 2.19%, #eff5fc 99.49%) !important;
   height: 100% !important;
 }
-.custom-input-color{
-  input{
+.custom-input-color {
+  input {
     background-color: #fafafa;
     padding: 5px;
   }
 }
-.responsive-menu{
+.responsive-menu {
   position: fixed;
   width: 90%;
   top: 0;
   bottom: 0;
   left: 0;
-  height : 100%;
+  height: 100%;
   background-color: white;
   z-index: 99999;
   border-top-right-radius: 48px;
   border-bottom-right-radius: 48px;
   margin-left: -90%;
   transition: all 0.4s;
-  &.add-margin{
+  &.add-margin {
     margin-left: 0%;
   }
-  .responsive-menu-header{
+  .responsive-menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 25px;
   }
-  .responsive-menu-links{
-    ul{
+  .responsive-menu-links {
+    ul {
       margin: 0px;
       padding: 0px;
-      li{
+      li {
         list-style-type: none;
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin: 10px 20px 10px 20px;
         padding-bottom: 10px;
-        border-bottom: 1px solid #EDF3FF;
-        .text-link{
+        border-bottom: 1px solid #edf3ff;
+        .text-link {
           font-size: 18px;
           font-weight: 500;
           display: flex;
           align-items: center;
         }
-        .arrowRightButton{
-          border: 2px solid #EAEAEA;
+        .arrowRightButton {
+          border: 2px solid #eaeaea;
           padding: 8px 10px 3px;
           border-radius: 5px;
         }
@@ -2050,4 +2050,9 @@ ul.profile-edit-nav {
       }
     }
   }
+}
+
+//save-job-icon
+.save-job-icon{
+  cursor: pointer;
 }

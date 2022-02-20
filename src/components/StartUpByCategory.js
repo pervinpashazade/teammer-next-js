@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import CardStartUp from "./Cards/CardStartUp";
 import { Button } from 'rsuite';
 import Link from 'next/link'
 import StartUpWeek from "./StartUpWeek";
 import StartUpBlog from "./StartUpBlog";
-import { wrapper } from "../store/redux-store";
 import { useSelector } from "react-redux";
 import { Cookie, withCookie } from 'next-cookie';
 import config from "../configuration";
@@ -12,11 +11,14 @@ import config from "../configuration";
 const StartUpByCategory = (props) => {
 
     const {
+        cookie,
         jobList,
         positionList,
     } = props;
 
-    // const store = useSelector(store => store);
+    const [userType, setUserType] = useState(
+        cookie.get('teammers-type') ? cookie.get('teammers-type') : ''
+    );
 
     return (
         <div className="startup-category">
@@ -33,57 +35,28 @@ const StartUpByCategory = (props) => {
                                     >
                                         <CardStartUp
                                             title={item.project?.title}
-                                            ownerFullname={item.project?.user_id}
+                                            ownerFullname={item.project?.owner?.full_name}
+                                            ownerAvatarUrl={item.project?.owner?.detail?.photo}
                                             position={positionList.find(x => x.id === item.position_id)?.name}
                                         />
                                     </div>
                                 })
                             }
                             {
-                                <div className="blur col-12 d-flex">
-                                    <div className="login-signup">
-                                        <p>Sign up or Log in to continue searching</p>
-                                        <div>
-                                            <Link href="/login" passHref><a className="login">Log in</a></Link>
-                                            <Link href="/signup" passHref><Button className="sign-up">Sign Up</Button></Link>
+                                !userType || userType !== "2" ?
+                                    <div className="blur col-12 d-flex">
+                                        <div className="login-signup">
+                                            <p>Sign up or Log in to continue searching</p>
+                                            <div>
+                                                <Link href="/login" passHref><a className="login">Log in</a></Link>
+                                                <Link href="/signup" passHref><Button className="sign-up">Sign Up</Button></Link>
+                                            </div>
                                         </div>
+                                        <div className="col-6 d-none d-md-block"><CardStartUp /></div>
+                                        <div className="col-md-6 col-12"><CardStartUp /></div>
                                     </div>
-                                    <div className="col-6 d-none d-md-block"><CardStartUp /></div>
-                                    <div className="col-md-6 col-12"><CardStartUp /></div>
-                                </div>
-                            }
-                        </div>
-                        <p>Opportunities for Designers</p>
-                        <div className="row">
-                            {
-                                jobList?.map((item, index) => {
-
-                                    if (index <= 3) {
-                                        return <div
-                                            key={index}
-                                            className="col-md-6"
-                                        >
-                                            <CardStartUp
-                                                title={item.project?.title}
-                                                ownerFullname={item.project?.user_id}
-                                                position={positionList.find(x => x.id === item.position_id)?.name}
-                                            />
-                                        </div>
-                                    };
-                                })
-                            }
-                            {
-                                <div className="blur col-12 d-flex">
-                                    <div className="login-signup">
-                                        <p>Sign up or Log in to continue searching</p>
-                                        <div>
-                                            <Link href={'/login'} passHref><a className="login">Log in</a></Link>
-                                            <Link href={'/signup'} passHref><Button className="sign-up">Sign Up</Button></Link>
-                                        </div>
-                                    </div>
-                                    <div className="col-6 d-none d-md-block"><CardStartUp /></div>
-                                    <div className="col-md-6 col-12"><CardStartUp /></div>
-                                </div>
+                                    :
+                                    null
                             }
                         </div>
                     </div>
@@ -97,4 +70,4 @@ const StartUpByCategory = (props) => {
     )
 }
 
-export default wrapper.withRedux(StartUpByCategory);
+export default withCookie(StartUpByCategory);
