@@ -1,19 +1,36 @@
-import {Avatar} from "rsuite";
+import { Avatar } from "rsuite";
 
-const CardWeek = ()=>{
-    return(
+const CardWeek = (props) => {
+
+    const {
+        logoUrl,
+        title,
+        type,
+    } = props;
+
+    return (
         <div className="startup-card">
-                <div className="status-logo">
-                    <div className="logo">
-                        <Avatar circle />
-                        <span>LOGO</span>
-                    </div>
-                    <button className="status">Remote</button>
+            <div className="status-logo">
+                <div className="logo">
+                    <Avatar
+                        circle
+                        src={
+                            logoUrl ? logoUrl
+                                :
+                                "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                        }
+                    />
                 </div>
-                <div className="job-name">
-                    <h5>Product Designer</h5>
-                    <p>Dallas Texas</p>
-                </div>
+                <button className="status">
+                    {type}
+                </button>
+            </div>
+            <div className="job-name">
+                <h5>
+                    {title}
+                </h5>
+                {/* <p>Dallas Texas</p> */}
+            </div>
         </div>
     )
 }

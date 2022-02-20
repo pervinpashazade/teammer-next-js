@@ -28,6 +28,7 @@ export default function Home(props) {
             <Content
                 jobList={props.jobList ? props.jobList : []}
                 positionList={props.positionList ? props.positionList : []}
+                startup_of_week_list={props.startup_of_week_list ? props.startup_of_week_list : []}
             />
         </div>
     )
@@ -58,11 +59,15 @@ export const getServerSideProps = async (context) => {
     const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,project.owner,position&per_page=6");
     const jobListData = await fetchJobList.json();
 
+    const fetchWeeklyStartups = await fetch(config.BASE_URL + "startup-of-week");
+    const startup_of_week_list = await fetchWeeklyStartups.json();
+
     return {
         props: {
             protected: false,
             positionList: positionsData.data.items,
             jobList: jobListData?.data?.items ? jobListData.data.items : [],
+            startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],
         }
     }
 }
