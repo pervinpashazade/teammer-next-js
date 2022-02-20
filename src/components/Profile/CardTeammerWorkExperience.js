@@ -8,6 +8,7 @@ function CardTeammerWorkExperience(props) {
         editMode,
         createModal,
         editModal,
+        workExperienceList,
     } = props;
 
     return (
@@ -18,7 +19,6 @@ function CardTeammerWorkExperience(props) {
                     size="md"
                     className='add-exp-btn'
                     icon={
-                        // <img src='/icons/plus.svg' alt='plus icon svg' />
                         <Image
                             src={'/icons/plus.svg'}
                             alt='img'
@@ -31,52 +31,32 @@ function CardTeammerWorkExperience(props) {
                 />
             </div>
             <ul className="experience-wrapper">
-                <li>
-                    <span className="date">Sep 2018 - 2019 Aug</span>
-                    <h3>Lead UX/UI Designer </h3>
-                    <p>Netflix / San Francisco, CA</p>
-                    {
-                        editMode &&
-                        <IconButton
-                            size="sm"
-                            className='edit-exp-btn bg-transparent'
-                            icon={
-                                // <img src='/icons/edit.svg' alt='edit icon svg' />
-                                <Image
-                                    src={'/icons/edit.svg'}
-                                    alt='img'
-                                    width={16}
-                                    height={16}
-                                    layout='fixed'
+                {
+                    workExperienceList?.map((item, index) => {
+                        return <li>
+                            <span className="date">{item.start_date} - {item.end_date}</span>
+                            <h3>{item.position?.name}</h3>
+                            <p>{item.company} / San Francisco, CA</p>
+                            {
+                                editMode &&
+                                <IconButton
+                                    size="sm"
+                                    className='edit-exp-btn bg-transparent'
+                                    icon={
+                                        <Image
+                                            src={'/icons/edit.svg'}
+                                            alt='img'
+                                            width={16}
+                                            height={16}
+                                            layout='fixed'
+                                        />
+                                    }
+                                    onClick={() => editModal.toggleFunc()}
                                 />
                             }
-                            onClick={() => editModal.toggleFunc()}
-                        />
-                    }
-                </li>
-                <li>
-                    <span className="date">Sep 2018 - 2019 Aug</span>
-                    <h3>Lead UX/UI Designer </h3>
-                    <p>Netflix / San Francisco, CA</p>
-                    {
-                        editMode &&
-                        <IconButton
-                            size="sm"
-                            className='edit-exp-btn bg-transparent'
-                            icon={
-                                // <img src='/icons/edit.svg' alt='edit icon svg' />
-                                <Image
-                                    src={'/icons/edit.svg'}
-                                    alt='img'
-                                    width={16}
-                                    height={16}
-                                    layout='fixed'
-                                />
-                            }
-                            onClick={() => editModal.toggleFunc()}
-                        />
-                    }
-                </li>
+                        </li>
+                    })
+                }
             </ul>
             {
                 createModal &&

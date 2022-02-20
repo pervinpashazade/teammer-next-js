@@ -37,7 +37,9 @@ const profileTeammer = (props) => {
                         location={props.locationList.find(x => x.id === props.userData.detail?.location_id)?.name}
                         skillList={props.userData?.skills}
                     />
-                    <CardTeammerWorkExperience />
+                    <CardTeammerWorkExperience
+                        workExperienceList={props.userData.experiences}
+                    />
                 </div>
                 <div className="content">
                     <div className="portfolio-wrapper">
@@ -77,7 +79,7 @@ export const getServerSideProps = async (context) => {
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
+    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions,experiences", {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
