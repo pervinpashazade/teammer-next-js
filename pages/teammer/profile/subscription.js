@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import BreadCrumb from '../../src/components/Lib/BreadCrumb';
-import Banner from '../../src/components/Lib/Banner';
+import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
+import Banner from '../../../src/components/Lib/Banner';
 import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
 import { RiSettingsLine } from 'react-icons/ri';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form, Toggle } from 'rsuite';
-import ActionLink from '../../src/components/Lib/ActionLink';
+import ActionLink from '../../../src/components/Lib/ActionLink';
 import Image from 'next/image';
 import { Cookie, withCookie } from 'next-cookie';
-import config from '../../src/configuration';
+import config from '../../../src/configuration';
 
 const Subscription = (props) => {
 
@@ -25,7 +25,7 @@ const Subscription = (props) => {
                 <div className="left-side">
                     <ul className="profile-edit-nav">
                         <li>
-                            <Link href="/profile-teammer/edit">
+                            <Link href="/teammer/profile/edit">
                                 <a>
                                     <MdModeEdit />
                                     <span>Edit Profile</span>
@@ -33,7 +33,7 @@ const Subscription = (props) => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/profile-teammer/settings">
+                            <Link href="/teammer/profile/settings">
                                 <a>
                                     <RiSettingsLine />
                                     <span>Account Settings</span>
@@ -41,7 +41,7 @@ const Subscription = (props) => {
                             </Link>
                         </li>
                         <li className='active'>
-                            <Link href="/profile-teammer/subscription">
+                            <Link href="/teammer/profile/subscription">
                                 <a>
                                     <MdOutlineWorkOutline />
                                     <span>Manage Subscription</span>
@@ -49,7 +49,7 @@ const Subscription = (props) => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/profile-teammer/blocked-users">
+                            <Link href="/teammer/profile/blocked-users">
                                 <a>
                                     <FaRegTimesCircle />
                                     <span>Blocked Users</span>
@@ -103,7 +103,7 @@ const Subscription = (props) => {
                                     </div>
                                     <ActionLink
                                         size="lg"
-                                        href="/profile-teammer/purchase-history"
+                                        href="/teammer/profile/purchase-history"
                                         classNames='bg-transparent'
                                         padding="7px"
                                         margin="0px 0px 0px 0.5rem"

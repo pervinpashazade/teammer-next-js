@@ -26,7 +26,7 @@ const CardTeammerProfile = ({ props }) => {
 
     return (
         <div className='profile-card-teammer' style={{
-            margin : isTop ? '46px 0px 40px 0px' : '0px'
+            margin: isTop ? '46px 0px 40px 0px' : '0px'
         }}>
             <div className="card-top">
                 <Avatar
@@ -75,7 +75,7 @@ const CardTeammerProfile = ({ props }) => {
                 </div>
                 <ActionLink
                     size="sm"
-                    href="profile-teammer/edit"
+                    href="/teammer/profile/edit"
                     classNames='bg-transparent'
                     padding="7px"
                     margin="0px 0px 0px 0.5rem"
@@ -92,7 +92,7 @@ const CardTeammerProfile = ({ props }) => {
             <div className="card-content">
                 <div className="profile">
                     <h1>
-                        {full_name}
+                        {full_name ? full_name : ''}
                     </h1>
                     <h3>{bio_position} / {year_of_experience ? `${year_of_experience} years experience` : ''}</h3>
                     <p>
@@ -125,21 +125,16 @@ const CardTeammerProfile = ({ props }) => {
                     }
 
                 </div>
-                {isProfile ? <div className="bio-wrapper">
-
-                    {about}
-
-                    {/* Hi there 🖖
-                    <br />
-                    My name is Zoia
-                    <br />
-                    <br />
-                    I’m a UX/UI designer with 4+ years of experience and with an understanding of the
-                    design process from concepts and market research to detailed design and implementation. */}
-                </div> : <div className="d-flex justify-content-around profile-buttons pt-3">
-                    <Button onClick={()=>addToTeam(full_name)}>Add to team</Button>
-                    <Button><GrMailOption /></Button>
-                </div>}
+                {
+                    isProfile ? <div className="bio-wrapper">
+                        {about}
+                    </div>
+                        :
+                        <div className="d-flex justify-content-around profile-buttons pt-3">
+                            <Button onClick={() => addToTeam(full_name)}>Add to team</Button>
+                            <Button><GrMailOption /></Button>
+                        </div>
+                }
             </div>
         </div>
     )

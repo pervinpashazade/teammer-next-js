@@ -26,7 +26,8 @@ function MyApp({ Component, pageProps }) {
     //     </SessionProvider>
     // } else
     // console.log(router.pathname )
-    // console.log(Component.layout)
+    console.log(Component.layout);
+    
     return <div>
         {
             Component.layout ?

@@ -1,13 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import BreadCrumb from '../../src/components/Lib/BreadCrumb';
-import Banner from '../../src/components/Lib/Banner';
+import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
+import Banner from '../../../src/components/Lib/Banner';
 import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
 import { RiSettingsLine } from 'react-icons/ri';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form } from 'rsuite';
 import { Cookie, withCookie } from 'next-cookie';
-import config from '../../src/configuration';
+import config from '../../../src/configuration';
 
 function blockedUsers(props) {
 
@@ -21,7 +21,7 @@ function blockedUsers(props) {
                 <div className="left-side">
                     <ul className="profile-edit-nav">
                         <li>
-                            <Link href="/profile-teammer/edit">
+                            <Link href="/teammer/profile/edit">
                                 <a>
                                     <MdModeEdit />
                                     <span>Edit Profile</span>
@@ -29,7 +29,7 @@ function blockedUsers(props) {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/profile-teammer/settings">
+                            <Link href="/teammer/profile/settings">
                                 <a>
                                     <RiSettingsLine />
                                     <span>Account Settings</span>
@@ -37,7 +37,7 @@ function blockedUsers(props) {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/profile-teammer/subscription">
+                            <Link href="/teammer/profile/subscription">
                                 <a>
                                     <MdOutlineWorkOutline />
                                     <span>Manage Subscription</span>
@@ -45,7 +45,7 @@ function blockedUsers(props) {
                             </Link>
                         </li>
                         <li className='active'>
-                            <Link href="/profile-teammer/blocked-users">
+                            <Link href="/teammer/profile/blocked-users">
                                 <a>
                                     <FaRegTimesCircle />
                                     <span>Blocked Users</span>

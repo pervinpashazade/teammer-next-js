@@ -1,5 +1,5 @@
 import React from 'react'
-import BreadCrumb from '../../src/components/Lib/BreadCrumb'
+import BreadCrumb from '../../../src/components/Lib/BreadCrumb'
 
 function purchaseHistory() {
     return (

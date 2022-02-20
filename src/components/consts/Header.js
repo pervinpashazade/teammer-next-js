@@ -270,7 +270,7 @@ const Header = (props) => {
                                                         "/profile-owner"
                                                         :
                                                         userType === "2" ?
-                                                            "/profile-teammer"
+                                                            "/teammer/profile"
                                                             :
                                                             "/login"
                                                     :
@@ -291,7 +291,7 @@ const Header = (props) => {
                                                     </a>
                                                 </Link>
                                                 :
-                                                <Link href="/profile-teammer">
+                                                <Link href="/teammer/profile">
                                                     <a>
                                                         <Avatar
                                                             circle
@@ -345,7 +345,7 @@ const Header = (props) => {
                                                     "/profile-owner"
                                                     :
                                                     userType === "2" ?
-                                                        "/profile-teammer"
+                                                        "/teammer/profile"
                                                         :
                                                         "/login"
                                                 :
