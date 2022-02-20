@@ -5,12 +5,16 @@ import axios from "axios";
 import config from "../../src/configuration";
 import getAuth, {getToken} from "../../lib/session";
 import {getFetchData} from "../../lib/fetchData";
+import { Modal } from 'rsuite';
 
-const Home = ({project_types, experience_levels, skills, locations, items}) => {
-    console.log(items);
+const Home = ({project_types, experience_levels, skills, locations, items , projects}) => {
+    console.log(projects);
+    const [open , setOpen] = useState(false);
+    const [teammerName , setTeammerName] = useState('')
     const [firstRender, setFirstRender] = useState(false)
     const [activePage, setActivePage] = useState(1);
-    const [dropdown, setDropdown] = useState('8')
+    const [dropdown, setDropdown] = useState('8');
+    const [jobName,setJobName] = useState(0);
     const [filter, setFilter] = useState({
         project_types: [],
         experience_levels: [],
@@ -32,6 +36,9 @@ const Home = ({project_types, experience_levels, skills, locations, items}) => {
             [key]: array
         })
     }
+    const getJobs = (e)=>{
+        console.log(e , projects)
+    }
     const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
         <InputGroup {...props} inside>
             <Input placeholder={placeholder}/>
@@ -40,24 +47,27 @@ const Home = ({project_types, experience_levels, skills, locations, items}) => {
             </InputGroup.Button>
         </InputGroup>
     );
-
+    const getData = ()=>{
+        let link = '';
+        if (filter.project_types.length > 0) link = link + "&filter[position]=" + filter.project_types.toString();
+        if (filter.skills.length > 0) link = link + "&filter[skill]=" + filter.skills.toString();
+        if (filter.experience_levels.length > 0) link = link + "&filter[experience]=" + filter.experience_levels.toString();
+        if (filter.locations.length > 0) link = link + "&filter[location]=" + filter.locations.toString();
+        axios.get(config.BASE_URL +
+            'teammers?include=detail,skills,positions,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
+            .then(res => {
+                setData(res.data.data)
+            })
+    }
     useEffect(async () => {
         if (firstRender) {
-            let link = '';
-            if (filter.project_types.length > 0) link = link + "&filter[position]=" + filter.project_types.toString();
-            if (filter.skills.length > 0) link = link + "&filter[skill]=" + filter.skills.toString();
-            if (filter.experience_levels.length > 0) link = link + "&filter[experience]=" + filter.experience_levels.toString();
-            if (filter.locations.length > 0) link = link + "&filter[location]=" + filter.locations.toString();
-            axios.get(config.BASE_URL +
-                'teammers?include=detail,skills,positions,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
-                .then(res => {
-                    setData(res.data.data)
-                })
+           getData();
         }
         setFirstRender(true)
     }, [activePage, dropdown, filter]);
-    const addToTeam = () => {
-
+    const addToTeam = (data) => {
+        setTeammerName(data);
+        setOpen(!open);
     }
     console.log(data)
     return <div className="owner-home">
@@ -174,8 +184,9 @@ const Home = ({project_types, experience_levels, skills, locations, items}) => {
                                 positions: item.positions,
                                 year_of_experience: item.detail.years_of_experience,
                                 bio_position: item.bio_position,
-                                isProfile: true,
-                                addToTeam : addToTeam()
+                                isProfile : false,
+                                isTop: true,
+                                addToTeam : addToTeam
                             }
                         } isProfile={false}/></div>)
                         }
@@ -205,6 +216,37 @@ const Home = ({project_types, experience_levels, skills, locations, items}) => {
                 />
             </div>
         </div>
+        <Modal open={open} onClose={()=>setOpen(!open)}>
+        <Modal.Header>
+            <Modal.Title>Add to team</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
+            <InputPicker
+                size="lg"
+                data={projects}
+                onChange={(e) => getJobs(e)}
+                placeholder="Name of Startup"
+                className="w-100"
+            />
+            <InputPicker
+                size="lg"
+                data={projects}
+                value={filter.project_types}
+                onChange={(e) => filterFuncation('project_types', e, 'add')}
+                placeholder="Position"
+                className="w-100 mt-3"
+            />
+        </Modal.Body>
+        <Modal.Footer>
+            <Button onClick={()=>setOpen(!open)} appearance="subtle">
+                Cancel
+            </Button>
+            <Button onClick={()=>setOpen(!open)} appearance="primary">
+                Ok
+            </Button>
+        </Modal.Footer>
+    </Modal>
     </div>
 
 
@@ -222,26 +264,29 @@ export const getServerSideProps = async (context) => {
             },
         };
     }
-    const project_types = await axios.get(config.BASE_URL + "project/types");
-    const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
-    const skills = await axios.get(config.BASE_URL + "skills");
-    const locations = await axios.get(config.BASE_URL + "locations");
+    const project_types = await getFetchData("project/types",getToken(context));
+    const experience_levels = await getFetchData("experience-levels",getToken(context));
+    const skills = await getFetchData("skills",getToken(context));
+    const locations = await getFetchData("locations",getToken(context));
+    const projects = await getFetchData("user/projects?include=jobs",getToken(context));
+    console.log(project_types)
     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
     console.log(item)
     return {
         props: {
-            project_types: project_types.data.data.map(item => {
+            project_types: project_types.data.map(item => {
                 return {label: item.name, value: item.id}
             }),
-            experience_levels: experience_levels.data.data.map(item => {
+            experience_levels: experience_levels.data.map(item => {
                 return {label: item.name, value: item.id}
             }),
-            skills: skills.data.data.items.map(item => {
+            skills: skills.data.items.map(item => {
                 return {label: item.name, value: item.id}
             }),
-            locations: locations.data.data.items.map(item => {
+            locations: locations.data.items.map(item => {
                 return {label: item.name, value: item.id}
             }),
+            projects : projects,
             items: item.data,
         }
     }

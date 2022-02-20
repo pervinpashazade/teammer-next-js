@@ -8,7 +8,7 @@ import ActionLink from '../Lib/ActionLink';
 import { GrMailOption } from 'react-icons/gr'
 import Image from 'next/image';
 
-const CardTeammerProfile = ({ props, isProfile }) => {
+const CardTeammerProfile = ({ props }) => {
     const {
         full_name,
         photo,
@@ -19,12 +19,14 @@ const CardTeammerProfile = ({ props, isProfile }) => {
         about,
         skills,
         positions,
-        isProfile
+        isProfile,
+        isTop,
+        addToTeam
     } = props;
 
     return (
         <div className='profile-card-teammer' style={{
-            margin : isProfile ? '46px 0px 40px 0px' : '0px'
+            margin : isTop ? '46px 0px 40px 0px' : '0px'
         }}>
             <div className="card-top">
                 <Avatar
@@ -135,7 +137,7 @@ const CardTeammerProfile = ({ props, isProfile }) => {
                     I’m a UX/UI designer with 4+ years of experience and with an understanding of the
                     design process from concepts and market research to detailed design and implementation. */}
                 </div> : <div className="d-flex justify-content-around profile-buttons pt-3">
-                    <Button>Add to team</Button>
+                    <Button onClick={()=>addToTeam(full_name)}>Add to team</Button>
                     <Button><GrMailOption /></Button>
                 </div>}
             </div>
