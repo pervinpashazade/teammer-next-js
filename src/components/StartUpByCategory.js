@@ -24,7 +24,7 @@ const StartUpByCategory = (props) => {
         <div className="startup-category">
             <>
                 <div className="row">
-                    <div className="col-md-8 startup-sections">
+                    <div className="col-md-12 mb-4 startup-sections">
                         <p>Opportunities for Developers</p>
                         <div className="row">
                             {
@@ -59,10 +59,6 @@ const StartUpByCategory = (props) => {
                                     null
                             }
                         </div>
-                    </div>
-                    <div className="col-md-4 p-0">
-                        <StartUpWeek />
-                        <StartUpBlog />
                     </div>
                 </div>
             </>

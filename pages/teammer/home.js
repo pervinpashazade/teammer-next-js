@@ -41,59 +41,24 @@ const Home = (props) => {
         <h4> &#128526; What are you looking for?</h4>
         <SearchHome />
 
-        <StartUpByCategory
-            jobList={props.jobList}
-            positionList={props.positionList}
-        />
-        <StartUpByCategory
-            jobList={props.jobList}
-            positionList={props.positionList}
-        />
-
-        {/* <div className="startup-category">
-            <div className="row">
-                <div className="col-md-8 startup-sections">
-                    <p>Opportunities for Developers</p>
-                    <div className="row">
-                        {
-                            props.jobList?.map((item, index) => {
-                                return <div
-                                    key={index}
-                                    className="col-md-6"
-                                >
-                                    <CardStartUp
-                                        title={item.project?.title}
-                                        ownerFullname={item.project?.owner?.full_name}
-                                        position={item.position?.name}
-                                    />
-                                </div>
-                            })
-                        }
-                    </div>
-                    <p className="mt-4">Opportunities for Designers</p>
-                    <div className="row">
-                        {
-                            props.jobList?.map((item, index) => {
-                                return <div
-                                    key={index}
-                                    className="col-md-6"
-                                >
-                                    <CardStartUp
-                                        title={item.project?.title}
-                                        ownerFullname={item.project?.user_id}
-                                        position={props.positionList.find(x => x.id === item.position_id)?.name}
-                                    />
-                                </div>
-                            })
-                        }
-                    </div>
-                </div>
-                <div className="col-md-4 p-0">
-                    <StartUpWeek />
-                    <StartUpBlog />
-                </div>
+        <div className="row">
+            <div className="col-md-8 mb-4">
+                <StartUpByCategory
+                    jobList={props.jobList}
+                    positionList={props.positionList}
+                />
+                <StartUpByCategory
+                    jobList={props.jobList}
+                    positionList={props.positionList}
+                />
             </div>
-        </div> */}
+            <div className="col-md-4 mb-4">
+                <StartUpWeek
+                    startupList={props.startup_of_week_list}
+                />
+                <StartUpBlog />
+            </div>
+        </div>
 
         {/*slider*/}
         {/* <div className="row">
@@ -140,11 +105,15 @@ export const getServerSideProps = async (context) => {
     const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,project.owner,position&per_page=6");
     const jobListData = await fetchJobList.json();
 
+    const fetchWeeklyStartups = await fetch(config.BASE_URL + "startup-of-week");
+    const startup_of_week_list = await fetchWeeklyStartups.json();
+
     return {
         props: {
             protected: false,
             positionList: positionsData.data.items,
             jobList: jobListData?.data?.items ? jobListData.data.items : [],
+            startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],
         }
     }
 }
