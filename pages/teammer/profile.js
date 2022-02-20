@@ -1,19 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
 import { Panel } from 'rsuite';
-import BreadCrumb from '../src/components/Lib/BreadCrumb';
-import Banner from '../src/components/Lib/Banner';
-import CardTeammerProfile from '../src/components/Profile/CardTeammerProfile';
-import CardTeammerWorkExperience from '../src/components/Profile/CardTeammerWorkExperience';
-import CardStartUp from '../src/components/Cards/CardStartUp';
-import CardTeammerPortfolio from '../src/components/Profile/CardTeammerPortfolio';
-import config from '../src/configuration';
+import BreadCrumb from '../../src/components/Lib/BreadCrumb';
+import Banner from '../../src/components/Lib/Banner';
+import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
+import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerWorkExperience';
+import CardStartUp from '../../src/components/Cards/CardStartUp';
+import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
+import config from '../../src/configuration';
 import { Cookie, withCookie } from 'next-cookie';
+import { getFetchData } from '../../lib/fetchData';
+import getAuth, { getToken } from "../../lib/session";
 
-const profileTeammer = (props) => {
+const ProfileTeammer = (props) => {
 
     const {
-        fullname,
+        // fullname,
     } = props;
 
     React.useEffect(() => {
@@ -27,15 +29,19 @@ const profileTeammer = (props) => {
             <div className="profile-wrapper">
                 <div className="left-side">
                     <CardTeammerProfile
-                        isProfile
-                        avatarUrl={props.userData.detail?.photo}
-                        fullname={props.userData?.full_name}
-                        about={props.userData?.detail?.about}
-                        position={props.userData.positions?.length ? props.userData.positions[0]?.name : []}
-                        experienceYear={props.userData.detail?.years_of_experience}
-                        role={props.roleList.find(x => x.id === props.userData.detail?.project_role_id)?.name}
-                        location={props.locationList.find(x => x.id === props.userData.detail?.location_id)?.name}
-                        skillList={props.userData?.skills}
+                        props={
+                            {
+                                isProfile: true,
+                                full_name: props.userData?.full_name,
+                                photo: props.userData.detail?.photo,
+                                location: props.locationList.find(x => x.id === props.userData.detail?.location_id)?.name,
+                                skills: props.userData?.skills,
+                                positions: props.userData.positions,
+                                year_of_experience: props.userData.detail?.years_of_experience,
+                                about: props.userData?.detail?.about,
+                                // role: props.roleList.find(x => x.id === props.userData.detail?.project_role_id)?.name,
+                            }
+                        }
                     />
                     <CardTeammerWorkExperience
                         workExperienceList={props.userData.experiences}
@@ -66,25 +72,15 @@ const profileTeammer = (props) => {
     )
 }
 
-export default profileTeammer;
+ProfileTeammer.layout = true;
+export default withCookie(ProfileTeammer);
 
 export const getServerSideProps = async (context) => {
-
-    const { params, req, res } = context;
-    const cookie = Cookie.fromApiRoute(req, res);
-    let accessToken = cookie.get('teammers-access-token');
-
-    console.log('accessToken', accessToken);
 
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions,experiences", {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
-    const userData = await fetchUserInfo.json();
+    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
 
     const fetchRoles = await fetch(config.BASE_URL + "project/roles");
     const rolesData = await fetchRoles.json();
@@ -95,7 +91,7 @@ export const getServerSideProps = async (context) => {
     return {
         props: {
             positionList: positionsData.data.items,
-            userData: userData?.data,
+            userData: fetchUserInfo?.data,
             roleList: rolesData.data,
             locationList: locationData.data.items,
         }
