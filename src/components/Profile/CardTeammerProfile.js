@@ -7,8 +7,8 @@ import {
 import ActionLink from '../Lib/ActionLink';
 import { GrMailOption } from 'react-icons/gr'
 import Image from 'next/image';
-const CardTeammerProfile = ({props}) => {
 
+const CardTeammerProfile = ({ props, isProfile }) => {
     const {
         full_name,
         photo,
@@ -101,7 +101,7 @@ const CardTeammerProfile = ({props}) => {
                             height={16}
                             layout='fixed'
                         />
-                        {positions.map(item => item.name +" / ")}
+                        {positions.map(item => item.name + " / ")}
                     </p>
                     <p>
                         <Image

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -8,16 +8,17 @@ import {
     Popover,
     Badge
 } from 'rsuite';
-import {RiArrowRightLine} from 'react-icons/ri';
-import {wrapper} from "../../store/redux-store";
-import {useDispatch, useSelector} from "react-redux";
+import { RiArrowRightLine } from 'react-icons/ri';
+import { wrapper } from "../../store/redux-store";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import menu from '../../../public/img/menu.png'
 import cancel from '../../../public/img/cancel.png';
 import homeIcon from '../../../public/img/home-icon.png'
 import arrowRight from '../../../public/img/arrow-right 1.png'
+import { withCookie } from 'next-cookie';
 
-const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
+const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -36,13 +37,13 @@ const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) =
                                 height={18}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine/></button>
+                            Show all <button><RiArrowRightLine /></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
                     <div>
-                        <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/>
+                        <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
                     </div>
                     <div className="message-text">
                         <p>Denis Delton wants to add you to their Netflix team.</p>
@@ -54,7 +55,7 @@ const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) =
     );
 });
 
-const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
+const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -70,12 +71,12 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
                                 height={20}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine/></button>
+                            Show all <button><RiArrowRightLine /></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
-                    <div><Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/></div>
+                    <div><Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" /></div>
                     <div className="message-text">
                         <p>Denis Delton</p>
                         <p>Yeah! I’m interested...</p>
@@ -91,13 +92,13 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
     );
 });
 
-const CustomComponentNotification = ({placement, loading, children, count = 3}) => (
+const CustomComponentNotification = ({ placement, loading, children, count = 3 }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverNotification content={`I am positioned to the ${placement}`}/>
+            <DefaultPopoverNotification content={`I am positioned to the ${placement}`} />
         }
     >
         {
@@ -131,13 +132,13 @@ const CustomComponentNotification = ({placement, loading, children, count = 3}) 
     </Whisper>
 );
 
-const CustomComponentMessage = ({placement, loading, children}) => (
+const CustomComponentMessage = ({ placement, loading, children }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverMessage content={`I am positioned to the ${placement}`}/>
+            <DefaultPopoverMessage content={`I am positioned to the ${placement}`} />
         }
     >
         <li>
@@ -155,9 +156,9 @@ const CustomComponentMessage = ({placement, loading, children}) => (
     </Whisper>
 );
 
-const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
+const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     <InputGroup {...props} inside>
-        <Input placeholder={placeholder}/>
+        <Input placeholder={placeholder} />
         <InputGroup.Button>
             {/* <img src="/icons/search.svg" /> */}
             <Image
@@ -172,10 +173,20 @@ const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
     </InputGroup>
 );
 
-const Header = () => {
+const Header = (props) => {
 
-    const store = useSelector(store => store);
-    const dispatch = useDispatch();
+    const { cookie } = props;
+
+    const [userType, setUserType] = useState(
+        cookie.get('teammers-type') ? cookie.get('teammers-type') : ''
+    );
+
+    // React.useEffect(() => {
+    //     console.log('cookie', cookie.get('teammers-type'));
+    // }, [cookie])
+
+    // const store = useSelector(store => store);
+    // const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
     const toggleMenu = () => {
@@ -247,16 +258,36 @@ const Header = () => {
                             </div>
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
-                                    <CustomComponentNotification placement="bottomEnd" loading={loading}/>
+                                    <CustomComponentNotification placement="bottomEnd" loading={loading} />
                                     <a className="mx-3"><CustomComponentMessage placement="bottomEnd"
-                                                                                loading={loading}/></a>
+                                        loading={loading} /></a>
                                     <li className="nav-item">
-                                        {
-                                            store.isAuth === "GUESS" ?
+                                        <Link
+                                            href="/login"
+                                            href={
+                                                userType ?
+                                                    userType === "1" ?
+                                                        "/profile-owner"
+                                                        :
+                                                        userType === "2" ?
+                                                            "/profile-teammer"
+                                                            :
+                                                            "/login"
+                                                    :
+                                                    "/login"
+                                            }
+                                        >
+                                            <a>
+                                                <Avatar circle
+                                                    src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                            </a>
+                                        </Link>
+                                        {/* {
+                                            userType === "" ?
                                                 <Link href="/login">
                                                     <a>
                                                         <Avatar circle
-                                                                src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/>
+                                                            src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
                                                     </a>
                                                 </Link>
                                                 :
@@ -264,14 +295,15 @@ const Header = () => {
                                                     <a>
                                                         <Avatar
                                                             circle
-                                                            src={store.user?.detail?.photo ? store.user.detail.photo
-                                                                :
-                                                                "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
-                                                            }
+                                                            src={"https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"}
+                                                            // src={store.user?.detail?.photo ? store.user.detail.photo
+                                                            //     :
+                                                            //     "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                                                            // }
                                                         />
                                                     </a>
                                                 </Link>
-                                        }
+                                        } */}
                                     </li>
                                 </ul>
                             </div>
@@ -302,30 +334,29 @@ const Header = () => {
                                 </ul>
                             </div>
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
-                                <CustomComponentNotification placement="bottomEnd" loading={loading}/>
-                                <CustomComponentMessage placement="bottomEnd" loading={loading}/>
+                                <CustomComponentNotification placement="bottomEnd" loading={loading} />
+                                <CustomComponentMessage placement="bottomEnd" loading={loading} />
                                 <li className="nav-item">
-                                    {
-                                        store.isAuth === "GUESS" ?
-                                            <Link href="/login">
-                                                <a>
-                                                    <Avatar circle
-                                                            src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"/>
-                                                </a>
-                                            </Link>
-                                            :
-                                            <Link href="/profile-teammer">
-                                                <a>
-                                                    <Avatar
-                                                        circle
-                                                        src={store.user?.detail?.photo ? store.user.detail.photo
-                                                            :
-                                                            "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
-                                                        }
-                                                    />
-                                                </a>
-                                            </Link>
-                                    }
+                                    <Link
+                                        href="/login"
+                                        href={
+                                            userType ?
+                                                userType === "1" ?
+                                                    "/profile-owner"
+                                                    :
+                                                    userType === "2" ?
+                                                        "/profile-teammer"
+                                                        :
+                                                        "/login"
+                                                :
+                                                "/login"
+                                        }
+                                    >
+                                        <a>
+                                            <Avatar circle
+                                                src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                        </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -437,4 +468,5 @@ const Header = () => {
         </div>
     )
 }
-export default wrapper.withRedux(Header);
+
+export default withCookie(Header);

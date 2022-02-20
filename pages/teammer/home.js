@@ -14,10 +14,12 @@ import { FaArrowRight } from "react-icons/fa";
 import config from "../../src/configuration";
 import { Cookie, withCookie } from 'next-cookie';
 import getAuth from "../../lib/session";
+import StartUpByCategory from "../../src/components/StartUpByCategory";
 
 const Home = (props) => {
+
     const store = useSelector(store => store);
-    console.log(props)
+
     const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         <InputGroup {...props} inside>
             <Input placeholder={placeholder} className="input-wrap" />
@@ -27,11 +29,9 @@ const Home = (props) => {
         </InputGroup>
     );
 
-    // useEffect(() => {
-    //     if (store.isAuth !== "TEAMMER_TYPE") {
-    //         Router.replace("/login")
-    //     }
-    // }, [store.isAuth]);
+    useEffect(() => {
+        console.log('teammer props', props);
+    }, [props]);
 
     return <div className="teammer-home">
         <div className="teammer-home-baner">
@@ -41,7 +41,16 @@ const Home = (props) => {
         <h4> &#128526; What are you looking for?</h4>
         <SearchHome />
 
-        <div className="startup-category">
+        <StartUpByCategory
+            jobList={props.jobList}
+            positionList={props.positionList}
+        />
+        <StartUpByCategory
+            jobList={props.jobList}
+            positionList={props.positionList}
+        />
+
+        {/* <div className="startup-category">
             <div className="row">
                 <div className="col-md-8 startup-sections">
                     <p>Opportunities for Developers</p>
@@ -54,7 +63,7 @@ const Home = (props) => {
                                 >
                                     <CardStartUp
                                         title={item.project?.title}
-                                        ownerFullname={item.project?.user_id}
+                                        ownerFullname={item.project?.owner?.full_name}
                                         position={item.position?.name}
                                     />
                                 </div>
@@ -84,14 +93,14 @@ const Home = (props) => {
                     <StartUpBlog />
                 </div>
             </div>
-        </div>
+        </div> */}
 
         {/*slider*/}
-        <div className="row">
+        {/* <div className="row">
             <div className="col-md-8">
                 <HomeSlider />
             </div>
-        </div>
+        </div> */}
 
         {/*    subscribe  */}
         <div className="subscribe">
@@ -108,14 +117,13 @@ const Home = (props) => {
 
     </div>
 }
+
 Home.layout = true
+
 export default Home;
 
 export const getServerSideProps = async (context) => {
 
-    // const { params, req, res } = context;
-    // const cookie = Cookie.fromApiRoute(req, res);
-    // let accessToken = cookie.get('teammers-access-token');
     const auth = getAuth(context);
     if (auth !== "2") {
         return {
@@ -125,14 +133,16 @@ export const getServerSideProps = async (context) => {
             },
         };
     }
+
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,positions&per_page=6");
+    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,project.owner,position&per_page=6");
     const jobListData = await fetchJobList.json();
 
     return {
         props: {
+            protected: false,
             positionList: positionsData.data.items,
             jobList: jobListData?.data?.items ? jobListData.data.items : [],
         }

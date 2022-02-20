@@ -1,3 +1,4 @@
+import React from 'react';
 import Image from "next/image";
 import { Avatar } from "rsuite"
 
@@ -7,8 +8,12 @@ const CardStartUp = (props) => {
         title,
         position,
         ownerFullname,
-        avatarUrl,
+        ownerAvatarUrl,
     } = props;
+
+    React.useEffect(() => {
+        console.log('full_name', ownerFullname);
+    }, [props])
 
     return (
         <div>
@@ -17,11 +22,20 @@ const CardStartUp = (props) => {
                 <div className="position">
                     <div className="person">
                         <div>
-                            <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                            <Avatar
+                                circle
+                                src={
+                                    ownerAvatarUrl ? ownerAvatarUrl
+                                        :
+                                        "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                                }
+                            />
                             <p className="name">{ownerFullname}</p>
                         </div>
-                        <a>
-                            {/* <img src="/icons/save.svg" /> */}
+                        <div
+                            className='save-job-icon'
+                            onClick={() => alert('save')}
+                        >
                             <Image
                                 src={'/icons/save.svg'}
                                 alt='img'
@@ -29,7 +43,7 @@ const CardStartUp = (props) => {
                                 height={24}
                                 layout='fixed'
                             />
-                        </a>
+                        </div>
                     </div>
                     <div className="job-info">
                         <p>Job Position</p>
