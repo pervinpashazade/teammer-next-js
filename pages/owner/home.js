@@ -8,7 +8,12 @@ import {getFetchData} from "../../lib/fetchData";
 import { Modal } from 'rsuite';
 
 const Home = ({project_types, experience_levels, skills, locations, items , projects}) => {
-    console.log(projects);
+    const project = projects.data.items.map(item => {
+        return {
+            label : item.title,
+            value : item.id
+        }
+    })
     const [open , setOpen] = useState(false);
     const [teammerName , setTeammerName] = useState('')
     const [firstRender, setFirstRender] = useState(false)
@@ -224,7 +229,7 @@ const Home = ({project_types, experience_levels, skills, locations, items , proj
         <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
             <InputPicker
                 size="lg"
-                data={projects}
+                data={project}
                 onChange={(e) => getJobs(e)}
                 placeholder="Name of Startup"
                 className="w-100"
@@ -268,8 +273,8 @@ export const getServerSideProps = async (context) => {
     const experience_levels = await getFetchData("experience-levels",getToken(context));
     const skills = await getFetchData("skills",getToken(context));
     const locations = await getFetchData("locations",getToken(context));
-    const projects = await getFetchData("user/projects?include=jobs",getToken(context));
-    console.log(project_types)
+    const projects = await getFetchData("users/projects?include=jobs",getToken(context));
+    console.log(projects)
     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
     console.log(item)
     return {
