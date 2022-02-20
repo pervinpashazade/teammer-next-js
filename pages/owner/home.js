@@ -1,20 +1,24 @@
 import {Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag} from "rsuite";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import CardTeammerProfile from "../../src/components/Profile/CardTeammerProfile";
 import axios from "axios";
 import config from "../../src/configuration";
 import getAuth, {getToken} from "../../lib/session";
 import {getFetchData} from "../../lib/fetchData";
 
-const Home = ({project_types, experience_levels, skills, locations , items}) => {
-    const [activePage, setActivePage] = useState(5);
+const Home = ({project_types, experience_levels, skills, locations, items}) => {
+    console.log(items);
+    const [firstRender, setFirstRender] = useState(false)
+    const [activePage, setActivePage] = useState(1);
+    const [dropdown, setDropdown] = useState('8')
     const [filter, setFilter] = useState({
         project_types: [],
         experience_levels: [],
         skills: [],
         locations: []
     });
-    console.log(items)
+    const [data, setData] = useState(items)
+
     const filterFuncation = (key, e, type) => {
         let array = filter[key];
         if (type === "add") {
@@ -36,6 +40,26 @@ const Home = ({project_types, experience_levels, skills, locations , items}) => 
             </InputGroup.Button>
         </InputGroup>
     );
+
+    useEffect(async () => {
+        if (firstRender) {
+            let link = '';
+            if (filter.project_types.length > 0) link = link + "&filter[position]=" + filter.project_types.toString();
+            if (filter.skills.length > 0) link = link + "&filter[skill]=" + filter.skills.toString();
+            if (filter.experience_levels.length > 0) link = link + "&filter[experience]=" + filter.experience_levels.toString();
+            if (filter.locations.length > 0) link = link + "&filter[location]=" + filter.locations.toString();
+            axios.get(config.BASE_URL +
+                'teammers?include=detail,skills,positions,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
+                .then(res => {
+                    setData(res.data.data)
+                })
+        }
+        setFirstRender(true)
+    }, [activePage, dropdown, filter]);
+    const addToTeam = () => {
+
+    }
+    console.log(data)
     return <div className="owner-home">
         <div className="owner-banner">
             <h2>The best future <br/>
@@ -129,23 +153,31 @@ const Home = ({project_types, experience_levels, skills, locations , items}) => 
                 <div className="row">
                     <div className="col-12 d-flex justify-content-between">
                         <h5>🤖 Find your teammates</h5>
-                        <Dropdown placement="bottomEnd" title="Show users : ">
-                            <Dropdown.Item>8</Dropdown.Item>
-                            <Dropdown.Item>16</Dropdown.Item>
-                            <Dropdown.Item>24</Dropdown.Item>
-                            <Dropdown.Item>32</Dropdown.Item>
+                        <Dropdown placement="bottomEnd" title={"Show users : " + dropdown}>
+                            <Dropdown.Item onClick={() => setDropdown('8')}>8</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setDropdown('16')}>16</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setDropdown('24')}>24</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setDropdown('32')}>32</Dropdown.Item>
                         </Dropdown>
                     </div>
+                    {
+
+                    }
                     <div className="row">
-                        {
-                            items.items.map(item => <div className="col-md-6"><CardTeammerProfile props={
-                                {full_name: item.full_name,
-                                    photo : item.detail.photo,
-                                    location : item.detail.location.name +" , " + item.detail.location.country_code,
-                                    skills : item.skills,
-                                    positions : item.positions
-                                }
-                            } isProfile={false}/></div>)
+                        {data.items.length > 0 &&
+                        data.items.map(item => <div className="col-md-6"><CardTeammerProfile props={
+                            {
+                                full_name: item.full_name,
+                                photo: item.detail.photo,
+                                location: item.detail.location.name + " , " + item.detail.location.country_code,
+                                skills: item.skills,
+                                positions: item.positions,
+                                year_of_experience: item.detail.years_of_experience,
+                                bio_position: item.bio_position,
+                                isProfile: true,
+                                addToTeam : addToTeam()
+                            }
+                        } isProfile={false}/></div>)
                         }
                     </div>
                     {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
@@ -154,6 +186,11 @@ const Home = ({project_types, experience_levels, skills, locations , items}) => 
                     {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
                     {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
                     {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
+                    {
+                        data.items.length === 0 && <div>
+                            <h4 className="text-center">No results found 😐</h4>
+                        </div>
+                    }
                 </div>
                 <Pagination
                     prev
@@ -161,8 +198,8 @@ const Home = ({project_types, experience_levels, skills, locations , items}) => 
                     next
                     first
                     size="xs"
-                    total={100}
-                    limit={10}
+                    total={data.total}
+                    limit={1}
                     activePage={activePage}
                     onChangePage={setActivePage}
                 />
@@ -189,7 +226,7 @@ export const getServerSideProps = async (context) => {
     const experience_levels = await axios.get(config.BASE_URL + "experience-levels");
     const skills = await axios.get(config.BASE_URL + "skills");
     const locations = await axios.get(config.BASE_URL + "locations");
-    const item =await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
+    const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
     console.log(item)
     return {
         props: {
@@ -205,7 +242,7 @@ export const getServerSideProps = async (context) => {
             locations: locations.data.data.items.map(item => {
                 return {label: item.name, value: item.id}
             }),
-            items: item.data
+            items: item.data,
         }
     }
 }

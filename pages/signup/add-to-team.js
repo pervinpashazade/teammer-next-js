@@ -44,11 +44,14 @@ const AddToTeam = (props) => {
             <div className="row" style={{marginTop: "170px"}}>
                 {
                     items.map(item => <div className="col-md-4"><CardTeammerProfile props={
-                        {full_name: item.full_name,
-                            photo : item.detail.photo,
-                            location : item.detail.location.name +" , " + item.detail.location.country_code,
-                            skills : item.skills,
-                            positions : item.positions
+                        {
+                            full_name: item.full_name,
+                            photo: item.detail.photo,
+                            location: item.detail.location.name + " , " + item.detail.location.country_code,
+                            skills: item.skills,
+                            positions: item.positions,
+                            year_of_experience: item.detail.years_of_experience,
+                            bio_position: item.bio_position,
                         }
                     } isProfile={false}/></div>)
                 }
@@ -65,7 +68,7 @@ export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
     if (auth === "1") {
         return {
-            props: getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
+            props: getFetchData('teammers?include=detail,skills,positions,experiences,detail.location&per_page=3', getToken(context))
         }
     } else if (auth !== "1")
         return {

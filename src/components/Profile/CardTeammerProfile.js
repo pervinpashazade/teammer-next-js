@@ -7,27 +7,25 @@ import {
 import ActionLink from '../Lib/ActionLink';
 import { GrMailOption } from 'react-icons/gr'
 import Image from 'next/image';
-const CardTeammerProfile = ({props,isProfile}) => {
+const CardTeammerProfile = ({props}) => {
 
     const {
         full_name,
         photo,
         position,
-        experienceYear,
-        role,
+        year_of_experience,
+        bio_position,
         location,
         about,
-        avatarUrl,
         skills,
-        positions
+        positions,
+        isProfile
     } = props;
-    console.log(props)
-    React.useEffect(() => {
-        console.log('CardTeammerProfile', props);
-    }, [props])
 
     return (
-        <div className='profile-card-teammer'>
+        <div className='profile-card-teammer' style={{
+            margin : isProfile ? '46px 0px 40px 0px' : '0px'
+        }}>
             <div className="card-top">
                 <Avatar
                     size="lg"
@@ -94,7 +92,7 @@ const CardTeammerProfile = ({props,isProfile}) => {
                     <h1>
                         {full_name}
                     </h1>
-                    <h3>{position} / {experienceYear ? `${experienceYear} years experience` : ''}</h3>
+                    <h3>{bio_position} / {year_of_experience ? `${year_of_experience} years experience` : ''}</h3>
                     <p>
                         <Image
                             src={'/icons/work.svg'}
