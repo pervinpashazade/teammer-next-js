@@ -1,25 +1,27 @@
-import {Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag} from "rsuite";
+import {Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag, toaster, Notification} from "rsuite";
 import React, {useEffect, useState} from "react";
 import CardTeammerProfile from "../../src/components/Profile/CardTeammerProfile";
 import axios from "axios";
 import config from "../../src/configuration";
-import getAuth, {getToken} from "../../lib/session";
+import getAuth, {getId, getToken} from "../../lib/session";
 import {getFetchData} from "../../lib/fetchData";
-import { Modal } from 'rsuite';
+import {Modal} from 'rsuite';
+import {withCookie} from "next-cookie";
 
-const Home = ({project_types, experience_levels, skills, locations, items , projects}) => {
+const Home = ({project_types, experience_levels, skills, locations, items, projects, id, cookie}) => {
     const project = projects.data.items.map(item => {
         return {
-            label : item.title,
-            value : item.id
+            label: item.title,
+            value: item.id
         }
     })
-    const [open , setOpen] = useState(false);
-    const [teammerName , setTeammerName] = useState('')
+    const [open, setOpen] = useState(false);
+    const [teammerName, setTeammerName] = useState('')
     const [firstRender, setFirstRender] = useState(false)
     const [activePage, setActivePage] = useState(1);
     const [dropdown, setDropdown] = useState('8');
-    const [jobName,setJobName] = useState(0);
+    const [jobName, setJobName] = useState(0);
+    const [jobs, setJobs] = useState([])
     const [filter, setFilter] = useState({
         project_types: [],
         experience_levels: [],
@@ -41,8 +43,26 @@ const Home = ({project_types, experience_levels, skills, locations, items , proj
             [key]: array
         })
     }
-    const getJobs = (e)=>{
-        console.log(e , projects)
+    const getJobs = async (e) => {
+        // console.log(projects.data.items.find(item => item.id === e))
+        let res = await getFetchData("users/projects?include=positions", cookie.get('teammers-access-token'))
+           console.log(res.data.items.find(item => item.id === e))
+        setJobs(res.data.items.find(item => item.id === e))
+    }
+    const submitAddToTeam = () => {
+        if (id) {
+            axios.post(config.BASE_URL + "jobs/" + id + "/add-to-team")
+                .then(res => {
+                    console.log(res);
+                    toaster.push(
+                        <Notification type={"success"} header="Failed confirmation!" closable>
+                            New Teammer added!
+                        </Notification>, 'topEnd'
+                    );
+                })
+        } else {
+
+        }
     }
     const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
         <InputGroup {...props} inside>
@@ -52,7 +72,7 @@ const Home = ({project_types, experience_levels, skills, locations, items , proj
             </InputGroup.Button>
         </InputGroup>
     );
-    const getData = ()=>{
+    const getData = () => {
         let link = '';
         if (filter.project_types.length > 0) link = link + "&filter[position]=" + filter.project_types.toString();
         if (filter.skills.length > 0) link = link + "&filter[skill]=" + filter.skills.toString();
@@ -66,7 +86,7 @@ const Home = ({project_types, experience_levels, skills, locations, items , proj
     }
     useEffect(async () => {
         if (firstRender) {
-           getData();
+            getData();
         }
         setFirstRender(true)
     }, [activePage, dropdown, filter]);
@@ -189,9 +209,9 @@ const Home = ({project_types, experience_levels, skills, locations, items , proj
                                 positions: item.positions,
                                 year_of_experience: item.detail.years_of_experience,
                                 bio_position: item.bio_position,
-                                isProfile : false,
+                                isProfile: false,
                                 isTop: true,
-                                addToTeam : addToTeam
+                                addToTeam: addToTeam
                             }
                         } isProfile={false}/></div>)
                         }
@@ -221,46 +241,47 @@ const Home = ({project_types, experience_levels, skills, locations, items , proj
                 />
             </div>
         </div>
-        <Modal open={open} onClose={()=>setOpen(!open)}>
-        <Modal.Header>
-            <Modal.Title>Add to team</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
-            <InputPicker
-                size="lg"
-                data={project}
-                onChange={(e) => getJobs(e)}
-                placeholder="Name of Startup"
-                className="w-100"
-            />
-            <InputPicker
-                size="lg"
-                data={projects}
-                value={filter.project_types}
-                onChange={(e) => filterFuncation('project_types', e, 'add')}
-                placeholder="Position"
-                className="w-100 mt-3"
-            />
-        </Modal.Body>
-        <Modal.Footer>
-            <Button onClick={()=>setOpen(!open)} appearance="subtle">
-                Cancel
-            </Button>
-            <Button onClick={()=>setOpen(!open)} appearance="primary">
-                Ok
-            </Button>
-        </Modal.Footer>
-    </Modal>
+        <Modal open={open} onClose={() => setOpen(!open)}>
+            <Modal.Header>
+                <Modal.Title>Add to team</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
+                <InputPicker
+                    size="lg"
+                    data={project}
+                    onChange={(e) => getJobs(e)}
+                    placeholder="Name of Startup"
+                    className="w-100"
+                />
+                <InputPicker
+                    size="lg"
+                    data={jobs}
+                    value={jobName}
+                    onChange={(e) => setJobName(e)}
+                    placeholder="Position"
+                    className="w-100 mt-3"
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={() => setOpen(!open)} appearance="subtle">
+                    Cancel
+                </Button>
+                <Button onClick={() => submitAddToTeam()} appearance="primary">
+                    Ok
+                </Button>
+            </Modal.Footer>
+        </Modal>
     </div>
 
 
 }
 Home.layout = true;
-export default Home
+export default withCookie(Home);
 
 export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
+    const id = getId(context)
     if (auth !== "1") {
         return {
             redirect: {
@@ -269,11 +290,11 @@ export const getServerSideProps = async (context) => {
             },
         };
     }
-    const project_types = await getFetchData("project/types",getToken(context));
-    const experience_levels = await getFetchData("experience-levels",getToken(context));
-    const skills = await getFetchData("skills",getToken(context));
-    const locations = await getFetchData("locations",getToken(context));
-    const projects = await getFetchData("users/projects?include=jobs",getToken(context));
+    const project_types = await getFetchData("project/types", getToken(context));
+    const experience_levels = await getFetchData("experience-levels", getToken(context));
+    const skills = await getFetchData("skills", getToken(context));
+    const locations = await getFetchData("locations", getToken(context));
+    const projects = await getFetchData("users/projects", getToken(context));
     console.log(projects)
     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
     console.log(item)
@@ -291,8 +312,10 @@ export const getServerSideProps = async (context) => {
             locations: locations.data.items.map(item => {
                 return {label: item.name, value: item.id}
             }),
-            projects : projects,
+            projects: projects,
             items: item.data,
+            id: id,
+            token: getToken(context)
         }
     }
 }

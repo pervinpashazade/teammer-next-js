@@ -52,9 +52,11 @@ const Login = (props) => {
             cookie.remove('teammers-access-token');
             cookie.remove('user');
             cookie.remove('type');
+            cookie.remove('teammers-id')
             cookie.set('teammers-access-token', handleData.data.token);
             cookie.set('user', handleData.data.user.full_name);
             cookie.set('teammers-type', handleData.data.user.type.toString());
+            cookie.set('teammers-id', handleData.data.user.id)
             console.log(handleData.data.user);
 
             handleData.data.user.is_complete_registration ? (handleData.data.user.type === 1 ? router.push('/owner/home') :

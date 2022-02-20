@@ -78,8 +78,10 @@ const Signup = (props) => {
                 // localStorage.setItem('user', JSON.stringify(data.user))
                 console.log(res)
                 cookie.remove('teammers-type');
+
                 cookie.set('teammers-access-token', data.token)
-                cookie.set('teammers-type' , data.user.type)
+                cookie.set('teammers-type' , data.user.type);
+
 
 
                 // dispatch(setData('user', data.user));
