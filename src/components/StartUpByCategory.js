@@ -11,7 +11,12 @@ import config from "../configuration";
 
 const StartUpByCategory = (props) => {
 
-    const store = useSelector(store => store);
+    const {
+        jobList,
+        positionList,
+    } = props;
+
+    // const store = useSelector(store => store);
 
     return (
         <div className="startup-category">
@@ -21,7 +26,7 @@ const StartUpByCategory = (props) => {
                         <p>Opportunities for Developers</p>
                         <div className="row">
                             {
-                                props.jobList?.map((item, index) => {
+                                jobList?.map((item, index) => {
                                     return <div
                                         key={index}
                                         className="col-md-6 col-12"
@@ -29,7 +34,7 @@ const StartUpByCategory = (props) => {
                                         <CardStartUp
                                             title={item.project?.title}
                                             ownerFullname={item.project?.user_id}
-                                            position={props.positionList.find(x => x.id === item.position_id)?.name}
+                                            position={positionList.find(x => x.id === item.position_id)?.name}
                                         />
                                     </div>
                                 })
@@ -51,7 +56,7 @@ const StartUpByCategory = (props) => {
                         <p>Opportunities for Designers</p>
                         <div className="row">
                             {
-                                props.jobList?.map((item, index) => {
+                                jobList?.map((item, index) => {
 
                                     if (index <= 3) {
                                         return <div
@@ -59,9 +64,9 @@ const StartUpByCategory = (props) => {
                                             className="col-md-6"
                                         >
                                             <CardStartUp
-                                                title={item.project.title}
-                                                ownerFullname={item.project.user_id}
-                                                position={props.positionList.find(x => x.id === item.position_id)?.name}
+                                                title={item.project?.title}
+                                                ownerFullname={item.project?.user_id}
+                                                position={positionList.find(x => x.id === item.position_id)?.name}
                                             />
                                         </div>
                                     };
@@ -93,21 +98,3 @@ const StartUpByCategory = (props) => {
 }
 
 export default wrapper.withRedux(StartUpByCategory);
-
-export const getServerSideProps = async () => {
-
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
-
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,position&per_page=6");
-    const jobListData = await fetchJobList.json();
-
-    console.log('test', jobListData);
-
-    return {
-        props: {
-            positionList: positionsData.data.items,
-            jobList: jobListData?.data?.items ? jobListData.data.items : [],
-        }
-    }
-}

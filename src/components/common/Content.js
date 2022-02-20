@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import config from "../../configuration";
 import BannerHome from "../BannerHome";
 import HomeSlider from "../HomeSlider";
 import SearchHome from "../SearchHome";
@@ -7,6 +6,10 @@ import StartUpByCategory from "../StartUpByCategory";
 import Subscribe from "../Subscribe";
 
 const Content = (props) => {
+    const {
+        jobList,
+        positionList,
+    } = props;
 
     useEffect(() => {
         console.log('props', props);
@@ -15,7 +18,10 @@ const Content = (props) => {
     return <div>
         <BannerHome />
         <SearchHome />
-        <StartUpByCategory />
+        <StartUpByCategory
+            jobList={jobList}
+            positionList={positionList}
+        />
         <div className="row">
             <div className="col-md-8">
                 <HomeSlider />
@@ -26,4 +32,3 @@ const Content = (props) => {
 };
 
 export default Content;
-
