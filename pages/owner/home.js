@@ -45,21 +45,38 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
     }
     const getJobs = async (e) => {
         // console.log(projects.data.items.find(item => item.id === e))
-        let res = await getFetchData("users/projects?include=positions", cookie.get('teammers-access-token'))
+       if(e){
+           let res = await getFetchData("users/projects?include=jobs.position", cookie.get('teammers-access-token'))
            console.log(res.data.items.find(item => item.id === e))
-        setJobs(res.data.items.find(item => item.id === e))
+           setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
+               return {
+                   label : item.position.name,
+                   value : item.id
+               }
+           }))
+       }
+       else{
+           setJobs([])
+       }
     }
-    const submitAddToTeam = () => {
+    const submitAddToTeam = async () => {
         if (id) {
-            axios.post(config.BASE_URL + "jobs/" + id + "/add-to-team")
-                .then(res => {
-                    console.log(res);
-                    toaster.push(
-                        <Notification type={"success"} header="Failed confirmation!" closable>
-                            New Teammer added!
-                        </Notification>, 'topEnd'
-                    );
-                })
+            let res = await fetch(config.BASE_URL + "jobs/" + id + "/add-to-team",{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Autharization': 'Bearer '+cookie.get('teammers-access-token')
+                },
+               body : JSON.stringify({id : jobName})
+            })
+           if(res){
+               toaster.push(
+                   <Notification type={"success"} header="Success!" closable>
+                       New Teammer added!
+                   </Notification>, 'topEnd'
+               );
+               setOpen(!open)
+           }
         } else {
 
         }
