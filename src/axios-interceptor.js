@@ -7,7 +7,7 @@ axios.interceptors.request.use(function (config) {
     return config;
 }, function (error) {
     // Do something with request error
-    console.log('interceptor error', error)
+    console.log('interceptor error', error.response)
     return Promise.reject(error);
 });
 

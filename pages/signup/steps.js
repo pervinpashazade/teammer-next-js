@@ -26,7 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { setCookie } from "../../src/helpers/cookie";
 import getAuth from "../../lib/session";
-import {withCookie} from 'next-cookie'
+import { withCookie } from 'next-cookie'
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -92,7 +92,7 @@ const StepsComponent = (props) => {
     const editorRef = useRef();
     const { CKEditor, ClassicEditor } = editorRef.current || {};
     const [editorLoader, setEditorLoaded] = useState(false)
-    const {cookie} = props
+    const { cookie } = props
     const store = useSelector(store => store);
 
     const dispatch = useDispatch();
@@ -184,6 +184,7 @@ const StepsComponent = (props) => {
     const buttonRef = useRef();
     const ownerRef = useRef();
     let reactQuillRef = useRef();
+
     useEffect(() => {
         // if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
         //     router.push("/signup");
@@ -198,15 +199,15 @@ const StepsComponent = (props) => {
             ClassicEditor: require("@ckeditor/ckeditor5-build-classic")
         };
         setEditorLoaded(true)
-            let year_array = [];
-            let nowDate = (new Date()).getFullYear();
-            for (let i = 2000; i <= nowDate; i++) {
-                year_array.push({
-                    label: `${i}`,
-                    value: i
-                })
-                setYears(year_array);
-            }
+        let year_array = [];
+        let nowDate = (new Date()).getFullYear();
+        for (let i = 2000; i <= nowDate; i++) {
+            year_array.push({
+                label: `${i}`,
+                value: i
+            })
+            setYears(year_array);
+        }
 
     }, [store.isAuth, router])
 
@@ -348,12 +349,12 @@ const StepsComponent = (props) => {
         let data = {};
         for (let [key, value] of formData.entries()) {
             data[key] = value;
-        }
+        };
         setSocialAccounts(data)
         setCurrent(3)
     }
     const uploadToClient = (event, type) => {
-            console.log(event.target.files)
+        console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
             setImage({
@@ -371,7 +372,9 @@ const StepsComponent = (props) => {
     const submitData = () => {
         let social_account = [];
         for (let [key, value] of Object.entries(social_accounts)) {
-            (value && key !== "file") && social_account.push(value)
+            (value && key !== "file") && social_account.push({
+                [key]: value
+            });
         }
         let body = {
             type: Number(find),
@@ -414,8 +417,8 @@ const StepsComponent = (props) => {
                 // localStorage.setItem('teammers-access-token', data.token);
                 // localStorage.setItem('type', 2);
                 cookie.remove('teammers-type');
-                cookie.set('teammers-type' , 2);
-                cookies.set('user' , full_name)
+                cookie.set('teammers-type', "2");
+                cookies.set('user', full_name)
                 // dispatch(log_in('TEAMMER_TYPE'));
                 dispatch(setData('user', person.full_name));
                 router.push('/teammer/subscribe')
@@ -429,9 +432,6 @@ const StepsComponent = (props) => {
             })
         // router.push('/')
     };
-
-    // console.log('log1', editorText, team.descriptionEditorText)
-
     const submitOwnerData = () => {
 
         let jobs = teamArray.map(item => {
@@ -474,16 +474,16 @@ const StepsComponent = (props) => {
             }
         })
             .then(res => {
-                console.log('startup owner type token',res.data.data)
+                console.log('startup owner type token', res.data.data)
                 let data = res.data.data;
 
                 // localStorage.setItem('type', 1);
                 cookie.remove('teammers-type');
-                cookie.set('teammers-type' , 1);
+                cookie.set('teammers-type', "1");
                 // localStorage.setItem('teammers-access-token', data.token);
                 // localStorage.setItem('type', data.user.type);
                 // localStorage.setItem('user', JSON.stringify(data.user));
-                cookie.set('user' , data.full_name);
+                cookie.set('user', data.full_name);
                 // setCookie('teammers-access-token', data.token)
                 router.push('/signup/add-to-team');
             })
@@ -511,6 +511,12 @@ const StepsComponent = (props) => {
 
     useEffect(() => {
         console.log('steps component props', props);
+        // setPerson({
+        //     username: '',
+        //     full_name: store.user?.full_name ? store.user?.full_name : '',
+        //     location: '',
+        //     role: ''
+        // })
     }, [props])
 
     return <div className="container login">
@@ -592,7 +598,14 @@ const StepsComponent = (props) => {
                                                 <span>{props.roles.find(item => item.value === person.role)?.label}</span>
                                             </p> :
                                             <p className="summary_person"><span>Location</span>
-                                                <span>{person.location}</span>
+                                                <span>
+                                                    {
+                                                        props.locations && props.locations.length ?
+                                                            props.locations.find(x => x.value === person.location)?.label
+                                                            :
+                                                            ''
+                                                    }
+                                                </span>
                                             </p>}
                                     </div> : <Form>
                                         <Form.Group controlId="username">
@@ -773,7 +786,7 @@ const StepsComponent = (props) => {
                                             <span>{props.project_types.find(item => item.value === ownerInformation.startupType)?.label}</span>
                                         </p>
                                         <p className="summary_person"><span>Description</span>
-                                            <span>{editorText.length > 10 ? editorText.slice(0,10)+"..." : editorText}</span>
+                                            <span>{editorText.length > 10 ? editorText.slice(0, 10) + "..." : editorText}</span>
                                         </p>
                                     </div> :
                                         <div>
@@ -835,7 +848,7 @@ const StepsComponent = (props) => {
                                             {/*    onChange={handleChange}*/}
                                             {/*/>*/}
                                             {editorLoader ? <CKEditor
-                                                style={{maxWidth : "400px"}}
+                                                style={{ maxWidth: "400px" }}
                                                 name={"name"}
                                                 editor={ClassicEditor}
                                                 data={editorText}
@@ -1254,7 +1267,7 @@ const StepsComponent = (props) => {
                                                     onChange={(e) => teamFunction('salary', e, experienceCount)} />
                                                 <InputPicker style={{
                                                     maxWidth: '100px',
-                                                    marginLeft : "5px"
+                                                    marginLeft: "5px"
                                                 }} size="lg"
                                                     placeholder="Salary periods"
                                                     onChange={(e) => teamFunction('salary_periods', e, experienceCount)}
@@ -1389,6 +1402,7 @@ export default withCookie(StepsComponent);
 
 export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
+
     if (auth === "1")
         return {
             redirect: {
@@ -1403,7 +1417,7 @@ export const getServerSideProps = async (context) => {
                 permanent: false,
             },
         };
-    else if(!auth)
+    else if (!auth)
         return {
             redirect: {
                 destination: "/signup",

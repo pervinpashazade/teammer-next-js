@@ -89,7 +89,7 @@ const Signup = (props) => {
 
                 router.push("/signup/steps")
             }).catch(error => {
-                // console.log('error signup', error.response.data);
+                console.log('error signup', error.response);
 
                 if (error.response?.status === 422) {
                     toaster.push(
@@ -247,7 +247,7 @@ const Signup = (props) => {
             </div>
         </div>
     </div>
-}
+};
 Signup.layout = false;
 export default withCookie(Signup);
 export const getServerSideProps = (context)=>{
