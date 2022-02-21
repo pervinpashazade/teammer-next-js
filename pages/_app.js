@@ -2,15 +2,18 @@ import 'rsuite/dist/rsuite.min.css';
 import 'react-quill/dist/quill.snow.css'; // ES6
 import '../styles/bootstrap/bootstrap.scss';
 import Layout from "../src/components/common/Layout";
-import { useRouter } from "next/router";
-import { wrapper } from "../src/store/redux-store";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import {useRouter} from "next/router";
+import {wrapper} from "../src/store/redux-store";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
 import '../styles/style.scss';
-import { SessionProvider } from "next-auth/react"
-import { withCookie } from "next-cookie";
+import {SessionProvider} from "next-auth/react"
+import {withCookie} from "next-cookie";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+function MyApp({
+                   Component,
+                   pageProps: {session, ...pageProps},
+               }) {
     const router = useRouter();
     const store = useSelector(state => state)
     const dispatch = useDispatch();
@@ -27,15 +30,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     // } else
     // console.log(router.pathname )
     console.log(Component.layout);
-    
-    return <SessionProvider session={session}>
+
+    return <div>
         {
             Component.layout ?
                 <Layout>
                     <Component {...pageProps} />
                 </Layout> : <Component {...pageProps} />
         }
-    </SessionProvider>
+    </div>
 }
 
 

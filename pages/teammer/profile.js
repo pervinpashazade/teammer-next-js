@@ -73,7 +73,7 @@ const ProfileTeammer = (props) => {
 }
 
 ProfileTeammer.layout = true;
-export default withCookie(ProfileTeammer);
+export default ProfileTeammer;
 
 export const getServerSideProps = async (context) => {
 

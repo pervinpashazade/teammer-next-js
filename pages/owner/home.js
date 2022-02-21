@@ -6,7 +6,7 @@ import config from "../../src/configuration";
 import getAuth, {getId, getToken} from "../../lib/session";
 import {getFetchData} from "../../lib/fetchData";
 import {Modal} from 'rsuite';
-import {withCookie} from "next-cookie";
+import {useCookie, withCookie} from "next-cookie";
 
 const Home = ({project_types, experience_levels, skills, locations, items, projects, id, cookie}) => {
     const project = projects.data.items.map(item => {
@@ -14,7 +14,8 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
             label: item.title,
             value: item.id
         }
-    })
+    });
+    const cookies = useCookie(cookie)
     const [open, setOpen] = useState(false);
     const [teammerName, setTeammerName] = useState('')
     const [firstRender, setFirstRender] = useState(false)
@@ -45,40 +46,40 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
     }
     const getJobs = async (e) => {
         // console.log(projects.data.items.find(item => item.id === e))
-       if(e){
-           let res = await getFetchData("users/projects?include=jobs.position", cookie.get('teammers-access-token'))
-           console.log(res.data.items.find(item => item.id === e))
-           setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
-               return {
-                   label : item.position.name,
-                   value : item.id
-               }
-           }))
-       }
-       else{
-           setJobs([])
-       }
+        if (e) {
+            let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'))
+            console.log(res.data.items.find(item => item.id === e))
+            setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
+                return {
+                    label: item.position.name,
+                    value: item.id
+                }
+            }))
+        } else {
+            setJobs([])
+        }
     }
     const submitAddToTeam = async () => {
         if (id) {
-            let res = await fetch(config.BASE_URL + "jobs/" + id + "/add-to-team",{
+            let res = await fetch(config.BASE_URL + "jobs/" + id + "/add-to-team", {
                 method: 'POST',
                 headers: {
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Autharization': 'Bearer '+cookie.get('teammers-access-token')
+                    'Authorization': 'Bearer ' + cookies.get('teammers-access-token')
                 },
-               body : JSON.stringify({id : jobName})
+                body: JSON.stringify({id: jobName})
             })
-           if(res){
-               toaster.push(
-                   <Notification type={"success"} header="Success!" closable>
-                       New Teammer added!
-                   </Notification>, 'topEnd'
-               );
-               setOpen(!open);
-               setJobName(0);
-               setJobs([])
-           }
+            if (res) {
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        New Teammer added!
+                    </Notification>, 'topEnd'
+                );
+                setOpen(!open);
+                setJobName(0);
+                setJobs([])
+            }
         } else {
 
         }
@@ -214,38 +215,25 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
                             <Dropdown.Item onClick={() => setDropdown('32')}>32</Dropdown.Item>
                         </Dropdown>
                     </div>
-                    {
-
-                    }
                     <div className="row">
-                        {data.items.length > 0 &&
-                        data.items.map(item => <div className="col-md-6"><CardTeammerProfile props={
-                            {
-                                full_name: item.full_name,
-                                photo: item.detail.photo,
-                                location: item.detail.location.name + " , " + item.detail.location.country_code,
-                                skills: item.skills,
-                                positions: item.positions,
-                                year_of_experience: item.detail.years_of_experience,
-                                bio_position: item.bio_position,
-                                isProfile: false,
-                                isTop: true,
-                                addToTeam: addToTeam
-                            }
-                        } isProfile={false}/></div>)
+                        {data.items.length > 0 ?
+                            data.items.map(item => <div className="col-md-6"><CardTeammerProfile props={
+                                {
+                                    full_name: item.full_name,
+                                    photo: item.detail.photo,
+                                    location: item.detail.location.name + " , " + item.detail.location.country_code,
+                                    skills: item.skills,
+                                    positions: item.positions,
+                                    year_of_experience: item.detail.years_of_experience,
+                                    bio_position: item.bio_position,
+                                    isProfile: false,
+                                    isTop: true,
+                                    addToTeam: addToTeam
+                                }
+                            } isProfile={false}/></div>) :
+                            <div className="col-md-12 d-flex justify-content-center"><h4 className="text-center">No results found 😐</h4></div>
                         }
                     </div>
-                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
-                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
-                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
-                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
-                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
-                    {/*<div className="col-6" style={{marginTop: "140px"}}><CardTeammerProfile isProfile={false}/></div>*/}
-                    {
-                        data.items.length === 0 && <div>
-                            <h4 className="text-center">No results found 😐</h4>
-                        </div>
-                    }
                 </div>
                 <Pagination
                     prev
@@ -296,7 +284,7 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
 
 }
 Home.layout = true;
-export default withCookie(Home);
+export default Home;
 
 export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
@@ -334,7 +322,8 @@ export const getServerSideProps = async (context) => {
             projects: projects,
             items: item.data,
             id: id,
-            token: getToken(context)
+            token: getToken(context),
+            cookie: context.req.headers.cookie || ''
         }
     }
 }
