@@ -75,7 +75,9 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
                        New Teammer added!
                    </Notification>, 'topEnd'
                );
-               setOpen(!open)
+               setOpen(!open);
+               setJobName(0);
+               setJobs([])
            }
         } else {
 

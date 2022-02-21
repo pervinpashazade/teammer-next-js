@@ -10,7 +10,7 @@ import '../styles/style.scss';
 import { SessionProvider } from "next-auth/react"
 import { withCookie } from "next-cookie";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     const router = useRouter();
     const store = useSelector(state => state)
     const dispatch = useDispatch();
@@ -28,14 +28,14 @@ function MyApp({ Component, pageProps }) {
     // console.log(router.pathname )
     console.log(Component.layout);
     
-    return <div>
+    return <SessionProvider session={session}>
         {
             Component.layout ?
                 <Layout>
                     <Component {...pageProps} />
                 </Layout> : <Component {...pageProps} />
         }
-    </div>
+    </SessionProvider>
 }
 
 
