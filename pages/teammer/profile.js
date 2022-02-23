@@ -19,8 +19,9 @@ const ProfileTeammer = (props) => {
     } = props;
 
     React.useEffect(() => {
-        console.log('userData', props.userData);
-    }, [props.userData])
+        // console.clear();
+        console.log('profile props', props);
+    }, [props])
 
     return (
         <div className='profile'>
@@ -34,17 +35,16 @@ const ProfileTeammer = (props) => {
                                 isProfile: true,
                                 full_name: props.userData?.full_name,
                                 photo: props.userData.detail?.photo,
-                                location: props.locationList.find(x => x.id === props.userData.detail?.location_id)?.name,
+                                location: props.userData.detail?.location,
                                 skills: props.userData?.skills,
                                 positions: props.userData.positions,
                                 year_of_experience: props.userData.detail?.years_of_experience,
                                 about: props.userData?.detail?.about,
-                                // role: props.roleList.find(x => x.id === props.userData.detail?.project_role_id)?.name,
                             }
                         }
                     />
                     <CardTeammerWorkExperience
-                        workExperienceList={props.userData.experiences}
+                        workExperienceList={props.userData?.experiences}
                     />
                 </div>
                 <div className="content">
@@ -58,8 +58,21 @@ const ProfileTeammer = (props) => {
                     <Panel
                         bordered
                         collapsible
+                        defaultExpanded
                         className='panel-joined'
                         header="Projects joined"
+                    >
+                        <CardStartUp />
+                        <CardStartUp />
+                        <CardStartUp />
+                        <CardStartUp />
+                    </Panel>
+                    <Panel
+                        bordered
+                        collapsible
+                        defaultExpanded
+                        className='panel-joined'
+                        header="Saved projects"
                     >
                         <CardStartUp />
                         <CardStartUp />
@@ -88,12 +101,15 @@ export const getServerSideProps = async (context) => {
     const fetchLocations = await fetch(config.BASE_URL + "locations");
     const locationData = await fetchLocations.json();
 
+    const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
+
     return {
         props: {
             positionList: positionsData.data.items,
             userData: fetchUserInfo?.data,
             roleList: rolesData.data,
             locationList: locationData.data.items,
+            joinedProjectList: joinedProjectList,
         }
     }
 }

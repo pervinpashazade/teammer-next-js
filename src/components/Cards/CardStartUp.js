@@ -1,19 +1,35 @@
 import React from 'react';
 import Image from "next/image";
 import { Avatar } from "rsuite"
+import axios from 'axios';
+import config from '../../configuration';
+import { withCookie } from 'next-cookie';
 
 const CardStartUp = (props) => {
-
+    const { cookie } = props;
     const {
+        jobId,
         title,
         position,
         ownerFullname,
         ownerAvatarUrl,
     } = props;
 
-    React.useEffect(() => {
-        console.log('full_name', ownerFullname);
-    }, [props])
+    // React.useEffect(() => {
+    //     console.log('jobId', jobId);
+    // }, [props]);
+
+    const attackSaveProject = () => {
+        if (!jobId) return;
+
+        axios.post(config.BASE_URL + 'users/save-project', { id: jobId }, {
+            headers: {
+                'Authorization': 'Bearer ' + cookie.get('teammers-access-token')
+            }
+        }).then(res => {
+            console.log('res', res);
+        }).catch(error => console.log('errorres', error.response));
+    };
 
     return (
         <div>
@@ -34,7 +50,7 @@ const CardStartUp = (props) => {
                         </div>
                         <div
                             className='save-job-icon'
-                            onClick={() => alert('save')}
+                            onClick={attackSaveProject}
                         >
                             <Image
                                 src={'/icons/save.svg'}
@@ -58,4 +74,4 @@ const CardStartUp = (props) => {
         </div>
     )
 }
-export default CardStartUp;
+export default withCookie(CardStartUp);

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { setData } from '/src/store/actions';
 import { setCookie } from "../src/helpers/cookie";
-import {withCookie} from 'next-cookie'
+import { withCookie } from 'next-cookie'
 import getAuth from "../lib/session";
 const renderErrorMessages = err => {
     let errList = [];
@@ -21,8 +21,8 @@ const renderErrorMessages = err => {
 }
 
 const Signup = (props) => {
-    const {cookie} = props
-     const dispatch = useDispatch();
+    const { cookie } = props
+    const dispatch = useDispatch();
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
     const [validation, setValidation] = useState(true);
@@ -73,16 +73,10 @@ const Signup = (props) => {
             }).then(res => {
                 let data = res.data.data;
 
-                // localStorage.setItem('teammers-access-token', data.token);
-                // localStorage.setItem('type', data.user.type);
-                // localStorage.setItem('user', JSON.stringify(data.user))
-                console.log(res)
                 cookie.remove('teammers-type');
 
                 cookie.set('teammers-access-token', data.token)
-                cookie.set('teammers-type' , data.user.type);
-
-
+                cookie.set('teammers-type', data.user.type);
 
                 // dispatch(setData('user', data.user));
                 // dispatch(setData('token', data.token));
@@ -90,29 +84,31 @@ const Signup = (props) => {
                 // console.log(res);
 
                 router.push("/signup/steps")
-            }).catch(error => {
-                console.log('error signup', error.response);
-
-                if (error.response?.status === 422) {
-                    toaster.push(
-                        <Notification type={"error"} header="Failed confirmation!" closable>
-                            {
-                                renderErrorMessages(error.response.data.error.validation).map(item =>
-                                    <p className="text-danger">{item}</p>
-                                )
-                            }
-                        </Notification>, 'topEnd'
-                    );
-                    return;
-                }
-
-                toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
-                    <p className="text-danger">{error.response?.data.error.message}</p>
-                </Notification>, 'topEnd')
             })
+                .catch(error => {
+                    console.log('error signup', error);
+
+                    if (error.response?.status === 422) {
+                        toaster.push(
+                            <Notification type={"error"} header="Failed confirmation!" closable>
+                                {
+                                    renderErrorMessages(error.response.data.error.validation).map(item =>
+                                        <p className="text-danger">{item}</p>
+                                    )
+                                }
+                            </Notification>, 'topEnd'
+                        );
+                        return;
+                    };
+
+                    // toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
+                    //     <p className="text-danger">{error.response?.data.error.message}</p>
+                    // </Notification>, 'topEnd');
+                })
         }
         // console.log(body)
     }
+    
     return <div className="container login">
         <div className="d-flex justify-content-between login-header">
             <Link href="/">
@@ -173,7 +169,7 @@ const Signup = (props) => {
                             width={24}
                             height={24}
                         />
-                        <span>Sign up with Google</span>
+                        <span className="ml-2">Sign up with Google</span>
                     </Button>
                     <Button>
                         {/* <img
@@ -252,7 +248,7 @@ const Signup = (props) => {
 };
 Signup.layout = false;
 export default withCookie(Signup);
-export const getServerSideProps = (context)=>{
+export const getServerSideProps = (context) => {
     const auth = getAuth(context);
     if (auth === "1")
         return {
@@ -268,7 +264,7 @@ export const getServerSideProps = (context)=>{
                 permanent: false,
             },
         };
-    else if(auth === "null")
+    else if (auth === "null")
         return {
             redirect: {
                 destination: "/signup/steps",

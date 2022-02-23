@@ -12,7 +12,6 @@ const CardTeammerProfile = ({ props }) => {
     const {
         full_name,
         photo,
-        position,
         year_of_experience,
         bio_position,
         location,
@@ -32,7 +31,7 @@ const CardTeammerProfile = ({ props }) => {
                 <Avatar
                     size="lg"
                     circle
-                    src={photo ? photo : "/img/avatar2.png"}
+                    src={photo ? photo : "https://www.w3schools.com/howto/img_avatar.png"}
                     alt="profile img"
                 />
                 <div className="icons-wrapper">
@@ -94,8 +93,14 @@ const CardTeammerProfile = ({ props }) => {
                     <h1>
                         {full_name ? full_name : ''}
                     </h1>
-                    <h3>{bio_position} / {year_of_experience ? `${year_of_experience} years experience` : ''}</h3>
-                    <p>
+                    <h3>
+                        {bio_position}
+                        {
+                            bio_position && year_of_experience ? ' / ' : ''
+                        }
+                        {year_of_experience ? `${year_of_experience} years experience` : ''}
+                    </h3>
+                    <div className='_info-wrap'>
                         <Image
                             src={'/icons/work.svg'}
                             alt='img'
@@ -103,9 +108,11 @@ const CardTeammerProfile = ({ props }) => {
                             height={16}
                             layout='fixed'
                         />
-                        {positions.map(item => item.name + " / ")}
-                    </p>
-                    <p>
+                        <span className='ml-2'>
+                            {positions?.map(item => item.name + " / ")}
+                        </span>
+                    </div>
+                    <div className='_info-wrap'>
                         <Image
                             src={'/icons/location.svg'}
                             alt='img'
@@ -113,17 +120,18 @@ const CardTeammerProfile = ({ props }) => {
                             height={16}
                             layout='fixed'
                         />
-                        {location}
-                    </p>
+                        <span className='ml-2'>
+                            {/* {location} */}
+                            {location?.name}
+                        </span>
+                    </div>
                 </div>
                 <div className="tag-wrapper">
-
                     {
                         skills?.map((item, index) => {
                             return <Tag key={index} size="lg" className="custom-tag">{item.name}</Tag>
                         })
                     }
-
                 </div>
                 {
                     isProfile ? <div className="bio-wrapper">

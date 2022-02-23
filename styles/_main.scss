@@ -296,6 +296,8 @@ div.icon-btn-wrapper {
         color: #fff;
         font-size: $font-16;
         font-weight: 600;
+        display: flex;
+        align-items: center;
       }
     }
   }
@@ -1420,7 +1422,7 @@ div.icon-btn-wrapper {
         line-height: 24px;
         margin-bottom: 1rem;
       }
-      p {
+      ._info-wrap {
         display: flex;
         align-items: center;
         font-weight: normal;
@@ -1591,13 +1593,13 @@ div.icon-btn-wrapper {
       align-items: center;
       justify-content: space-between;
       .resume {
-        img {
-          margin-right: 11px;
-        }
+        display: flex;
+        align-items: center;
         span {
           font-weight: normal;
           font-size: 14px;
           line-height: 17px;
+          margin-left: 11px;
         }
       }
       .view-resume-btn {
@@ -2053,6 +2055,6 @@ ul.profile-edit-nav {
 }
 
 //save-job-icon
-.save-job-icon{
+.save-job-icon {
   cursor: pointer;
 }

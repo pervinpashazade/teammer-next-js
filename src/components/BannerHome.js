@@ -48,6 +48,7 @@ function BannerHome() {
                                     alt='logo'
                                     width={11}
                                     height={15}
+                                    layout="fixed"
                                 />
                                 Watch tutorial
                             </Button>

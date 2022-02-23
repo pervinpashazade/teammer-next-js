@@ -151,7 +151,7 @@ const StepsComponent = (props) => {
         owner: '/img/upload_image.png'
     });
     const [description, setDescription] = useState('');
-    const [cv, setCv] = useState({});
+    const [cv, setCv] = useState([]);
 
     const [editorText, setEditorText] = useState('');
 
@@ -401,7 +401,7 @@ const StepsComponent = (props) => {
             username: person.username,
             full_name: person.full_name,
             photo: image.teammer,
-            cv: cv.blobFile
+            cv: cv[0].blobFile
         }
         console.log('data body', body);
         const formData = new FormData();
@@ -412,13 +412,13 @@ const StepsComponent = (props) => {
             }
         })
             .then(res => {
-                console.log('teammer type token', res.data.data)
+                console.log('teammer type', res.data.data)
                 let data = res.data.data;
                 // localStorage.setItem('teammers-access-token', data.token);
                 // localStorage.setItem('type', 2);
                 cookie.remove('teammers-type');
                 cookie.set('teammers-type', "2");
-                cookies.set('user', full_name)
+                cookie.set('user', person.full_name)
                 // dispatch(log_in('TEAMMER_TYPE'));
                 dispatch(setData('user', person.full_name));
                 router.push('/teammer/subscribe')
@@ -1180,8 +1180,10 @@ const StepsComponent = (props) => {
                                                             placeholder="https://www.linkedin.com/margaretbrown" />
                                                     </Form.Group>
                                                     <Uploader className="upload"
-                                                        onChange={(fileList, fileType) => setCv(fileList[0])}
-                                                        action="" maxPreviewFileSize={2}>
+                                                        onChange={(fileList, fileType) => setCv(fileList)}
+                                                        action="" maxPreviewFileSize={2}
+                                                        defaultFileList={cv}
+                                                        >
                                                         <button type="button">
                                                             Import from Linkedin
                                                         </button>

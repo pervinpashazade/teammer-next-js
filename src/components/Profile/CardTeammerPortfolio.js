@@ -29,7 +29,6 @@ function CardTeammerPortfolio(props) {
                 }
                 <div className="resume-wrap">
                     <div className="resume">
-                        {/* <img src='/icons/file.svg' alt='file icon svg' /> */}
                         <Image
                             src={'/icons/file.svg'}
                             alt='img'

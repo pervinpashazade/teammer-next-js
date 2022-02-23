@@ -23,16 +23,16 @@ function SearchHome() {
                         className="search-input"
                     />
                     <div className="tags">
-                        <Button className="btn-custom-outline active" color="blue" appearance="primary">
+                        <Button className="btn-custom-outline mb-2 active" color="blue" appearance="primary">
                             Design
                         </Button>
-                        <Button className="btn-custom-outline" color="blue" appearance="primary">
+                        <Button className="btn-custom-outline mb-2" color="blue" appearance="primary">
                             Development
                         </Button>
-                        <Button className="btn-custom-outline" color="blue" appearance="primary">
+                        <Button className="btn-custom-outline mb-2" color="blue" appearance="primary">
                             Marketing
                         </Button>
-                        <Button className="btn-custom-outline" color="blue" appearance="primary">
+                        <Button className="btn-custom-outline mb-2" color="blue" appearance="primary">
                             Branding
                         </Button>
                     </div>

@@ -11,6 +11,10 @@ function CardTeammerWorkExperience(props) {
         workExperienceList,
     } = props;
 
+    React.useEffect(() => {
+        console.log('exp', workExperienceList);
+    }, [workExperienceList])
+
     return (
         <div className='work-experience-card-teammer'>
             <div className="card-top">
