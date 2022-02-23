@@ -9,7 +9,7 @@ import { Avatar, Button, Form } from 'rsuite';
 import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
 
-function settings(props) {
+function Setting(props) {
 
     return (
         <div className='teammer-profile-edit'>
@@ -134,8 +134,8 @@ function settings(props) {
         </div>
     )
 }
-
-export default settings;
+Setting.layout = true;
+export default Setting;
 
 export const getServerSideProps = async (context) => {
 

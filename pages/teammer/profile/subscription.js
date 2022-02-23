@@ -263,7 +263,7 @@ const Subscription = (props) => {
         </div>
     )
 }
-
+Subscription.layout = true;
 export default Subscription;
 
 export const getServerSideProps = async (context) => {

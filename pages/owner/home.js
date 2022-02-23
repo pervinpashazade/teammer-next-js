@@ -263,6 +263,7 @@ const Home = ({project_types, experience_levels, skills, locations, items, proje
                 />
                 <InputPicker
                     size="lg"
+                    disabled = {jobs.length === 0}
                     data={jobs}
                     value={jobName}
                     onChange={(e) => setJobName(e)}

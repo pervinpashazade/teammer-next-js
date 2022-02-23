@@ -8,5 +8,5 @@ function purchaseHistory() {
         </div>
     )
 }
-
+purchaseHistory.layout = true
 export default purchaseHistory

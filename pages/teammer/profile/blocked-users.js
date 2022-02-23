@@ -9,7 +9,7 @@ import { Avatar, Button, Form } from 'rsuite';
 import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
 
-function blockedUsers(props) {
+function BlockedUsers(props) {
 
     return (
         <div className='teammer-profile-edit'>
@@ -150,8 +150,8 @@ function blockedUsers(props) {
         </div>
     )
 }
-
-export default blockedUsers;
+BlockedUsers.layout = true
+export default BlockedUsers;
 
 export const getServerSideProps = async (context) => {
 

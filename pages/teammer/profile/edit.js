@@ -265,7 +265,7 @@ const EditComponent = (props) => {
         </div>
     )
 }
-
+EditComponent.layout = true
 export default EditComponent;
 
 export const getServerSideProps = async (context) => {
