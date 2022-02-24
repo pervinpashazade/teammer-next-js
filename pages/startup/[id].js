@@ -16,12 +16,13 @@ function Startup(props) {
 
     const {
         startupData,
+        startupJobList,
     } = props;
 
-    React.useEffect(() => {
-        console.clear();
-        console.log('props', props.startupData);
-    }, [props])
+    // React.useEffect(() => {
+    //     console.clear();
+    //     console.log('props', props);
+    // }, [props])
 
     return (
         <div className='profile-startup'>
@@ -50,7 +51,7 @@ function Startup(props) {
                     <CardJobList
                         classNames="mb-3"
                         title="Requirements"
-                        jobList={[]}
+                        jobList={startupJobList}
                     />
                 </div>
             </div>
@@ -65,31 +66,15 @@ export default Startup;
 export const getServerSideProps = async (context) => {
 
     const startupData = await getFetchData(`projects/${context.params.id}`, getToken(context));
-
-    // console.log('data', startupData);
-
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
-
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
-
-    const fetchRoles = await fetch(config.BASE_URL + "project/roles");
-    const rolesData = await fetchRoles.json();
-
-    const fetchLocations = await fetch(config.BASE_URL + "locations");
-    const locationData = await fetchLocations.json();
-
-    const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
+    const startupJobList = await getFetchData(
+        `projects/${context.params.id}/jobs`,
+        getToken(context)
+    );
 
     return {
         props: {
             startupData: startupData?.data,
-
-            positionList: positionsData.data.items,
-            userData: fetchUserInfo?.data,
-            roleList: rolesData.data,
-            locationList: locationData.data.items,
-            joinedProjectList: joinedProjectList,
+            startupJobList: startupJobList?.data.items
         }
     }
 }

@@ -102,16 +102,51 @@
     padding: 1rem;
     color: #020c40;
     .wrapper {
-        position: relative;
         ._title {
-            max-width: 70%;
-            margin-bottom: 1.75rem;
+            margin-bottom: 1rem;
             h4 {
                 font-weight: 500;
                 font-size: 19px;
                 line-height: 125%;
             }
         }
+    }
+}
+
+.job-list-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eaeaea;
+    color: #020c40;
+    span {
+        display: inline-block;
+        margin-bottom: 0.25rem;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 170%;
+    }
+    .position {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        h2 {
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 24px;
+            margin: 0;
+        }
+        .btn-job-link {
+            background: red;
+            display: flex;
+            align-items: center;
+            padding: 7px;
+            background: #2a6fff;
+            border: 1px solid #3751ff;
+            border-radius: 8px;
+        }
+    }
+    &:last-child {
+        border-bottom: none;
     }
 }
 
