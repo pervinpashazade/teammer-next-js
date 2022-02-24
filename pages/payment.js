@@ -37,7 +37,6 @@ const Payment = () => {
             </Link>
             <Link href="/">
                 <a>
-                    {/* <img src="icons/help.svg" /> */}
                     <Image
                         src={'/icons/help.svg'}
                         alt='icon'

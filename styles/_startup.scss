@@ -1,3 +1,4 @@
+// profile startup
 .profile-startup {
     min-height: 65vh;
     .profile-wrapper {
@@ -94,7 +95,6 @@
 }
 
 // job list card
-
 .job-list-card {
     background: #ffffff;
     box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
@@ -112,43 +112,103 @@
                 line-height: 125%;
             }
         }
-        // .profile-img {
-        //     position: absolute;
-        //     top: -75px;
-        //     right: 0;
-        //     width: 120px;
-        //     height: 120px;
-        //     img {
-        //         width: 1000%;
-        //         height: 100%;
-        //         object-fit: cover;
-        //     }
-        // }
-        // .owner-details {
-        //     width: 100%;
-        //     display: flex;
-        //     flex-wrap: wrap;
-        //     align-items: center;
-        //     ._owner-avatar {
-        //         width: 34px;
-        //         height: 34px;
-        //         margin-right: 0.5rem;
-        //         img {
-        //             width: 100%;
-        //             height: 100%;
-        //             object-fit: cover;
-        //         }
-        //     }
-        //     h4 {
-        //         font-weight: 500;
-        //         font-size: 16px;
-        //         margin: 0;
-        //     }
-        //     p {
-        //         font-weight: normal;
-        //         font-size: 14px;
-        //         margin: 0;
-        //     }
-        // }
+    }
+}
+
+// profile job
+.profile-job {
+    min-height: 65vh;
+    .profile-wrapper {
+        display: flex;
+        .right-side {
+            width: 392px;
+            min-width: 392px;
+            padding-top: 5.25rem;
+        }
+        .content {
+            width: 100%;
+            padding: 1rem 2rem 0px 0;
+            background-color: #eaeaea1a;
+            color: #020c40;
+            ._top-title {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                h2 {
+                    display: inline-block;
+                    font-weight: 600;
+                    font-size: 18px;
+                    line-height: 22px;
+                    margin-left: 0.75rem;
+                    margin-bottom: 0;
+                }
+            }
+            ._top-actions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: end;
+                height: 100%;
+                ul {
+                    padding: 0;
+                    margin: 0;
+                    li {
+                        display: inline;
+                        margin-left: 2rem;
+                        &.create-date {
+                            font-weight: 500;
+                            font-size: 14px;
+                            line-height: 17px;
+                            opacity: 0.5;
+                        }
+                    }
+                }
+            }
+            .job-details_top {
+                h1._title {
+                    font-weight: 600;
+                    font-size: 32px;
+                    line-height: 44px;
+                    margin-bottom: 1rem;
+                }
+                ul {
+                    padding: 0;
+                    margin-bottom: 2rem;
+                    li {
+                        display: flex;
+                        align-items: center;
+                        padding: 0.5rem 0;
+                        span.item {
+                            margin-left: 0.5rem;
+                            font-weight: normal;
+                            font-size: 14px;
+                            line-height: 17px;
+                        }
+                    }
+                }
+                .btn-wrapper {
+                    margin-bottom: 1.5rem;
+                    button {
+                        padding: 13px 24px;
+                        margin-right: 1.5rem;
+                        background: #2a6fff;
+                        border-radius: 72px;
+                        font-weight: 600;
+                        font-size: 18px;
+                        line-height: 22px;
+                    }
+                }
+            }
+            .startup-description {
+                font-weight: normal;
+                font-size: 16px;
+                line-height: 28px;
+                h4._title {
+                    font-weight: 600;
+                    font-size: 20px;
+                    line-height: 24px;
+                }
+            }
+        }
     }
 }
