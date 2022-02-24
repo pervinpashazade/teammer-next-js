@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { Avatar, Button, Panel, Tag } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
-import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
-import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerWorkExperience';
-import CardStartUp from '../../src/components/Cards/CardStartUp';
-import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
-import config from '../../src/configuration';
 import { getFetchData } from '../../lib/fetchData';
 import { getToken } from "../../lib/session";
 import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
@@ -18,11 +13,12 @@ function Startup(props) {
     const {
         startupData,
         logo,
+        startupJobList,
+        similarJobList,
     } = props;
 
     React.useEffect(() => {
-        console.clear();
-        console.log('props', props.startupData);
+        console.log('props', props);
     }, [props])
 
     return (
@@ -141,8 +137,14 @@ function Startup(props) {
                 <div className="right-side">
                     <CardJobList
                         classNames="mb-3"
-                        title="Other requirements by Netflix"
-                        jobList={[]}
+                        title={`Other requirements ${'Netflix'}`}
+                        jobList={startupJobList}
+                    />
+                    <CardJobList
+                        classNames="mb-3"
+                        showStartupDetails
+                        title="Similar requirements"
+                        jobList={similarJobList}
                     />
                 </div>
             </div>
@@ -158,30 +160,22 @@ export const getServerSideProps = async (context) => {
 
     const startupData = await getFetchData(`projects/${context.params.id}`, getToken(context));
 
-    // console.log('data', startupData);
+    // STATIC !!!!!!
 
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
+    const startupJobList = await getFetchData(
+        `projects/5/jobs`,
+        getToken(context)
+    );
 
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
+    const similarJobList = await getFetchData(`jobs?include=project,project.owner,position&per_page=4`);
 
-    const fetchRoles = await fetch(config.BASE_URL + "project/roles");
-    const rolesData = await fetchRoles.json();
-
-    const fetchLocations = await fetch(config.BASE_URL + "locations");
-    const locationData = await fetchLocations.json();
-
-    const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
+    // const similarJobList = await fetch(config.BASE_URL + "jobs?include=project,project.owner,position&per_page=6");
 
     return {
         props: {
             startupData: startupData?.data,
-
-            positionList: positionsData.data.items,
-            userData: fetchUserInfo?.data,
-            roleList: rolesData.data,
-            locationList: locationData.data.items,
-            joinedProjectList: joinedProjectList,
+            startupJobList: startupJobList?.data.items,
+            similarJobList: similarJobList?.data.items,
         }
     }
 }

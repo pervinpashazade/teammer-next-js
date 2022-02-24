@@ -33,10 +33,10 @@ const EditComponent = (props) => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
 
-    React.useEffect(() => {
-        console.clear();
-        console.log('user datas', props.userData);
-    }, [props])
+    // React.useEffect(() => {
+    //     console.clear();
+    //     console.log('user datas', props.userData);
+    // }, [props])
 
     return (
         <div>

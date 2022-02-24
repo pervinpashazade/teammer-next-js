@@ -9,12 +9,13 @@ const CardJobList = (props) => {
     const {
         title,
         jobList,
+        showStartupDetails,
         classNames,
     } = props;
-    React.useEffect(() => {
-        console.clear();
-        console.log('props', jobList);
-    }, [props])
+    // React.useEffect(() => {
+    //     console.clear();
+    //     console.log('props', jobList);
+    // }, [props])
     return (
         <div className={`job-list-card ${classNames ? classNames : ''}`}>
             <div className="wrapper">
@@ -29,6 +30,20 @@ const CardJobList = (props) => {
                 {
                     jobList?.map((item, index) => {
                         return <div key={index} className="job-list-item">
+                            {
+                                showStartupDetails &&
+                                <div className="startup-details">
+                                    <Avatar
+                                        circle
+                                        size='md'
+                                        src="https://www.w3schools.com/howto/img_avatar.png"
+                                        className='user-avatar'
+                                        alt="user photo"
+                                    />
+                                    <p>Amazon Prime Video</p>
+                                </div>
+
+                            }
                             <span>Job Position</span>
                             <div className="position">
                                 <h2>Web Developer</h2>
@@ -42,8 +57,8 @@ const CardJobList = (props) => {
                                         <Image
                                             src={'/icons/arrow-right_white.svg'}
                                             alt='icon'
-                                            width={24}
-                                            height={24}
+                                            width={18}
+                                            height={18}
                                         />
                                     </a>
                                 </Link>
@@ -53,8 +68,8 @@ const CardJobList = (props) => {
                                             return <Tag key={index} size="lg" className="custom-tag">{item.name}</Tag>
                                         })
                                     } */}
-                                    <Tag size="lg" className="custom-tag mb-3">Graphic designer</Tag>
-                                    <Tag size="lg" className="custom-tag mb-3">Motion</Tag>
+                                    <Tag size="lg" className="custom-tag mb-2">Graphic designer</Tag>
+                                    <Tag size="lg" className="custom-tag mb-2">Motion</Tag>
                                 </div>
                             </div>
                         </div>
