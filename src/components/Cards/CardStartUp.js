@@ -4,11 +4,13 @@ import { Avatar } from "rsuite"
 import axios from 'axios';
 import config from '../../configuration';
 import { withCookie } from 'next-cookie';
+import Link from 'next/link';
 
 const CardStartUp = (props) => {
     const { cookie } = props;
     const {
         jobId,
+        startupId,
         title,
         position,
         ownerFullname,
@@ -67,7 +69,13 @@ const CardStartUp = (props) => {
                     </div>
                     <div className="job-info">
                         <p>Name of the startup</p>
-                        <p>{title}</p>
+                        <p>
+                            <Link href={`/startup/${startupId}`} passHref>
+                                <a className="navbar-brand">
+                                    {title}
+                                </a>
+                            </Link>
+                        </p>
                     </div>
                 </div>
             </div>

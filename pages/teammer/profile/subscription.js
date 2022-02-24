@@ -10,6 +10,8 @@ import ActionLink from '../../../src/components/Lib/ActionLink';
 import Image from 'next/image';
 import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
+import { getFetchData } from '../../../lib/fetchData';
+import { getToken } from '../../../lib/session';
 
 const Subscription = (props) => {
 
@@ -64,12 +66,12 @@ const Subscription = (props) => {
                             <Avatar
                                 size="lg"
                                 circle
-                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
+                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
-                                <h4>Margaret Brown</h4>
-                                <span>Manage  Subscription</span>
+                                <h4>{props.userData?.full_name}</h4>
+                                <span>Edit Profile</span>
                             </div>
                         </div>
                     </div>
@@ -268,20 +270,11 @@ export default Subscription;
 
 export const getServerSideProps = async (context) => {
 
-    const { params, req, res } = context;
-    const cookie = Cookie.fromApiRoute(req, res);
-    let accessToken = cookie.get('teammers-access-token');
-
-    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
-    const userData = await fetchUserInfo.json();
+    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
 
     return {
         props: {
-            userData: userData?.data,
+            userData: fetchUserInfo?.data,
         }
     }
-};  
+};

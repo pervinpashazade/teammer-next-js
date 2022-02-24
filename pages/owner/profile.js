@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Panel } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
@@ -7,10 +8,11 @@ import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerW
 import CardStartUp from '../../src/components/Cards/CardStartUp';
 import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
 import config from '../../src/configuration';
+import { Cookie, withCookie } from 'next-cookie';
 import { getFetchData } from '../../lib/fetchData';
-import { getToken } from "../../lib/session";
+import getAuth, { getToken } from "../../lib/session";
 
-const ProfileTeammer = (props) => {
+const ProfileOwner = (props) => {
 
     // const {
     //     fullname,
@@ -27,7 +29,7 @@ const ProfileTeammer = (props) => {
     };
 
     return (
-        <div className='profile-teammer'>
+        <div className='profile'>
             <BreadCrumb />
             <Banner />
             <div className="profile-wrapper">
@@ -94,9 +96,8 @@ const ProfileTeammer = (props) => {
     )
 }
 
-ProfileTeammer.layout = true;
-
-export default ProfileTeammer;
+ProfileOwner.layout = true;
+export default ProfileOwner;
 
 export const getServerSideProps = async (context) => {
 

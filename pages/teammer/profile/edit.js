@@ -11,6 +11,8 @@ import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeamm
 import Image from 'next/image';
 import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
+import { getFetchData } from '../../../lib/fetchData';
+import { getToken } from '../../../lib/session';
 
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
@@ -32,7 +34,8 @@ const EditComponent = (props) => {
     };
 
     React.useEffect(() => {
-        console.log('user datas', props);
+        console.clear();
+        console.log('user datas', props.userData);
     }, [props])
 
     return (
@@ -85,7 +88,7 @@ const EditComponent = (props) => {
                                 <Avatar
                                     size="lg"
                                     circle
-                                    src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
+                                    src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                     alt="username surname"
                                 />
                                 <div className="profile-title-content">
@@ -110,7 +113,7 @@ const EditComponent = (props) => {
                                     <Avatar
                                         size="lg"
                                         circle
-                                        src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
+                                        src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                         alt="username surname"
                                     />
                                 </div>
@@ -228,6 +231,7 @@ const EditComponent = (props) => {
                             setPortfolioUrlList={setPortfolioUrlList}
                         />
                         <CardTeammerWorkExperience
+                            workExperienceList={props.userData?.experiences}
                             editMode={true}
                             createModal={{
                                 isOpen: isOpenCreateModal,
@@ -247,7 +251,6 @@ const EditComponent = (props) => {
                                 className="btn-custom-outline btn-danger delete-account-btn"
                             >
                                 <div>
-                                    {/* <img src='/icons/trash_red.svg' alt='red trash icon svg' /> */}
                                     <Image
                                         src={'/icons/trash_red.svg'}
                                         alt='alt'
@@ -264,25 +267,18 @@ const EditComponent = (props) => {
             </div>
         </div>
     )
-}
-EditComponent.layout = true
+};
+
+EditComponent.layout = true;
+
 export default EditComponent;
 
 export const getServerSideProps = async (context) => {
 
-    const { params, req, res } = context;
-    const cookie = Cookie.fromApiRoute(req, res);
-    let accessToken = cookie.get('teammers-access-token');
-
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
-    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
-    const userData = await fetchUserInfo.json();
+    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
 
     const fetchSkills = await fetch(config.BASE_URL + "skills");
     const skillsData = await fetchSkills.json();
@@ -292,13 +288,13 @@ export const getServerSideProps = async (context) => {
 
     return {
         props: {
+            userData: fetchUserInfo?.data,
             positionList: positionsData.data.items.map(item => {
                 return {
                     value: item.id,
                     label: item.name
                 }
             }),
-            userData: userData?.data,
             skillList: skillsData.data.items.map(item => {
                 return {
                     value: item.id,

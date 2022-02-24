@@ -19,14 +19,11 @@ const CardTeammerProfile = ({ props }) => {
         skills,
         positions,
         isProfile,
-        isTop,
         addToTeam
     } = props;
 
     return (
-        <div className='profile-card-teammer' style={{
-            margin: isTop ? '46px 0px 40px 0px' : '0px'
-        }}>
+        <div className='profile-card-teammer'>
             <div className="card-top">
                 <Avatar
                     size="lg"

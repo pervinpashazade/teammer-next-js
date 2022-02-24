@@ -43,7 +43,7 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
                 </div>
                 <div className="message-person">
                     <div>
-                        <Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" />
                     </div>
                     <div className="message-text">
                         <p>Denis Delton wants to add you to their Netflix team.</p>
@@ -76,7 +76,7 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
                     </Link>
                 </div>
                 <div className="message-person">
-                    <div><Avatar circle src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" /></div>
+                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" /></div>
                     <div className="message-text">
                         <p>Denis Delton</p>
                         <p>Yeah! I’m interested...</p>
@@ -180,13 +180,7 @@ const Header = (props) => {
     const [userType, setUserType] = useState(
         cookie.get('teammers-type') ? cookie.get('teammers-type') : ''
     );
-
-    // React.useEffect(() => {
-    //     console.log('cookie', cookie.get('teammers-type'));
-    // }, [cookie])
-
-    // const store = useSelector(store => store);
-    // const dispatch = useDispatch();
+    
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
     const toggleMenu = () => {
@@ -197,42 +191,6 @@ const Header = (props) => {
             <div className="row">
                 <div className="col-md-12">
                     <nav className="navbar navbar-expand-lg px-0">
-                        {/*{*/}
-                        {/*    store.isAuth === "TEAMMER_TYPE" ?*/}
-                        {/*        <Link href="/teammer/home">*/}
-                        {/*            <a className="navbar-brand">*/}
-                        {/*                <Image*/}
-                        {/*                    src={'/LogoHeader.svg'}*/}
-                        {/*                    alt='logo'*/}
-                        {/*                    width={136}*/}
-                        {/*                    height={18}*/}
-                        {/*                />*/}
-                        {/*            </a>*/}
-                        {/*        </Link>*/}
-                        {/*        :*/}
-                        {/*        store.isAuth === "STARTUP_TYPE" ?*/}
-                        {/*            <Link href="/owner/home">*/}
-                        {/*                <a className="navbar-brand">*/}
-                        {/*                    <Image*/}
-                        {/*                        src={'/LogoHeader.svg'}*/}
-                        {/*                        alt='logo'*/}
-                        {/*                        width={136}*/}
-                        {/*                        height={18}*/}
-                        {/*                    />*/}
-                        {/*                </a>*/}
-                        {/*            </Link>*/}
-                        {/*            :*/}
-                        {/*            <Link href="/">*/}
-                        {/*                <a className="navbar-brand">*/}
-                        {/*                    <Image*/}
-                        {/*                        src={'/LogoHeader.svg'}*/}
-                        {/*                        alt='logo'*/}
-                        {/*                        width={136}*/}
-                        {/*                        height={18}*/}
-                        {/*                    />*/}
-                        {/*                </a>*/}
-                        {/*            </Link>*/}
-                        {/*}*/}
                         <div className="d-flex justify-content-between w-md-100">
                             <div>
                                 <a className="d-inline-block d-md-none" onClick={toggleMenu}>
@@ -267,7 +225,7 @@ const Header = (props) => {
                                             href={
                                                 userType ?
                                                     userType === "1" ?
-                                                        "/profile-owner"
+                                                        "/owner/profile"
                                                         :
                                                         userType === "2" ?
                                                             "/teammer/profile"
@@ -279,7 +237,7 @@ const Header = (props) => {
                                         >
                                             <a>
                                                 <Avatar circle
-                                                    src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                                    src="https://www.w3schools.com/howto/img_avatar.png" />
                                             </a>
                                         </Link>
                                         {/* {
@@ -287,7 +245,7 @@ const Header = (props) => {
                                                 <Link href="/login">
                                                     <a>
                                                         <Avatar circle
-                                                            src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                                            src="https://www.w3schools.com/howto/img_avatar.png" />
                                                     </a>
                                                 </Link>
                                                 :
@@ -295,10 +253,10 @@ const Header = (props) => {
                                                     <a>
                                                         <Avatar
                                                             circle
-                                                            src={"https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"}
+                                                            src={"https://www.w3schools.com/howto/img_avatar.png"}
                                                             // src={store.user?.detail?.photo ? store.user.detail.photo
                                                             //     :
-                                                            //     "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                                                            //     "https://www.w3schools.com/howto/img_avatar.png"
                                                             // }
                                                         />
                                                     </a>
@@ -342,7 +300,7 @@ const Header = (props) => {
                                         href={
                                             userType ?
                                                 userType === "1" ?
-                                                    "/profile-owner"
+                                                    "/owner/profile"
                                                     :
                                                     userType === "2" ?
                                                         "/teammer/profile"
@@ -354,7 +312,7 @@ const Header = (props) => {
                                     >
                                         <a>
                                             <Avatar circle
-                                                src="https://avatars2.githubusercontent.com/u/12592949?s=460&v=4" />
+                                                src="https://www.w3schools.com/howto/img_avatar.png" />
                                         </a>
                                     </Link>
                                 </li>

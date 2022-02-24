@@ -8,6 +8,8 @@ import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form } from 'rsuite';
 import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
+import { getFetchData } from '../../../lib/fetchData';
+import { getToken } from '../../../lib/session';
 
 function Setting(props) {
 
@@ -60,11 +62,11 @@ function Setting(props) {
                             <Avatar
                                 size="lg"
                                 circle
-                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "/img/avatar2.png"}
+                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
-                                <h4>Margaret Brown</h4>
+                                <h4>{props.userData?.full_name}</h4>
                                 <span>Edit Profile</span>
                             </div>
                         </div>
@@ -139,20 +141,11 @@ export default Setting;
 
 export const getServerSideProps = async (context) => {
 
-    const { params, req, res } = context;
-    const cookie = Cookie.fromApiRoute(req, res);
-    let accessToken = cookie.get('teammers-access-token');
-
-    const fetchUserInfo = await fetch(config.BASE_URL + "auth/user?include=skills,positions", {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
-    const userData = await fetchUserInfo.json();
+    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
 
     return {
         props: {
-            userData: userData?.data,
+            userData: fetchUserInfo?.data,
         }
     }
 };

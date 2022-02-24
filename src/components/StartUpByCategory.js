@@ -35,6 +35,7 @@ const StartUpByCategory = (props) => {
                                     >
                                         <CardStartUp
                                             jobId={item.id}
+                                            startupId={item.project_id}
                                             title={item.project?.title}
                                             ownerFullname={item.project?.owner?.full_name}
                                             ownerAvatarUrl={item.project?.owner?.detail?.photo}

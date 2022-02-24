@@ -37,8 +37,12 @@ function CardTeammerWorkExperience(props) {
             <ul className="experience-wrapper">
                 {
                     workExperienceList?.map((item, index) => {
-                        return <li>
-                            <span className="date">{item.start_date} - {item.end_date}</span>
+                        return <li key={index}>
+                            <span className="date">
+                                {item.start_date}
+                                {`${item.start_date && item.end_date ? ' - ' : ''}`}
+                                {item.end_date}
+                            </span>
                             <h3>{item.position?.name}</h3>
                             <p>{item.company} / San Francisco, CA</p>
                             {
@@ -278,16 +282,14 @@ function CardTeammerWorkExperience(props) {
                             onClick={() => createModal.toggleFunc()}
                         >
                             <div className='icon-btn-wrapper'>
-                                {/* <img src="/icons/times.svg" className="mr-2" alt="emoji" /> */}
                                 <Image
                                     src={'/icons/times.svg'}
                                     alt='img'
-                                    // className="mr-2"
                                     width={14}
                                     height={14}
                                     layout='fixed'
                                 />
-                                Cancel
+                                <span className='ml-2'>Cancel</span>
                             </div>
                         </Button>
                         <Button
@@ -297,16 +299,14 @@ function CardTeammerWorkExperience(props) {
                             onClick={() => createModal.toggleFunc()}
                         >
                             <div className='icon-btn-wrapper'>
-                                {/* <img src="/icons/plus.svg" className="mr-2" alt="emoji" /> */}
                                 <Image
                                     src={'/icons/plus.svg'}
                                     alt='img'
-                                    // className="mr-2"
                                     width={14}
                                     height={14}
                                     layout='fixed'
                                 />
-                                Add
+                                <span className='ml-2'>Add</span>
                             </div>
                         </Button>
                     </Modal.Footer>
