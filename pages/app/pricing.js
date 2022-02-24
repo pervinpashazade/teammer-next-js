@@ -25,7 +25,7 @@ function BannerTop() {
 }
 
 
-function pricing() {
+function Pricing() {
 
     const [isActiveAnnualy, setIsActiveAnnualy] = useState(false);
     const router = useRouter();
@@ -162,4 +162,6 @@ function pricing() {
     )
 }
 
-export default pricing
+Pricing.layout = true;
+
+export default Pricing

@@ -377,4 +377,6 @@ function Chat() {
     )
 }
 
+Chat.layout = true;
+
 export default Chat

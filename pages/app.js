@@ -108,7 +108,7 @@ function CustomSlider() {
     )
 }
 
-function app() {
+function App() {
     return (
         <div className='about-us'>
             <BreadCrumb />
@@ -276,4 +276,6 @@ function app() {
     )
 }
 
-export default app
+App.layout = true;
+
+export default App
