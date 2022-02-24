@@ -31,59 +31,64 @@ const CardTeammerProfile = ({ props }) => {
                     src={photo ? photo : "https://www.w3schools.com/howto/img_avatar.png"}
                     alt="profile img"
                 />
-                <div className="icons-wrapper">
-                    <IconButton
-                        size="sm"
-                        icon={
+                {
+                    isProfile &&
+                    <>
+                        <div className="icons-wrapper">
+                            <IconButton
+                                size="sm"
+                                icon={
+                                    <Image
+                                        src={'/social-images/facebook_muted.svg'}
+                                        alt='img'
+                                        width={16}
+                                        height={16}
+                                        layout='fixed'
+                                    />
+                                }
+                            />
+                            <IconButton
+                                size="sm"
+                                icon={
+                                    <Image
+                                        src={'/social-images/twitter_muted.svg'}
+                                        alt='img'
+                                        width={16}
+                                        height={16}
+                                        layout='fixed'
+                                    />
+                                }
+                            />
+                            <IconButton
+                                size="sm"
+                                icon={
+                                    <Image
+                                        src={'/social-images/linkedin_muted.svg'}
+                                        alt='img'
+                                        width={16}
+                                        height={16}
+                                        layout='fixed'
+                                    />
+                                }
+                            />
+                        </div>
+                        <ActionLink
+                            size="sm"
+                            href="/teammer/profile/edit"
+                            classNames='bg-transparent'
+                            padding="7px"
+                            margin="0px 0px 0px 0.5rem"
+                        >
                             <Image
-                                src={'/social-images/facebook_muted.svg'}
+                                src={'/icons/edit.svg'}
                                 alt='img'
                                 width={16}
                                 height={16}
                                 layout='fixed'
                             />
-                        }
-                    />
-                    <IconButton
-                        size="sm"
-                        icon={
-                            <Image
-                                src={'/social-images/twitter_muted.svg'}
-                                alt='img'
-                                width={16}
-                                height={16}
-                                layout='fixed'
-                            />
-                        }
-                    />
-                    <IconButton
-                        size="sm"
-                        icon={
-                            <Image
-                                src={'/social-images/linkedin_muted.svg'}
-                                alt='img'
-                                width={16}
-                                height={16}
-                                layout='fixed'
-                            />
-                        }
-                    />
-                </div>
-                <ActionLink
-                    size="sm"
-                    href="/teammer/profile/edit"
-                    classNames='bg-transparent'
-                    padding="7px"
-                    margin="0px 0px 0px 0.5rem"
-                >
-                    <Image
-                        src={'/icons/edit.svg'}
-                        alt='img'
-                        width={16}
-                        height={16}
-                        layout='fixed'
-                    />
-                </ActionLink>
+                        </ActionLink>
+                    </>
+                }
             </div>
             <div className="card-content">
                 <div className="profile">
@@ -137,7 +142,15 @@ const CardTeammerProfile = ({ props }) => {
                         :
                         <div className="d-flex justify-content-around profile-buttons pt-3">
                             <Button onClick={() => addToTeam(full_name)}>Add to team</Button>
-                            <Button><GrMailOption /></Button>
+                            <Button>
+                                <Image
+                                    src={'/icons/envelope_white.svg'}
+                                    alt='img'
+                                    width={16}
+                                    height={16}
+                                    layout='fixed'
+                                />
+                            </Button>
                         </div>
                 }
             </div>
