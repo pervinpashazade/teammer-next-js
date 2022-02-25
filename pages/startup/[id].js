@@ -14,10 +14,10 @@ function Startup(props) {
         startupJobList,
     } = props;
 
-    // React.useEffect(() => {
-    //     console.clear();
-    //     console.log('props', props);
-    // }, [props])
+    React.useEffect(() => {
+        console.clear();
+        console.log('startup page props', props);
+    }, [props])
 
     return (
         <div className='profile-startup'>
@@ -42,6 +42,8 @@ function Startup(props) {
                         classNames="mb-3"
                         logo={startupData?.logo}
                         title={startupData?.title}
+                        owner_fullname={startupData?.owner?.full_name}
+                        owner_image_url={startupData?.owner?.photo}
                     />
                     <CardJobList
                         classNames="mb-3"
@@ -60,9 +62,9 @@ export default Startup;
 
 export const getServerSideProps = async (context) => {
 
-    const startupData = await getFetchData(`projects/${context.params.id}`, getToken(context));
+    const startupData = await getFetchData(`projects/${context.params.id}?include=owner`, getToken(context));
     const startupJobList = await getFetchData(
-        `projects/${context.params.id}/jobs`,
+        `projects/${context.params.id}/jobs?include=position,project.owner`,
         getToken(context)
     );
 

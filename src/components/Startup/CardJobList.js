@@ -9,8 +9,8 @@ const CardJobList = (props) => {
     const {
         title,
         jobList,
-        showStartupDetails,
         classNames,
+        showStartupDetails,
     } = props;
     // React.useEffect(() => {
     //     console.clear();
@@ -33,20 +33,28 @@ const CardJobList = (props) => {
                             {
                                 showStartupDetails &&
                                 <div className="startup-details">
-                                    <Avatar
-                                        circle
-                                        size='md'
-                                        src="https://www.w3schools.com/howto/img_avatar.png"
-                                        className='user-avatar'
-                                        alt="user photo"
-                                    />
-                                    <p>Amazon Prime Video</p>
+                                    {
+                                        item.project &&
+                                        <Avatar
+                                            circle
+                                            size='md'
+                                            src={item.project.logo ? item.project.logo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                            className='user-avatar'
+                                            alt="user photo"
+                                        />
+                                    }
+                                    {
+                                        item.project &&
+                                        <p>{item.project.title && item.project.title}</p>
+                                    }
                                 </div>
 
                             }
                             <span>Job Position</span>
                             <div className="position">
-                                <h2>Web Developer</h2>
+                                <h2>
+                                    {item.position?.name}
+                                </h2>
                                 <Link
                                     passHref
                                     href={`/job/${item.id}`}

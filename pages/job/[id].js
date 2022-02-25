@@ -11,14 +11,15 @@ import Image from 'next/image';
 function Startup(props) {
 
     const {
-        startupData,
+        jobData,
         logo,
         startupJobList,
         similarJobList,
     } = props;
 
     React.useEffect(() => {
-        console.log('props', props);
+        console.clear();
+        console.log('props job', props);
     }, [props])
 
     return (
@@ -28,28 +29,34 @@ function Startup(props) {
             <div className="profile-wrapper">
                 <div className="content">
                     <div className="row">
-                        <div className="col-md-6 mb-4">
+                        <div className="col-md-12 col-lg-6 mb-4">
                             <div className="_top-title">
                                 <Avatar
                                     size="md"
                                     circle
-                                    src={logo ? logo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                    src={jobData?.project?.logo ? jobData.project.logo : "https://www.w3schools.com/howto/img_avatar.png"}
                                     alt="startup profile img"
                                 />
-                                <h2 className='startup-title'>Netflix</h2>
+                                <h2 className='startup-title'>
+                                    {jobData?.project?.title}
+                                </h2>
                             </div>
                         </div>
-                        <div className="col-md-6 mb-4">
+                        <div className="col-md-12 col-lg-6 mb-4">
                             <div className="_top-actions">
                                 <ul>
-                                    <li className='create-date'>Posted 17 hours ago</li>
+                                    <li className='create-date'>
+                                        {jobData?.created_at}
+                                    </li>
                                     {/* <li className='create-date'>link</li> */}
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div className="job-details_top">
-                        <h1 className="_title">Motion designer</h1>
+                        <h1 className="_title">
+                            {jobData?.position?.name}
+                        </h1>
                         <div className="tag-wrapper">
                             {/* {
                                 skills?.map((item, index) => {
@@ -60,42 +67,56 @@ function Startup(props) {
                             <Tag size="lg" className="custom-tag mb-4">Motion</Tag>
                         </div>
                         <ul>
-                            <li>
-                                <Image
-                                    src={'/icons/location.svg'}
-                                    alt='icon'
-                                    width={16}
-                                    height={16}
-                                />
-                                <span className="item">San Francisco, CA / Boston, MA</span>
-                            </li>
-                            <li>
-                                <Image
-                                    src={'/icons/location.svg'}
-                                    alt='icon'
-                                    width={16}
-                                    height={16}
-                                />
-                                <span className="item">Full time</span>
-                            </li>
-                            <li>
-                                <Image
-                                    src={'/icons/location.svg'}
-                                    alt='icon'
-                                    width={16}
-                                    height={16}
-                                />
-                                <span className="item">100 $ per month</span>
-                            </li>
-                            <li>
-                                <Image
-                                    src={'/icons/location.svg'}
-                                    alt='icon'
-                                    width={16}
-                                    height={16}
-                                />
-                                <span className="item">7 years of experience</span>
-                            </li>
+                            {
+                                jobData?.location?.name &&
+                                <li>
+                                    <Image
+                                        src={'/icons/location.svg'}
+                                        alt='icon'
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="item">{jobData.location.name}</span>
+                                </li>
+                            }
+                            {
+                                jobData?.type?.name &&
+                                <li>
+                                    <Image
+                                        src={'/icons/location.svg'}
+                                        alt='icon'
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="item">{jobData.type.name}</span>
+                                </li>
+                            }
+                            {
+                                jobData?.salary &&
+                                <li>
+                                    <Image
+                                        src={'/icons/location.svg'}
+                                        alt='icon'
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="item">{jobData.salary}</span>
+                                </li>
+                            }
+                            {
+                                jobData?.years_of_experience &&
+                                <li>
+                                    <Image
+                                        src={'/icons/location.svg'}
+                                        alt='icon'
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="item">
+                                        {jobData.years_of_experience} years of experience
+                                    </span>
+                                </li>
+                            }
                         </ul>
                         <div className="btn-wrapper">
                             <Button
@@ -117,34 +138,20 @@ function Startup(props) {
                     </div>
                     <div className='startup-description'>
                         <h4 className='_title'>About this requirement</h4>
-                        {startupData?.description}
-                        Hey! We are an effective, extraordinary marketing agency that works out of the box, breaking stereotypical thinking and approach to work. We think in terms of the scale of a flight to the moon, so we are growing rapidly and looking for a team of skilled craftsmen who are eager to fulfill their dreams and are ready to develop with us.
-                        Now we are actively looking for a DESIGNER
-                        What will you do:
-                        Create photo and video creatives for Facebook advertising campaigns
-                        We offer you:
-                        Convenient work schedule from 9:00 to 18:00, Mon - Fri;
-                        Decent salary (we value our specialists very much);
-                        Professional growth and self-realization;
-                        The ability to realize your ideas not in theory, but in practice
-                        What do we expect from you:
-                        Proficiency in Adobe Photoshop, After Effects, Premiere Pro;
-                        The ability to create unique, vivid videos and photos;
-                        Personal qualities: creativity, desire to grow and develop with us.
-                        Do you feel like your skills are up to the mark? Do you want to become part of our team? Rather send your resume
+                        {jobData?.description}
                     </div>
                 </div>
                 <div className="right-side">
                     <CardJobList
                         classNames="mb-3"
-                        title={`Other requirements ${'Netflix'}`}
+                        title={`Other requirements ${jobData?.project?.title}`}
                         jobList={startupJobList}
                     />
                     <CardJobList
                         classNames="mb-3"
-                        showStartupDetails
                         title="Similar requirements"
                         jobList={similarJobList}
+                        showStartupDetails
                     />
                 </div>
             </div>
@@ -157,25 +164,37 @@ Startup.layout = true;
 export default Startup;
 
 export const getServerSideProps = async (context) => {
+    // main datas
+    const jobData = await getFetchData(`jobs/${context.params.id}?include=project,position,location,type`, getToken(context));
+    let similarJobs = [];
+    let startupJobs = [];
 
-    const startupData = await getFetchData(`projects/${context.params.id}`, getToken(context));
-
-    // STATIC !!!!!!
-
+    // startup other jobs start
     const startupJobList = await getFetchData(
-        `projects/5/jobs`,
+        `projects/${jobData?.data?.project?.id}/jobs?include=position,project.owner`,
         getToken(context)
     );
+    if (jobData?.data?.project?.id) {
+        startupJobs = startupJobList.data.items.filter(x => x.id !== jobData.data.id)
+    };
+    // startup other jobs end
 
-    const similarJobList = await getFetchData(`jobs?include=project,project.owner,position&per_page=4`);
-
-    // const similarJobList = await fetch(config.BASE_URL + "jobs?include=project,project.owner,position&per_page=6");
+    // similar job list start
+    let postion_id = '';
+    if (jobData?.data?.position?.id) {
+        postion_id = jobData.data.position.id;
+    };
+    const filteredSimilarJobList = await getFetchData(`jobs?filter[position_id]=${postion_id}&include=project,position&per_page=5`);
+    if (jobData?.data?.id && filteredSimilarJobList?.data?.items) {
+        similarJobs = filteredSimilarJobList.data.items.filter(x => x.id !== jobData.data.id)
+    };
+    // similar job list end
 
     return {
         props: {
-            startupData: startupData?.data,
-            startupJobList: startupJobList?.data.items,
-            similarJobList: similarJobList?.data.items,
+            jobData: jobData?.data,
+            startupJobList: startupJobs,
+            similarJobList: similarJobs,
         }
     }
 }

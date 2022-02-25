@@ -8,6 +8,8 @@ const CardStartupProfile = (props) => {
         title,
         logo,
         classNames,
+        owner_fullname,
+        owner_image_url,
     } = props;
 
     return (
@@ -28,12 +30,14 @@ const CardStartupProfile = (props) => {
                     <Avatar
                         size="sm"
                         circle
-                        src={logo ? logo : "https://www.w3schools.com/howto/img_avatar.png"}
+                        src={owner_image_url ? owner_image_url : "https://www.w3schools.com/howto/img_avatar.png"}
                         alt="startup owner profile img"
                         className='_owner-avatar'
                     />
                     <div className='_details'>
-                        <h4>Denis Delton</h4>
+                        <h4>
+                            {owner_fullname}
+                        </h4>
                         <p>Owner</p>
                     </div>
                 </div>
