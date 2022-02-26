@@ -1,6 +1,14 @@
-import Image from 'next/image';
 import React, { useState } from 'react';
-import { Button, Checkbox, Form, IconButton, InputPicker, Modal } from 'rsuite';
+import Image from 'next/image';
+import {
+    Button,
+    Checkbox,
+    Form,
+    IconButton,
+    InputPicker,
+    Modal
+} from 'rsuite';
+
 
 function CardTeammerWorkExperience(props) {
 
@@ -19,20 +27,23 @@ function CardTeammerWorkExperience(props) {
         <div className='work-experience-card-teammer'>
             <div className="card-top">
                 <h4>Work Experience</h4>
-                <IconButton
-                    size="md"
-                    className='add-exp-btn'
-                    icon={
-                        <Image
-                            src={'/icons/plus.svg'}
-                            alt='img'
-                            width={14}
-                            height={14}
-                            layout='fixed'
-                        />
-                    }
-                    onClick={() => createModal.toggleFunc()}
-                />
+                {
+                    editMode &&
+                    <IconButton
+                        size="md"
+                        className='add-exp-btn'
+                        icon={
+                            <Image
+                                src={'/icons/plus.svg'}
+                                alt='img'
+                                width={14}
+                                height={14}
+                                layout='fixed'
+                            />
+                        }
+                        onClick={() => createModal.toggleFunc()}
+                    />
+                }
             </div>
             <ul className="experience-wrapper">
                 {
@@ -43,6 +54,9 @@ function CardTeammerWorkExperience(props) {
                                 {`${item.start_date && item.end_date ? ' - ' : ''}`}
                                 {item.end_date}
                             </span>
+                            {
+                                console.log('test item', item)
+                            }
                             <h3>{item.position?.name}</h3>
                             <p>
                                 {item.company}
@@ -50,7 +64,6 @@ function CardTeammerWorkExperience(props) {
                                     item.company && item.location?.name && ' / '
                                 }
                                 {item.location?.name}
-                                San Francisco, CA
                             </p>
                             {
                                 editMode &&

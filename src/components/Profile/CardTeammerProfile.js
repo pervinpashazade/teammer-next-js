@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    Avatar, Button,
+    Avatar,
+    Button,
     IconButton,
     Tag
 } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
-import { GrMailOption } from 'react-icons/gr'
 import Image from 'next/image';
+import { withCookie } from 'next-cookie';
 
-const CardTeammerProfile = ({ props }) => {
+const CardTeammerProfile = ({ props, cookie }) => {
     const {
         full_name,
         photo,
@@ -22,6 +23,19 @@ const CardTeammerProfile = ({ props }) => {
         addToTeam
     } = props;
 
+    const [loggedUser, setLogedUser] = useState({
+        id: cookie.get('teammers-id'),
+        teammer_type: cookie.get('teammers-type'),
+    });
+
+    // React.useEffect(() => {
+    //     console.log('user log', cookie.get('teammers-type'));
+    //     setLogedUser({
+    //         id: cookie.get('teammers-id'),
+    //         teammer_type: cookie.get('teammers-type'),
+    //     })
+    // }, []);
+
     return (
         <div className='profile-card-teammer'>
             <div className="card-top">
@@ -31,63 +45,61 @@ const CardTeammerProfile = ({ props }) => {
                     src={photo ? photo : "https://www.w3schools.com/howto/img_avatar.png"}
                     alt="profile img"
                 />
-                {
-                    isProfile &&
-                    <>
-                        <div className="icons-wrapper">
-                            <IconButton
-                                size="sm"
-                                icon={
-                                    <Image
-                                        src={'/social-images/facebook_muted.svg'}
-                                        alt='img'
-                                        width={16}
-                                        height={16}
-                                        layout='fixed'
-                                    />
-                                }
-                            />
-                            <IconButton
-                                size="sm"
-                                icon={
-                                    <Image
-                                        src={'/social-images/twitter_muted.svg'}
-                                        alt='img'
-                                        width={16}
-                                        height={16}
-                                        layout='fixed'
-                                    />
-                                }
-                            />
-                            <IconButton
-                                size="sm"
-                                icon={
-                                    <Image
-                                        src={'/social-images/linkedin_muted.svg'}
-                                        alt='img'
-                                        width={16}
-                                        height={16}
-                                        layout='fixed'
-                                    />
-                                }
-                            />
-                        </div>
-                        <ActionLink
-                            size="sm"
-                            href="/teammer/profile/edit"
-                            classNames='bg-transparent'
-                            padding="7px"
-                            margin="0px 0px 0px 0.5rem"
-                        >
+                <div className="icons-wrapper">
+                    <IconButton
+                        size="sm"
+                        icon={
                             <Image
-                                src={'/icons/edit.svg'}
+                                src={'/social-images/facebook_muted.svg'}
                                 alt='img'
                                 width={16}
                                 height={16}
                                 layout='fixed'
                             />
-                        </ActionLink>
-                    </>
+                        }
+                    />
+                    <IconButton
+                        size="sm"
+                        icon={
+                            <Image
+                                src={'/social-images/twitter_muted.svg'}
+                                alt='img'
+                                width={16}
+                                height={16}
+                                layout='fixed'
+                            />
+                        }
+                    />
+                    <IconButton
+                        size="sm"
+                        icon={
+                            <Image
+                                src={'/social-images/linkedin_muted.svg'}
+                                alt='img'
+                                width={16}
+                                height={16}
+                                layout='fixed'
+                            />
+                        }
+                    />
+                </div>
+                {
+                    isProfile &&
+                    <ActionLink
+                        size="sm"
+                        href="/teammer/profile/edit"
+                        classNames='bg-transparent'
+                        padding="7px"
+                        margin="0px 0px 0px 0.5rem"
+                    >
+                        <Image
+                            src={'/icons/edit.svg'}
+                            alt='img'
+                            width={16}
+                            height={16}
+                            layout='fixed'
+                        />
+                    </ActionLink>
                 }
             </div>
             <div className="card-content">
@@ -123,7 +135,6 @@ const CardTeammerProfile = ({ props }) => {
                             layout='fixed'
                         />
                         <span className='ml-2'>
-                            {/* {location} */}
                             {location?.name}
                         </span>
                     </div>
@@ -135,27 +146,27 @@ const CardTeammerProfile = ({ props }) => {
                         })
                     }
                 </div>
+                <div className="bio-wrapper">
+                    {about}
+                </div>
                 {
-                    isProfile ? <div className="bio-wrapper">
-                        {about}
+                    !isProfile && loggedUser?.teammer_type === "1" &&
+                    <div className="d-flex justify-content-around profile-buttons pt-3">
+                        <Button onClick={() => addToTeam(full_name)}>Add to team</Button>
+                        <Button>
+                            <Image
+                                src={'/icons/envelope_white.svg'}
+                                alt='img'
+                                width={16}
+                                height={16}
+                                layout='fixed'
+                            />
+                        </Button>
                     </div>
-                        :
-                        <div className="d-flex justify-content-around profile-buttons pt-3">
-                            <Button onClick={() => addToTeam(full_name)}>Add to team</Button>
-                            <Button>
-                                <Image
-                                    src={'/icons/envelope_white.svg'}
-                                    alt='img'
-                                    width={16}
-                                    height={16}
-                                    layout='fixed'
-                                />
-                            </Button>
-                        </div>
                 }
             </div>
         </div>
     )
 }
 
-export default CardTeammerProfile
+export default withCookie(CardTeammerProfile);

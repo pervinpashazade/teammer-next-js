@@ -102,7 +102,6 @@ function CardTeammerPortfolio(props) {
                     {/*        </li>*/}
                     {/*    })*/}
                     {/*}*/}
-
                 </ul>
             </div>
             {
