@@ -6,7 +6,8 @@ import {
     Form,
     IconButton,
     InputPicker,
-    Modal
+    Modal,
+    Input
 } from 'rsuite';
 import {months} from "../../../pages/signup/steps";
 
@@ -64,7 +65,6 @@ function CardTeammerWorkExperience(props) {
             <ul className="experience-wrapper">
                 {
                     workExperienceList?.map((item, index) => {
-                        console.log(item);
                         return <li key={index}>
                             <span className="date">
                                 {item.start_date}
@@ -130,7 +130,7 @@ function CardTeammerWorkExperience(props) {
                             </Form.Group>
                             <Form.Group controlId="company">
                                 <Form.ControlLabel>Company</Form.ControlLabel>
-                                <Form.Control placeholder="Company"
+                                <Input placeholder="Company"
                                               onChange={(e) => {
                                                   setFormData({...formData, company: e})
                                               }}

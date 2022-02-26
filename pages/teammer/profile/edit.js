@@ -13,11 +13,13 @@ import {Cookie, withCookie} from 'next-cookie';
 import config from '../../../src/configuration';
 import {getFetchData} from '../../../lib/fetchData';
 import getAuth, {getToken} from '../../../lib/session';
+import {buildFormData} from "../../signup/steps";
 
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
 const EditComponent = (props) => {
-    const [userData , setUserData] = useState(props.userData)
+    console.log(props)
+    const [userData, setUserData] = useState(props.userData)
     console.log(userData);
     const [userInfo, setUserInfo] = useState({
         full_name: userData.full_name && userData.full_name,
@@ -32,7 +34,7 @@ const EditComponent = (props) => {
         experiences: userData.experiences && userData.experiences
     });
     const [formData, setFormData] = useState({
-        id:'',
+        id: '',
         position: '',
         company: '',
         location: '',
@@ -44,23 +46,27 @@ const EditComponent = (props) => {
     })
     const [selectedPositions, setSelectedPositions] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
-    const [portfolioUrlList, setPortfolioUrlList] = useState(props.userData?.detail?.portfolio)
+    const [portfolioUrlList, setPortfolioUrlList] = useState({
+        cvFileName: props.userData?.detail.cv,
+        cv: '',
+        portfolio: props.userData?.detail.portfolio
+    })
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
-    const getData = async ()=>{
+    const getData = async () => {
         const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
         setUserInfo({
             ...userInfo,
-            experiences : fetchUserInfo.data.experiences
+            experiences: fetchUserInfo.data.experiences
         })
     }
     const editModal = (id) => {
         console.log(userInfo.experiences.find(item => item.id === id));
         let element = userInfo.experiences.find(item => item.id === id);
         setFormData({
-            id : id,
+            id: id,
             position: element.position.id,
             company: element.company,
             location: element.location_id,
@@ -72,7 +78,7 @@ const EditComponent = (props) => {
         })
         setIsOpenCreateModal(!isOpenCreateModal);
     }
-    const toggle = ()=>{
+    const toggle = () => {
         setIsOpenCreateModal(!isOpenCreateModal)
     }
     const toggleEditModal = async () => {
@@ -96,7 +102,7 @@ const EditComponent = (props) => {
             } else {
                 data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
             }
-            let response = await fetch(config.BASE_URL + "experiences/"+formData.id, {
+            let response = await fetch(config.BASE_URL + "experiences/" + formData.id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,8 +132,7 @@ const EditComponent = (props) => {
                 );
                 setIsOpenCreateModal(!isOpenCreateModal);
             }
-        }
-    else{
+        } else {
             toaster.push(
                 <Notification type={"error"} header="Success!" closable>
                     Some fields are empty!
@@ -147,7 +152,7 @@ const EditComponent = (props) => {
                 position_id: formData.position,
                 company: formData.company,
                 start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
-                end_date : `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+                end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
                 // current: formData.current
             }
             // if (formData.current) {
@@ -165,7 +170,7 @@ const EditComponent = (props) => {
                 body: JSON.stringify(data)
             })
             let res = await response.json()
-            if(res.success){
+            if (res.success) {
                 getData();
                 setFormData({
                     position: '',
@@ -184,8 +189,7 @@ const EditComponent = (props) => {
                 );
                 setIsOpenCreateModal(!isOpenCreateModal);
             }
-        }
-        else{
+        } else {
             toaster.push(
                 <Notification type={"error"} header="Success!" closable>
                     Some fields are empty!
@@ -199,6 +203,15 @@ const EditComponent = (props) => {
             ...userInfo,
             [type]: data
         })
+    }
+    const saveChanges = () => {
+        let body = {
+            detail: {}
+        }
+
+        let formdata = new FormData();
+        let data = buildFormData(formdata, body);
+
     }
     return (
         <div>
@@ -262,6 +275,7 @@ const EditComponent = (props) => {
                                 color="blue"
                                 appearance="primary"
                                 className='save-btn'
+                                onClick={saveChanges}
                             >
                                 Save Changes
                             </Button>
@@ -431,10 +445,10 @@ const EditComponent = (props) => {
                             editMode={true}
                             createModal={{
                                 isOpen: isOpenCreateModal,
-                                toggle : toggle,
+                                toggle: toggle,
                                 toggleFunc: toggleCreateModal,
                                 toggleEdit: editModal,
-                                toggleEditFunc : toggleEditModal,
+                                toggleEditFunc: toggleEditModal,
                                 title: "Add Work Experience",
                                 formData: formData,
                                 setFormData: setFormData,
