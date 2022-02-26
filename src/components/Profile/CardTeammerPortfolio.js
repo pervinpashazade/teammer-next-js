@@ -14,9 +14,9 @@ function CardTeammerPortfolio(props) {
         setPortfolioUrlList,
     } = props;
 
-    React.useEffect(() => {
-        console.log('component card props', props);
-    }, [props]);
+    // React.useEffect(() => {
+    //     console.log('component card props', props);
+    // }, [props]);
 
     const [newPortfolioLink, setNewPortfolioLink] = useState('');
 
