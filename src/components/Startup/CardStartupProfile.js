@@ -7,6 +7,7 @@ const CardStartupProfile = (props) => {
     const {
         title,
         logo,
+        startup_type,
         classNames,
         owner_fullname,
         owner_image_url,
@@ -17,7 +18,7 @@ const CardStartupProfile = (props) => {
             <div className="wrapper">
                 <div className="_title">
                     <h2>{title}</h2>
-                    <p>Marketplace</p>
+                    <p>{startup_type}</p>
                 </div>
                 <Avatar
                     size="lg"

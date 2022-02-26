@@ -18,7 +18,7 @@ function Startup(props) {
     } = props;
 
     React.useEffect(() => {
-        console.clear();
+        // console.clear();
         console.log('props job', props);
     }, [props])
 
@@ -58,13 +58,10 @@ function Startup(props) {
                             {jobData?.position?.name}
                         </h1>
                         <div className="tag-wrapper">
-                            {/* {
-                                skills?.map((item, index) => {
-                                    return <Tag key={index} size="lg" className="custom-tag">{item.name}</Tag>
-                                })
-                            } */}
-                            <Tag size="lg" className="custom-tag mb-4">Graphic designer</Tag>
-                            <Tag size="lg" className="custom-tag mb-4">Motion</Tag>
+                            {
+                                jobData?.type?.name &&
+                                <Tag size="lg" className="custom-tag mb-4">Motion</Tag>
+                            }
                         </div>
                         <ul>
                             {
@@ -171,7 +168,7 @@ export const getServerSideProps = async (context) => {
 
     // startup other jobs start
     const startupJobList = await getFetchData(
-        `projects/${jobData?.data?.project?.id}/jobs?include=position,project.owner`,
+        `projects/${jobData?.data?.project?.id}/jobs?include=position,project.type,project.owner`,
         getToken(context)
     );
     if (jobData?.data?.project?.id) {
@@ -184,7 +181,7 @@ export const getServerSideProps = async (context) => {
     if (jobData?.data?.position?.id) {
         postion_id = jobData.data.position.id;
     };
-    const filteredSimilarJobList = await getFetchData(`jobs?filter[position_id]=${postion_id}&include=project,position&per_page=5`);
+    const filteredSimilarJobList = await getFetchData(`jobs?filter[position_id]=${postion_id}&include=project,project.type,position&per_page=5`);
     if (jobData?.data?.id && filteredSimilarJobList?.data?.items) {
         similarJobs = filteredSimilarJobList.data.items.filter(x => x.id !== jobData.data.id)
     };

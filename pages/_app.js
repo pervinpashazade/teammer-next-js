@@ -29,7 +29,7 @@ function MyApp({
     //     </SessionProvider>
     // } else
     // console.log(router.pathname )
-    console.log('layout', Component.layout);
+    // console.log('layout', Component.layout);
 
     return <div>
         {

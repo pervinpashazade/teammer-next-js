@@ -48,7 +48,6 @@ const CardJobList = (props) => {
                                         <p>{item.project.title && item.project.title}</p>
                                     }
                                 </div>
-
                             }
                             <span>Job Position</span>
                             <div className="position">
@@ -71,13 +70,18 @@ const CardJobList = (props) => {
                                     </a>
                                 </Link>
                                 <div className="tag-wrapper">
+                                    {
+                                        item.project?.type &&
+                                        <Tag size="lg" className="custom-tag mb-2">
+                                            {item.project?.type?.name}
+                                        </Tag>
+                                    }
                                     {/* {
-                                        skills?.map((item, index) => {
-                                            return <Tag key={index} size="lg" className="custom-tag">{item.name}</Tag>
-                                        })
+                                        !showStartupDetails && item.project?.type &&
+                                        <Tag size="lg" className="custom-tag mb-2">
+                                            {item.project?.type?.name}
+                                        </Tag>
                                     } */}
-                                    <Tag size="lg" className="custom-tag mb-2">Graphic designer</Tag>
-                                    <Tag size="lg" className="custom-tag mb-2">Motion</Tag>
                                 </div>
                             </div>
                         </div>

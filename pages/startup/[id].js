@@ -42,6 +42,7 @@ function Startup(props) {
                         classNames="mb-3"
                         logo={startupData?.logo}
                         title={startupData?.title}
+                        startup_type={startupData?.type?.name}
                         owner_fullname={startupData?.owner?.full_name}
                         owner_image_url={startupData?.owner?.photo}
                     />
@@ -62,7 +63,7 @@ export default Startup;
 
 export const getServerSideProps = async (context) => {
 
-    const startupData = await getFetchData(`projects/${context.params.id}?include=owner`, getToken(context));
+    const startupData = await getFetchData(`projects/${context.params.id}?include=owner,type`, getToken(context));
     const startupJobList = await getFetchData(
         `projects/${context.params.id}/jobs?include=position,project.owner`,
         getToken(context)
@@ -71,7 +72,7 @@ export const getServerSideProps = async (context) => {
     return {
         props: {
             startupData: startupData?.data,
-            startupJobList: startupJobList?.data.items
+            startupJobList: startupJobList?.data.items || []
         }
     }
 }

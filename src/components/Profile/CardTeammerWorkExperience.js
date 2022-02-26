@@ -11,9 +11,9 @@ function CardTeammerWorkExperience(props) {
         workExperienceList,
     } = props;
 
-    React.useEffect(() => {
-        console.log('exp', workExperienceList);
-    }, [workExperienceList])
+    // React.useEffect(() => {
+    //     console.log('propssss', props);
+    // }, [props])
 
     return (
         <div className='work-experience-card-teammer'>
@@ -44,7 +44,14 @@ function CardTeammerWorkExperience(props) {
                                 {item.end_date}
                             </span>
                             <h3>{item.position?.name}</h3>
-                            <p>{item.company} / San Francisco, CA</p>
+                            <p>
+                                {item.company}
+                                {
+                                    item.company && item.location?.name && ' / '
+                                }
+                                {item.location?.name}
+                                San Francisco, CA
+                            </p>
                             {
                                 editMode &&
                                 <IconButton

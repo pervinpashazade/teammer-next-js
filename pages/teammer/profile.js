@@ -16,10 +16,10 @@ const ProfileTeammer = (props) => {
     //     fullname,
     // } = props;
 
-    // React.useEffect(() => {
-    //     // console.clear();
-    //     console.log('profile props', props);
-    // }, [props])
+    React.useEffect(() => {
+        // console.clear();
+        console.log('profile props', props);
+    }, [props])
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
 
     const toggleCreateModal = () => {
@@ -100,25 +100,13 @@ export default ProfileTeammer;
 
 export const getServerSideProps = async (context) => {
 
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
-
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
-
-    const fetchRoles = await fetch(config.BASE_URL + "project/roles");
-    const rolesData = await fetchRoles.json();
-
-    const fetchLocations = await fetch(config.BASE_URL + "locations");
-    const locationData = await fetchLocations.json();
+    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,experiences.location,detail.location", getToken(context));
 
     const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
 
     return {
         props: {
-            positionList: positionsData.data.items,
             userData: fetchUserInfo?.data,
-            roleList: rolesData.data,
-            locationList: locationData.data.items,
             joinedProjectList: joinedProjectList,
         }
     }
