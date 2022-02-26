@@ -21,7 +21,19 @@ const ProfileTeammer = (props) => {
         console.log('profile props', props);
     }, [props])
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
-
+    const [formData, setFormData] = useState({
+        position: '',
+        company: '',
+        location: '',
+        start_month: '',
+        start_year: '',
+        end_month: '',
+        end_year: '',
+        current: false
+    });
+    const [userInfo, setUserInfo] = useState({
+        experiences: props.userData.experiences && props.userData.experiences
+    });
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
@@ -47,12 +59,16 @@ const ProfileTeammer = (props) => {
                         }
                     />
                     <CardTeammerWorkExperience
-                        workExperienceList={props.userData?.experiences}
+                        workExperienceList={userInfo.experiences}
                         editMode={true}
                         createModal={{
                             isOpen: isOpenCreateModal,
                             toggleFunc: toggleCreateModal,
-                            title: "Add Work Experience"
+                            title: "Add Work Experience",
+                            formData: formData,
+                            setFormData: setFormData,
+                            positionsList: props.positionList,
+                            locationList: props.locationList,
                         }}
                     />
                 </div>
@@ -112,11 +128,37 @@ export const getServerSideProps = async (context) => {
         await getFetchData("auth/user?include=skills,positions,experiences,experiences.location,detail.location", getToken(context));
 
     const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
+    const fetchPositions = await fetch(config.BASE_URL + "positions");
+    const positionsData = await fetchPositions.json();
 
+    const fetchSkills = await fetch(config.BASE_URL + "skills");
+    const skillsData = await fetchSkills.json();
+
+    const fetchLocations = await fetch(config.BASE_URL + "locations");
+    const locationData = await fetchLocations.json();
     return {
         props: {
             userData: fetchUserInfo?.data,
             joinedProjectList: joinedProjectList,
+            positionList: positionsData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name
+                }
+            }),
+            skillList: skillsData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            locationList: locationData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            token: getToken(context)
         }
     }
 }

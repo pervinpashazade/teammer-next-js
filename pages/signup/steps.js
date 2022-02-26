@@ -39,7 +39,7 @@ const renderErrorMessages = err => {
 }
 
 // month array
-const months = [{
+export const months = [{
     label: 'January',
     value: 1
 }, {
