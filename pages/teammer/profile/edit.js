@@ -72,6 +72,9 @@ const EditComponent = (props) => {
         })
         setIsOpenCreateModal(!isOpenCreateModal);
     }
+    const toggle = ()=>{
+        setIsOpenCreateModal(!isOpenCreateModal)
+    }
     const toggleEditModal = async () => {
         console.log(formData);
         if (formData.position
@@ -121,9 +124,16 @@ const EditComponent = (props) => {
                         Work experience updated!
                     </Notification>, 'topEnd'
                 );
+                setIsOpenCreateModal(!isOpenCreateModal);
             }
         }
-        setIsOpenCreateModal(!isOpenCreateModal);
+    else{
+            toaster.push(
+                <Notification type={"error"} header="Success!" closable>
+                    Some fields are empty!
+                </Notification>, 'topEnd'
+            );
+        }
     };
     const toggleCreateModal = async () => {
         console.log(formData);
@@ -172,9 +182,16 @@ const EditComponent = (props) => {
                         New work experience added!
                     </Notification>, 'topEnd'
                 );
+                setIsOpenCreateModal(!isOpenCreateModal);
             }
         }
-        setIsOpenCreateModal(!isOpenCreateModal);
+        else{
+            toaster.push(
+                <Notification type={"error"} header="Success!" closable>
+                    Some fields are empty!
+                </Notification>, 'topEnd'
+            );
+        }
     };
 
     const changeHandle = (type, data) => {
@@ -414,6 +431,7 @@ const EditComponent = (props) => {
                             editMode={true}
                             createModal={{
                                 isOpen: isOpenCreateModal,
+                                toggle : toggle,
                                 toggleFunc: toggleCreateModal,
                                 toggleEdit: editModal,
                                 toggleEditFunc : toggleEditModal,

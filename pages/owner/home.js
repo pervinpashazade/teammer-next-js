@@ -135,7 +135,6 @@ const Home = (props) => {
         setOpen(!open);
     };
 
-    // console.log(data)
     return (
         <div className="owner-home">
             <div className="owner-banner">
@@ -248,6 +247,8 @@ const Home = (props) => {
                                         isProfile={false}
                                         props={
                                             {
+                                                viewProfileLink: true,
+                                                id: item.id,
                                                 full_name: item.full_name,
                                                 photo: item.detail.photo,
                                                 location: item.detail.location.name + " , " + item.detail.location.country_code,

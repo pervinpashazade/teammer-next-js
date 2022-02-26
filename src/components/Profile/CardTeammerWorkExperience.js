@@ -57,7 +57,7 @@ function CardTeammerWorkExperience(props) {
                                 layout='fixed'
                             />
                         }
-                        onClick={() => createModal.toggleFunc()}
+                        onClick={() => createModal.toggle()}
                     />
                 }
             </div>
@@ -106,7 +106,7 @@ function CardTeammerWorkExperience(props) {
                     size='sm'
                     open={createModal.isOpen}
                     className='work-exp-modal'
-                    onClose={() => createModal.toggleFunc()}
+                    onClose={() => createModal.toggle()}
                 >
                     <Modal.Header>
                         <Modal.Title>{createModal.title}</Modal.Title>
@@ -242,7 +242,7 @@ function CardTeammerWorkExperience(props) {
                             color="blue"
                             appearance="primary"
                             className="btn-custom-outline btn-cancel"
-                            onClick={() => createModal.toggleFunc()}
+                            onClick={() => createModal.toggle()}
                         >
                             <div className='icon-btn-wrapper'>
                                 <Image

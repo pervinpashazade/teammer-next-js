@@ -33,7 +33,9 @@ const ProfileTeammer = (props) => {
             ...userInfo,
             experiences: fetchUserInfo.data.experiences
         })
-
+    }
+    const toggle = ()=>{
+        setIsOpenCreateModal(!isOpenCreateModal)
     }
     const editModal = (id) => {
         console.log(userInfo.experiences.find(item => item.id === id));
@@ -102,7 +104,13 @@ const ProfileTeammer = (props) => {
                 );
             }
         }
-        setIsOpenCreateModal(!isOpenCreateModal);
+        else{
+            toaster.push(
+                <Notification type={"error"} header="Success!" closable>
+                    Some fields are empty!
+                </Notification>, 'topEnd'
+            );
+        }
     };
     const toggleCreateModal = async () => {
         console.log(formData);
@@ -152,9 +160,16 @@ const ProfileTeammer = (props) => {
                         New work experience added!
                     </Notification>, 'topEnd'
                 );
+                setIsOpenCreateModal(!isOpenCreateModal);
             }
         }
-        setIsOpenCreateModal(!isOpenCreateModal);
+        else{
+            toaster.push(
+                <Notification type={"error"} header="Success!" closable>
+                   Some fields are empty!
+                </Notification>, 'topEnd'
+            );
+        }
     };
 
     return (
@@ -182,10 +197,11 @@ const ProfileTeammer = (props) => {
                         editMode={true}
                         createModal={{
                             isOpen: isOpenCreateModal,
+                            toggle : toggle,
                             toggleFunc: toggleCreateModal,
                             toggleEdit: editModal,
                             toggleEditFunc : toggleEditModal,
-                            title: "Add Work Experience",
+                            title: formData.id ? "Edit Work Experience": "Add Work Experience",
                             formData: formData,
                             setFormData: setFormData,
                             positionsList: props.positionList,
