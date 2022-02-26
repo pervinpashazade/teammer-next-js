@@ -89,16 +89,19 @@ function CardTeammerPortfolio(props) {
                 </div>
             </div>
             <div className="card-content">
+                {
+                    console.log(portfolioUrlList)
+                }
                 <ul>
-                    {
-                        portfolioUrlList?.map((item, index) => {
-                            return <li key={index}>
-                                <Link href={item}>
-                                    <a>{item}</a>
-                                </Link>
-                            </li>
-                        })
-                    }
+                    {/*{*/}
+                    {/*    portfolioUrlList?.map((item, index) => {*/}
+                    {/*        return <li key={index}>*/}
+                    {/*            <Link href={item}>*/}
+                    {/*                <a>{item}</a>*/}
+                    {/*            </Link>*/}
+                    {/*        </li>*/}
+                    {/*    })*/}
+                    {/*}*/}
 
                 </ul>
             </div>

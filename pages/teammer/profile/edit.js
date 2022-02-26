@@ -1,23 +1,36 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Link from 'next/link';
 import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
 import Banner from '../../../src/components/Lib/Banner';
-import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
-import { RiSettingsLine } from 'react-icons/ri';
-import { FaRegTimesCircle } from 'react-icons/fa';
-import { Avatar, Button, Form, Input, InputPicker, Tag } from 'rsuite';
+import {MdModeEdit, MdOutlineWorkOutline} from 'react-icons/md';
+import {RiSettingsLine} from 'react-icons/ri';
+import {FaRegTimesCircle} from 'react-icons/fa';
+import {Avatar, Button, Form, Input, InputPicker, Tag} from 'rsuite';
 import CardTeammerPortfolio from '../../../src/components/Profile/CardTeammerPortfolio';
 import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeammerWorkExperience';
 import Image from 'next/image';
-import { Cookie, withCookie } from 'next-cookie';
+import {Cookie, withCookie} from 'next-cookie';
 import config from '../../../src/configuration';
-import { getFetchData } from '../../../lib/fetchData';
-import { getToken } from '../../../lib/session';
+import {getFetchData} from '../../../lib/fetchData';
+import getAuth, {getToken} from '../../../lib/session';
 
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
 const EditComponent = (props) => {
-
+    const {userData} = props;
+    console.log(userData);
+    const [userInfo, setUserInfo] = useState({
+        full_name: userData.full_name && userData.full_name,
+        positions: userData.positions && userData.positions,
+        year_of_experience: userData.detail.years_of_experience && userData.detail.years_of_experience,
+        skills: userData.skills && userData.skills,
+        location: userData.detail.location && userData.detail.location.id,
+        description: userData.detail.about && userData.detail.about,
+        cv: userData.detail.cv && userData.detail.cv,
+        portfolio: userData.detail.portfolio && userData.detail.portfolio,
+        photo: userData.detail.photo && userData.detail.photo,
+        experiences: userData.experiences && userData.experiences
+    })
     const [selectedPositions, setSelectedPositions] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
 
@@ -33,17 +46,15 @@ const EditComponent = (props) => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
 
-    // React.useEffect(() => {
-    //     console.clear();
-    //     console.log('user datas', props.userData);
-    // }, [props])
+    const changeHandle = (type , data)=>{
 
+    }
     return (
         <div>
             <div className='teammer-profile-edit'>
-                <BreadCrumb />
+                <BreadCrumb/>
                 <Banner
-                    styles={{ marginBottom: '2.5rem' }}
+                    styles={{marginBottom: '2.5rem'}}
                 />
                 <div className="profile-wrapper">
                     <div className="left-side">
@@ -51,7 +62,7 @@ const EditComponent = (props) => {
                             <li className='active'>
                                 <Link href="/teammer/profile/edit">
                                     <a>
-                                        <MdModeEdit />
+                                        <MdModeEdit/>
                                         <span>Edit Profile</span>
                                     </a>
                                 </Link>
@@ -59,7 +70,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/teammer/profile/settings">
                                     <a>
-                                        <RiSettingsLine />
+                                        <RiSettingsLine/>
                                         <span>Account Settings</span>
                                     </a>
                                 </Link>
@@ -67,7 +78,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/teammer/profile/subscription">
                                     <a>
-                                        <MdOutlineWorkOutline />
+                                        <MdOutlineWorkOutline/>
                                         <span>Manage Subscription</span>
                                     </a>
                                 </Link>
@@ -75,7 +86,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/teammer/profile/blocked-users">
                                     <a>
-                                        <FaRegTimesCircle />
+                                        <FaRegTimesCircle/>
                                         <span>Blocked Users</span>
                                     </a>
                                 </Link>
@@ -113,7 +124,7 @@ const EditComponent = (props) => {
                                     <Avatar
                                         size="lg"
                                         circle
-                                        src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                        src={userInfo.photo ? userInfo.photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                         alt="username surname"
                                     />
                                 </div>
@@ -146,22 +157,31 @@ const EditComponent = (props) => {
                                                 placeholder="Position"
                                                 data={props.positionList}
                                                 onChange={(e) => {
-                                                    if (e && !selectedPositions.some(i => i === e))
-                                                        setSelectedPositions([...selectedPositions, e])
+                                                    if (e && !userInfo.positions.some(i => i.id === e)) {
+                                                        let element = props.positionList.find(item => item.value === e);
+                                                        let newElement = {
+                                                            id : element.value,
+                                                            name : element.label
+                                                        }
+                                                        setUserInfo({
+                                                            ...userInfo,
+                                                            positions: [...userInfo.positions, newElement]
+                                                        })
+                                                    }
                                                 }}
                                             />
                                             {
-                                                selectedPositions.length > 0 && selectedPositions.map((item, index) => {
+                                                userInfo.positions.length > 0 && userInfo.positions.map((item, index) => {
                                                     return <Tag
                                                         key={index}
                                                         closable
                                                         className="custom-tag mt-2"
                                                         onClose={() => {
-                                                            let data = selectedPositions.filter(i => i !== item);
-                                                            setSelectedPositions(data);
+                                                            let data = userInfo.positions.filter(i => i.id !== item.id);
+                                                            setUserInfo({...userInfo,positions: data});
                                                         }}
                                                     >
-                                                        {item}
+                                                        {item.name}
                                                     </Tag>
                                                 })
                                             }
@@ -170,7 +190,8 @@ const EditComponent = (props) => {
                                     <div className="col-md-4 mb-4">
                                         <Form.Group controlId="experience">
                                             <Form.ControlLabel>Years of experience</Form.ControlLabel>
-                                            <Form.Control name="experience" placeholder="Year" />
+                                            <Form.Control name="experience" placeholder="Year"
+                                                          value={userInfo.year_of_experience} type="number"/>
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
@@ -182,22 +203,31 @@ const EditComponent = (props) => {
                                                 placeholder="Skills"
                                                 data={props.skillList}
                                                 onChange={(e) => {
-                                                    if (e && !selectedSkills.some(i => i === e))
-                                                        setSelectedSkills([...selectedSkills, e])
+                                                    if (e && !userInfo.skills.some(i => i.id === e)) {
+                                                        let element = props.skillList.find(item => item.value === e);
+                                                        let newElement = {
+                                                            id : element.value,
+                                                            name : element.label
+                                                        }
+                                                        setUserInfo({
+                                                            ...userInfo,
+                                                            skills: [...userInfo.skills, newElement]
+                                                        })
+                                                    }
                                                 }}
                                             />
                                             {
-                                                selectedSkills.length > 0 && selectedSkills.map((item, index) => {
+                                                userInfo.skills.length > 0 && userInfo.skills.map((item, index) => {
                                                     return <Tag
                                                         key={index}
                                                         closable
                                                         className="custom-tag mt-2"
                                                         onClose={() => {
-                                                            let data = selectedSkills.filter(i => i !== item);
-                                                            setSelectedSkills(data);
+                                                            let data = userInfo.skills.filter(i => i.id !== item.id);
+                                                            setUserInfo({...userInfo,skills: data});
                                                         }}
                                                     >
-                                                        {item}
+                                                        {item.name}
                                                     </Tag>
                                                 })
                                             }
@@ -210,6 +240,7 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Location"
+                                                value={userInfo.location}
                                                 data={props.locationList}
                                             />
                                         </Form.Group>
@@ -218,6 +249,8 @@ const EditComponent = (props) => {
                                         <Form.Group controlId="about">
                                             <Form.ControlLabel>Textarea</Form.ControlLabel>
                                             {/* <Form.Control rows={5} name="about" accepter={Textarea} /> */}
+                                            <Input as="textarea" rows={3} value={userInfo.description}
+                                                   placeholder="Textarea"/>
                                         </Form.Group>
                                     </div>
                                 </Form>
@@ -231,7 +264,7 @@ const EditComponent = (props) => {
                             setPortfolioUrlList={setPortfolioUrlList}
                         />
                         <CardTeammerWorkExperience
-                            workExperienceList={props.userData?.experiences}
+                            workExperienceList={userInfo.experiences}
                             editMode={true}
                             createModal={{
                                 isOpen: isOpenCreateModal,
@@ -274,7 +307,15 @@ EditComponent.layout = true;
 export default EditComponent;
 
 export const getServerSideProps = async (context) => {
-
+    const auth = getAuth(context);
+    if (auth !== "2") {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
