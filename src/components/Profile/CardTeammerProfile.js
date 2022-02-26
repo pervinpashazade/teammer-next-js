@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router'
 import {
     Avatar,
     Button,
@@ -10,7 +11,12 @@ import Image from 'next/image';
 import { withCookie } from 'next-cookie';
 
 const CardTeammerProfile = ({ props, cookie }) => {
+
+    const router = useRouter();
+
     const {
+        viewProfileLink,
+        id,
         full_name,
         photo,
         year_of_experience,
@@ -28,6 +34,11 @@ const CardTeammerProfile = ({ props, cookie }) => {
         teammer_type: cookie.get('teammers-type'),
     });
 
+    const viewProfile = () => {
+        if (!id) return;
+        router.push(`/teammer/${id}`);
+    }
+
     // React.useEffect(() => {
     //     console.log('user log', cookie.get('teammers-type'));
     //     setLogedUser({
@@ -40,10 +51,12 @@ const CardTeammerProfile = ({ props, cookie }) => {
         <div className='profile-card-teammer'>
             <div className="card-top">
                 <Avatar
-                    size="lg"
                     circle
-                    src={photo ? photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                    size="lg"
                     alt="profile img"
+                    className={`${!isProfile ? 'c-pointer' : ''}`}
+                    src={photo ? photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                    onClick={() => !isProfile && id && viewProfile()}
                 />
                 <div className="icons-wrapper">
                     <IconButton
@@ -104,9 +117,20 @@ const CardTeammerProfile = ({ props, cookie }) => {
             </div>
             <div className="card-content">
                 <div className="profile">
-                    <h1>
-                        {full_name ? full_name : ''}
-                    </h1>
+                    {
+                        isProfile && full_name ?
+                            <h1>
+                                {full_name}
+                            </h1>
+                            :
+                            <h1
+                                className='c-pointer'
+                                onClick={() => viewProfile()}
+                            >
+                                {full_name}
+                            </h1>
+                    }
+
                     <h3>
                         {bio_position}
                         {
