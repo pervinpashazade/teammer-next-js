@@ -5,7 +5,7 @@ import Banner from '../../../src/components/Lib/Banner';
 import {MdModeEdit, MdOutlineWorkOutline} from 'react-icons/md';
 import {RiSettingsLine} from 'react-icons/ri';
 import {FaRegTimesCircle} from 'react-icons/fa';
-import {Avatar, Button, Form, Input, InputPicker, Tag} from 'rsuite';
+import {Avatar, Button, Form, Input, InputPicker, Notification, Tag, toaster} from 'rsuite';
 import CardTeammerPortfolio from '../../../src/components/Profile/CardTeammerPortfolio';
 import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeammerWorkExperience';
 import Image from 'next/image';
@@ -17,7 +17,7 @@ import getAuth, {getToken} from '../../../lib/session';
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
 const EditComponent = (props) => {
-    const {userData} = props;
+    const [userData , setUserData] = useState(props.userData)
     console.log(userData);
     const [userInfo, setUserInfo] = useState({
         full_name: userData.full_name && userData.full_name,
@@ -30,10 +30,19 @@ const EditComponent = (props) => {
         portfolio: userData.detail.portfolio && userData.detail.portfolio,
         photo: userData.detail.photo && userData.detail.photo,
         experiences: userData.experiences && userData.experiences
+    });
+    const [formData, setFormData] = useState({
+        position: '',
+        company: '',
+        location: '',
+        start_month: '',
+        start_year: '',
+        end_month: '',
+        end_year: '',
+        current: false
     })
     const [selectedPositions, setSelectedPositions] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
-
     const [portfolioUrlList, setPortfolioUrlList] = useState(props.userData?.detail?.portfolio)
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
@@ -42,12 +51,60 @@ const EditComponent = (props) => {
     const toggleEditModal = () => {
         setIsOpenEditModal(!isOpenEditModal);
     };
-    const toggleCreateModal = () => {
+    const getData = async ()=>{
+        const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
+        setUserInfo({
+            ...userInfo,
+            experiences : fetchUserInfo.data.experiences
+        })
+    }
+    const toggleCreateModal = async () => {
+        console.log(formData);
+        if (formData.position
+            && formData.company
+            && formData.location
+            && formData.start_month
+            && formData.start_year) {
+            let data = {
+                location_id: formData.location,
+                position_id: formData.position,
+                company: formData.company,
+                start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
+                end_date : `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+                // current: formData.current
+            }
+            // if (formData.current) {
+            //     data.end_date = ""
+            //     data.current = true;
+            // } else {
+            //     data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+            // }
+            let response = await fetch(config.BASE_URL + "experiences", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + props.token
+                },
+                body: JSON.stringify(data)
+            })
+            let res = await response.json()
+            if(res.success){
+                getData()
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        New work experience added!
+                    </Notification>, 'topEnd'
+                );
+            }
+        }
         setIsOpenCreateModal(!isOpenCreateModal);
     };
 
-    const changeHandle = (type , data)=>{
-
+    const changeHandle = (type, data) => {
+        setUserInfo({
+            ...userInfo,
+            [type]: data
+        })
     }
     return (
         <div>
@@ -145,6 +202,9 @@ const EditComponent = (props) => {
                                                 name="name"
                                                 placeholder="Enter your fullname"
                                                 value={props.userData?.full_name}
+                                                onChange={(e) => {
+                                                    changeHandle('full_name', e)
+                                                }}
                                             />
                                         </Form.Group>
                                     </div>
@@ -160,8 +220,8 @@ const EditComponent = (props) => {
                                                     if (e && !userInfo.positions.some(i => i.id === e)) {
                                                         let element = props.positionList.find(item => item.value === e);
                                                         let newElement = {
-                                                            id : element.value,
-                                                            name : element.label
+                                                            id: element.value,
+                                                            name: element.label
                                                         }
                                                         setUserInfo({
                                                             ...userInfo,
@@ -178,7 +238,7 @@ const EditComponent = (props) => {
                                                         className="custom-tag mt-2"
                                                         onClose={() => {
                                                             let data = userInfo.positions.filter(i => i.id !== item.id);
-                                                            setUserInfo({...userInfo,positions: data});
+                                                            setUserInfo({...userInfo, positions: data});
                                                         }}
                                                     >
                                                         {item.name}
@@ -191,6 +251,9 @@ const EditComponent = (props) => {
                                         <Form.Group controlId="experience">
                                             <Form.ControlLabel>Years of experience</Form.ControlLabel>
                                             <Form.Control name="experience" placeholder="Year"
+                                                          onChange={(e) => {
+                                                              changeHandle('year_of_experience', e)
+                                                          }}
                                                           value={userInfo.year_of_experience} type="number"/>
                                         </Form.Group>
                                     </div>
@@ -206,8 +269,8 @@ const EditComponent = (props) => {
                                                     if (e && !userInfo.skills.some(i => i.id === e)) {
                                                         let element = props.skillList.find(item => item.value === e);
                                                         let newElement = {
-                                                            id : element.value,
-                                                            name : element.label
+                                                            id: element.value,
+                                                            name: element.label
                                                         }
                                                         setUserInfo({
                                                             ...userInfo,
@@ -224,7 +287,7 @@ const EditComponent = (props) => {
                                                         className="custom-tag mt-2"
                                                         onClose={() => {
                                                             let data = userInfo.skills.filter(i => i.id !== item.id);
-                                                            setUserInfo({...userInfo,skills: data});
+                                                            setUserInfo({...userInfo, skills: data});
                                                         }}
                                                     >
                                                         {item.name}
@@ -242,6 +305,9 @@ const EditComponent = (props) => {
                                                 placeholder="Location"
                                                 value={userInfo.location}
                                                 data={props.locationList}
+                                                onChange={(e) => {
+                                                    changeHandle('location', e)
+                                                }}
                                             />
                                         </Form.Group>
                                     </div>
@@ -249,7 +315,10 @@ const EditComponent = (props) => {
                                         <Form.Group controlId="about">
                                             <Form.ControlLabel>Textarea</Form.ControlLabel>
                                             {/* <Form.Control rows={5} name="about" accepter={Textarea} /> */}
-                                            <Input as="textarea" rows={3} value={userInfo.description}
+                                            <Input onChange={(e) => {
+                                                console.log(e)
+                                                changeHandle('description', e)
+                                            }} as="textarea" rows={3} value={userInfo.description}
                                                    placeholder="Textarea"/>
                                         </Form.Group>
                                     </div>
@@ -269,12 +338,11 @@ const EditComponent = (props) => {
                             createModal={{
                                 isOpen: isOpenCreateModal,
                                 toggleFunc: toggleCreateModal,
-                                title: "Add Work Experience"
-                            }}
-                            editModal={{
-                                isOpen: isOpenEditModal,
-                                toggleFunc: toggleEditModal,
-                                title: "Edit Work Experience"
+                                title: "Add Work Experience",
+                                formData: formData,
+                                setFormData: setFormData,
+                                positionsList: props.positionList,
+                                locationList: props.locationList,
                             }}
                         />
                         <div className="delete-account-wrapper">
@@ -348,6 +416,7 @@ export const getServerSideProps = async (context) => {
                     label: item.name ? item.name : ''
                 }
             }),
+            token: getToken(context)
         }
     }
 };

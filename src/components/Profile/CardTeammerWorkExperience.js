@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from 'next/image';
 import {
     Button,
@@ -8,21 +8,37 @@ import {
     InputPicker,
     Modal
 } from 'rsuite';
+import {months} from "../../../pages/signup/steps";
 
 
 function CardTeammerWorkExperience(props) {
-
+    const [years, setYears] = useState([])
     const {
         editMode,
         createModal,
         editModal,
         workExperienceList,
     } = props;
-
+    const {
+        formData,
+        setFormData,
+        positionsList,
+        locationList
+    } = createModal;
     // React.useEffect(() => {
     //     console.log('propssss', props);
     // }, [props])
-
+    useEffect(() => {
+        let year_array = [];
+        let nowDate = (new Date()).getFullYear();
+        for (let i = 2000; i <= nowDate; i++) {
+            year_array.push({
+                label: `${i}`,
+                value: i
+            })
+            setYears(year_array);
+        }
+    }, [])
     return (
         <div className='work-experience-card-teammer'>
             <div className="card-top">
@@ -102,51 +118,22 @@ function CardTeammerWorkExperience(props) {
                                     size="md"
                                     className="w-100"
                                     placeholder="Position"
+                                    value={formData.position}
                                     data={
-                                        [{
-                                            label: "Developer",
-                                            value: 'DEVELOPER'
-                                        },
-                                        {
-                                            label: "Designer",
-                                            value: 'DESIGNER'
-                                        },
-                                        {
-                                            label: "Manager",
-                                            value: 'MANAGER'
-                                        },
-                                        {
-                                            label: "Director",
-                                            value: 'DIRECTOR'
-                                        }]
+                                        positionsList
                                     }
+                                    onChange={(e) => {
+                                        setFormData({...formData, position: e})
+                                    }}
                                 />
                             </Form.Group>
                             <Form.Group controlId="company">
                                 <Form.ControlLabel>Company</Form.ControlLabel>
-                                <InputPicker
-                                    size="md"
-                                    className="w-100"
-                                    placeholder="Company"
-                                    data={
-                                        [{
-                                            label: "Teammer",
-                                            value: 'Teammer'
-                                        },
-                                        {
-                                            label: "Facebook",
-                                            value: 'Facebook'
-                                        },
-                                        {
-                                            label: "A2Z",
-                                            value: 'A2Z'
-                                        },
-                                        {
-                                            label: "Netflix",
-                                            value: 'Netflix'
-                                        }]
-                                    }
-                                />
+                                <Form.Control placeholder="Company"
+                                              onChange={(e) => {
+                                                  setFormData({...formData, company: e})
+                                              }}
+                                              value={formData.company} type="text"/>
                             </Form.Group>
                             <Form.Group controlId="location">
                                 <Form.ControlLabel>Location</Form.ControlLabel>
@@ -155,23 +142,12 @@ function CardTeammerWorkExperience(props) {
                                     className="w-100"
                                     placeholder="Location"
                                     data={
-                                        [{
-                                            label: "USA",
-                                            value: 'USA'
-                                        },
-                                        {
-                                            label: "Germany",
-                                            value: 'Germany'
-                                        },
-                                        {
-                                            label: "Azerbaijan",
-                                            value: 'Azerbaijan'
-                                        },
-                                        {
-                                            label: "Turkey",
-                                            value: 'Turkey'
-                                        }]
+                                        locationList
                                     }
+                                    value={formData.location}
+                                    onChange={(e) => {
+                                        setFormData({...formData, location: e})
+                                    }}
                                 />
                             </Form.Group>
                             <div className="date-wrapper">
@@ -183,23 +159,12 @@ function CardTeammerWorkExperience(props) {
                                             className="w-100"
                                             placeholder="Month"
                                             data={
-                                                [{
-                                                    label: "January",
-                                                    value: 'January'
-                                                },
-                                                {
-                                                    label: "February",
-                                                    value: 'February'
-                                                },
-                                                {
-                                                    label: "March",
-                                                    value: 'March'
-                                                },
-                                                {
-                                                    label: "Aprel",
-                                                    value: 'Aprel'
-                                                }]
+                                                months
                                             }
+                                            value={formData.start_month}
+                                            onChange={(e) => {
+                                                setFormData({...formData, start_month: e})
+                                            }}
                                         />
                                     </Form.Group>
                                     <Form.Group controlId="start_year">
@@ -211,51 +176,33 @@ function CardTeammerWorkExperience(props) {
                                             className="w-100"
                                             placeholder="Year"
                                             data={
-                                                [{
-                                                    label: "2022",
-                                                    value: '2022'
-                                                },
-                                                {
-                                                    label: "2021",
-                                                    value: '2021'
-                                                },
-                                                {
-                                                    label: "2020",
-                                                    value: '2020'
-                                                },
-                                                {
-                                                    label: "2019",
-                                                    value: '2019'
-                                                }]
+                                                years
                                             }
+                                            value={formData.start_year}
+                                            onChange={(e) => {
+                                                setFormData({...formData, start_year: e})
+                                            }}
                                         />
                                     </Form.Group>
                                 </div>
                                 <div className='wrapper-item'>
                                     <Form.Group controlId="start_month">
-                                        <Form.ControlLabel>End date</Form.ControlLabel>
+                                        <Form.ControlLabel className={formData.current ? "text-muted" : ""}><>End
+                                            date
+                                        </>
+                                        </Form.ControlLabel>
                                         <InputPicker
                                             size="size"
                                             className="w-100"
                                             placeholder="Month"
                                             data={
-                                                [{
-                                                    label: "January",
-                                                    value: 'January'
-                                                },
-                                                {
-                                                    label: "February",
-                                                    value: 'February'
-                                                },
-                                                {
-                                                    label: "March",
-                                                    value: 'March'
-                                                },
-                                                {
-                                                    label: "Aprel",
-                                                    value: 'Aprel'
-                                                }]
+                                                months
                                             }
+                                            value={formData.end_month}
+                                            onChange={(e) => {
+                                                setFormData({...formData, end_month: e})
+                                            }}
+                                            disabled={formData.current}
                                         />
                                     </Form.Group>
                                     <Form.Group controlId="start_year">
@@ -266,29 +213,27 @@ function CardTeammerWorkExperience(props) {
                                             size="size"
                                             className="w-100"
                                             placeholder="Year"
+                                            disabled={formData.current}
                                             data={
-                                                [{
-                                                    label: "2022",
-                                                    value: '2022'
-                                                },
-                                                {
-                                                    label: "2021",
-                                                    value: '2021'
-                                                },
-                                                {
-                                                    label: "2020",
-                                                    value: '2020'
-                                                },
-                                                {
-                                                    label: "2019",
-                                                    value: '2019'
-                                                }]
+                                                years
                                             }
+                                            value={formData.end_year}
+                                            onChange={(e) => {
+                                                setFormData({...formData, end_year: e})
+                                            }}
                                         />
                                     </Form.Group>
                                 </div>
                             </div>
-                            <Checkbox> I’m currently working in this position</Checkbox>
+                            <Checkbox onChange={(e, checked) => {
+                                checked ? setFormData({
+                                        ...formData,
+                                        end_month: '',
+                                        end_year: '',
+                                        current: checked
+                                    }) :
+                                    setFormData({...formData, current: checked})
+                            }}> I’m currently working in this position</Checkbox>
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -353,18 +298,18 @@ function CardTeammerWorkExperience(props) {
                                             label: "Developer",
                                             value: 'DEVELOPER'
                                         },
-                                        {
-                                            label: "Designer",
-                                            value: 'DESIGNER'
-                                        },
-                                        {
-                                            label: "Manager",
-                                            value: 'MANAGER'
-                                        },
-                                        {
-                                            label: "Director",
-                                            value: 'DIRECTOR'
-                                        }]
+                                            {
+                                                label: "Designer",
+                                                value: 'DESIGNER'
+                                            },
+                                            {
+                                                label: "Manager",
+                                                value: 'MANAGER'
+                                            },
+                                            {
+                                                label: "Director",
+                                                value: 'DIRECTOR'
+                                            }]
                                     }
                                 />
                             </Form.Group>
@@ -379,18 +324,18 @@ function CardTeammerWorkExperience(props) {
                                             label: "Teammer",
                                             value: 'Teammer'
                                         },
-                                        {
-                                            label: "Facebook",
-                                            value: 'Facebook'
-                                        },
-                                        {
-                                            label: "A2Z",
-                                            value: 'A2Z'
-                                        },
-                                        {
-                                            label: "Netflix",
-                                            value: 'Netflix'
-                                        }]
+                                            {
+                                                label: "Facebook",
+                                                value: 'Facebook'
+                                            },
+                                            {
+                                                label: "A2Z",
+                                                value: 'A2Z'
+                                            },
+                                            {
+                                                label: "Netflix",
+                                                value: 'Netflix'
+                                            }]
                                     }
                                 />
                             </Form.Group>
@@ -405,18 +350,18 @@ function CardTeammerWorkExperience(props) {
                                             label: "USA",
                                             value: 'USA'
                                         },
-                                        {
-                                            label: "Germany",
-                                            value: 'Germany'
-                                        },
-                                        {
-                                            label: "Azerbaijan",
-                                            value: 'Azerbaijan'
-                                        },
-                                        {
-                                            label: "Turkey",
-                                            value: 'Turkey'
-                                        }]
+                                            {
+                                                label: "Germany",
+                                                value: 'Germany'
+                                            },
+                                            {
+                                                label: "Azerbaijan",
+                                                value: 'Azerbaijan'
+                                            },
+                                            {
+                                                label: "Turkey",
+                                                value: 'Turkey'
+                                            }]
                                     }
                                 />
                             </Form.Group>
@@ -433,18 +378,18 @@ function CardTeammerWorkExperience(props) {
                                                     label: "January",
                                                     value: 'January'
                                                 },
-                                                {
-                                                    label: "February",
-                                                    value: 'February'
-                                                },
-                                                {
-                                                    label: "March",
-                                                    value: 'March'
-                                                },
-                                                {
-                                                    label: "Aprel",
-                                                    value: 'Aprel'
-                                                }]
+                                                    {
+                                                        label: "February",
+                                                        value: 'February'
+                                                    },
+                                                    {
+                                                        label: "March",
+                                                        value: 'March'
+                                                    },
+                                                    {
+                                                        label: "Aprel",
+                                                        value: 'Aprel'
+                                                    }]
                                             }
                                         />
                                     </Form.Group>
@@ -461,18 +406,18 @@ function CardTeammerWorkExperience(props) {
                                                     label: "2022",
                                                     value: '2022'
                                                 },
-                                                {
-                                                    label: "2021",
-                                                    value: '2021'
-                                                },
-                                                {
-                                                    label: "2020",
-                                                    value: '2020'
-                                                },
-                                                {
-                                                    label: "2019",
-                                                    value: '2019'
-                                                }]
+                                                    {
+                                                        label: "2021",
+                                                        value: '2021'
+                                                    },
+                                                    {
+                                                        label: "2020",
+                                                        value: '2020'
+                                                    },
+                                                    {
+                                                        label: "2019",
+                                                        value: '2019'
+                                                    }]
                                             }
                                         />
                                     </Form.Group>
@@ -489,18 +434,18 @@ function CardTeammerWorkExperience(props) {
                                                     label: "January",
                                                     value: 'January'
                                                 },
-                                                {
-                                                    label: "February",
-                                                    value: 'February'
-                                                },
-                                                {
-                                                    label: "March",
-                                                    value: 'March'
-                                                },
-                                                {
-                                                    label: "Aprel",
-                                                    value: 'Aprel'
-                                                }]
+                                                    {
+                                                        label: "February",
+                                                        value: 'February'
+                                                    },
+                                                    {
+                                                        label: "March",
+                                                        value: 'March'
+                                                    },
+                                                    {
+                                                        label: "Aprel",
+                                                        value: 'Aprel'
+                                                    }]
                                             }
                                         />
                                     </Form.Group>
@@ -517,18 +462,18 @@ function CardTeammerWorkExperience(props) {
                                                     label: "2022",
                                                     value: '2022'
                                                 },
-                                                {
-                                                    label: "2021",
-                                                    value: '2021'
-                                                },
-                                                {
-                                                    label: "2020",
-                                                    value: '2020'
-                                                },
-                                                {
-                                                    label: "2019",
-                                                    value: '2019'
-                                                }]
+                                                    {
+                                                        label: "2021",
+                                                        value: '2021'
+                                                    },
+                                                    {
+                                                        label: "2020",
+                                                        value: '2020'
+                                                    },
+                                                    {
+                                                        label: "2019",
+                                                        value: '2019'
+                                                    }]
                                             }
                                         />
                                     </Form.Group>
@@ -579,7 +524,7 @@ function CardTeammerWorkExperience(props) {
                                 color="blue"
                                 appearance="primary"
                                 className='btn-submit'
-                                onClick={() => editModal.toggleFunc()}
+                                // onClick={() => editModal.toggleFunc()}
                             >
                                 <div className='icon-btn-wrapper'>
                                     {/* <img src="/icons/plus.svg" className="mr-2" alt="emoji" /> */}
