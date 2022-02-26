@@ -54,9 +54,6 @@ function CardTeammerWorkExperience(props) {
                                 {`${item.start_date && item.end_date ? ' - ' : ''}`}
                                 {item.end_date}
                             </span>
-                            {
-                                console.log('test item', item)
-                            }
                             <h3>{item.position?.name}</h3>
                             <p>
                                 {item.company}
