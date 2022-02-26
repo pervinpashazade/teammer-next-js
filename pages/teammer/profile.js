@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Panel } from 'rsuite';
+import React, {useState} from 'react';
+import {Panel} from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
 import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
@@ -7,8 +7,8 @@ import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerW
 import CardStartUp from '../../src/components/Cards/CardStartUp';
 import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
 import config from '../../src/configuration';
-import { getFetchData } from '../../lib/fetchData';
-import { getToken } from "../../lib/session";
+import {getFetchData} from '../../lib/fetchData';
+import getAuth, {getToken} from "../../lib/session";
 
 const ProfileTeammer = (props) => {
 
@@ -28,8 +28,8 @@ const ProfileTeammer = (props) => {
 
     return (
         <div className='profile-teammer'>
-            <BreadCrumb />
-            <Banner />
+            <BreadCrumb/>
+            <Banner/>
             <div className="profile-wrapper">
                 <div className="left-side">
                     <CardTeammerProfile
@@ -71,10 +71,10 @@ const ProfileTeammer = (props) => {
                         className='panel-joined'
                         header="Projects joined"
                     >
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
+                        <CardStartUp/>
+                        <CardStartUp/>
+                        <CardStartUp/>
+                        <CardStartUp/>
                     </Panel>
                     <Panel
                         bordered
@@ -83,10 +83,10 @@ const ProfileTeammer = (props) => {
                         className='panel-joined'
                         header="Saved projects"
                     >
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
+                        <CardStartUp/>
+                        <CardStartUp/>
+                        <CardStartUp/>
+                        <CardStartUp/>
                     </Panel>
                 </div>
             </div>
@@ -99,8 +99,17 @@ ProfileTeammer.layout = true;
 export default ProfileTeammer;
 
 export const getServerSideProps = async (context) => {
-
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,experiences.location,detail.location", getToken(context));
+    const auth = getAuth(context);
+    if (auth !== "2") {
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
+    }
+    const fetchUserInfo =
+        await getFetchData("auth/user?include=skills,positions,experiences,experiences.location,detail.location", getToken(context));
 
     const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
 
