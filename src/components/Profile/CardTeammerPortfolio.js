@@ -90,7 +90,7 @@ function CardTeammerPortfolio(props) {
             </div>
             <div className="card-content">
                 <ul>
-                    {
+                    {/* {
                         portfolioUrlList?.map((item, index) => {
                             return <li key={index}>
                                 <Link href={item}>
@@ -98,7 +98,7 @@ function CardTeammerPortfolio(props) {
                                 </Link>
                             </li>
                         })
-                    }
+                    } */}
 
                 </ul>
             </div>
