@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Panel} from 'rsuite';
+import {Notification, Panel, toaster} from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
 import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
@@ -11,17 +11,9 @@ import {getFetchData} from '../../lib/fetchData';
 import getAuth, {getToken} from "../../lib/session";
 
 const ProfileTeammer = (props) => {
-
-    // const {
-    //     fullname,
-    // } = props;
-
-    React.useEffect(() => {
-        // console.clear();
-        console.log('profile props', props);
-    }, [props])
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [formData, setFormData] = useState({
+        id: '',
         position: '',
         company: '',
         location: '',
@@ -34,7 +26,134 @@ const ProfileTeammer = (props) => {
     const [userInfo, setUserInfo] = useState({
         experiences: props.userData.experiences && props.userData.experiences
     });
-    const toggleCreateModal = () => {
+    const getData = async () => {
+        const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
+        console.log(fetchUserInfo)
+        setUserInfo({
+            ...userInfo,
+            experiences: fetchUserInfo.data.experiences
+        })
+
+    }
+    const editModal = (id) => {
+        console.log(userInfo.experiences.find(item => item.id === id));
+        let element = userInfo.experiences.find(item => item.id === id);
+        setFormData({
+            id : id,
+            position: element.position.id,
+            company: element.company,
+            location: element.location_id,
+            current: element.current,
+            start_month: element.start_date ? Number(element.start_date.split("-")[0]) : "",
+            start_year: element.start_date ? Number(element.start_date.split("-")[1]) : "",
+            end_month: element.end_date ? Number(element.end_date.split("-")[0]) : "",
+            end_year: element.end_date ? Number(element.end_date.split("-")[1]) : "",
+        })
+        setIsOpenCreateModal(!isOpenCreateModal);
+    }
+    const toggleEditModal = async () => {
+        console.log(formData);
+        if (formData.position
+            && formData.company
+            && formData.location
+            && formData.start_month
+            && formData.start_year) {
+            let data = {
+                location_id: formData.location,
+                position_id: formData.position,
+                company: formData.company,
+                start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
+                // end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+                // current: formData.current
+            }
+            if (formData.current) {
+                data.end_date = ""
+                // data.current = true;
+            } else {
+                data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+            }
+            let response = await fetch(config.BASE_URL + "experiences/"+formData.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + props.token
+                },
+                body: JSON.stringify(data)
+            })
+            let res = await response.json();
+            console.log(res)
+            if (res.success) {
+                getData();
+                setFormData({
+                    id: '',
+                    position: '',
+                    company: '',
+                    location: '',
+                    start_month: '',
+                    start_year: '',
+                    end_month: '',
+                    end_year: '',
+                    current: false
+                })
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        Work experience updated!
+                    </Notification>, 'topEnd'
+                );
+            }
+        }
+        setIsOpenCreateModal(!isOpenCreateModal);
+    };
+    const toggleCreateModal = async () => {
+        console.log(formData);
+        if (formData.position
+            && formData.company
+            && formData.location
+            && formData.start_month
+            && formData.start_year) {
+            let data = {
+                location_id: formData.location,
+                position_id: formData.position,
+                company: formData.company,
+                start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
+                end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+                // current: formData.current
+            }
+            // if (formData.current) {
+            //     data.end_date = ""
+            //     data.current = true;
+            // } else {
+            //     data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+            // }
+            let response = await fetch(config.BASE_URL + "experiences", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + props.token
+                },
+                body: JSON.stringify(data)
+            })
+            let res = await response.json()
+            if (res.success) {
+                getData();
+                setFormData({
+                    id: '',
+                    position: '',
+                    company: '',
+                    location: '',
+                    start_month: '',
+                    start_year: '',
+                    end_month: '',
+                    end_year: '',
+                    current: false
+                })
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        New work experience added!
+                    </Notification>, 'topEnd'
+                );
+            }
+        }
         setIsOpenCreateModal(!isOpenCreateModal);
     };
 
@@ -64,6 +183,8 @@ const ProfileTeammer = (props) => {
                         createModal={{
                             isOpen: isOpenCreateModal,
                             toggleFunc: toggleCreateModal,
+                            toggleEdit: editModal,
+                            toggleEditFunc : toggleEditModal,
                             title: "Add Work Experience",
                             formData: formData,
                             setFormData: setFormData,

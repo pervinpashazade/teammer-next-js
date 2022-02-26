@@ -23,7 +23,7 @@ function CardTeammerWorkExperience(props) {
         formData,
         setFormData,
         positionsList,
-        locationList
+        locationList,
     } = createModal;
     // React.useEffect(() => {
     //     console.log('propssss', props);
@@ -64,6 +64,7 @@ function CardTeammerWorkExperience(props) {
             <ul className="experience-wrapper">
                 {
                     workExperienceList?.map((item, index) => {
+                        console.log(item);
                         return <li key={index}>
                             <span className="date">
                                 {item.start_date}
@@ -74,9 +75,9 @@ function CardTeammerWorkExperience(props) {
                             <p>
                                 {item.company}
                                 {
-                                    item.company && item.location?.name && ' / '
+                                    item.location_id && ' / '
                                 }
-                                {item.location?.name}
+                                {locationList.find(i => i.value === item.location_id)?.label}
                             </p>
                             {
                                 editMode &&
@@ -92,7 +93,7 @@ function CardTeammerWorkExperience(props) {
                                             layout='fixed'
                                         />
                                     }
-                                    onClick={() => editModal.toggleFunc()}
+                                    onClick={() => createModal.toggleEdit(item.id)}
                                 />
                             }
                         </li>
@@ -225,7 +226,7 @@ function CardTeammerWorkExperience(props) {
                                     </Form.Group>
                                 </div>
                             </div>
-                            <Checkbox onChange={(e, checked) => {
+                            <Checkbox checked={formData.current} onChange={(e, checked) => {
                                 checked ? setFormData({
                                         ...formData,
                                         end_month: '',
@@ -258,7 +259,13 @@ function CardTeammerWorkExperience(props) {
                             color="blue"
                             appearance="primary"
                             className='btn-submit'
-                            onClick={() => createModal.toggleFunc()}
+                            onClick={() => {
+                                console.log(formData.id)
+                                if (formData.id) {
+                                    createModal.toggleEditFunc()
+                                } else createModal.toggleFunc()
+                            }
+                            }
                         >
                             <div className='icon-btn-wrapper'>
                                 <Image
