@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Link from 'next/link';
 import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
 import Banner from '../../../src/components/Lib/Banner';
@@ -31,7 +31,8 @@ const EditComponent = (props) => {
         cv: userData.detail.cv && userData.detail.cv,
         portfolio: userData.detail.portfolio && userData.detail.portfolio,
         photo: userData.detail.photo && userData.detail.photo,
-        experiences: userData.experiences && userData.experiences
+        experiences: userData.experiences && userData.experiences,
+        experience_level : userData.detail.experience_level.id && userData.detail.experience_level.id
     });
     const [formData, setFormData] = useState({
         id: '',
@@ -51,7 +52,8 @@ const EditComponent = (props) => {
         cv: '',
         portfolio: props.userData?.detail.portfolio
     })
-
+    const [image , setImage]=useState({})
+    const photoRef = useRef();
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
@@ -204,14 +206,49 @@ const EditComponent = (props) => {
             [type]: data
         })
     }
+    const uploadFile = (event) => {
+        console.log(event)
+        if (event.target.files) {
+            let file_extension = event.target.files[0].type.split("/").pop();
+            if (file_extension === "png" || file_extension === "jpg"){
+                setUserInfo({
+                    ...userInfo,
+                    photo : URL.createObjectURL(event.target.files[0])
+                });
+                setImage(event.target.files[0])
+            }
+            else {
+                toaster.push(
+                    <Notification type={"error"} header="Success!" closable>
+                       You did'nt upload photo , please select only .jpg and .png images
+                    </Notification>, 'topEnd'
+                );
+            }
+        }
+    }
     const saveChanges = () => {
         let body = {
-            detail: {}
+            full_name : userInfo.full_name,
+            detail: {
+                experience_level_id : userInfo.experience_level,
+                location_id : userInfo.location,
+                about : userInfo.description,
+                years_of_experience : userInfo.year_of_experience,
+            },
+            positions : userInfo.positions.map(item => item.id),
+            skills : userInfo.skills.map(item=> item.id),
+            experiences : userInfo.experiences.map(item => {
+                return{
+                    company : item.company,
+                    start_date : item.start_date,
+                    end_date : item.end_date
+                }
+            }),
         }
 
-        let formdata = new FormData();
-        let data = buildFormData(formdata, body);
-
+        // let formdata = new FormData();
+        // let data = buildFormData(formdata, body);
+        console.log(body)
     }
     return (
         <div>
@@ -293,10 +330,12 @@ const EditComponent = (props) => {
                                         alt="username surname"
                                     />
                                 </div>
+                                <input type="file" onChange={uploadFile} ref={photoRef} className="d-none"/>
                                 <Button
                                     color="blue"
                                     appearance="primary"
                                     className="btn-custom-outline change-avatar-btn"
+                                    onClick={()=>photoRef.current.click()}
                                 >
                                     Upload New Photo
                                 </Button>
@@ -406,6 +445,21 @@ const EditComponent = (props) => {
                                     </div>
                                     <div className="col-md-12 mb-4">
                                         <Form.Group controlId="location">
+                                            <Form.ControlLabel>Experience</Form.ControlLabel>
+                                            <InputPicker
+                                                size="md"
+                                                className="w-100"
+                                                placeholder="Experience"
+                                                value={userInfo.experience_level}
+                                                data={props.experiencesList}
+                                                onChange={(e) => {
+                                                    changeHandle('experience_level', e)
+                                                }}
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-12 mb-4">
+                                        <Form.Group controlId="location">
                                             <Form.ControlLabel>Location</Form.ControlLabel>
                                             <InputPicker
                                                 size="md"
@@ -506,6 +560,9 @@ export const getServerSideProps = async (context) => {
     const fetchLocations = await fetch(config.BASE_URL + "locations");
     const locationData = await fetchLocations.json();
 
+    const fetchExperiences = await fetch(config.BASE_URL + "experience-levels");
+    const experiencesData = await fetchExperiences.json();
+    console.log("experience" , experiencesData)
     return {
         props: {
             userData: fetchUserInfo?.data,
@@ -522,6 +579,12 @@ export const getServerSideProps = async (context) => {
                 }
             }),
             locationList: locationData.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            }),
+            experiencesList : experiencesData.data.map(item => {
                 return {
                     value: item.id,
                     label: item.name ? item.name : ''
