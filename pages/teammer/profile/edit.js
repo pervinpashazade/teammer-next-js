@@ -32,7 +32,7 @@ const EditComponent = (props) => {
         portfolio: userData.detail.portfolio && userData.detail.portfolio,
         photo: userData.detail.photo && userData.detail.photo,
         experiences: userData.experiences && userData.experiences,
-        experience_level : userData.detail.experience_level.id && userData.detail.experience_level.id
+        experience_level: userData.detail.experience_level.id && userData.detail.experience_level.id
     });
     const [formData, setFormData] = useState({
         id: '',
@@ -52,7 +52,7 @@ const EditComponent = (props) => {
         cv: '',
         portfolio: props.userData?.detail.portfolio
     })
-    const [image , setImage]=useState({})
+    const [image, setImage] = useState({})
     const photoRef = useRef();
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
@@ -210,44 +210,74 @@ const EditComponent = (props) => {
         console.log(event)
         if (event.target.files) {
             let file_extension = event.target.files[0].type.split("/").pop();
-            if (file_extension === "png" || file_extension === "jpg"){
+            if (file_extension === "png" || file_extension === "jpg") {
                 setUserInfo({
                     ...userInfo,
-                    photo : URL.createObjectURL(event.target.files[0])
+                    photo: URL.createObjectURL(event.target.files[0])
                 });
                 setImage(event.target.files[0])
-            }
-            else {
+            } else {
                 toaster.push(
                     <Notification type={"error"} header="Success!" closable>
-                       You did'nt upload photo , please select only .jpg and .png images
+                        You did'nt upload photo , please select only .jpg and .png images
                     </Notification>, 'topEnd'
                 );
             }
         }
     }
-    const saveChanges = () => {
+    const saveChanges = async () => {
         let body = {
-            full_name : userInfo.full_name,
+            full_name: userInfo.full_name,
             detail: {
-                experience_level_id : userInfo.experience_level,
-                location_id : userInfo.location,
-                about : userInfo.description,
-                years_of_experience : userInfo.year_of_experience,
+                experience_level_id: userInfo.experience_level,
+                location_id: userInfo.location,
+                about: userInfo.description,
+                years_of_experience: userInfo.year_of_experience,
             },
-            positions : userInfo.positions.map(item => item.id),
-            skills : userInfo.skills.map(item=> item.id),
-            experiences : userInfo.experiences.map(item => {
-                return{
-                    company : item.company,
-                    start_date : item.start_date,
-                    end_date : item.end_date
+            positions: userInfo.positions.map(item => item.id),
+            skills: userInfo.skills.map(item => item.id),
+            experiences: userInfo.experiences.map(item => {
+                return {
+                    company: item.company,
+                    start_date: item.start_date,
+                    end_date: item.end_date
                 }
             }),
         }
+        if (userInfo.cv !== portfolioUrlList.cvFileName) {
+            body['cv'] = portfolioUrlList.cv;
+            body.photo = image;
+            let formdata = new FormData();
+            let data = buildFormData(formdata, body);
+            let response = await fetch(config.BASE_URL + "users",
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + props.token
+                    },
+                    body: JSON.stringify(data)
+                })
+            let res = await response.json();
+            console.log(res)
+        } else {
+            body['cv'] = userInfo.cv;
+            body.photo = userInfo.photo;
+            let formdata = new FormData();
+            let data = buildFormData(formdata, body);
+            let response = await fetch(config.BASE_URL+"users",
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + props.token
+                    },
+                    body: JSON.stringify(data)
+                })
+            let res = await response.json();
+            console.log(res)
 
-        // let formdata = new FormData();
-        // let data = buildFormData(formdata, body);
+        }
         console.log(body)
     }
     return (
@@ -335,7 +365,7 @@ const EditComponent = (props) => {
                                     color="blue"
                                     appearance="primary"
                                     className="btn-custom-outline change-avatar-btn"
-                                    onClick={()=>photoRef.current.click()}
+                                    onClick={() => photoRef.current.click()}
                                 >
                                     Upload New Photo
                                 </Button>
@@ -562,7 +592,7 @@ export const getServerSideProps = async (context) => {
 
     const fetchExperiences = await fetch(config.BASE_URL + "experience-levels");
     const experiencesData = await fetchExperiences.json();
-    console.log("experience" , experiencesData)
+    console.log("experience", experiencesData)
     return {
         props: {
             userData: fetchUserInfo?.data,
@@ -584,7 +614,7 @@ export const getServerSideProps = async (context) => {
                     label: item.name ? item.name : ''
                 }
             }),
-            experiencesList : experiencesData.data.map(item => {
+            experiencesList: experiencesData.data.map(item => {
                 return {
                     value: item.id,
                     label: item.name ? item.name : ''
