@@ -40,6 +40,7 @@ const StartUpByCategory = (props) => {
                                             ownerFullname={item.project?.owner?.full_name}
                                             ownerAvatarUrl={item.project?.owner?.detail?.photo}
                                             position={positionList.find(x => x.id === item.position_id)?.name}
+                                            onClick={() => alert(item.id)}
                                         />
                                     </div>
                                 })

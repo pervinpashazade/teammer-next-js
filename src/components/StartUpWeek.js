@@ -1,8 +1,6 @@
+import React from "react";
 import CardWeek from "./Cards/CardWeek";
 import Link from "next/link";
-import { RiArrowRightLine } from "react-icons/ri";
-import React from "react";
-import Image from "next/image";
 
 const StartUpWeek = (props) => {
 
@@ -29,12 +27,19 @@ const StartUpWeek = (props) => {
             <div className="parent-cards">
                 {
                     startupList?.map((item, index) => {
-                        return <CardWeek
+                        return <Link
                             key={index}
-                            logoUrl={item.project?.logo}
-                            title={item.project?.title}
-                            type={item.project?.type?.name}
-                        />
+                            href={`/startup/${item.project_id}`}
+                            passHref
+                        >
+                            <a>
+                                <CardWeek
+                                    logoUrl={item.project?.logo}
+                                    title={item.project?.title}
+                                    type={item.project?.type?.name}
+                                />
+                            </a>
+                        </Link>
                     })
                 }
             </div>
