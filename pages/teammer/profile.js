@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Notification, Panel, toaster} from 'rsuite';
+import React, { useState } from 'react';
+import { Notification, Panel, toaster } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
 import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
@@ -7,10 +7,15 @@ import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerW
 import CardStartUp from '../../src/components/Cards/CardStartUp';
 import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
 import config from '../../src/configuration';
-import {getFetchData} from '../../lib/fetchData';
-import getAuth, {getToken} from "../../lib/session";
+import { getFetchData } from '../../lib/fetchData';
+import getAuth, { getToken } from "../../lib/session";
 
 const ProfileTeammer = (props) => {
+
+    const {
+        joinedProjectList,
+    } = props;
+
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [formData, setFormData] = useState({
         id: '',
@@ -28,20 +33,20 @@ const ProfileTeammer = (props) => {
     });
     const getData = async () => {
         const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
-        console.log(fetchUserInfo)
+        // console.log(fetchUserInfo)
         setUserInfo({
             ...userInfo,
             experiences: fetchUserInfo.data.experiences
         })
     }
-    const toggle = ()=>{
+    const toggle = () => {
         setIsOpenCreateModal(!isOpenCreateModal)
     }
     const editModal = (id) => {
-        console.log(userInfo.experiences.find(item => item.id === id));
+        // console.log(userInfo.experiences.find(item => item.id === id));
         let element = userInfo.experiences.find(item => item.id === id);
         setFormData({
-            id : id,
+            id: id,
             position: element.position.id,
             company: element.company,
             location: element.location_id,
@@ -50,11 +55,11 @@ const ProfileTeammer = (props) => {
             start_year: element.start_date ? Number(element.start_date.split("-")[1]) : "",
             end_month: element.end_date ? Number(element.end_date.split("-")[0]) : "",
             end_year: element.end_date ? Number(element.end_date.split("-")[1]) : "",
-        })
+        });
         setIsOpenCreateModal(!isOpenCreateModal);
-    }
+    };
     const toggleEditModal = async () => {
-        console.log(formData);
+        // console.log(formData);
         if (formData.position
             && formData.company
             && formData.location
@@ -74,7 +79,7 @@ const ProfileTeammer = (props) => {
             } else {
                 data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
             }
-            let response = await fetch(config.BASE_URL + "experiences/"+formData.id, {
+            let response = await fetch(config.BASE_URL + "experiences/" + formData.id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +88,7 @@ const ProfileTeammer = (props) => {
                 body: JSON.stringify(data)
             })
             let res = await response.json();
-            console.log(res)
+            // console.log(res)
             if (res.success) {
                 getData();
                 setFormData({
@@ -104,7 +109,7 @@ const ProfileTeammer = (props) => {
                 );
             }
         }
-        else{
+        else {
             toaster.push(
                 <Notification type={"error"} header="Success!" closable>
                     Some fields are empty!
@@ -113,7 +118,7 @@ const ProfileTeammer = (props) => {
         }
     };
     const toggleCreateModal = async () => {
-        console.log(formData);
+        // console.log(formData);
         if (formData.position
             && formData.company
             && formData.location
@@ -163,19 +168,23 @@ const ProfileTeammer = (props) => {
                 setIsOpenCreateModal(!isOpenCreateModal);
             }
         }
-        else{
+        else {
             toaster.push(
                 <Notification type={"error"} header="Success!" closable>
-                   Some fields are empty!
+                    Some fields are empty!
                 </Notification>, 'topEnd'
             );
-        }
+        };
     };
+
+    React.useEffect(() => {
+        console.log('teammer profile page props', props);
+    }, [props])
 
     return (
         <div className='profile-teammer'>
-            <BreadCrumb/>
-            <Banner/>
+            <BreadCrumb />
+            <Banner />
             <div className="profile-wrapper">
                 <div className="left-side">
                     <CardTeammerProfile
@@ -197,11 +206,11 @@ const ProfileTeammer = (props) => {
                         editMode={true}
                         createModal={{
                             isOpen: isOpenCreateModal,
-                            toggle : toggle,
+                            toggle: toggle,
                             toggleFunc: toggleCreateModal,
                             toggleEdit: editModal,
-                            toggleEditFunc : toggleEditModal,
-                            title: formData.id ? "Edit Work Experience": "Add Work Experience",
+                            toggleEditFunc: toggleEditModal,
+                            title: formData.id ? "Edit Work Experience" : "Add Work Experience",
                             formData: formData,
                             setFormData: setFormData,
                             positionsList: props.positionList,
@@ -220,14 +229,21 @@ const ProfileTeammer = (props) => {
                     <Panel
                         bordered
                         collapsible
-                        defaultExpanded
+                        defaultExpanded={joinedProjectList?.length ? true : false}
                         className='panel-joined'
                         header="Projects joined"
                     >
-                        <CardStartUp/>
-                        <CardStartUp/>
-                        <CardStartUp/>
-                        <CardStartUp/>
+                        {
+                            joinedProjectList?.length ?
+                                ''
+                                :
+                                'You have not yet joined any project'
+                        }
+                        {
+                            joinedProjectList?.map((item, index) => {
+                                return <span key={index}>test</span>
+                            })
+                        }
                     </Panel>
                     <Panel
                         bordered
@@ -236,10 +252,10 @@ const ProfileTeammer = (props) => {
                         className='panel-joined'
                         header="Saved projects"
                     >
-                        <CardStartUp/>
-                        <CardStartUp/>
-                        <CardStartUp/>
-                        <CardStartUp/>
+                        <CardStartUp />
+                        <CardStartUp />
+                        <CardStartUp />
+                        <CardStartUp />
                     </Panel>
                 </div>
             </div>
@@ -264,7 +280,7 @@ export const getServerSideProps = async (context) => {
     const fetchUserInfo =
         await getFetchData("auth/user?include=skills,positions,experiences,experiences.location,detail.location", getToken(context));
 
-    const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
+    const joinedProjectList = await getFetchData("users/joined-jobs", getToken(context));
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
 
@@ -276,7 +292,7 @@ export const getServerSideProps = async (context) => {
     return {
         props: {
             userData: fetchUserInfo?.data,
-            joinedProjectList: joinedProjectList,
+            joinedProjectList: joinedProjectList.data?.items,
             positionList: positionsData.data.items.map(item => {
                 return {
                     value: item.id,
