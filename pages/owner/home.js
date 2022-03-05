@@ -36,6 +36,7 @@ const Home = (props) => {
     const [dropdown, setDropdown] = useState('8');
     const [jobName, setJobName] = useState(0);
     const [jobs, setJobs] = useState([]);
+    const [startupName , setStartUpName] = useState('')
     const [filter, setFilter] = useState({
         project_types: [],
         experience_levels: [],
@@ -62,7 +63,7 @@ const Home = (props) => {
     const getJobs = async (e) => {
         // console.log(projects.data.items.find(item => item.id === e))
         if (e) {
-            let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'))
+            let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'));
             console.log(res.data.items.find(item => item.id === e))
             setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
                 return {
@@ -70,14 +71,16 @@ const Home = (props) => {
                     value: item.id
                 }
             }))
+            setStartUpName(e)
         } else {
-            setJobs([])
+            setJobs([]);
+            setStartUpName('')
         }
     };
 
     const submitAddToTeam = async () => {
         if (id) {
-            let res = await fetch(config.BASE_URL + "jobs/" + id + "/add-to-team", {
+            let res = await fetch(config.BASE_URL + "jobs/" + startupName+ "/add-to-team", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

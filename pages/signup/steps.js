@@ -366,8 +366,6 @@ const StepsComponent = (props) => {
                 [type]: URL.createObjectURL(i)
             });
         }
-
-        console.log('createObjectURL.owner', createObjectURL.owner);
     };
     const submitData = () => {
         let social_account = [];
