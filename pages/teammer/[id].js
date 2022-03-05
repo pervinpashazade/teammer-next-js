@@ -9,12 +9,13 @@ import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfo
 import config from '../../src/configuration';
 import { getFetchData } from '../../lib/fetchData';
 import { getToken } from "../../lib/session";
+import ProPanel from '../../src/components/ProPanel';
 
 const ProfileTeammer = (props) => {
 
-    // const {
-    //     fullname,
-    // } = props;
+    const {
+        joinedProjectList,
+    } = props;
 
     React.useEffect(() => {
         // console.clear();
@@ -22,8 +23,10 @@ const ProfileTeammer = (props) => {
     }, [props]);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
-    const [portfolioUrlList , setPortfolioUrlList] = useState({
-        portfolio: props.userData?.detail.portfolio
+    const [portfolioUrlList, setPortfolioUrlList] = useState({
+        cvFileName: props.userData?.detail.cv,
+        cv: '',
+        portfolio: props.userData?.detail?.portfolio
     })
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
@@ -49,17 +52,16 @@ const ProfileTeammer = (props) => {
                             }
                         }
                     />
-                    {/*<CardTeammerWorkExperience*/}
-                    {/*    workExperienceList={props.userData?.experiences}*/}
-                    {/*    // editMode={true}*/}
-
-                    {/*    createModal={{*/}
-                    {/*        isOpen: isOpenCreateModal,*/}
-                    {/*        toggleFunc: toggleCreateModal,*/}
-                    {/*        title: "Add Work Experience",*/}
-                    {/*        locationlist : []*/}
-                    {/*    }}*/}
-                    {/*/>*/}
+                    <CardTeammerWorkExperience
+                        workExperienceList={props.userData?.experiences}
+                        editMode={false}
+                        createModal={{
+                            isOpen: isOpenCreateModal,
+                            toggleFunc: toggleCreateModal,
+                            title: "Add Work Experience",
+                            locationlist: []
+                        }}
+                    />
                 </div>
                 <div className="content">
                     <div className="portfolio-wrapper">
@@ -70,18 +72,11 @@ const ProfileTeammer = (props) => {
                         />
                     </div>
                     <div className="custom-devider"></div>
-                    <Panel
-                        bordered
-                        collapsible
-                        defaultExpanded
-                        className='panel-joined'
-                        header="Projects joined"
-                    >
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
-                    </Panel>
+                    <ProPanel
+                        title="Projects joined"
+                        noDataMessage="User has not yet joined any project"
+                        dataList={joinedProjectList?.length ? joinedProjectList : []}
+                    />
                 </div>
             </div>
         </div>
@@ -96,12 +91,12 @@ export const getServerSideProps = async (context) => {
 
     const fetchUserInfo = await getFetchData(`users/${context.params.id}/show?include=detail.experience_level,experiences.location,skills,positions,detail.location`, getToken(context));
 
-    const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
+    // const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
 
     return {
         props: {
             userData: fetchUserInfo?.data,
-            joinedProjectList: joinedProjectList,
+            // joinedProjectList: joinedProjectList,
         }
     }
 }

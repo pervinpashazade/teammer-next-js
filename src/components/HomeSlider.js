@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
-import {Avatar, IconButton} from 'rsuite';
-import {MdOutlineArrowBackIosNew} from 'react-icons/md';
-import {MdOutlineArrowForwardIos} from 'react-icons/md';
-import {BsPlusLg} from 'react-icons/bs';
-import {Swiper, SwiperSlide} from "swiper/react";
-import SwiperCore, {Autoplay, Pagination, Navigation} from "swiper";
+import React, { useState } from 'react';
+import { Avatar, IconButton } from 'rsuite';
+import { MdOutlineArrowBackIosNew } from 'react-icons/md';
+import { MdOutlineArrowForwardIos } from 'react-icons/md';
+import { BsPlusLg } from 'react-icons/bs';
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
 import "swiper/css";
 import Image from 'next/image';
-import {useWindowSize} from "../hooks/useWindowSize";
+import { useWindowSize } from "../hooks/useWindowSize";
+import Link from 'next/link';
 
 SwiperCore.use([Autoplay, Pagination, Navigation]);
 
@@ -23,7 +24,7 @@ function SliderItem(props) {
             <IconButton
                 size="md"
                 className="action-btn btn-primary"
-                icon={<BsPlusLg/>}
+                icon={<BsPlusLg />}
             />
         </div>
     )
@@ -31,23 +32,11 @@ function SliderItem(props) {
 
 
 function CustomSlider() {
-    const {width} = useWindowSize();
+    const { width } = useWindowSize();
     const [swiper, setSwiper] = useState(null);
     console.log(width)
     return (
-        <div className="home-slider">
-            <div className="title d-md-block d-none">
-                {/* <img src="/icons/emoji2.svg" alt="emoji" /> */}
-                <Image
-                    src={'/icons/emoji2.svg'}
-                    alt='icon'
-                    width={24}
-                    height={30}
-                />
-                <h4>
-                    Add these people to your team
-                </h4>
-            </div>
+        <div className="pro-slider">
             <div className="slider-wrapper">
                 <IconButton
                     circle
@@ -56,7 +45,7 @@ function CustomSlider() {
                     onClick={() => {
                         swiper.slidePrev();
                     }}
-                    icon={<MdOutlineArrowBackIosNew/>}
+                    icon={<MdOutlineArrowBackIosNew />}
                 />
                 <IconButton
                     circle
@@ -65,10 +54,10 @@ function CustomSlider() {
                     onClick={() => {
                         swiper.slideNext();
                     }}
-                    icon={<MdOutlineArrowForwardIos/>}
+                    icon={<MdOutlineArrowForwardIos />}
                 />
                 <Swiper
-                    slidesPerView={width < 528 ? 1 : (width > 528 && width < 768) ? 2 : 4}
+                    slidesPerView={width < 528 ? 1 : (width > 528 && width < 768) ? 2 : 2}
                     spaceBetween={20}
                     slidesPerGroup={1}
                     loop={true}
@@ -88,34 +77,34 @@ function CustomSlider() {
                     }}
                 >
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                     <SwiperSlide>
-                        <SliderItem/>
+                        <SliderItem />
                     </SwiperSlide>
                 </Swiper>
             </div>

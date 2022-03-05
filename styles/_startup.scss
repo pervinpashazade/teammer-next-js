@@ -7,6 +7,19 @@
             width: 392px;
             min-width: 392px;
             margin-top: -70px;
+            .btn-add-startup {
+                display: block;
+                text-align: center;
+                color: #fff;
+                background: #2a6fff;
+                border-radius: 72px;
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 20px;
+                padding-top: 13px;
+                padding-bottom: 13px;
+                text-decoration: none;
+            }
         }
         .content {
             width: 100%;
@@ -38,14 +51,23 @@
     .wrapper {
         position: relative;
         ._title {
-            max-width: 70%;
-            margin-bottom: 1.75rem;
+            max-width: 65%;
+            margin-bottom: 1rem;
             h2 {
+                display: flex;
+                align-items: center;
                 font-weight: 600;
                 font-size: 24px;
                 line-height: 29px;
                 margin-bottom: 1rem;
+                .link-edit-startup {
+                    margin-left: 0.75rem;
+                    padding: 0 0.5rem;
+                }
             }
+        }
+        ._type {
+            margin-bottom: 1.5rem;
             p {
                 font-weight: 500;
                 font-size: 18px;
@@ -103,11 +125,21 @@
     color: #020c40;
     .wrapper {
         ._title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 1rem;
             h4 {
                 font-weight: 500;
                 font-size: 19px;
                 line-height: 125%;
+                margin: 0;
+            }
+            .btn-add {
+                display: flex;
+                align-items: center;
+                background-color: #2a6fff;
+                padding: 9px;
             }
         }
     }
@@ -150,6 +182,77 @@
             position: absolute;
             top: 0;
             right: 0;
+            background: red;
+            display: flex;
+            align-items: center;
+            padding: 7px;
+            background: #2a6fff;
+            border: 1px solid #3751ff;
+            border-radius: 8px;
+        }
+    }
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+// job list card
+.startup-list-card {
+    background: #ffffff;
+    box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    color: #020c40;
+    .wrapper {
+        ._title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            h4 {
+                font-weight: 500;
+                font-size: 19px;
+                line-height: 125%;
+                margin: 0;
+            }
+            .btn-add {
+                display: flex;
+                align-items: center;
+                background-color: #2a6fff;
+                padding: 9px;
+            }
+        }
+    }
+}
+.startup-list-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eaeaea;
+    color: #020c40;
+    position: relative;
+    span {
+        display: inline-block;
+        margin-bottom: 0.25rem;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 170%;
+    }
+    .startup-details {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 1rem;
+        p {
+            width: 80%;
+            margin-left: 0.75rem;
+            margin-bottom: 0;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 22px;
+        }
+        .btn-startup-link {
+            position: absolute;
+            top: 12px;
+            right: 20px;
             background: red;
             display: flex;
             align-items: center;

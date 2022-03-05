@@ -1,10 +1,13 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import {
-    Avatar,
+    Avatar, Button,
 } from 'rsuite';
 
 const CardStartupProfile = (props) => {
     const {
+        editMode,
         title,
         logo,
         startup_type,
@@ -17,7 +20,25 @@ const CardStartupProfile = (props) => {
         <div className={`profile-card-startup ${classNames ? classNames : ''}`}>
             <div className="wrapper">
                 <div className="_title">
-                    <h2>{title}</h2>
+                    <h2>
+                        {title}
+                        {
+                            !editMode &&
+                            <Link href="/startup/edit/5" passHrefF>
+                                <a className='link-edit-startup'>
+                                    <Image
+                                        src={'/icons/edit.svg'}
+                                        alt='img'
+                                        width={16}
+                                        height={16}
+                                        layout='fixed'
+                                    />
+                                </a>
+                            </Link>
+                        }
+                    </h2>
+                </div>
+                <div className="_type">
                     <p>{startup_type}</p>
                 </div>
                 <Avatar

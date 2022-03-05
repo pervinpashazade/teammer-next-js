@@ -17,8 +17,11 @@ function CardTeammerPortfolio(props) {
     //     console.log('component card props', props);
     // }, [props]);
     // console.log(portfolioUrlList)
+
     const [newPortfolioLink, setNewPortfolioLink] = useState('');
+
     const inputRef = useRef();
+
     const uploadFile = (event) => {
         // console.log(event)
         if (event.target.files) {
@@ -32,7 +35,8 @@ function CardTeammerPortfolio(props) {
             }
             // console.log(event.target.files[0])
         }
-    }
+    };
+
     return (
         <div className={`resume-card ${classNames ? classNames : ''}`}>
             <div className="card-top">
@@ -51,31 +55,39 @@ function CardTeammerPortfolio(props) {
                                 layout='fixed'
                             />
                         </span>
-                        <input className="d-none"
-                            onChange={uploadFile} ref={inputRef} type="file" />
-                        {portfolioUrlList.cvFileName && <a href={portfolioUrlList.cvFileName} target="_blank"
-                            download>{portfolioUrlList.cvFileName}</a>}
+                        <input
+                            className="d-none"
+                            onChange={uploadFile}
+                            ref={inputRef}
+                            type="file"
+                        />
+                        {
+                            portfolioUrlList.cvFileName &&
+                            <a
+                                href={portfolioUrlList.cvFileName}
+                                target="_blank"
+                                download
+                            >
+                                {portfolioUrlList.cvFileName}
+                            </a>
+                        }
                     </div>
                     <div className="action-buttons">
                         {
                             editMode ?
                                 <>
-                                    {/*<ActionLink*/}
-                                    {/*    size="sm"*/}
-                                    {/*    href="profile-teammer/edit"*/}
-                                    {/*    classNames='bg-transparent'*/}
-                                    {/*    padding="7px"*/}
-                                    {/*    margin="0px 0px 0px .75rem"*/}
-                                    {/*>*/}
-                                    <span onClick={() => inputRef.current.click()}
-                                        className="c-pointer"><Image
+                                    <span
+                                        className="c-pointer"
+                                        onClick={() => inputRef.current.click()}
+                                    >
+                                        <Image
                                             src={'/icons/link.svg'}
                                             alt='img'
                                             width={16}
                                             height={16}
                                             layout='fixed'
-                                        /></span>
-                                    {/*</ActionLink>*/}
+                                        />
+                                    </span>
                                     <IconButton
                                         size="sm"
                                         className='bg-transparent ml-2'
@@ -88,7 +100,8 @@ function CardTeammerPortfolio(props) {
                                                 layout='fixed'
                                             />
                                         }
-                                    /></>
+                                    />
+                                </>
                                 :
                                 <IconButton
                                     size="md"

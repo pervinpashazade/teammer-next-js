@@ -9,6 +9,7 @@ import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfo
 import config from '../../src/configuration';
 import { getFetchData } from '../../lib/fetchData';
 import getAuth, { getToken } from "../../lib/session";
+import ProPanel from '../../src/components/ProPanel';
 
 const ProfileTeammer = (props) => {
 
@@ -226,22 +227,16 @@ const ProfileTeammer = (props) => {
                         />
                     </div>
                     <div className="custom-devider"></div>
-                    <Panel
-                        bordered
-                        collapsible
-                        defaultExpanded={joinedProjectList?.length ? true : false}
-                        className='panel-joined'
-                        header="Projects joined"
-                    >
-                        {
-                            joinedProjectList?.length ?
-                                joinedProjectList.map((item, index) => {
-                                    return <div key={index}>{item.id}</div>
-                                })
-                                :
-                                'You have not yet joined any project'
-                        }
-                    </Panel>
+                    <ProPanel
+                        title="Projects joined"
+                        noDataMessage="You have not yet joined any project"
+                        dataList={joinedProjectList?.length ? joinedProjectList : []}
+                    />
+                    {/* <ProPanel
+                        title="Saved projects"
+                        noDataMessage="You have not yet saved any project"
+                        dataList={joinedProjectList?.length ? joinedProjectList : []}
+                    /> */}
                     <Panel
                         bordered
                         collapsible
