@@ -58,7 +58,6 @@ const Login = (props) => {
             cookie.set('teammers-type', handleData.data.user.type.toString());
             cookie.set('teammers-id', handleData.data.user.id)
             console.log(handleData.data.user);
-
             handleData.data.user.is_complete_registration ? (handleData.data.user.type === 1 ? router.push('/owner/home') :
                 router.push('/teammer/home')) : router.push("/signup/steps")
         } else {

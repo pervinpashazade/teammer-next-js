@@ -378,7 +378,7 @@ const EditComponent = (props) => {
                                             <Form.Control
                                                 name="name"
                                                 placeholder="Enter your fullname"
-                                                value={props.userData?.full_name}
+                                                value={userInfo.full_name}
                                                 onChange={(e) => {
                                                     changeHandle('full_name', e)
                                                 }}

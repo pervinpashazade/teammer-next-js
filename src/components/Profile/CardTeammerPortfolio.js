@@ -53,7 +53,8 @@ function CardTeammerPortfolio(props) {
                         </span>
                         <input className="d-none"
                             onChange={uploadFile} ref={inputRef} type="file" />
-                        <a href={portfolioUrlList.cvFileName} target="_blank" download>{portfolioUrlList.cvFileName}</a>
+                        {portfolioUrlList.cvFileName && <a href={portfolioUrlList.cvFileName} target="_blank"
+                            download>{portfolioUrlList.cvFileName}</a>}
                     </div>
                     <div className="action-buttons">
                         {
@@ -107,7 +108,6 @@ function CardTeammerPortfolio(props) {
                 </div>
             </div>
             <div className="card-content">
-
                 <ul>
                     {
                         portfolioUrlList.portfolio?.map((item, index) => {

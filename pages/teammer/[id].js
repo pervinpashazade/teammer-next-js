@@ -22,7 +22,9 @@ const ProfileTeammer = (props) => {
     }, [props]);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
-
+    const [portfolioUrlList , setPortfolioUrlList] = useState({
+        portfolio: props.userData?.detail.portfolio
+    })
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
@@ -47,21 +49,24 @@ const ProfileTeammer = (props) => {
                             }
                         }
                     />
-                    <CardTeammerWorkExperience
-                        workExperienceList={props.userData?.experiences}
-                        // editMode={true}
-                        createModal={{
-                            isOpen: isOpenCreateModal,
-                            toggleFunc: toggleCreateModal,
-                            title: "Add Work Experience"
-                        }}
-                    />
+                    {/*<CardTeammerWorkExperience*/}
+                    {/*    workExperienceList={props.userData?.experiences}*/}
+                    {/*    // editMode={true}*/}
+
+                    {/*    createModal={{*/}
+                    {/*        isOpen: isOpenCreateModal,*/}
+                    {/*        toggleFunc: toggleCreateModal,*/}
+                    {/*        title: "Add Work Experience",*/}
+                    {/*        locationlist : []*/}
+                    {/*    }}*/}
+                    {/*/>*/}
                 </div>
                 <div className="content">
                     <div className="portfolio-wrapper">
                         <h5>CV and Portfolio</h5>
                         <CardTeammerPortfolio
-                            portfolioUrlList={props.userData?.detail?.portfolio}
+                            portfolioUrlList={portfolioUrlList}
+                            setPortfolioUrlList={setPortfolioUrlList}
                         />
                     </div>
                     <div className="custom-devider"></div>
