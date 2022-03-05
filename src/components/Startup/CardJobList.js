@@ -7,6 +7,7 @@ import {
 
 const CardJobList = (props) => {
     const {
+        editMode,
         title,
         jobList,
         classNames,
@@ -23,6 +24,16 @@ const CardJobList = (props) => {
                     title ?
                         <div className="_title">
                             <h4>{title}</h4>
+                            <Button
+                                className='btn-add'
+                            >
+                                <Image
+                                    src={'/icons/plus.svg'}
+                                    alt='icon'
+                                    width={14}
+                                    height={14}
+                                />
+                            </Button>
                         </div>
                         :
                         null

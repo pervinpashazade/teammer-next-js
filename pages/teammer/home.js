@@ -59,14 +59,6 @@ const Home = (props) => {
                 <StartUpBlog />
             </div>
         </div>
-
-        {/*slider*/}
-        {/* <div className="row">
-            <div className="col-md-8">
-                <HomeSlider />
-            </div>
-        </div> */}
-
         {/*    subscribe  */}
         <div className="subscribe">
             <div className="left-card d-flex flex-column align-items-center">
