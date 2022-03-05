@@ -10,17 +10,19 @@ const CreateStartup = () => {
     //ref
     const editorRef = useRef();
     const {CKEditor, ClassicEditor} = editorRef.current || {};
+    // var parser = new CKEditor.htmlParser()
     const buttonRef = useRef();
     //router
     const router = useRouter();
     //states
-    const [list , setList] = useState({
-        roles : [],
-        startup_type : [],
-        positions : [],
-        locations : [],
-        payments : [],
-        periods : []
+    const [list, setList] = useState({
+        roles: [],
+        startup_type: [],
+        positions: [],
+        locations: [],
+        payments: [],
+        periods: [],
+        job_types: []
     })
     const [createObjectURL, setCreateObjectURL] = useState('/img/upload_image.png');
     const [image, setImage] = useState('')
@@ -42,7 +44,11 @@ const CreateStartup = () => {
     const [team, setTeam] = useState({
         job_position: '',
         location: '',
-
+        job_type: '',
+        payment: '',
+        salary: '',
+        salary_periods: '',
+        years_experience: ''
     })
     //functions
     const editButton = (c) => {
@@ -69,18 +75,34 @@ const CreateStartup = () => {
         const paymentData = await payments.json();
         const periods = await fetch(config.BASE_URL + "job/salary-periods");
         const periodData = await periods.json();
+        const job_type = await fetch(config.BASE_URL + "job/types");
+        const jobData = await job_type.json();
+        console.log(jobData)
         setList({
-            roles : roleData.data,
-            startup_type : projectData.data,
-            positions : positionData.data.items,
-            locations : locationData.data.items,
-            payments : paymentData.data,
-            periods : Object.entries(periodData.data).map(item => {
+            roles: roleData.data.map(item => {
+                return {value: item.id, label: item.name}
+            }),
+            startup_type: projectData.data.map(item => {
+                return {value: item.id, label: item.name}
+            }),
+            positions: positionData.data.items.map(item => {
+                return {value: item.id, label: item.name}
+            }),
+            locations: locationData.data.items.map(item => {
+                return {value: item.id, label: item.name}
+            }),
+            payments: paymentData.data.map(item => {
+                return {value: item.id, label: item.name}
+            }),
+            periods: Object.entries(periodData.data).map(item => {
                 return {
-                    name : item[0],
-                    id : item[1]
+                    label: item[0],
+                    value: item[1]
                 }
-            })
+            }),
+            job_types: jobData.data.map(item => {
+                return {value: item.id, label: item.name}
+            }),
         });
     }, []);
     const uploadToClient = (event) => {
@@ -90,6 +112,10 @@ const CreateStartup = () => {
             setCreateObjectURL(URL.createObjectURL(i));
         }
     };
+    const submitData = async () => {
+        const response = await fetch("http://localhost:3000/api/post/create-startup");
+        console.log(response);
+    }
     return <div className="container login">
         <div className="d-flex justify-content-between login-header">
             <Link href="/">
@@ -136,9 +162,9 @@ const CreateStartup = () => {
                     <Steps vertical current={current}>
                         <Steps.Item title={
                             <>
-                                Contact Information {current > 1 &&
+                                Contact Information {current > 0 &&
                             <button className="edit" onClick={() => {
-                                editButton(1)
+                                editButton(0)
                             }}><AiOutlineEdit/></button>}
                             </>} description={
                             current !== 0 ? <div className="step_form">
@@ -148,7 +174,7 @@ const CreateStartup = () => {
                                     <p className="summary_person"><span>Full Name</span>
                                         <span>{person.last_name}</span></p>
                                     <p className="summary_person"><span>Role in Startup</span>
-                                        <span>{list.roles.find(item => item.id === person.role)?.name}</span>
+                                        <span>{list.roles.find(item => item.value === person.role)?.label}</span>
                                     </p>
                                 </div> :
                                 <Form>
@@ -198,7 +224,11 @@ const CreateStartup = () => {
                                         />
                                         <div className="d-flex justify-content-end routing-button">
                                             <Button
-                                                onClick={() => setCurrent(1)}
+                                                onClick={() => {
+                                                    if (person.first_name && person.last_name && person.role) {
+                                                        setCurrent(1)
+                                                    }
+                                                }}
                                                 type="button"
                                                 className="next-button">
                                                 Next
@@ -217,13 +247,13 @@ const CreateStartup = () => {
                             current !== 1 ?
                                 <div className="step_form">
                                     <p className="summary_person"><span>Startup Title</span>
-
+                                        {startup.title}
                                     </p>
                                     <p className="summary_person"><span>Startup type</span>
-
+                                        {startup.type && list.startup_type.find(item => item.value === startup.type)?.label}
                                     </p>
                                     <p className="summary_person"><span>Description</span>
-
+                                        {ckeditor.aboutStartUp}
                                     </p>
                                 </div> : <div>
                                     <div className="profile_information mb-4">
@@ -263,15 +293,17 @@ const CreateStartup = () => {
                                             <Form.ControlLabel>
                                                 Startup type
                                             </Form.ControlLabel>
-                                            <Form.Control
-                                                name="type"
+                                            <InputPicker
+                                                size="lg"
+                                                placeholder="Startup type"
+                                                name="startup_type"
+                                                data={list.startup_type}
                                                 value={startup.type}
+                                                className="w-100 mb-2"
                                                 onChange={(e) => setStartUp({
                                                     ...startup,
                                                     type: e
                                                 })}
-                                                type="text"
-                                                placeholder="Startup type"
                                             />
                                         </Form.Group>
                                         <Form.Group>
@@ -294,7 +326,11 @@ const CreateStartup = () => {
                                             type="button"
                                             className="previous-button">Previous</Button>
                                             <div>
-                                                <Button className="next-button" onClick={() => setCurrent(2)}
+                                                <Button className="next-button" onClick={() => {
+                                                    if (startup.title && startup.type && ckeditor.aboutStartUp) {
+                                                        setCurrent(2)
+                                                    }
+                                                }}
                                                         type="button">Next</Button>
                                             </div>
                                         </div>
@@ -319,12 +355,12 @@ const CreateStartup = () => {
                                             size="lg"
                                             placeholder="Job Position"
                                             name="job"
-                                            // data={props.roles}
-                                            value={person.role}
+                                            data={list.positions}
+                                            value={team.job_position}
                                             className="w-100 mb-2"
-                                            onChange={(e) => setPerson({
-                                                ...person,
-                                                role: e
+                                            onChange={(e) => setTeam({
+                                                ...team,
+                                                job_position: e
                                             })}
                                         />
                                     </Form.Group>
@@ -332,71 +368,65 @@ const CreateStartup = () => {
                                         size="lg"
                                         placeholder="Location"
                                         name="location"
-                                        // data={props.roles}
-                                        value={person.role}
+                                        data={list.locations}
+                                        value={team.location}
                                         className="w-100 mb-2"
-                                        onChange={(e) => setPerson({
-                                            ...person,
-                                            role: e
+                                        onChange={(e) => setTeam({
+                                            ...team,
+                                            location: e
                                         })}
                                     />
                                     <InputPicker
                                         size="lg"
                                         placeholder="Job type"
                                         name="location"
-                                        // data={props.roles}
-                                        value={person.role}
+                                        data={list.job_types}
+                                        value={team.job_type}
                                         className="w-100 mb-2"
-                                        onChange={(e) => setPerson({
-                                            ...person,
-                                            role: e
+                                        onChange={(e) => setTeam({
+                                            ...team,
+                                            job_type: e
                                         })}
                                     />
                                     <InputPicker
                                         size="lg"
                                         placeholder="Payment"
                                         name="location"
-                                        // data={props.roles}
-                                        value={person.role}
+                                        data={list.payments}
+                                        value={team.payment}
                                         className="w-100 mb-2"
-                                        onChange={(e) => setPerson({
-                                            ...person,
-                                            role: e
+                                        onChange={(e) => setTeam({
+                                            ...team,
+                                            payment: e
                                         })}
                                     />
                                     <Form.Group className="d-flex justify-content-between align-items-baseline">
                                         <Input type="number" min={0} placeholder='Salary'
-                                               onChange={(e) => {
-                                               }}/>
+                                               onChange={(e) => setTeam({
+                                                   ...team,
+                                                   salary: e
+                                               })}/>
                                         <InputPicker style={{
                                             maxWidth: '100px',
                                             marginLeft: "5px"
                                         }} size="lg"
                                                      placeholder="Salary periods"
-                                                     onChange={(e) => {
-                                                     }}
+                                                     onChange={(e) => setTeam({
+                                                         ...team,
+                                                         salary_periods: e
+                                                     })}
                                             // value={team.salary_periods}
-                                                     data={[{
-                                                         label: 'hour',
-                                                         value: 1
-                                                     }, {
-                                                         label: 'day',
-                                                         value: 2
-                                                     }, {
-                                                         label: 'week',
-                                                         value: 3
-                                                     }, {
-                                                         label: 'month',
-                                                         value: 4
-                                                     }]}
+                                                     data={list.periods}
                                                      className="w-100 mb-2"/>
                                     </Form.Group>
                                     <Form.ControlLabel>
                                         Years of experience
                                     </Form.ControlLabel>
                                     <Input type="number" min={0} placeholder='Salary'
-                                           onChange={(e) => {
-                                           }}/>
+                                           onChange={(e) => setTeam({
+                                               ...team,
+                                               salary: e
+                                           })}/>
                                     <Form.ControlLabel>
                                         Description about Job Position
                                     </Form.ControlLabel>
@@ -412,6 +442,16 @@ const CreateStartup = () => {
                                             })
                                         }}
                                     /> : ''}
+                                    <div className="d-flex justify-content-end routing-button">
+                                        <Button
+                                            onClick={() => {
+                                                submitData()
+                                            }}
+                                            type="button"
+                                            className="next-button">
+                                            Next
+                                        </Button>
+                                    </div>
                                 </Form>
                             }
                         />
@@ -423,19 +463,3 @@ const CreateStartup = () => {
 }
 CreateStartup.layout = false;
 export default CreateStartup;
-
-// export const getServerSideProps = async () => {
-//
-//     const fetchRoles = await fetch(config.BASE_URL + "project/roles");
-//     const roleData = await fetchRoles.json();
-//     return {
-//         props: {
-//             roles: roleData.data.map(item => {
-//                 return {
-//                     value: item.id,
-//                     label: item.name ? item.name : ''
-//                 }
-//             }),
-//         }
-//     }
-// }
