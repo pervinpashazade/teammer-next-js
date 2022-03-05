@@ -235,14 +235,11 @@ const ProfileTeammer = (props) => {
                     >
                         {
                             joinedProjectList?.length ?
-                                ''
+                                joinedProjectList.map((item, index) => {
+                                    return <div key={index}>{item.id}</div>
+                                })
                                 :
                                 'You have not yet joined any project'
-                        }
-                        {
-                            joinedProjectList?.map((item, index) => {
-                                return <span key={index}>test</span>
-                            })
                         }
                     </Panel>
                     <Panel
@@ -252,10 +249,22 @@ const ProfileTeammer = (props) => {
                         className='panel-joined'
                         header="Saved projects"
                     >
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
-                        <CardStartUp />
+                        <div className="w-100">
+                            <div className="row">
+                                <div className="col-md-6 mb-4">
+                                    <CardStartUp />
+                                </div>
+                                <div className="col-md-6 mb-4">
+                                    <CardStartUp />
+                                </div>
+                                <div className="col-md-6 mb-4">
+                                    <CardStartUp />
+                                </div>
+                                <div className="col-md-6 mb-4">
+                                    <CardStartUp />
+                                </div>
+                            </div>
+                        </div>
                     </Panel>
                 </div>
             </div>
