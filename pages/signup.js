@@ -24,9 +24,6 @@ const renderErrorMessages = err => {
 
 const Signup = (props) => {
     const router = useRouter();
-    console.log(checkAuth())
-    const fetchData = await fetch(NEXT_URL + 'api/auth');
-    const fetchResponse = await fetchData.json();
     // if(checkAuth() === "1"){
     //     router.push("/owner/home")
     // }
