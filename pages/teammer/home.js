@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { wrapper } from "../../src/store/redux-store";
 import { useSelector } from "react-redux";
 import Router from 'next/router';
@@ -19,7 +19,7 @@ import StartUpByCategory from "../../src/components/StartUpByCategory";
 const Home = (props) => {
 
     const store = useSelector(store => store);
-
+    const [jobs , setJobs] = useState([]);
     const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         <InputGroup {...props} inside>
             <Input placeholder={placeholder} className="input-wrap" />
@@ -39,7 +39,7 @@ const Home = (props) => {
             <h3>Time to reach new heights</h3>
         </div>
         <h4> &#128526; What are you looking for?</h4>
-        <SearchHome />
+        <SearchHome getData={setJobs} />
 
         <div className="row">
             <div className="col-md-8 mb-4">

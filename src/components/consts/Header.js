@@ -21,8 +21,9 @@ import {useRouter} from "next/router";
 import clearCookie from "../../../lib/removeCookie";
 
 const CustomComponentUserProfile = ({placement, loading, children, userType = "1"}) => {
+    console.log(userType)
     const router = useRouter();
-    const clearCookieFunction = ()=>{
+    const clearCookieFunction = () => {
         clearCookie();
         router.push("/");
     }
@@ -36,16 +37,17 @@ const CustomComponentUserProfile = ({placement, loading, children, userType = "1
                     <p><Link href="/owner/home"><a className="text-dark">Home</a></Link></p>
                     <p><Link href="/owner/profile"><a className="text-dark">My profile</a></Link></p>
                     <p style={{
-                        cursor : 'pointer'
+                        cursor: 'pointer'
                     }} onClick={clearCookieFunction}><a className="text-dark">Log out</a></p>
                 </Popover> : userType === "2" ? <Popover>
                     <p><Link href="/teammer/home"><a className="text-dark">Home</a></Link></p>
                     <p><Link href="/teammer/profile"><a className="text-dark">My profile</a></Link></p>
                     <p style={{
-                        cursor : 'pointer'
+                        cursor: 'pointer'
                     }} onClick={clearCookieFunction}><a className="text-dark">Log out</a></p>
-                </Popover> : <Link href="/login"><a> <Avatar circle
-                                                             src="https://www.w3schools.com/howto/img_avatar.png"/></a></Link>
+                </Popover> : <Popover>
+                    <p><Link href="/login"><a className="text-dark">Login</a></Link></p>
+                </Popover>
         }
     >
 

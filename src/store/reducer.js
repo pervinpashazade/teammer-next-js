@@ -6,7 +6,7 @@ const initialState = {
     user: user,
     token: (typeof window !== 'undefined' && localStorage.getItem('teammers-access-token')) ?
         localStorage.getItem('teammers-access-token') : '',
-    subscribe_viewed: false
+    subscribe_viewed: false,
 }
 
 const reducers = (state = initialState, action) => {

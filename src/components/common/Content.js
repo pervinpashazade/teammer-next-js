@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import BannerHome from "../BannerHome";
 import HomeSlider from "../HomeSlider";
 import SearchHome from "../SearchHome";
@@ -13,22 +13,19 @@ const Content = (props) => {
         positionList,
         startup_of_week_list,
     } = props;
-
-    useEffect(() => {
-        console.log('props', props);
-    }, [props])
-
+    const [jobs , setJobs] = useState([]);
+    console.log(jobs)
     return <div>
-        <BannerHome />
-        <SearchHome />
+        <BannerHome/>
+        <SearchHome getData={setJobs}/>
         <div className="row">
             <div className="col-md-8 mb-4">
                 <StartUpByCategory
-                    jobList={props.jobList}
+                    jobList={jobs.length === 0 ? props.jobList : jobs}
                     positionList={props.positionList}
                 />
                 <StartUpByCategory
-                    jobList={props.jobList}
+                    jobList={jobs.length === 0 ? props.jobList : jobs}
                     positionList={props.positionList}
                 />
             </div>
@@ -36,7 +33,7 @@ const Content = (props) => {
                 <StartUpWeek
                     startupList={startup_of_week_list}
                 />
-                <StartUpBlog />
+                <StartUpBlog/>
             </div>
         </div>
         {/* <div className="row">
@@ -44,7 +41,7 @@ const Content = (props) => {
                 <HomeSlider />
             </div>
         </div> */}
-        <Subscribe />
+        <Subscribe/>
     </div>
 };
 
