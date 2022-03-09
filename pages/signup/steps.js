@@ -512,14 +512,14 @@ const StepsComponent = (props) => {
     };
 
     useEffect(() => {
-        console.log('steps component props', props);
+        console.log(props);
         // setPerson({
         //     username: '',
         //     full_name: store.user?.full_name ? store.user?.full_name : '',
         //     location: '',
         //     role: ''
         // })
-    }, [props])
+    }, [])
 
     return <div className="container login">
         <div className="d-flex justify-content-between login-header">

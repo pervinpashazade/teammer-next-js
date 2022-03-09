@@ -7,6 +7,7 @@ import getAuth, { getId, getToken } from "../../lib/session";
 import { getFetchData } from "../../lib/fetchData";
 import { Modal } from 'rsuite';
 import { useCookie, withCookie } from "next-cookie";
+import SearchHome from "../../src/components/SearchHome";
 
 const Home = (props) => {
 
@@ -104,14 +105,14 @@ const Home = (props) => {
         }
     };
 
-    const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
-        <InputGroup {...props} inside>
-            <Input placeholder={placeholder} />
-            <InputGroup.Button className="search-input-btn">
-                Search
-            </InputGroup.Button>
-        </InputGroup>
-    );
+    // const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
+    //     <InputGroup {...props} inside>
+    //         <Input placeholder={placeholder} />
+    //         <InputGroup.Button className="search-input-btn">
+    //             Search
+    //         </InputGroup.Button>
+    //     </InputGroup>
+    // );
 
     const getData = () => {
         let link = '';
@@ -146,11 +147,12 @@ const Home = (props) => {
             </div>
             <div className="home-search">
                 <div className="wrapper">
-                    <CustomInputGroupWidthButton
-                        size="lg"
-                        placeholder="Search"
-                        className="search-input"
-                    />
+                    {/*<CustomInputGroupWidthButton*/}
+                    {/*    size="lg"*/}
+                    {/*    placeholder="Search"*/}
+                    {/*    className="search-input"*/}
+                    {/*/>*/}
+                    <SearchHome getData={setData} />
                 </div>
             </div>
             <div className="row">
@@ -242,9 +244,12 @@ const Home = (props) => {
                             </Dropdown>
                         </div>
                     </div>
+                    {
+                        console.log(data)
+                    }
                     <div className="row mt-5">
-                        {data.items.length > 0 ?
-                            data.items.map(item => {
+                        {data.length > 0 ?
+                            data.map(item => {
                                 return <div className="col-md-6 mb-5">
                                     <CardTeammerProfile
                                         isProfile={false}
@@ -343,7 +348,6 @@ export const getServerSideProps = async (context) => {
     const projects = await getFetchData("users/projects", getToken(context));
     // console.log(projects)
     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
-    // console.log(item)
     return {
         props: {
             project_types: project_types.data.map(item => {
@@ -359,7 +363,7 @@ export const getServerSideProps = async (context) => {
                 return { label: item.name, value: item.id }
             }),
             projects: projects,
-            items: item.data,
+            items: item.data.items,
             id: id,
             token: getToken(context),
             cookie: context.req.headers.cookie || ''
