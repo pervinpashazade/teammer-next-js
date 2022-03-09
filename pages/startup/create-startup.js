@@ -113,7 +113,13 @@ const CreateStartup = () => {
         }
     };
     const submitData = async () => {
-        const response = await fetch("http://localhost:3000/api/post/create-startup");
+        let body = {
+            title : person.first_name
+        }
+        const response = await fetch("http://localhost:3000/api/post/create-startup", {
+            method: 'POST',
+            body: body
+        });
         console.log(response);
     }
     return <div className="container login">
