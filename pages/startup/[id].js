@@ -10,6 +10,7 @@ import Link from 'next/link';
 import HomeSlider from '../../src/components/HomeSlider';
 import Image from 'next/image';
 import CardOwnStartupList from '../../src/components/Startup/CardOwnStartupList';
+import { NEXT_URL } from '../../src/configuration';
 
 function Startup(props) {
 
@@ -18,10 +19,22 @@ function Startup(props) {
         startupJobList,
     } = props;
 
+    const [userId, setUserId] = useState(null);
+
+    React.useEffect(async () => {
+
+        console.log('NODE test', process.env.PROD_URL);
+
+        const fetchId = await fetch(NEXT_URL + 'api/id');
+        const idObj = await fetchId.json();
+        setUserId(idObj?.userId)
+        console.log('id obj ', idObj.userId);
+    }, [])
+
     React.useEffect(() => {
-        console.clear();
+        // console.clear();
         console.log('startup page props', props);
-    }, [props])
+    }, [props]);
 
     return (
         <div className='profile-startup'>
@@ -43,73 +56,81 @@ function Startup(props) {
                 </div>
                 <div className="right-side">
                     <CardStartupProfile
+                        editMode={userId === startupData?.owner?.id}
                         classNames="mb-3"
                         logo={startupData?.logo}
                         title={startupData?.title}
+                        owner_id={startupData?.owner?.id}
                         startup_type={startupData?.type?.name}
                         owner_fullname={startupData?.owner?.full_name}
-                        owner_image_url={startupData?.owner?.photo}
+                        owner_image_url={startupData?.owner?.detail?.photo}
                     />
                     <CardJobList
                         classNames="mb-3"
                         title="Requirements"
                         jobList={startupJobList}
                     />
-                    <hr />
-                    {/*slider*/}
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="component-header v1">
-                                <h5>Joined Teammates</h5>
-                                <div className='view-all-wrapper'>
-                                    <Button>
-                                        <Image
-                                            src={'/icons/eye.svg'}
-                                            alt='img'
-                                            width={20}
-                                            height={20}
-                                            layout='fixed'
-                                        />
-                                        <span>Check all</span>
-                                    </Button>
+
+                    {
+                        userId === startupData?.owner?.id &&
+                        <>
+                            <hr />
+                            {/*slider*/}
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div className="component-header v1">
+                                        <h5>Joined Teammates</h5>
+                                        <div className='view-all-wrapper'>
+                                            <Button>
+                                                <Image
+                                                    src={'/icons/eye.svg'}
+                                                    alt='img'
+                                                    width={20}
+                                                    height={20}
+                                                    layout='fixed'
+                                                />
+                                                <span>Check all</span>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-12">
+                                    <HomeSlider />
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-md-12">
-                            <HomeSlider />
-                        </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="component-header v1">
-                                <h5>My startups</h5>
-                                <div className='view-all-wrapper'>
-                                    <Link href="/owner/startups" passHref>
-                                        <a>
-                                            <Image
-                                                src={'/icons/eye.svg'}
-                                                alt='img'
-                                                width={20}
-                                                height={20}
-                                                layout='fixed'
-                                            />
-                                            <span>Check all</span>
-                                        </a>
-                                    </Link>
+                            <hr />
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <div className="component-header v1">
+                                        <h5>My startups</h5>
+                                        <div className='view-all-wrapper'>
+                                            <Link href="/owner/startups" passHref>
+                                                <a>
+                                                    <Image
+                                                        src={'/icons/eye.svg'}
+                                                        alt='img'
+                                                        width={20}
+                                                        height={20}
+                                                        layout='fixed'
+                                                    />
+                                                    <span>Check all</span>
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <CardOwnStartupList
-                        classNames="mb-3"
-                        startupList={startupJobList}
-                    />
-                    <Link href="/startup/create-startup" passHref>
-                        <a className='btn-add-startup'>
-                            Add New Startup
-                        </a>
-                    </Link>
+                            <CardOwnStartupList
+                                classNames="mb-3"
+                                startupList={startupJobList}
+                            />
+                            <Link href="/startup/create-startup" passHref>
+                                <a className='btn-add-startup'>
+                                    Add New Startup
+                                </a>
+                            </Link>
+                        </>
+                    }
                 </div>
             </div>
         </div>

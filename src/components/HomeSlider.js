@@ -34,7 +34,7 @@ function SliderItem(props) {
 function CustomSlider() {
     const { width } = useWindowSize();
     const [swiper, setSwiper] = useState(null);
-    console.log(width)
+    // console.log(width)
     return (
         <div className="pro-slider">
             <div className="slider-wrapper">

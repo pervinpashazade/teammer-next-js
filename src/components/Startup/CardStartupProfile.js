@@ -7,14 +7,20 @@ import {
 
 const CardStartupProfile = (props) => {
     const {
+        user_id,
         editMode,
         title,
         logo,
         startup_type,
         classNames,
+        owner_id,
         owner_fullname,
         owner_image_url,
     } = props;
+
+    React.useEffect(() => {
+        // console.log("owner_image_url", owner_image_url);
+    }, [])
 
     return (
         <div className={`profile-card-startup ${classNames ? classNames : ''}`}>
@@ -23,8 +29,8 @@ const CardStartupProfile = (props) => {
                     <h2>
                         {title}
                         {
-                            !editMode &&
-                            <Link href="/startup/edit/5" passHrefF>
+                            editMode &&
+                            <Link href="/startup/edit/5" passHref>
                                 <a className='link-edit-startup'>
                                     <Image
                                         src={'/icons/edit.svg'}

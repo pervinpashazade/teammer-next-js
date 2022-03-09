@@ -1,17 +1,17 @@
 import Link from "next/link";
-import React, {useLayoutEffect, useState} from "react";
-import {Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster} from "rsuite";
+import React, { useLayoutEffect, useState } from "react";
+import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
 import config from "../src/configuration";
 import axios from "axios";
-import {useDispatch} from "react-redux";
-import {log_in, setData} from '/src/store/actions';
-import {STARTUP_TYPE, TEAMMER_TYPE} from "../src/get_auth";
-import {useRouter} from 'next/router'
+import { useDispatch } from "react-redux";
+import { log_in, setData } from '/src/store/actions';
+import { STARTUP_TYPE, TEAMMER_TYPE } from "../src/get_auth";
+import { useRouter } from 'next/router'
 import Image from "next/image";
-import {setCookie} from "../src/helpers/cookie";
-import {withCookie} from 'next-cookie'
-import getAuth, {getToken} from "../lib/session";
-import {postData} from "../lib/postData";
+import { setCookie } from "../src/helpers/cookie";
+import { withCookie } from 'next-cookie';
+import getAuth, { getToken } from "../lib/session";
+import { postData } from "../lib/postData";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -24,7 +24,7 @@ const renderErrorMessages = err => {
 }
 
 const Login = (props) => {
-    const {cookie} = props
+    const { cookie } = props;
     const [check, setCheck] = useState({});
     const [validation, setValidation] = useState(true);
     const dispatch = useDispatch();
@@ -207,12 +207,12 @@ const Login = (props) => {
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>E-mail or
                             username</Form.ControlLabel>
                         <Form.Control className={validation ? '' : 'login-border-color'} name="email" type="email"
-                                      placeholder="Name@domain.com"/>
+                            placeholder="Name@domain.com" />
                     </Form.Group>
                     <Form.Group controlId="password">
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>Password</Form.ControlLabel>
                         <Form.Control className={validation ? '' : 'login-border-color'} name="password" type="password"
-                                      placeholder="at least 8 characters"/>
+                            placeholder="at least 8 characters" />
                     </Form.Group>
                     <Form.Group>
                         <Checkbox onChange={(e, checked) => setCheck(checked)}> Remember me</Checkbox>
