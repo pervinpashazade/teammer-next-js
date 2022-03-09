@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -8,17 +8,17 @@ import {
     Popover,
     Badge, Button
 } from 'rsuite';
-import {RiArrowRightLine} from 'react-icons/ri';
-import {wrapper} from "../../store/redux-store";
-import {useDispatch, useSelector} from "react-redux";
+import { RiArrowRightLine } from 'react-icons/ri';
+import { wrapper } from "../../store/redux-store";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import menu from '../../../public/img/menu.png'
 import cancel from '../../../public/img/cancel.png';
 import homeIcon from '../../../public/img/home-icon.png'
 import arrowRight from '../../../public/img/arrow-right 1.png'
-import {withCookie} from 'next-cookie';
+import { withCookie } from 'next-cookie';
 
-const CustomComponentUserProfile = ({placement, loading, children, userType = "1"}) => (
+const CustomComponentUserProfile = ({ placement, loading, children, userType = "1" }) => (
     <Whisper
         trigger="click"
         placement={placement}
@@ -28,19 +28,20 @@ const CustomComponentUserProfile = ({placement, loading, children, userType = "1
                 <Popover>
                     <p><Link href="/owner/home"><a className="text-dark">Home</a></Link></p>
                     <p><Link href="/owner/profile"><a className="text-dark">My profile</a></Link></p>
-                </Popover> : <Popover>
+                </Popover> : userType === "2" ? <Popover>
                     <p><Link href="/teammer/home"><a className="text-dark">Home</a></Link></p>
                     <p><Link href="/teammer/profile"><a className="text-dark">My profile</a></Link></p>
-                </Popover>
+                </Popover> : <Link href="/login"><a> <Avatar circle
+                    src="https://www.w3schools.com/howto/img_avatar.png" /></a></Link>
         }
     >
 
         <a className="c-pointer"> <Avatar circle
-                    src="https://www.w3schools.com/howto/img_avatar.png"/></a>
+            src="https://www.w3schools.com/howto/img_avatar.png" /></a>
     </Whisper>
 );
 
-const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
+const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -59,13 +60,13 @@ const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) =
                                 height={18}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine/></button>
+                            Show all <button><RiArrowRightLine /></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
                     <div>
-                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png"/>
+                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" />
                     </div>
                     <div className="message-text">
                         <p>Denis Delton wants to add you to their Netflix team.</p>
@@ -77,7 +78,7 @@ const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) =
     );
 });
 
-const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
+const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -93,12 +94,12 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
                                 height={20}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine/></button>
+                            Show all <button><RiArrowRightLine /></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
-                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png"/></div>
+                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" /></div>
                     <div className="message-text">
                         <p>Denis Delton</p>
                         <p>Yeah! I’m interested...</p>
@@ -114,13 +115,13 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
     );
 });
 
-const CustomComponentNotification = ({placement, loading, children, count = 3}) => (
+const CustomComponentNotification = ({ placement, loading, children, count = 3 }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverNotification content={`I am positioned to the ${placement}`}/>
+            <DefaultPopoverNotification content={`I am positioned to the ${placement}`} />
         }
     >
         {
@@ -154,13 +155,13 @@ const CustomComponentNotification = ({placement, loading, children, count = 3}) 
     </Whisper>
 );
 
-const CustomComponentMessage = ({placement, loading, children}) => (
+const CustomComponentMessage = ({ placement, loading, children }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverMessage content={`I am positioned to the ${placement}`}/>
+            <DefaultPopoverMessage content={`I am positioned to the ${placement}`} />
         }
     >
         <li>
@@ -178,9 +179,9 @@ const CustomComponentMessage = ({placement, loading, children}) => (
     </Whisper>
 );
 
-const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
+const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     <InputGroup {...props} inside>
-        <Input placeholder={placeholder}/>
+        <Input placeholder={placeholder} />
         <InputGroup.Button>
             {/* <img src="/icons/search.svg" /> */}
             <Image
@@ -197,7 +198,7 @@ const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
 
 const Header = (props) => {
 
-    const {cookie} = props;
+    const { cookie } = props;
 
     const [userType, setUserType] = useState(
         cookie.get('teammers-type') ? cookie.get('teammers-type') : ''
@@ -241,12 +242,12 @@ const Header = (props) => {
                             </div>
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
-                                    <CustomComponentNotification placement="bottomEnd" loading={loading}/>
+                                    <CustomComponentNotification placement="bottomEnd" loading={loading} />
                                     <a className="mx-3"><CustomComponentMessage placement="bottomEnd"
-                                                                                loading={loading}/></a>
+                                        loading={loading} /></a>
                                     <li className="nav-item">
                                         <Link
-                                            href="/login"
+                                            // href="/login"
                                             href={
                                                 userType ?
                                                     userType === "1" ?
@@ -262,7 +263,7 @@ const Header = (props) => {
                                         >
                                             <a>
                                                 <Avatar circle
-                                                        src="https://www.w3schools.com/howto/img_avatar.png"/>
+                                                    src="https://www.w3schools.com/howto/img_avatar.png" />
                                             </a>
                                         </Link>
                                     </li>
@@ -295,18 +296,21 @@ const Header = (props) => {
                                 </ul>
                             </div>
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
-                                <CustomComponentNotification placement="bottomEnd" loading={loading}/>
-                                <CustomComponentMessage placement="bottomEnd" loading={loading}/>
+                                <CustomComponentNotification placement="bottomEnd" loading={loading} />
+                                <CustomComponentMessage placement="bottomEnd" loading={loading} />
+                                {
+                                    console.log(userType)
+                                }
                                 {
                                     <li className="nav-item">
                                         {
                                             userType === "1" ?
                                                 <CustomComponentUserProfile placement="bottomEnd" loading={loading}
-                                                                            userType="1"/>
+                                                    userType="1" />
                                                 : userType === "2" ? <CustomComponentUserProfile placement="bottomEnd" loading={loading}
-                                                                                                 userType="2"/> :
-                                                    <Link href="/login"><a> <Avatar circle
-                                                                      src="https://www.w3schools.com/howto/img_avatar.png"/></a></Link>
+                                                    userType="2" /> : <CustomComponentUserProfile placement="bottomEnd" loading={loading}
+                                                        userType="none" />
+
 
                                         }
                                     </li>

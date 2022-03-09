@@ -7,6 +7,8 @@ import { getToken } from "../../lib/session";
 import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
+import axios from 'axios';
+import config from '../../src/configuration';
 
 function Startup(props) {
 
@@ -21,6 +23,13 @@ function Startup(props) {
         // console.clear();
         console.log('props job', props);
     }, [props])
+
+    const applyToJob = () => {
+        if (!jobData) return;
+        axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`).then(res => {
+            console.log('apply res', res)
+        });
+    }
 
     return (
         <div className='profile-job'>
@@ -118,8 +127,9 @@ function Startup(props) {
                         <div className="btn-wrapper">
                             <Button
                                 appearance="primary"
+                                onClick={applyToJob}
                             >
-                                Respond
+                                Apply
                             </Button>
                             <Button
                                 appearance="primary"
