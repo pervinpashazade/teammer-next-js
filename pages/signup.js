@@ -3,13 +3,14 @@ import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster} from "rsuite";
 import {useRouter} from "next/router";
 import axios from "axios";
-import config from "../src/configuration";
+import config, {NEXT_URL} from "../src/configuration";
 import Image from "next/image";
 import {useDispatch} from "react-redux";
 import {setData} from '/src/store/actions';
 import {setCookie} from "../src/helpers/cookie";
 import {withCookie} from 'next-cookie';
 import getAuth from "../lib/session";
+import checkAuth from "../src/helpers/checkAuth";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -22,21 +23,22 @@ const renderErrorMessages = err => {
 }
 
 const Signup = (props) => {
+    const router = useRouter();
+    console.log(checkAuth())
+    const fetchData = await fetch(NEXT_URL + 'api/auth');
+    const fetchResponse = await fetchData.json();
+    // if(checkAuth() === "1"){
+    //     router.push("/owner/home")
+    // }
+    // else if(checkAuth() === "2"){
+    //     router.push("/teammer/home")
+    // }
     const {cookie} = props
     const dispatch = useDispatch();
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
     const [validation, setValidation] = useState(true);
 
-    const router = useRouter();
-
-    // useEffect(() => {
-    //     // console.log(localStorage.getItem('type'))
-    //     if (localStorage.getItem('teammers-access-token') && !JSON.parse(localStorage.getItem('type'))) {
-    //         // console.log('ansdjkansdkjansdkjsnd')
-    //         router.push("/signup/steps");
-    //     }
-    // }, [])
     const signup_form = (event) => {
 
         let data = new FormData(event.target);
@@ -80,8 +82,9 @@ const Signup = (props) => {
                 // cookie.set('teammers-access-token', data.token);
                 // cookie.set('teammers-type', data.user.type);
                 setCookie('teammers-access-token', data.token, 6);
-                setCookie('teammers-type', data.user.type, 6)
-                router.push("/signup/steps")
+                setCookie('teammers-type', data.user.type, 6);
+                debugger;
+                router.push("/signup/steps");
             })
                 .catch(error => {
                     console.log('error signup', error);

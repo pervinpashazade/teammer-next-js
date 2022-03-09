@@ -314,9 +314,6 @@ const Header = (props) => {
                                 <CustomComponentNotification placement="bottomEnd" loading={loading}/>
                                 <CustomComponentMessage placement="bottomEnd" loading={loading}/>
                                 {
-                                    console.log(userType)
-                                }
-                                {
                                     <li className="nav-item">
                                         {
                                             userType === "1" ?
