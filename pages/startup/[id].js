@@ -22,13 +22,9 @@ function Startup(props) {
     const [userId, setUserId] = useState(null);
 
     React.useEffect(async () => {
-
-        console.log('NODE test', process.env.PROD_URL);
-
-        const fetchId = await fetch(NEXT_URL + 'api/id');
-        const idObj = await fetchId.json();
-        setUserId(idObj?.userId)
-        console.log('id obj ', idObj.userId);
+        const fetchUser = await fetch(NEXT_URL + 'api/auth');
+        const resObj = await fetchUser.json();
+        setUserId(resObj?.user?.id)
     }, [])
 
     React.useEffect(() => {

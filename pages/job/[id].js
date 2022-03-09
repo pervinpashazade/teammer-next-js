@@ -8,7 +8,7 @@ import CardStartupProfile from '../../src/components/Startup/CardStartupProfile'
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
-import config from '../../src/configuration';
+import config, { NEXT_URL } from '../../src/configuration';
 
 function Startup(props) {
 
@@ -19,14 +19,26 @@ function Startup(props) {
         similarJobList,
     } = props;
 
+    const [token, setToken] = useState('');
+
+    React.useEffect(async () => {
+        const fetchUser = await fetch(NEXT_URL + 'api/auth');
+        const resObj = await fetchUser.json();
+        setToken(resObj?.user?.token)
+        console.log('token ', resObj.user.token);
+    }, [])
+
     React.useEffect(() => {
-        // console.clear();
         console.log('props job', props);
     }, [props])
 
     const applyToJob = () => {
         if (!jobData) return;
-        axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`).then(res => {
+        axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`, null, {
+            headers: {
+                "Authorization": token
+            }
+        }).then(res => {
             console.log('apply res', res)
         });
     }
