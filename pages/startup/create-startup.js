@@ -259,7 +259,8 @@ const CreateStartup = () => {
                                         {startup.type && list.startup_type.find(item => item.value === startup.type)?.label}
                                     </p>
                                     <p className="summary_person"><span>Description</span>
-                                        {ckeditor.aboutStartUp}
+                                        <div dangerouslySetInnerHTML={{__html : ckeditor.aboutStartUp.length > 10 ?
+                                                ckeditor.aboutStartUp.slice(0,20)+ "..." : ckeditor.aboutStartUp}}></div>
                                     </p>
                                 </div> : <div>
                                     <div className="profile_information mb-4">
