@@ -1,15 +1,16 @@
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
-import { useRouter } from "next/router";
+import React, {useEffect, useState} from "react";
+import {Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster} from "rsuite";
+import {useRouter} from "next/router";
 import axios from "axios";
 import config from "../src/configuration";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
-import { setData } from '/src/store/actions';
-import { setCookie } from "../src/helpers/cookie";
-import { withCookie } from 'next-cookie'
+import {useDispatch} from "react-redux";
+import {setData} from '/src/store/actions';
+import {setCookie} from "../src/helpers/cookie";
+import {withCookie} from 'next-cookie';
 import getAuth from "../lib/session";
+
 const renderErrorMessages = err => {
     let errList = [];
 
@@ -21,7 +22,7 @@ const renderErrorMessages = err => {
 }
 
 const Signup = (props) => {
-    const { cookie } = props
+    const {cookie} = props
     const dispatch = useDispatch();
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
@@ -59,7 +60,8 @@ const Signup = (props) => {
                 <p className="text-danger">Password must be between 8 - 16 characters</p>
             </Notification>, 'topEnd');
             return;
-        };
+        }
+        ;
 
         if (body.password !== body.repeat_password) {
             setValidation(false)
@@ -75,14 +77,10 @@ const Signup = (props) => {
 
                 cookie.remove('teammers-type');
 
-                cookie.set('teammers-access-token', data.token)
-                cookie.set('teammers-type', data.user.type);
-
-                // dispatch(setData('user', data.user));
-                // dispatch(setData('token', data.token));
-
-                // console.log(res);
-
+                // cookie.set('teammers-access-token', data.token);
+                // cookie.set('teammers-type', data.user.type);
+                setCookie('teammers-access-token', data.token, 6);
+                setCookie('teammers-type', data.user.type, 6)
                 router.push("/signup/steps")
             })
                 .catch(error => {
@@ -99,7 +97,8 @@ const Signup = (props) => {
                             </Notification>, 'topEnd'
                         );
                         return;
-                    };
+                    }
+                    ;
 
                     // toaster.push(<Notification type={"error"} header="Failed confirmation!" closable>
                     //     <p className="text-danger">{error.response?.data.error.message}</p>
@@ -108,7 +107,7 @@ const Signup = (props) => {
         }
         // console.log(body)
     }
-    
+
     return <div className="container login">
         <div className="d-flex justify-content-between login-header">
             <Link href="/">
@@ -150,8 +149,10 @@ const Signup = (props) => {
                             height={68}
                         />
                         team in
-                    </div> Minutes.</h1>
-                <p className="text-center">Connect with your future teammates <br />
+                    </div>
+                    Minutes.
+                </h1>
+                <p className="text-center">Connect with your future teammates <br/>
                     from all over the world.</p>
             </div>
             <div className="signup_form">
@@ -213,18 +214,18 @@ const Signup = (props) => {
                     </Form.Group>
                     <Form.Group controlId="email">
                         <Form.ControlLabel>E-mail or username</Form.ControlLabel>
-                        <Form.Control name="email" type="email" placeholder="Name@domain.com" />
+                        <Form.Control name="email" type="email" placeholder="Name@domain.com"/>
                     </Form.Group>
                     <Form.Group controlId="password">
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>Password</Form.ControlLabel>
                         <Form.Control className={validation ? '' : 'login-border-color'} name="password" type="password"
-                            placeholder="at least 8 characters" />
+                                      placeholder="at least 8 characters"/>
                     </Form.Group>
                     <Form.Group controlId="repeat_password">
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>Repeat
                             password</Form.ControlLabel>
                         <Form.Control className={validation ? '' : 'login-border-color'} name="repeat_password"
-                            type="password" placeholder="at least 8 characters" />
+                                      type="password" placeholder="at least 8 characters"/>
                     </Form.Group>
                     <Form.Group>
                         <Checkbox onChange={(e, checked) => setCheck1(checked)}>Yes! Send me

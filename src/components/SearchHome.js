@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { Button, Input, InputGroup , Form } from 'rsuite';
 
 function SearchHome() {
-    const [search , setSearch] = useState('')
+    const [search , setSearch] = useState('');
     const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         <InputGroup {...props} inside>
             <Input placeholder={placeholder} name="search"/>
