@@ -32,7 +32,8 @@ function Startup(props) {
 
     React.useEffect(() => {
         console.log('props job', jobData);
-    }, [jobData]);
+        setJobData(fetchJobData);
+    }, [fetchJobData]);
 
     const getData = async () => {
         if (!jobData) return;
@@ -42,18 +43,7 @@ function Startup(props) {
 
         if (data.success) {
             setJobData(data.data);
-        }
-
-        console.log('log data', data.data);
-
-        // axios.get(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`).then(res => {
-
-        //     console.log('getData', res);
-
-        //     if (res.data.success) {
-        //         setJobData(res.data.data);
-        //     }
-        // })
+        };
     }
 
     const applyToJob = () => {
