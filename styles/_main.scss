@@ -1292,3 +1292,107 @@ div.icon-btn-wrapper {
 .save-job-icon {
   cursor: pointer;
 }
+
+//modal
+.info-modal {
+  ._modal-top {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    .title {
+      padding: 2rem 4rem 1rem 4rem;
+      h1 {
+        font-weight: bold;
+        font-size: 32px;
+        line-height: 45px;
+        text-align: center;
+        margin: 0;
+      }
+    }
+  }
+  p {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    color: #7f7f7f;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+    a {
+      margin-left: 0.5rem;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: #2a6fff;
+    }
+  }
+  .social-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    button {
+      background: #fff;
+      border: 2px solid #eaeaea;
+      box-sizing: border-box;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+      &.google {
+        border-radius: 62px;
+        padding: 12px 24px;
+      }
+      span {
+        margin-left: 0.5rem;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+        color: #020c40;
+      }
+    }
+  }
+  ._hr {
+    width: 100%;
+    height: 1px;
+    background: #eaeaea;
+    position: relative;
+    span {
+      position: absolute;
+      display: inline-block;
+      width: 4rem;
+      background-color: #fff;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  .form {
+    margin-top: 2.5rem;
+  }
+  ._modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 1rem 2.75rem 1rem 2.75rem;
+    text-align: center;
+    button {
+      &._login-btn {
+        background: #2a6fff;
+        border-radius: 72px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        color: #fff;
+        margin-bottom: 2rem;
+      }
+    }
+    a {
+      display: block;
+      width: 100%;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+      color: #020c40;
+    }
+  }
+}
