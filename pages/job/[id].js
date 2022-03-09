@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Button, Panel, Tag } from 'rsuite';
+import { Avatar, Button, Notification, Panel, Tag, toaster } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
 import { getFetchData } from '../../lib/fetchData';
@@ -13,24 +13,36 @@ import config, { NEXT_URL } from '../../src/configuration';
 function Startup(props) {
 
     const {
-        jobData,
+        fetchJobData,
         logo,
         startupJobList,
         similarJobList,
     } = props;
 
+    const [jobData, setJobData] = useState(fetchJobData);
     const [token, setToken] = useState('');
 
     React.useEffect(async () => {
         const fetchUser = await fetch(NEXT_URL + 'api/auth');
         const resObj = await fetchUser.json();
-        setToken(resObj?.user?.token)
-        console.log('token ', resObj.user.token);
+        setToken(resObj?.user?.token);
     }, [])
 
     React.useEffect(() => {
-        console.log('props job', props);
-    }, [props])
+        console.log('props job', jobData);
+    }, [jobData]);
+
+    const getData = () => {
+        if (!jobData) return;
+        axios.get(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`).then(res => {
+
+            console.log('getData', res);
+
+            if (res.data.success) {
+                setJobData(res.data.data);
+            }
+        })
+    }
 
     const applyToJob = () => {
         if (!jobData) return;
@@ -39,9 +51,47 @@ function Startup(props) {
                 "Authorization": token
             }
         }).then(res => {
-            console.log('apply res', res)
+            getData();
+            if (res.data.success) {
+                toaster.push(
+                    <Notification
+                        type={"success"}
+                        header="Success!"
+                        closable
+                    >
+                        <p className="text-success">
+                            Your application has been sent successfully
+                        </p>
+                    </Notification>, 'topEnd'
+                );
+            };
         });
-    }
+    };
+
+    const rejectApplicationToJob = () => {
+        if (!jobData) return;
+        if (!jobData.self_request) return;
+        axios.post(config.BASE_URL + `team-requests/${jobData.self_request.id}/reject`, null, {
+            headers: {
+                "Authorization": token
+            }
+        }).then(res => {
+            if (res.data.success) {
+                getData();
+                toaster.push(
+                    <Notification
+                        type={"success"}
+                        header="Success!"
+                        closable
+                    >
+                        <p className="text-success">
+                            You have canceled your application successfully
+                        </p>
+                    </Notification>, 'topEnd'
+                );
+            };
+        });
+    };
 
     return (
         <div className='profile-job'>
@@ -137,12 +187,25 @@ function Startup(props) {
                             }
                         </ul>
                         <div className="btn-wrapper">
-                            <Button
-                                appearance="primary"
-                                onClick={applyToJob}
-                            >
-                                Apply
-                            </Button>
+                            {
+                                jobData?.self_request ?
+                                    jobData.self_request.request_from === 2 ?
+                                        <Button
+                                            appearance="primary"
+                                            onClick={rejectApplicationToJob}
+                                        >
+                                            Cancel application
+                                        </Button>
+                                        :
+                                        '1'
+                                    :
+                                    <Button
+                                        appearance="primary"
+                                        onClick={applyToJob}
+                                    >
+                                        Apply
+                                    </Button>
+                            }
                             <Button
                                 appearance="primary"
                             >
@@ -211,7 +274,7 @@ export const getServerSideProps = async (context) => {
 
     return {
         props: {
-            jobData: jobData?.data,
+            fetchJobData: jobData?.data,
             startupJobList: startupJobs,
             similarJobList: similarJobs,
         }
