@@ -415,10 +415,12 @@ const StepsComponent = (props) => {
                 // localStorage.setItem('teammers-access-token', data.token);
                 // localStorage.setItem('type', 2);
                 cookie.remove('teammers-type');
-                cookie.set('teammers-type', "2");
-                cookie.set('user', person.full_name)
+                setCookie('teammers-type' , "2" , 6);
+                setCookie('user' , person.full_name , 6);
+                // cookie.set('teammers-type', "2");
+                // cookie.set('user', person.full_name)
                 // dispatch(log_in('TEAMMER_TYPE'));
-                dispatch(setData('user', person.full_name));
+                // dispatch(setData('user', person.full_name));
                 router.push('/teammer/subscribe')
             })
             .catch(error => {
@@ -477,11 +479,13 @@ const StepsComponent = (props) => {
 
                 // localStorage.setItem('type', 1);
                 cookie.remove('teammers-type');
-                cookie.set('teammers-type', "1");
+                // cookie.set('teammers-type', "1");
+                setData('teammers-type' , "1" , 6)
                 // localStorage.setItem('teammers-access-token', data.token);
                 // localStorage.setItem('type', data.user.type);
                 // localStorage.setItem('user', JSON.stringify(data.user));
-                cookie.set('user', data.full_name);
+                setData('user' , data.full_name , 6)
+                // cookie.set('user', data.full_name);
                 // setCookie('teammers-access-token', data.token)
                 router.push('/signup/add-to-team');
             })

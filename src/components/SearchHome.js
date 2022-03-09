@@ -1,27 +1,28 @@
-import React from 'react'
-import { Button, Input, InputGroup } from 'rsuite';
-import {useSelector} from "react-redux";
+import React, {useState} from 'react'
+import { Button, Input, InputGroup , Form } from 'rsuite';
 
 function SearchHome() {
-
+    const [search , setSearch] = useState('');
     const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         <InputGroup {...props} inside>
-            <Input placeholder={placeholder} />
-            <InputGroup.Button className="search-input-btn">
+            <Input placeholder={placeholder} name="search"/>
+            <Button type="submit" className="search-input-btn ml-1" onClick={toSearch}>
                 Search
-            </InputGroup.Button>
+            </Button>
         </InputGroup>
     );
-    const store = useSelector(store => store)
+    const toSearch = () =>{
+
+    }
     return (
         <div className="home-search">
             {
                 <div className="wrapper">
-                    <CustomInputGroupWidthButton
-                        size="lg"
-                        placeholder="Search"
-                        className="search-input"
-                    />
+                       <CustomInputGroupWidthButton
+                           size="lg"
+                           placeholder="Search"
+                           className="search-input"
+                       />
                     <div className="tags">
                         <Button className="btn-custom-outline mb-2 active" color="blue" appearance="primary">
                             Design
