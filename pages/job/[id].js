@@ -9,6 +9,7 @@ import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
 import config, { NEXT_URL } from '../../src/configuration';
+import AuthModal from '../../src/components/NotAuthModals/AuthModal';
 
 function Startup(props) {
 
@@ -21,6 +22,7 @@ function Startup(props) {
 
     const [jobData, setJobData] = useState(fetchJobData);
     const [token, setToken] = useState('');
+    const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
 
     React.useEffect(async () => {
         const fetchUser = await fetch(NEXT_URL + 'api/auth');
@@ -30,42 +32,47 @@ function Startup(props) {
 
     React.useEffect(() => {
         console.log('props job', jobData);
-    }, [jobData]);
+        setJobData(fetchJobData);
+    }, [fetchJobData]);
 
-    const getData = () => {
+    const getData = async () => {
         if (!jobData) return;
-        axios.get(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`).then(res => {
 
-            console.log('getData', res);
+        const fetchData = await fetch(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`)
+        const data = await fetchData.json();
 
-            if (res.data.success) {
-                setJobData(res.data.data);
-            }
-        })
+        if (data.success) {
+            setJobData(data.data);
+        };
     }
 
     const applyToJob = () => {
         if (!jobData) return;
-        axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`, null, {
-            headers: {
-                "Authorization": token
-            }
-        }).then(res => {
-            getData();
-            if (res.data.success) {
-                toaster.push(
-                    <Notification
-                        type={"success"}
-                        header="Success!"
-                        closable
-                    >
-                        <p className="text-success">
-                            Your application has been sent successfully
-                        </p>
-                    </Notification>, 'topEnd'
-                );
-            };
-        });
+
+        if (token) {
+            axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`, null, {
+                headers: {
+                    "Authorization": token
+                }
+            }).then(res => {
+                getData();
+                if (res.data.success) {
+                    toaster.push(
+                        <Notification
+                            type={"success"}
+                            header="Success!"
+                            closable
+                        >
+                            <p className="text-success">
+                                Your application has been sent successfully
+                            </p>
+                        </Notification>, 'topEnd'
+                    );
+                };
+            });
+        } else {
+            setIsOpenLoginModal(true);
+        }
     };
 
     const rejectApplicationToJob = () => {
@@ -94,150 +101,156 @@ function Startup(props) {
     };
 
     return (
-        <div className='profile-job'>
-            <BreadCrumb />
-            <Banner />
-            <div className="profile-wrapper">
-                <div className="content">
-                    <div className="row">
-                        <div className="col-md-12 col-lg-6 mb-4">
-                            <div className="_top-title">
-                                <Avatar
-                                    size="md"
-                                    circle
-                                    src={jobData?.project?.logo ? jobData.project.logo : "https://www.w3schools.com/howto/img_avatar.png"}
-                                    alt="startup profile img"
-                                />
-                                <h2 className='startup-title'>
-                                    {jobData?.project?.title}
-                                </h2>
+        <>
+            <div className='profile-job'>
+                <BreadCrumb />
+                <Banner />
+                <div className="profile-wrapper">
+                    <div className="content">
+                        <div className="row">
+                            <div className="col-md-12 col-lg-6 mb-4">
+                                <div className="_top-title">
+                                    <Avatar
+                                        size="md"
+                                        circle
+                                        src={jobData?.project?.logo ? jobData.project.logo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                        alt="startup profile img"
+                                    />
+                                    <h2 className='startup-title'>
+                                        {jobData?.project?.title}
+                                    </h2>
+                                </div>
+                            </div>
+                            <div className="col-md-12 col-lg-6 mb-4">
+                                <div className="_top-actions">
+                                    <ul>
+                                        <li className='create-date'>
+                                            {jobData?.created_at}
+                                        </li>
+                                        {/* <li className='create-date'>link</li> */}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        <div className="col-md-12 col-lg-6 mb-4">
-                            <div className="_top-actions">
-                                <ul>
-                                    <li className='create-date'>
-                                        {jobData?.created_at}
+                        <div className="job-details_top">
+                            <h1 className="_title">
+                                {jobData?.position?.name}
+                            </h1>
+                            <div className="tag-wrapper">
+                                {
+                                    jobData?.type?.name &&
+                                    <Tag size="lg" className="custom-tag mb-4">Motion</Tag>
+                                }
+                            </div>
+                            <ul>
+                                {
+                                    jobData?.location?.name &&
+                                    <li>
+                                        <Image
+                                            src={'/icons/location.svg'}
+                                            alt='icon'
+                                            width={16}
+                                            height={16}
+                                        />
+                                        <span className="item">{jobData.location.name}</span>
                                     </li>
-                                    {/* <li className='create-date'>link</li> */}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="job-details_top">
-                        <h1 className="_title">
-                            {jobData?.position?.name}
-                        </h1>
-                        <div className="tag-wrapper">
-                            {
-                                jobData?.type?.name &&
-                                <Tag size="lg" className="custom-tag mb-4">Motion</Tag>
-                            }
-                        </div>
-                        <ul>
-                            {
-                                jobData?.location?.name &&
-                                <li>
-                                    <Image
-                                        src={'/icons/location.svg'}
-                                        alt='icon'
-                                        width={16}
-                                        height={16}
-                                    />
-                                    <span className="item">{jobData.location.name}</span>
-                                </li>
-                            }
-                            {
-                                jobData?.type?.name &&
-                                <li>
-                                    <Image
-                                        src={'/icons/location.svg'}
-                                        alt='icon'
-                                        width={16}
-                                        height={16}
-                                    />
-                                    <span className="item">{jobData.type.name}</span>
-                                </li>
-                            }
-                            {
-                                jobData?.salary &&
-                                <li>
-                                    <Image
-                                        src={'/icons/location.svg'}
-                                        alt='icon'
-                                        width={16}
-                                        height={16}
-                                    />
-                                    <span className="item">{jobData.salary}</span>
-                                </li>
-                            }
-                            {
-                                jobData?.years_of_experience &&
-                                <li>
-                                    <Image
-                                        src={'/icons/location.svg'}
-                                        alt='icon'
-                                        width={16}
-                                        height={16}
-                                    />
-                                    <span className="item">
-                                        {jobData.years_of_experience} years of experience
-                                    </span>
-                                </li>
-                            }
-                        </ul>
-                        <div className="btn-wrapper">
-                            {
-                                jobData?.self_request ?
-                                    jobData.self_request.request_from === 2 ?
+                                }
+                                {
+                                    jobData?.type?.name &&
+                                    <li>
+                                        <Image
+                                            src={'/icons/location.svg'}
+                                            alt='icon'
+                                            width={16}
+                                            height={16}
+                                        />
+                                        <span className="item">{jobData.type.name}</span>
+                                    </li>
+                                }
+                                {
+                                    jobData?.salary &&
+                                    <li>
+                                        <Image
+                                            src={'/icons/location.svg'}
+                                            alt='icon'
+                                            width={16}
+                                            height={16}
+                                        />
+                                        <span className="item">{jobData.salary}</span>
+                                    </li>
+                                }
+                                {
+                                    jobData?.years_of_experience &&
+                                    <li>
+                                        <Image
+                                            src={'/icons/location.svg'}
+                                            alt='icon'
+                                            width={16}
+                                            height={16}
+                                        />
+                                        <span className="item">
+                                            {jobData.years_of_experience} years of experience
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                            <div className="btn-wrapper">
+                                {
+                                    jobData?.self_request ?
+                                        jobData.self_request.request_from === 2 ?
+                                            <Button
+                                                appearance="primary"
+                                                onClick={rejectApplicationToJob}
+                                            >
+                                                Cancel application
+                                            </Button>
+                                            :
+                                            '1'
+                                        :
                                         <Button
                                             appearance="primary"
-                                            onClick={rejectApplicationToJob}
+                                            onClick={applyToJob}
                                         >
-                                            Cancel application
+                                            Apply
                                         </Button>
-                                        :
-                                        '1'
-                                    :
-                                    <Button
-                                        appearance="primary"
-                                        onClick={applyToJob}
-                                    >
-                                        Apply
-                                    </Button>
-                            }
-                            <Button
-                                appearance="primary"
-                            >
-                                <Image
-                                    src={'/icons/envelope_white.svg'}
-                                    alt='icon'
-                                    width={24}
-                                    height={24}
-                                />
-                            </Button>
+                                }
+                                <Button
+                                    appearance="primary"
+                                >
+                                    <Image
+                                        src={'/icons/envelope_white.svg'}
+                                        alt='icon'
+                                        width={24}
+                                        height={24}
+                                    />
+                                </Button>
+                            </div>
+                        </div>
+                        <div className='startup-description'>
+                            <h4 className='_title'>About this requirement</h4>
+                            {jobData?.description}
                         </div>
                     </div>
-                    <div className='startup-description'>
-                        <h4 className='_title'>About this requirement</h4>
-                        {jobData?.description}
+                    <div className="right-side">
+                        <CardJobList
+                            classNames="mb-3"
+                            title={`Other requirements ${jobData?.project?.title}`}
+                            jobList={startupJobList}
+                        />
+                        <CardJobList
+                            classNames="mb-3"
+                            title="Similar requirements"
+                            jobList={similarJobList}
+                            showStartupDetails
+                        />
                     </div>
                 </div>
-                <div className="right-side">
-                    <CardJobList
-                        classNames="mb-3"
-                        title={`Other requirements ${jobData?.project?.title}`}
-                        jobList={startupJobList}
-                    />
-                    <CardJobList
-                        classNames="mb-3"
-                        title="Similar requirements"
-                        jobList={similarJobList}
-                        showStartupDetails
-                    />
-                </div>
             </div>
-        </div>
+            <AuthModal
+                isOpen={isOpenLoginModal}
+                setIsOpen={setIsOpenLoginModal}
+            />
+        </>
     )
 }
 
