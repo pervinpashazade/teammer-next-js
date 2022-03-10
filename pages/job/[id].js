@@ -9,7 +9,7 @@ import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
 import config, { NEXT_URL } from '../../src/configuration';
-import AuthModal from '../../src/components/NotAuthModals/AuthModal';
+import AuthModal from '../../src/components/Modals/AuthModal';
 
 function Startup(props) {
 

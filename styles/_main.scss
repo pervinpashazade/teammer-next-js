@@ -1374,25 +1374,60 @@ div.icon-btn-wrapper {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    padding: 1rem 2.75rem 1rem 2.75rem;
-    text-align: center;
+    justify-content: flex-end;
+
     button {
-      &._login-btn {
-        background: #2a6fff;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      color: #fff;
+      background: #2a6fff;
+      border: 1px solid #2a6fff;
+      border-radius: 72px;
+      padding: 12px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      span {
+        margin-left: 0.5rem;
+      }
+
+      &._cancel-btn {
+        color: #2a6fff;
+        background-color: #fff;
+        box-sizing: border-box;
         border-radius: 72px;
-        padding-top: 14px;
-        padding-bottom: 14px;
-        color: #fff;
-        margin-bottom: 2rem;
       }
     }
-    a {
-      display: block;
-      width: 100%;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 17px;
-      color: #020c40;
+  }
+
+  &._auth {
+    ._modal-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 1rem 2.75rem 1rem 2.75rem;
+      text-align: center;
+      button {
+        &._login-btn {
+          display: block;
+          width: 100%;
+          background: #2a6fff;
+          border-radius: 72px;
+          padding-top: 14px;
+          padding-bottom: 14px;
+          color: #fff;
+          margin-bottom: 2rem;
+        }
+      }
+      a {
+        display: block;
+        width: 100%;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 17px;
+        color: #020c40;
+      }
     }
   }
 }

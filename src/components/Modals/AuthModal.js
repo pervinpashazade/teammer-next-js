@@ -14,7 +14,7 @@ function AuthModal(props) {
         <Modal
             size='sm'
             open={isOpen}
-            className='info-modal'
+            className='info-modal _auth'
             onClose={() => setIsOpen(!isOpen)}
             overflow={false}
         >
@@ -92,7 +92,6 @@ function AuthModal(props) {
             <Modal.Footer>
                 <div className="_modal-footer">
                     <Button
-                        block
                         className='_login-btn'
                     >
                         Log in
