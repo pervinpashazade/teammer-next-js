@@ -19,6 +19,9 @@ export default function Home(props) {
     //         Router.replace("/owner/home")
     //     }
     // }, []);
+
+    console.log('index props', props);
+
     return (
         <div>
             <Head>
@@ -66,7 +69,7 @@ export const getServerSideProps = async (context) => {
         props: {
             protected: false,
             positionList: positionsData.data.items,
-            jobList: jobListData?.data?.items ? jobListData.data.items : [],
+            jobList: jobListData.success ? jobListData.data.items : [],
             startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],
         }
     }

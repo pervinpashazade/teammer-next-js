@@ -21,7 +21,7 @@ import {useRouter} from "next/router";
 import clearCookie from "../../../lib/removeCookie";
 
 const CustomComponentUserProfile = ({placement, loading, children, userType = "1"}) => {
-    console.log(userType)
+    // console.log(userType)
     const router = useRouter();
     const clearCookieFunction = () => {
         clearCookie();

@@ -14,7 +14,7 @@ const Content = (props) => {
         startup_of_week_list,
     } = props;
     const [jobs , setJobs] = useState([]);
-    console.log(jobs)
+    // console.log(jobs)
     return <div>
         <BannerHome/>
         <SearchHome getData={setJobs}/>
