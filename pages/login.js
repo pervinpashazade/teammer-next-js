@@ -55,8 +55,8 @@ const Login = (props) => {
             cookie.remove('teammers-id');
             setCookie('teammers-access-token', handleData.data.token, 6);
             setCookie('user', handleData.data.user.full_name, 6);
-            setCookie('teammers-type' , handleData.data.user.type.toString() , 6)
-            setCookie('teammers-id' , handleData.data.user.id , 6)
+            setCookie('teammers-type', handleData.data.user.type ? handleData.data.user.type.toString() : '', 6)
+            setCookie('teammers-id', handleData.data.user.id, 6)
             // cookie.set('teammers-access-token', handleData.data.token);
             // cookie.set('user', handleData.data.user.full_name);
             // cookie.set('teammers-type', handleData.data.user.type.toString());
