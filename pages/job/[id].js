@@ -55,7 +55,6 @@ function Startup(props) {
                     "Authorization": token
                 }
             }).then(res => {
-                getData();
                 if (res.data.success) {
                     toaster.push(
                         <Notification
@@ -69,7 +68,24 @@ function Startup(props) {
                         </Notification>, 'topEnd'
                     );
                 };
-            });
+            })
+                .catch(err => {
+                    if (err.response.status === 422) {
+                        toaster.push(
+                            <Notification
+                                type={"warning"}
+                                header="Warning!"
+                                closable
+                            >
+                                <p className="text-warning">
+                                    {err.response.data.message}
+                                </p>
+                            </Notification>, 'topEnd'
+                        );
+                    }
+                })
+            getData();
+
         } else {
             setIsOpenLoginModal(true);
         }
@@ -270,7 +286,7 @@ export const getServerSideProps = async (context) => {
         getToken(context)
     );
     if (jobData?.data?.project?.id) {
-        startupJobs = startupJobList.data.items.filter(x => x.id !== jobData.data.id)
+        startupJobs = startupJobList.data?.items?.filter(x => x.id !== jobData.data.id) || []
     };
     // startup other jobs end
 

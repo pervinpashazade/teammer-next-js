@@ -37,7 +37,7 @@ const Home = (props) => {
     const [dropdown, setDropdown] = useState('8');
     const [jobName, setJobName] = useState(0);
     const [jobs, setJobs] = useState([]);
-    const [startupName , setStartUpName] = useState('')
+    const [startupName, setStartUpName] = useState('')
     const [filter, setFilter] = useState({
         project_types: [],
         experience_levels: [],
@@ -80,8 +80,9 @@ const Home = (props) => {
     };
 
     const submitAddToTeam = async () => {
+        console.log('id', id);
         if (id) {
-            let res = await fetch(config.BASE_URL + "jobs/" + startupName+ "/add-to-team", {
+            let res = await fetch(config.BASE_URL + "jobs/" + startupName + "/add-to-team", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -244,13 +245,10 @@ const Home = (props) => {
                             </Dropdown>
                         </div>
                     </div>
-                    {
-                        console.log(data)
-                    }
                     <div className="row mt-5">
                         {data.length > 0 ?
                             data.map(item => {
-                                return <div className="col-md-6 mb-5">
+                                return <div className="col-md-12 col-lg-6 mb-5">
                                     <CardTeammerProfile
                                         isProfile={false}
                                         props={
