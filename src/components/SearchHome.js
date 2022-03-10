@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react'
-import {Button, Input, InputGroup, Form} from 'rsuite';
-import {useRouter} from "next/router";
-import config, {NEXT_URL} from "../configuration";
+import React, { useEffect, useState } from 'react'
+import { Button, Input, InputGroup, Form } from 'rsuite';
+import { useRouter } from "next/router";
+import config, { NEXT_URL } from "../configuration";
 
-function SearchHome({token, getData}) {
+function SearchHome({ token, getData }) {
     const [type, setType] = useState('')
     const [search, setSearch] = useState('');
-    const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
+    const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
         <InputGroup {...props} inside>
-            <Input placeholder={placeholder} name="search"/>
+            <Input placeholder={placeholder} name="search" />
             <Button type="submit" className="search-input-btn ml-1">
                 Search
             </Button>
@@ -17,7 +17,7 @@ function SearchHome({token, getData}) {
     useEffect(async () => {
         const fetchType = await fetch(NEXT_URL + 'api/auth');
         const resType = await fetchType.json();
-        setType(resType.user.type)
+        setType(resType.user?.type)
     }, [])
     const submit = async (event) => {
         let data = new FormData(event.target);

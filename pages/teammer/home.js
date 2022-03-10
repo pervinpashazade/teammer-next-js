@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { wrapper } from "../../src/store/redux-store";
 import { useSelector } from "react-redux";
 import Router from 'next/router';
@@ -11,23 +11,35 @@ import StartUpBlog from "../../src/components/StartUpBlog";
 import HomeSlider from "../../src/components/HomeSlider";
 import Subscribe from "../../src/components/Subscribe";
 import { FaArrowRight } from "react-icons/fa";
-import config from "../../src/configuration";
+import config, { NEXT_URL } from "../../src/configuration";
 import { Cookie, withCookie } from 'next-cookie';
 import getAuth from "../../lib/session";
 import StartUpByCategory from "../../src/components/StartUpByCategory";
 
+const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
+    <InputGroup {...props} inside>
+        <Input placeholder={placeholder} className="input-wrap" />
+        <InputGroup.Button>
+            <FaArrowRight />
+        </InputGroup.Button>
+    </InputGroup>
+);
+
 const Home = (props) => {
 
     const store = useSelector(store => store);
-    const [jobs , setJobs] = useState([]);
-    const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
-        <InputGroup {...props} inside>
-            <Input placeholder={placeholder} className="input-wrap" />
-            <InputGroup.Button>
-                <FaArrowRight />
-            </InputGroup.Button>
-        </InputGroup>
-    );
+
+    const [user, setUser] = useState(null);
+    const [jobs, setJobs] = useState([]);
+
+    useEffect(async () => {
+        const fetchUser = await fetch(NEXT_URL + 'api/auth');
+        const resObj = await fetchUser.json();
+        if (resObj.success) {
+            console.log('resObj', resObj);
+            setUser(resObj?.user)
+        };
+    }, [])
 
     useEffect(() => {
         console.log('teammer props', props);
@@ -35,7 +47,11 @@ const Home = (props) => {
 
     return <div className="teammer-home">
         <div className="teammer-home-baner">
-            <h2>🖖 Hello , {store.user?.full_name}</h2>
+            <h2>
+                🖖 Hello, {
+                    user?.full_name ? ` ${user?.full_name}` : ''
+                }
+            </h2>
             <h3>Time to reach new heights</h3>
         </div>
         <h4> &#128526; What are you looking for?</h4>
