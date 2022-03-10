@@ -123,7 +123,7 @@ const Home = (props) => {
         axios.get(config.BASE_URL +
             'teammers?include=detail,skills,positions,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
             .then(res => {
-                setData(res.data.data)
+                setData(res.data.data.items)
             });
     };
 
@@ -332,7 +332,7 @@ export default Home;
 
 export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
-    const id = getId(context)
+    const id = getId(context);
     if (auth !== "1") {
         return {
             redirect: {
@@ -346,7 +346,7 @@ export const getServerSideProps = async (context) => {
     const skills = await getFetchData("skills", getToken(context));
     const locations = await getFetchData("locations", getToken(context));
     const projects = await getFetchData("users/projects", getToken(context));
-    // console.log(projects)
+    console.log(projects)
     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
     return {
         props: {
@@ -364,7 +364,7 @@ export const getServerSideProps = async (context) => {
             }),
             projects: projects,
             items: item.data.items,
-            id: id,
+            id: id ? id : null,
             token: getToken(context),
             cookie: context.req.headers.cookie || ''
         }

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster} from "rsuite";
 import {useRouter} from "next/router";
 import axios from "axios";
-import config, {NEXT_URL} from "../src/configuration";
+import config from "../src/configuration";
 import Image from "next/image";
 import {useDispatch} from "react-redux";
 import {setData} from '/src/store/actions';
@@ -24,9 +24,6 @@ const renderErrorMessages = err => {
 
 const Signup = (props) => {
     const router = useRouter();
-    console.log(checkAuth())
-    const fetchData = await fetch(NEXT_URL + 'api/auth');
-    const fetchResponse = await fetchData.json();
     // if(checkAuth() === "1"){
     //     router.push("/owner/home")
     // }
@@ -83,7 +80,6 @@ const Signup = (props) => {
                 // cookie.set('teammers-type', data.user.type);
                 setCookie('teammers-access-token', data.token, 6);
                 setCookie('teammers-type', data.user.type, 6);
-                debugger;
                 router.push("/signup/steps");
             })
                 .catch(error => {
