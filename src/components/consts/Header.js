@@ -19,8 +19,8 @@ import arrowRight from '../../../public/img/arrow-right 1.png'
 import { withCookie } from 'next-cookie';
 import { useRouter } from "next/router";
 import clearCookie from "../../../lib/removeCookie";
-import { auth } from '../../../firebase';
-import { signOut } from 'firebase/auth';
+// import { auth } from '../../../firebase';
+// import { signOut } from 'firebase/auth';
 
 const CustomComponentUserProfile = ({ placement, loading, children, userType = "1" }) => {
     // console.log(userType)
@@ -44,7 +44,7 @@ const CustomComponentUserProfile = ({ placement, loading, children, userType = "
                         cursor: 'pointer'
                     }} onClick={() => {
                         clearCookieFunction();
-                        signOut(auth)
+                        // signOut(auth)
                     }}
                     ><a className="text-dark">Log out</a></p>
                 </Popover> : userType === "2" ? <Popover>
@@ -52,7 +52,9 @@ const CustomComponentUserProfile = ({ placement, loading, children, userType = "
                     <p><Link href="/teammer/profile"><a className="text-dark">My profile</a></Link></p>
                     <p style={{
                         cursor: 'pointer'
-                    }} onClick={() => { clearCookieFunction(); signOut(auth) }}>
+                    }}
+                        // onClick={() => { clearCookieFunction(); signOut(auth) }}
+                    >
                         <a className="text-dark">Log out</a>
                     </p>
                 </Popover> : <Popover>
