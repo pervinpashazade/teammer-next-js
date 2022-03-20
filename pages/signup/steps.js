@@ -1341,6 +1341,7 @@ const StepsComponent = (props) => {
                                                     <InputNumber
                                                         value={team.year_experience}
                                                         min={0}
+                                                        max={50}
                                                         className="w-100"
                                                         onChange={(e) =>
                                                             teamFunction('year_experience', e, experienceCount)

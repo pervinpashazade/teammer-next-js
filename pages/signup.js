@@ -1,14 +1,14 @@
 import Link from "next/link";
-import React, {useEffect, useState} from "react";
-import {Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster} from "rsuite";
-import {useRouter} from "next/router";
+import React, { useEffect, useState } from "react";
+import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
+import { useRouter } from "next/router";
 import axios from "axios";
 import config from "../src/configuration";
 import Image from "next/image";
-import {useDispatch} from "react-redux";
-import {setData} from '/src/store/actions';
-import {setCookie} from "../src/helpers/cookie";
-import {withCookie} from 'next-cookie';
+import { useDispatch } from "react-redux";
+import { setData } from '/src/store/actions';
+import { setCookie } from "../src/helpers/cookie";
+import { withCookie } from 'next-cookie';
 import getAuth from "../lib/session";
 import checkAuth from "../src/helpers/checkAuth";
 
@@ -30,7 +30,7 @@ const Signup = (props) => {
     // else if(checkAuth() === "2"){
     //     router.push("/teammer/home")
     // }
-    const {cookie} = props
+    const { cookie } = props
     const dispatch = useDispatch();
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
@@ -151,7 +151,7 @@ const Signup = (props) => {
                     </div>
                     Minutes.
                 </h1>
-                <p className="text-center">Connect with your future teammates <br/>
+                <p className="text-center">Connect with your future teammates <br />
                     from all over the world.</p>
             </div>
             <div className="signup_form">
@@ -213,18 +213,18 @@ const Signup = (props) => {
                     </Form.Group>
                     <Form.Group controlId="email">
                         <Form.ControlLabel>E-mail or username</Form.ControlLabel>
-                        <Form.Control name="email" type="email" placeholder="Name@domain.com"/>
+                        <Form.Control name="email" type="email" placeholder="Name@domain.com" />
                     </Form.Group>
                     <Form.Group controlId="password">
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>Password</Form.ControlLabel>
                         <Form.Control className={validation ? '' : 'login-border-color'} name="password" type="password"
-                                      placeholder="at least 8 characters"/>
+                            placeholder="at least 8 characters" />
                     </Form.Group>
                     <Form.Group controlId="repeat_password">
                         <Form.ControlLabel className={validation ? '' : 'login-validation'}>Repeat
                             password</Form.ControlLabel>
                         <Form.Control className={validation ? '' : 'login-border-color'} name="repeat_password"
-                                      type="password" placeholder="at least 8 characters"/>
+                            type="password" placeholder="at least 8 characters" />
                     </Form.Group>
                     <Form.Group>
                         <Checkbox onChange={(e, checked) => setCheck1(checked)}>Yes! Send me

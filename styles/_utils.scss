@@ -40,6 +40,9 @@
 
   .with_google {
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 
     .signup_google {
       @include button($button-radius-72, #fff, 12px, 24px, 12px, 24px);
@@ -51,8 +54,8 @@
       display: flex;
       align-items: center;
 
-      img {
-        margin-right: 9px;
+      span {
+        margin-left: 0.5rem;
       }
     }
 
@@ -265,14 +268,14 @@
             }
 
             .rs-steps-item-tail {
-              background-color: #D3D3D3;
-              border: 2px solid #D3D3D3;
+              background-color: #d3d3d3;
+              border: 2px solid #d3d3d3;
             }
           }
         }
 
         .rs-steps-item-tail {
-          border-color: #D3D3D3;;
+          border-color: #d3d3d3;
         }
       }
 
@@ -721,7 +724,7 @@
 .card-details {
   p {
     font-size: 9px;
-    color: #020C40 !important;
+    color: #020c40 !important;
     font-weight: 600;
   }
 
@@ -733,7 +736,7 @@
 
 .total {
   p {
-    color: #020C40 !important;
+    color: #020c40 !important;
     font-size: 13px;
   }
 
@@ -748,7 +751,7 @@
 
 .info-payment {
   font-size: 10px;
-  color: #020C40 !important;
+  color: #020c40 !important;
   font-weight: 400 !important;
   text-align: justify;
 }
