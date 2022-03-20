@@ -7,6 +7,7 @@ import { wrapper } from "../src/store/redux-store";
 import '../styles/style.scss';
 import { AuthProvider } from '../Auth';
 import "../firebase.js"
+import { initializeFirebase } from "../firebase.js";
 
 function MyApp({
     Component,
@@ -14,7 +15,7 @@ function MyApp({
 }) {
 
     React.useEffect(() => {
-        
+        initializeFirebase();
     }, [])
 
     return (
