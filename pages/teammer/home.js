@@ -36,14 +36,14 @@ const Home = (props) => {
         const fetchUser = await fetch(NEXT_URL + 'api/auth');
         const resObj = await fetchUser.json();
         if (resObj.success) {
-            console.log('resObj', resObj);
+            // console.log('resObj', resObj);
             setUser(resObj?.user)
         };
     }, [])
 
-    useEffect(() => {
-        console.log('teammer props', props);
-    }, [props]);
+    // useEffect(() => {
+    //     console.log('teammer props', props);
+    // }, [props]);
 
     return <div className="teammer-home">
         <div className="teammer-home-baner">
@@ -119,8 +119,8 @@ export const getServerSideProps = async (context) => {
     return {
         props: {
             protected: false,
-            positionList: positionsData.data.items,
-            jobList: jobListData?.data?.items ? jobListData.data.items : [],
+            positionList: positionsData.data.items || [],
+            jobList: jobListData?.data?.items || [],
             startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],
         }
     }

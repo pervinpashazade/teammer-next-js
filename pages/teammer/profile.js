@@ -296,7 +296,7 @@ export const getServerSideProps = async (context) => {
     return {
         props: {
             userData: fetchUserInfo?.data,
-            joinedProjectList: joinedProjectList.data?.items,
+            joinedProjectList: joinedProjectList.data?.items || [],
             positionList: positionsData.data.items.map(item => {
                 return {
                     value: item.id,

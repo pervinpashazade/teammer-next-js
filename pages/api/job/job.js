@@ -19,5 +19,5 @@ export default async function handleGetJobList(request, response) {
     const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project&per_page=6");
     const jobListData = await fetchJobList.json();
 
-    return jobListData?.data?.items;
+    return jobListData?.data?.items || [];
 }

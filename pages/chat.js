@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Checkbox, Dropdown, IconButton, Input, InputGroup } from 'rsuite';
+import { Avatar, Button, Checkbox, Dropdown, Form, IconButton, Input, InputGroup } from 'rsuite';
 import { HiArrowLeft } from 'react-icons/hi';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { AiOutlineRight } from 'react-icons/ai';
@@ -9,21 +9,13 @@ import { List } from 'rsuite';
 import Image from 'next/image';
 import config, { NEXT_URL } from '../src/configuration';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const CustomSearchButton = ({ placeholder, ...props }, icon) => (
     <InputGroup {...props} inside>
         <Input placeholder={placeholder} className="input-wrap" />
         <InputGroup.Button>
             <Image src={'/icons/search.svg'} alt='search icon' width={24} height={24} />
-        </InputGroup.Button>
-    </InputGroup>
-);
-
-const CustomSendButton = ({ placeholder, ...props }, icon) => (
-    <InputGroup {...props} inside>
-        <Input placeholder={placeholder} className="input-wrap" />
-        <InputGroup.Button>
-            <RiSendPlaneFill />
         </InputGroup.Button>
     </InputGroup>
 );
@@ -68,6 +60,31 @@ function Chat(props) {
     useEffect(() => {
         console.log('selected conversation', selectedConversation);
     }, [selectedConversation])
+
+    const sendMessage = e => {
+
+        if (!selectedConversation?.id) return;
+
+        let data = new FormData(e.target);
+        let body = {};
+        for (let [key, value] of data.entries()) {
+            body[key] = value.trim();
+        }
+        console.log('e body', body);
+
+        if (body.text) {
+            axios.post(config.BASE_URL + `conversations/${selectedConversation.id}/messages`, {
+                body: body.text
+            }, {
+                headers: {
+                    'Authorization': user?.token
+                }
+            })
+                .then(res => {
+                    console.log('send message res', res);
+                });
+        };
+    };
 
     return (
         user ?
@@ -157,12 +174,13 @@ function Chat(props) {
                                         conversationList.map((item, index) => {
 
                                             let lastMessage = {};
-                                            let isOwnMessage = lastMessage.from === user.id;
                                             let lastMessageSender = null;
 
                                             if (item.messages.length) {
                                                 lastMessage = item.messages[item.messages.length - 1]
                                             };
+
+                                            let isOwnMessage = lastMessage.from === user.id;
 
                                             if (!isOwnMessage) {
                                                 lastMessageSender = item.members.find(x => x.id === lastMessage.from);
@@ -246,34 +264,33 @@ function Chat(props) {
                         </div>
                         {
                             selectedConversation &&
-                            <div className="chat-area">
-                                {/* message list start */}
-                                <div className="message-date">
-                                    <span>
-                                        Aug 23, 2021
-                                    </span>
-                                </div>
-                                {/* message list date end */}
-                                {/* messages list start */}
+                            <div className="chat-inner">
+                                <div className="chat-area">
+                                    {/*  STATIC !!!! message list date start */}
+                                    <div className="message-date">
+                                        <span>
+                                            Aug 23, 2021
+                                        </span>
+                                    </div>
+                                    {/* message list date end */}
+                                    {/* messages list start */}
+                                    {
+                                        selectedConversation.messages.map((item, index) => {
+                                            let isOwnMessage = item.from === user.id;
 
-                                {
-                                    selectedConversation.messages.map((item, index) => {
-                                        let isOwnMessage = item.from === user.id;
-
-                                        return <div
-                                            key={index}
-                                            className={`message ${isOwnMessage ? 'sent' : 'received'}`}
-                                        >
-                                            <div className="content">
-                                                {
-                                                    item.body
-                                                }
+                                            return <div
+                                                key={index}
+                                                className={`message ${isOwnMessage ? 'sent' : 'received'}`}
+                                            >
+                                                <div className="content">
+                                                    {
+                                                        item.body
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
-                                    })
-                                }
-
-                                {/* <div className="message sent">
+                                        })
+                                    }
+                                    {/* <div className="message sent">
                                     <div className="content">
                                         Hello!
                                         We are engaged in the design and development of web and mobile applications. Now I am looking for an experienced UX/UI designer for our team.
@@ -291,13 +308,23 @@ function Chat(props) {
                                         Yeah! I’m interested
                                     </div>
                                 </div> */}
-                                {/* messages list end */}
+                                    {/* messages list end */}
+                                </div>
                                 {/* message input */}
-                                <CustomSendButton
-                                    size="lg"
-                                    placeholder="Enter your message here..."
-                                    className="message-input"
-                                />
+                                <Form
+                                    className='chat-form'
+                                    onSubmit={(condition, event) => { sendMessage(event) }}
+                                >
+                                    <Input
+                                        name='text'
+                                        placeholder="Enter your message here..."
+                                    />
+                                    <Button
+                                        type='submit'
+                                    >
+                                        <RiSendPlaneFill />
+                                    </Button>
+                                </Form>
                             </div>
                         }
                     </div>

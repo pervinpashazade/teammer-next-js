@@ -5,7 +5,8 @@
 // }
 
 const config = {
-    BASE_URL: "https://159.223.3.251/v1/"
+    // BASE_URL: "https://159.223.3.251/v1/",
+    BASE_URL: "https://api-dev.teammers.com/v1/",
 }
 
 export const NEXT_URL = process.env.NODE_ENV === "production" ? "https://teammer-next-js.vercel.app/" : "http://localhost:3000/"
