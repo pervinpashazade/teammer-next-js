@@ -19,12 +19,15 @@ import arrowRight from '../../../public/img/arrow-right 1.png'
 import { withCookie } from 'next-cookie';
 import { useRouter } from "next/router";
 import clearCookie from "../../../lib/removeCookie";
-// import { auth } from '../../../firebase';
-// import { signOut } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 
 const CustomComponentUserProfile = ({ placement, loading, children, userType = "1" }) => {
     // console.log(userType)
+    
+    const auth = getAuth();
+
     const router = useRouter();
+
     const clearCookieFunction = () => {
         clearCookie();
         router.push("/");
@@ -44,7 +47,7 @@ const CustomComponentUserProfile = ({ placement, loading, children, userType = "
                         cursor: 'pointer'
                     }} onClick={() => {
                         clearCookieFunction();
-                        // signOut(auth)
+                        signOut(auth)
                     }}
                     ><a className="text-dark">Log out</a></p>
                 </Popover> : userType === "2" ? <Popover>
@@ -53,7 +56,7 @@ const CustomComponentUserProfile = ({ placement, loading, children, userType = "
                     <p style={{
                         cursor: 'pointer'
                     }}
-                        // onClick={() => { clearCookieFunction(); signOut(auth) }}
+                        onClick={() => { clearCookieFunction(); signOut(auth) }}
                     >
                         <a className="text-dark">Log out</a>
                     </p>

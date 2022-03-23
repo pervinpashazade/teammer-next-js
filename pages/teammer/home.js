@@ -15,6 +15,7 @@ import config, { NEXT_URL } from "../../src/configuration";
 import { Cookie, withCookie } from 'next-cookie';
 import getAuth from "../../lib/session";
 import StartUpByCategory from "../../src/components/StartUpByCategory";
+import { useAuth } from "../../Auth";
 
 const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     <InputGroup {...props} inside>
@@ -26,6 +27,8 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
 );
 
 const Home = (props) => {
+
+    const authContext = useAuth();
 
     const store = useSelector(store => store);
 
@@ -55,6 +58,7 @@ const Home = (props) => {
             <h3>Time to reach new heights</h3>
         </div>
         <h4> &#128526; What are you looking for?</h4>
+
         <SearchHome getData={setJobs} />
 
         <div className="row">
@@ -97,15 +101,15 @@ export default Home;
 
 export const getServerSideProps = async (context) => {
 
-    const auth = getAuth(context);
-    if (auth !== "2") {
-        return {
-            redirect: {
-                destination: "/login",
-                permanent: false,
-            },
-        };
-    }
+    // const auth = getAuth(context);
+    // if (auth !== 2) {
+    //     return {
+    //         redirect: {
+    //             destination: "/login",
+    //             permanent: false,
+    //         },
+    //     };
+    // }
 
     const fetchPositions = await fetch(config.BASE_URL + "positions");
     const positionsData = await fetchPositions.json();
@@ -118,7 +122,7 @@ export const getServerSideProps = async (context) => {
 
     return {
         props: {
-            protected: false,
+            // protected: false,
             positionList: positionsData.data.items || [],
             jobList: jobListData?.data?.items || [],
             startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],

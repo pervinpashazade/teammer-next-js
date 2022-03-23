@@ -4,12 +4,14 @@ export default function handleRequest(req, res) {
     const cookieType = req.cookies['teammers-type']
     const cookieUser = req.cookies['user']
 
-    if (!cookieId || !cookieToken || !cookieType) {
-        return res.status(404).send({ success: false });
+    // if (!cookieId || !cookieToken || !cookieType) {
+    if (!cookieId || !cookieToken) {
+        return res.status(200).send({ success: false });
     }
 
     return res.status(200).send({
         success: true,
+        token: cookieToken,
         user: {
             "id": cookieId ? Number(cookieId) : null,
             "token": cookieToken ? `Bearer ${cookieToken}` : null,

@@ -329,16 +329,16 @@ Home.layout = true;
 export default Home;
 
 export const getServerSideProps = async (context) => {
-    const auth = getAuth(context);
+    // const auth = getAuth(context);
     const id = getId(context);
-    if (auth !== "1") {
-        return {
-            redirect: {
-                destination: "/login",
-                permanent: false,
-            },
-        };
-    }
+    // if (auth !== "1") {
+    //     return {
+    //         redirect: {
+    //             destination: "/login",
+    //             permanent: false,
+    //         },
+    //     };
+    // }
     const project_types = await getFetchData("project/types", getToken(context));
     const experience_levels = await getFetchData("experience-levels", getToken(context));
     const skills = await getFetchData("skills", getToken(context));

@@ -1,22 +1,20 @@
 import React from "react";
-import 'rsuite/dist/rsuite.min.css';
-import 'react-quill/dist/quill.snow.css'; // ES6
-import '../styles/bootstrap/bootstrap.scss';
-import Layout from "../src/components/common/Layout";
-import { wrapper } from "../src/store/redux-store";
-import '../styles/style.scss';
 import { AuthProvider } from '../Auth';
-import "../firebase.js"
-import { initializeFirebase } from "../firebase.js";
+import { wrapper } from "../src/store/redux-store";
+import Layout from "../src/components/common/Layout";
+import 'rsuite/dist/rsuite.min.css';
+import '../styles/bootstrap/bootstrap.scss';
+import '../styles/style.scss';
+import "../firebase.js";
 
 function MyApp({
     Component,
     pageProps: { session, ...pageProps },
 }) {
 
-    React.useEffect(() => {
-        initializeFirebase();
-    }, [])
+    // React.useEffect(() => {
+    //     initializeFirebase();
+    // }, []);
 
     return (
         <AuthProvider>
@@ -28,8 +26,6 @@ function MyApp({
             }
         </AuthProvider>
     )
-}
-
+};
 
 export default wrapper.withRedux(MyApp);
-

@@ -1,24 +1,26 @@
 import axios from "axios";
-import { initializeApp } from "firebase/app";
+import { getApp, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import config from "./src/configuration";
 
-console.log('1');
+// export const initializeFirebase = () => {
 
-export const initializeFirebase = () => {
+initializeApp({
+    apiKey: "AIzaSyBhlCe8xclwZnrhesLlGiUOOWNtc7gnXVQ",
+    authDomain: "firstapp-5cfcd.firebaseapp.com",
+    projectId: "firstapp-5cfcd",
+    storageBucket: "firstapp-5cfcd.appspot.com",
+    messagingSenderId: "153910205936",
+    appId: "1:153910205936:web:5104d95f9122462045d135",
+    databaseURL: 'https://firstapp-5cfcd-default-rtdb.firebaseio.com',
+});
 
-    console.log('2');
 
-    initializeApp({
-        apiKey: "AIzaSyBhlCe8xclwZnrhesLlGiUOOWNtc7gnXVQ",
-        authDomain: "firstapp-5cfcd.firebaseapp.com",
-        projectId: "firstapp-5cfcd",
-        storageBucket: "firstapp-5cfcd.appspot.com",
-        messagingSenderId: "153910205936",
-        appId: "1:153910205936:web:5104d95f9122462045d135",
-        databaseURL: 'https://firstapp-5cfcd-default-rtdb.firebaseio.com',
-    });
 
+// };
+
+export const firebaseMessaging = () => {
     try {
         const messaging = getMessaging();
 
@@ -30,7 +32,9 @@ export const initializeFirebase = () => {
                 if (currentToken) {
                     const storeToken = localStorage.getItem("pus_token");
                     if (!storeToken || storeToken !== currentToken) {
-                        console.log('currentToken', currentToken)
+
+                        console.log('FIREBASE TOKEN !', currentToken)
+
                         console.log('firebase connected!')
                         // "1 - push token, 2-email",
                         axios.post(config.BASE_URL + 'notification/subscribe', {
@@ -54,11 +58,15 @@ export const initializeFirebase = () => {
             });
 
         onMessage(messaging, ({ notification, data }) => {
-            alert('okokok')
-            console.log(data, notification)
+            alert('Noification');
+
+            if (data?.event === "message") {
+                console.log('message notification', JSON.parse(data.message));
+            };
+
+            // console.log(data, notification);
         });
     } catch (error) {
         console.log('error', error);
     };
-
 };
