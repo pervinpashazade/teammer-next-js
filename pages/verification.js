@@ -4,6 +4,7 @@ import { Button, ButtonToolbar, Checkbox, Divider, Form, IconButton } from "rsui
 import { HiArrowLeft } from "react-icons/hi";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Header from "../src/components/consts/NotAuth/Header";
 
 const Verification = () => {
 
@@ -29,11 +30,123 @@ const Verification = () => {
     }
 
     return (
-        <div className="container login">
-            <div className="d-flex justify-content-between login-header">
+        <div className="container">
+
+            <div className="not-auth-layout login">
+                <Header />
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="left">
+                            <div className="bg-wrapper">
+                                <div className="bg-icon-wrapper"></div>
+                                <div className="title">
+                                    <h2>Don’t worry</h2>
+                                    <p>We are here to help you to recover your password.</p>
+                                </div>
+                                <div className="bg-icon-wrapper"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="right">
+                            <div className="inner">
+                                <div className="wrapper">
+                                    <div className="_top">
+                                        <h1>Verification</h1>
+                                        <p className="info">
+                                            Enter the verification code we just sent you to your email address
+                                        </p>
+                                    </div>
+                                    <Form
+                                        onSubmit={(condition, event) => {
+                                            sendOtpCode(event)
+                                        }}
+                                    >
+                                        <Form.Group
+                                            controlId="verification"
+                                            className="otp-inputs-wrapper"
+                                        >
+                                            <input
+                                                type="number"
+                                                name="otp1"
+                                                ref={otp1Ref}
+                                                maxLength={1}
+                                                onChange={e => {
+                                                    if (e.target.value) {
+                                                        if (e.target.value.length > 1) {
+                                                            otp1Ref.current.value = ''
+                                                        } else {
+                                                            otp2Ref.current.focus();
+                                                        }
+                                                    };
+                                                }}
+                                            />
+                                            <input
+                                                type="number"
+                                                name="otp2"
+                                                ref={otp2Ref}
+                                                maxLength={1}
+                                                onChange={e => {
+                                                    if (e.target.value) {
+                                                        if (e.target.value.length > 1) {
+                                                            otp2Ref.current.value = ''
+                                                        } else {
+                                                            otp3Ref.current.focus();
+                                                        }
+                                                    } else {
+                                                        otp1Ref.current.focus();
+                                                    };
+                                                }}
+                                            />
+                                            <input
+                                                type="number"
+                                                name="otp3"
+                                                ref={otp3Ref}
+                                                maxLength={1}
+                                                onChange={e => {
+                                                    if (e.target.value) {
+                                                        if (e.target.value.length > 1) {
+                                                            otp3Ref.current.value = ''
+                                                        } else {
+                                                            otp4Ref.current.focus();
+                                                        }
+                                                    } else {
+                                                        otp2Ref.current.focus();
+                                                    };
+                                                }}
+                                            />
+                                            <input
+                                                type="number"
+                                                name="otp4"
+                                                ref={otp4Ref}
+                                                maxLength={1}
+                                                onChange={e => {
+                                                    if (e.target.value) {
+                                                        if (e.target.value.length > 1) {
+                                                            otp4Ref.current.value = ''
+                                                        };
+                                                    } else {
+                                                        otp3Ref.current.focus();
+                                                    };
+                                                }}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <ButtonToolbar>
+                                                <Button className="submit-btn mt-5" type="submit">Confirm</Button>
+                                            </ButtonToolbar>
+                                        </Form.Group>
+                                    </Form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className="d-flex justify-content-between _header">
                 <Link href="/" passHref>
                     <a className="navbar-brand">
-                        {/* <img src="LogoHeader.svg" alt="logo"/> */}
                         <Image
                             src={'/LogoHeader.svg'}
                             alt='logo'
@@ -44,7 +157,6 @@ const Verification = () => {
                 </Link>
                 <Link href="/" passHref>
                     <a>
-                        {/* <img src="icons/help.svg"/> */}
                         <Image
                             src={'/icons/help.svg'}
                             alt='icon'
@@ -88,7 +200,7 @@ const Verification = () => {
                             sendOtpCode(event)
                         }}
                     >
-                        <Form.Group controlId="verification" className="verification-numbers">
+                        <Form.Group controlId="verification" className="otp-inputs-wrapper">
                             <input
                                 type="number"
                                 name="otp1"
@@ -163,7 +275,7 @@ const Verification = () => {
                     <Link href="/login" passHref><a className="back-to-login">Resend code
                     </a></Link>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -1,7 +1,26 @@
-.login-validation{
-  color: #FF7629 !important;
+.login-validation {
+  color: #ff7629 !important;
 }
 .login-border-color {
-  border: 2px solid #FF7629 !important;
+  border: 2px solid #ff7629 !important;
   border-radius: $button-radius-12;
+}
+
+.not-valid {
+  label {
+    color: #ff7629 !important;
+  }
+  input {
+    border: 2px solid #ff7629 !important;
+    border-radius: $button-radius-12;
+  }
+  .validation-errors {
+    color: #ff7629;
+    margin-top: 0.5rem;
+    span {
+      display: block;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
 }

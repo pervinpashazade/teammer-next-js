@@ -1326,32 +1326,6 @@ div.icon-btn-wrapper {
       color: #2a6fff;
     }
   }
-  .social-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-    button {
-      background: #fff;
-      border: 2px solid #eaeaea;
-      box-sizing: border-box;
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      margin-right: 1rem;
-      &.google {
-        border-radius: 62px;
-        padding: 12px 24px;
-      }
-      span {
-        margin-left: 0.5rem;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 17px;
-        color: #020c40;
-      }
-    }
-  }
   ._hr {
     width: 100%;
     height: 1px;
@@ -1428,6 +1402,58 @@ div.icon-btn-wrapper {
         line-height: 17px;
         color: #020c40;
       }
+    }
+  }
+}
+
+.social-auth-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+  button {
+    background: #fff;
+    border: 2px solid #eaeaea;
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    &.google {
+      border-radius: 62px;
+      padding: 12px 24px;
+    }
+    span {
+      margin-left: 0.5rem;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 17px;
+      color: #020c40;
+    }
+  }
+}
+
+.otp-inputs-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  input {
+    max-width: 88px;
+    margin-right: 17px;
+    border-bottom: 2px solid $primary-color;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    padding-left: 35px;
+    font-size: 28px;
+    font-weight: 600;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
   }
 }

@@ -123,7 +123,7 @@ const CreateStartup = () => {
         console.log(response);
     }
     return <div className="container login">
-        <div className="d-flex justify-content-between login-header">
+        <div className="d-flex justify-content-between _header">
             <Link href="/">
                 <a className="navbar-brand">
                     {/* <img src="LogoHeader.svg" alt="logo" /> */}

@@ -14,9 +14,10 @@ import {
     getAuth,
     GoogleAuthProvider,
     signInWithPopup,
-    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
     FacebookAuthProvider,
 } from "firebase/auth";
+import Header from "../src/components/consts/NotAuth/Header";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -44,9 +45,20 @@ const Login = (props) => {
     const [errorMessage, setErrorMessage] = useState('');
 
     React.useEffect(() => {
-      
+        window.onbeforeunload = function (e) {
+            // if (true) {
+            //     return;
+            // }
+            var dialogText = 'Dialog text here';
+            e.returnValue = dialogText;
+            return dialogText;
+        };
+    }, [])
+
+    React.useEffect(() => {
+
         console.log('login page context', authContext);
-      
+
         // if (authContext.currentUser) {
         //     if (authContext.currentUser.type === 1) {
         //         router.push("/owner/home");
@@ -102,7 +114,7 @@ const Login = (props) => {
 
             // authContext.setCurrentUser(loginResult.data.user);
 
-            await createUserWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
+            await signInWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
 
@@ -128,16 +140,117 @@ const Login = (props) => {
     };
 
     const withGoogleService = () => {
-        signInWithPopup(firebaseAuth, googleProvider);
+        signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
     };
 
     const withFacebookService = () => {
-        signInWithPopup(firebaseAuth, facebookProvider);
+        signInWithPopup(firebaseAuth, facebookProvider).catch(err => console.log('withFacebookService', err));
     };
 
     return (
-        <div className="container login">
-            <div className="d-flex justify-content-between login-header">
+        <div className="container">
+            <div className="not-auth-layout login">
+                <Header />
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="left">
+                            <div className="bg-wrapper">
+                                <div className="bg-icon-wrapper"></div>
+                                <div className="title">
+                                    <h2>🖖 Welcome back</h2>
+                                    <p>We’ve glad to see you again!</p>
+                                </div>
+                                <div className="bg-icon-wrapper"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="right">
+                            <div className="inner">
+                                <div className="wrapper">
+                                    <div className="_top">
+                                        <h1>Log in</h1>
+                                        <p className="info">
+                                            Not a Member?
+                                            <Link href="/signup" passHref>
+                                                <a>Sign up</a>
+                                            </Link>
+                                        </p>
+                                        <div className="social-auth-wrapper">
+                                            <Button
+                                                className='google'
+                                                onClick={withGoogleService}
+                                            >
+                                                <Image
+                                                    src={'/icons/google.svg'}
+                                                    alt='img'
+                                                    width={24}
+                                                    height={24}
+                                                    layout='fixed'
+                                                />
+                                                <span>Sign up with Google</span>
+                                            </Button>
+                                            <Button>
+                                                <Image
+                                                    src={'/social-images/twitter.svg'}
+                                                    alt='img'
+                                                    width={24}
+                                                    height={24}
+                                                    layout='fixed'
+                                                />
+                                            </Button>
+                                            <Button
+                                                onClick={withFacebookService}
+                                            >
+                                                <Image
+                                                    src={'/social-images/facebook2.svg'}
+                                                    alt='img'
+                                                    width={24}
+                                                    height={24}
+                                                    layout='fixed'
+                                                />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <Divider className="_devider">OR</Divider>
+                                    <Form
+                                        onSubmit={(condition, event) => {
+                                            login_form(event)
+                                        }}
+                                    >
+                                        <Form.Group controlId="email">
+                                            <Form.ControlLabel className={validation ? '' : 'login-validation'}>
+                                                E-mail
+                                            </Form.ControlLabel>
+                                            <Form.Control className={validation ? '' : 'login-border-color'} name="email" type="email"
+                                                placeholder="Name@domain.com" />
+                                        </Form.Group>
+                                        <Form.Group controlId="password">
+                                            <Form.ControlLabel className={validation ? '' : 'login-validation'}>Password</Form.ControlLabel>
+                                            <Form.Control className={validation ? '' : 'login-border-color'} name="password" type="password"
+                                                placeholder="at least 8 characters" />
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Checkbox onChange={(e, checked) => setCheck(checked)}> Remember me</Checkbox>
+                                        </Form.Group>
+                                        <p className="text-danger">{errorMessage}</p>
+                                        <Form.Group>
+                                            <ButtonToolbar>
+                                                <Button className="submit-btn" type="submit">Log in</Button>
+                                            </ButtonToolbar>
+                                        </Form.Group>
+                                        <div className="forgot-link">
+                                            <Link href="/forgot"><a>Forgot Username or Password?</a></Link>
+                                        </div>
+                                    </Form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* <div className="d-flex justify-content-between _header">
                 <Link href="/">
                     <a className="navbar-brand">
                         <Image
@@ -241,7 +354,7 @@ const Login = (props) => {
                         <Link href="/forgot"><a>Forgot Username or Password?</a></Link>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 };
@@ -249,35 +362,3 @@ const Login = (props) => {
 Login.layout = false;
 
 export default withCookie(Login);
-
-// export const getServerSideProps = (context) => {
-
-//     const auth = getAuth(context);
-
-//     if (auth === "1")
-//         return {
-//             redirect: {
-//                 destination: "/owner/home",
-//                 permanent: false,
-//             },
-//         };
-//     else if (auth === "2")
-//         return {
-//             redirect: {
-//                 destination: "/teammer/home",
-//                 permanent: false,
-//             },
-//         };
-//     else if (auth === "null")
-//         return {
-//             redirect: {
-//                 destination: "/signup/steps",
-//                 permanent: false,
-//             },
-//         };
-//     return {
-//         props: {
-//             data: 'dataaaaa'
-//         }
-//     }
-// }

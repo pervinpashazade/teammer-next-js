@@ -45,7 +45,7 @@ function AuthModal(props) {
                         <a>Sign up</a>
                     </Link>
                 </p>
-                <div className="social-wrapper">
+                <div className="social-auth-wrapper">
                     <Button
                         className='google'
                     >
