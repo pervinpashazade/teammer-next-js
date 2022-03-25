@@ -4,7 +4,7 @@ import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster }
 import { useDispatch } from "react-redux";
 import { useRouter } from 'next/router'
 import Image from "next/image";
-import { setCookie } from "../src/helpers/cookie";
+import { setAuthCookies, setCookie } from "../src/helpers/cookie";
 import { withCookie } from 'next-cookie';
 // import getAuth from "../lib/session";
 import { loginService } from "../src/services/Auth/loginService";
@@ -56,20 +56,20 @@ const Login = (props) => {
         };
     }, [])
 
-    React.useEffect(() => {
+    // React.useEffect(() => {
 
-        console.log('login page context', authContext);
+    //     console.log('login page context', authContext);
 
-        // if (authContext.currentUser) {
-        //     if (authContext.currentUser.type === 1) {
-        //         router.push("/owner/home");
-        //     } else if (authContext.currentUser.type === 2) {
-        //         router.push("/teammer/home");
-        //     } else {
-        //         router.push("/signup/steps");
-        //     };
-        // }
-    }, [authContext.currentUser])
+    //     // if (authContext.currentUser) {
+    //     //     if (authContext.currentUser.type === 1) {
+    //     //         router.push("/owner/home");
+    //     //     } else if (authContext.currentUser.type === 2) {
+    //     //         router.push("/teammer/home");
+    //     //     } else {
+    //     //         router.push("/signup/steps");
+    //     //     };
+    //     // }
+    // }, [authContext.currentUser])
 
     const login_form = async (event) => {
 
@@ -101,19 +101,13 @@ const Login = (props) => {
         console.log('loginResult', loginResult);
 
         if (loginResult?.success) {
-            // cookie.remove('teammers-access-token');
-            // cookie.remove('user');
-            // cookie.remove('type');
-            // cookie.remove('teammers-id');
 
-            // setCookie('teammers-access-token', loginResult.data.token, 6);
-            // setCookie('user', loginResult.data.user.full_name, 6);
-            // setCookie('teammers-type', loginResult.data.user.type ? loginResult.data.user.type.toString() : '', 6);
-            // setCookie('teammers-id', loginResult.data.user.id, 6);
-
-            // console.log(loginResult.data.user);
-
-            // authContext.setCurrentUser(loginResult.data.user);
+            setAuthCookies(
+                loginResult.data.token,
+                loginResult.data.user.full_name,
+                loginResult.data.user.type,
+                loginResult.data.user.id
+            );
 
             await signInWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
                 // Signed in 
@@ -134,7 +128,7 @@ const Login = (props) => {
             //         :
             //         router.push('/teammer/home')) : router.push("/signup/steps");
         } else {
-            setErrorMessage(loginResult?.error?.message)
+            setErrorMessage(loginResult.message)
             setValidation(false)
         };
 
@@ -234,7 +228,7 @@ const Login = (props) => {
                                         <Form.Group>
                                             <Checkbox onChange={(e, checked) => setCheck(checked)}> Remember me</Checkbox>
                                         </Form.Group>
-                                        <p className="text-danger">{errorMessage}</p>
+                                        <p className="text-danger font-weight-bold">{errorMessage}</p>
                                         <Form.Group>
                                             <ButtonToolbar>
                                                 <Button className="submit-btn" type="submit">Log in</Button>

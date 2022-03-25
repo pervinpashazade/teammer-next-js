@@ -13,9 +13,10 @@ import {
     getAuth,
     GoogleAuthProvider,
     signInWithPopup,
-    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
     FacebookAuthProvider,
 } from "firebase/auth";
+import { async } from "@firebase/util";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -53,6 +54,8 @@ const Signup = (props) => {
         password: [],
         confirmPassword: [],
     });
+
+    const [isValidForm, setIsValidForm] = useState(false);
 
     const [check1, setCheck1] = useState(false);
     const [check2, setCheck2] = useState(false);
@@ -153,35 +156,7 @@ const Signup = (props) => {
         });
     };
 
-    const checkFormValidation = (data) => {
-
-        const errorCount = 0;
-
-        for (const [key, value] of Object.entries(formValidation)) {
-            errorCount += value.length;
-        };
-
-        if (errorCount > 0) {
-            return false;
-        };
-
-        handleChangeFullname(data.full_name);
-        handleChangeEmail(data.email);
-        handleChangePassword(data.password);
-        handleChangeConfirmPassword(data.repeat_password);
-
-        for (const [key, value] of Object.entries(formValidation)) {
-            errorCount += value.length;
-        };
-
-        if (errorCount > 0) {
-            return false;
-        } else {
-            return true;
-        }
-    };
-
-    const signup_form = (event) => {
+    const signup_form = async (event) => {
 
         let data = new FormData(event.target);
         let body = {};
@@ -190,20 +165,40 @@ const Signup = (props) => {
             body[key] = value;
         };
 
-        const isValid = checkFormValidation(body);
+        handleChangeFullname(body.full_name);
+        await handleChangeEmail(body.email);
+        handleChangePassword(body.password);
+        handleChangeConfirmPassword(body.repeat_password);
 
-        if (!isValid) return;
+        if (!isValidForm) return;
 
         axios.post(config.BASE_URL + "auth/register", {
             email: body.email,
             full_name: body.full_name,
             password: body.password
-        }).then(res => {
+        }).then(async (res) => {
 
-            console.log('signup form res', res);
+            // console.log('signup form res', res);
 
             if (res.data.success) {
-                setAuthCookies(res.data.data.token, res.data.data.user.full_name, res.data.data.user.type, res.data.data.user.id);
+                setAuthCookies(
+                    res.data.data.token,
+                    res.data.data.user.full_name,
+                    res.data.data.user.type,
+                    res.data.data.user.id
+                );
+                await createUserWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
+                    // Signed in 
+                    // const user = userCredential.user;
+
+                    // console.log('userCredential.user', user);
+                    // ...
+                })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        // ..
+                    });;
             };
 
         }).catch(error => {
@@ -212,15 +207,24 @@ const Signup = (props) => {
             if (error.response?.status === 422) {
                 let errors = renderErrorMessages(error.response.data.error.validation);
                 setResponseErrors(errors);
-
-                return;
             };
         });
     };
 
-    // useEffect(() => {
-    //     console.log('formValidation', formValidation);
-    // }, [formValidation]);
+    useEffect(() => {
+        let errorCount = 0;
+
+        for (let value of Object.values(formValidation)) {
+            errorCount += value.length;
+        };
+
+        if (errorCount === 0) {
+            setIsValidForm(true);
+        } else {
+            setIsValidForm(false)
+        };
+
+    }, [formValidation]);
 
     return (
         <div className="container">
@@ -398,16 +402,14 @@ const Signup = (props) => {
                                                 Yes, I understand and agree to the Terms of Service, including the User Agreement and Privacy Policy.
                                             </Checkbox>
                                         </Form.Group>
-
                                         {
                                             responseErrors.map((item, index) => {
                                                 return <p key={index} className="text-danger">{item}</p>
                                             })
                                         }
-
                                         <Form.Group className="mt-5 mb-3">
                                             <ButtonToolbar>
-                                                <Button disabled={!check2} className="submit-btn" type="submit">Sign up</Button>
+                                                <Button disabled={!check2 || !isValidForm} className="submit-btn" type="submit">Sign up</Button>
                                             </ButtonToolbar>
                                         </Form.Group>
                                     </Form>
@@ -416,188 +418,6 @@ const Signup = (props) => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="bg-wrapper">
-                        <div className="wrapper">
-
-                        </div>
-                        <h1 className="banner"> Join your dream
-                            <div className="d-flex">
-                                <Image
-                                    src={'/img/startup.png'}
-                                    alt='startup image'
-                                    layout={'fixed'}
-                                    width={208}
-                                    height={68}
-                                />
-                                team in
-                            </div>
-                            Minutes.
-                        </h1>
-                        <p className="text-center">Connect with your future teammates <br />
-                            from all over the world.
-                        </p>
-                    </div> */}
-                {/* <div className="_content">
-                    <div className="image d-md-flex d-none" style={{
-                        backgroundImage: "url('/img/signup.png')"
-                    }}>
-                        <h1 className="banner"> Join your dream
-                            <div className="d-flex">
-                                <Image
-                                    src={'/img/startup.png'}
-                                    alt='startup image'
-                                    layout={'fixed'}
-                                    width={208}
-                                    height={68}
-                                />
-                                team in
-                            </div>
-                            Minutes.
-                        </h1>
-                        <p className="text-center">Connect with your future teammates <br />
-                            from all over the world.</p>
-                    </div>
-                    <div className="signup_form">
-                        <h2>Sign up</h2>
-                        <p>Already a Member? <Link href="/login"><a>Log in</a></Link></p>
-                        <div className="with_google d-flex">
-                            <Button className="signup_google">
-                                <Image
-                                    src={'/icons/google.svg'}
-                                    alt='startup image'
-                                    layout={'fixed'}
-                                    width={24}
-                                    height={24}
-                                />
-                                <span className="ml-2">Sign up with Google</span>
-                            </Button>
-                            <Button>
-                                <Image
-                                    src={'/social-images/twitter.svg'}
-                                    alt='startup image'
-                                    layout={'fixed'}
-                                    width={24}
-                                    height={24}
-                                />
-                            </Button>
-                            <Button>
-                                <Image
-                                    src={'/social-images/facebook2.svg'}
-                                    alt='startup image'
-                                    layout={'fixed'}
-                                    width={24}
-                                    height={24}
-                                />
-                            </Button>
-                        </div>
-                        <Divider style={{
-                            color: "#7f7f7f",
-                            fontSize: "12px"
-                        }}>
-                            OR
-                        </Divider>
-                        <Form onSubmit={(condition, event) => {
-                            signup_form(event)
-                        }}>
-                            <Form.Group controlId="full_name">
-                                <Form.ControlLabel>Full Name</Form.ControlLabel>
-                                <Form.Control
-                                    name="full_name"
-                                    type="text"
-                                    placeholder="Full Name"
-                                />
-                            </Form.Group>
-                            <Form.Group
-                                controlId="email"
-                                className={!formValidation.email.length ? '' : 'not-valid'}
-                            >
-                                <Form.ControlLabel>E-mail</Form.ControlLabel>
-                                <Form.Control
-                                    name="email"
-                                    type="email"
-                                    placeholder="Name@domain.com"
-                                    onBlur={e => handleChangeEmail(e.target.value)}
-                                />
-                                {
-                                    formValidation.email.length > 0 &&
-                                    <div className="validation-errors">
-                                        {
-                                            formValidation.email.map((item, index) => {
-                                                return <span key={index}>{item}</span>
-                                            })
-                                        }
-                                    </div>
-                                }
-                            </Form.Group>
-                            <Form.Group
-                                controlId="password"
-                                className={!formValidation.password.length ? '' : 'not-valid'}
-                            >
-                                <Form.ControlLabel>Password</Form.ControlLabel>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    placeholder="at least 8 characters"
-                                    onBlur={e => {
-                                        setPassword(e.target.value);
-                                        handleChangePassword(e.target.value);
-                                    }}
-                                />
-                                {
-                                    formValidation.password.length > 0 &&
-                                    <div className="validation-errors">
-                                        {
-                                            formValidation.password.map((item, index) => {
-                                                return <span key={index}>{item}</span>
-                                            })
-                                        }
-                                    </div>
-                                }
-                            </Form.Group>
-                            <Form.Group
-                                controlId="repeat_password"
-                                className={!formValidation.confirmPassword.length ? '' : 'not-valid'}
-                            >
-                                <Form.ControlLabel>Repeat password</Form.ControlLabel>
-                                <Form.Control
-                                    type="password"
-                                    name="repeat_password"
-                                    placeholder="at least 8 characters"
-                                    onBlur={e => handleChangeConfirmPassword(e.target.value)}
-                                />
-                                {
-                                    formValidation.confirmPassword.length > 0 &&
-                                    <div className="validation-errors">
-                                        {
-                                            formValidation.confirmPassword.map((item, index) => {
-                                                return <span key={index}>{item}</span>
-                                            })
-                                        }
-                                    </div>
-                                }
-                            </Form.Group>
-                            <Form.Group>
-                                <Checkbox
-                                    onChange={(e, checked) => setCheck1(checked)}
-                                >
-                                    Yes! Send me genuinely useful emails every now and then to help me get the most out of Teammers.
-                                </Checkbox>
-                            </Form.Group>
-                            <Form.Group>
-                                <Checkbox
-                                    onChange={(e, checked) => setCheck2(checked)}
-                                >
-                                    Yes, I understand and agree to the Terms of Service, including the User Agreement and Privacy Policy.
-                                </Checkbox>
-                            </Form.Group>
-                            <Form.Group>
-                                <ButtonToolbar>
-                                    <Button disabled={!check2} className="login-button" type="submit">Sign up</Button>
-                                </ButtonToolbar>
-                            </Form.Group>
-                        </Form>
-                    </div>
-                </div> */}
             </div>
         </div >
     )

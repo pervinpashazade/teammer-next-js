@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
             console.log('Auth User', user);
 
-            const localData = await getLocalUser();
+            // const localData = await getLocalUser();
 
             // console.log('localData', localData);
 
