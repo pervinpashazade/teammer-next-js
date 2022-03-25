@@ -19,7 +19,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import { BsPlusLg } from 'react-icons/bs'
 import { FaRegTrashAlt } from 'react-icons/fa'
 import axios from "axios";
-import config from "../../src/configuration";
+import config, { months } from "../../src/configuration";
 import { useRouter } from 'next/router'
 import { log_in, setData } from "../../src/store/actions";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,45 +39,6 @@ const renderErrorMessages = err => {
     return errList;
 }
 
-// month array
-export const months = [{
-    label: 'January',
-    value: 1
-}, {
-    label: 'February',
-    value: 2
-}, {
-    label: 'March',
-    value: 3
-}, {
-    label: 'April',
-    value: 4
-}, {
-    label: 'May',
-    value: 5
-}, {
-    label: 'June',
-    value: 6
-}, {
-    label: 'July',
-    value: 7
-}, {
-    label: 'August',
-    value: 8
-}, {
-    label: 'September',
-    value: 9
-}, {
-    label: 'Octaber',
-    value: 10
-}, {
-    label: 'November',
-    value: 11
-}, {
-    label: 'December',
-    value: 12
-}]
-
 export const buildFormData = (formData, data, parentKey) => {
     if (data && typeof data === 'object' && !(data instanceof Date) && !(data instanceof File)) {
         Object.keys(data).forEach(key => {
@@ -87,13 +48,18 @@ export const buildFormData = (formData, data, parentKey) => {
         const value = data == null ? '' : data;
         formData.append(parentKey, value);
     }
-}
+};
 
 const StepsComponent = (props) => {
+
     const editorRef = useRef();
+
     const { CKEditor, ClassicEditor } = editorRef.current || {};
+
     const [editorLoader, setEditorLoaded] = useState(false)
-    const { cookie } = props
+
+    const { cookie } = props;
+
     const store = useSelector(store => store);
 
     const dispatch = useDispatch();
@@ -102,12 +68,14 @@ const StepsComponent = (props) => {
 
     const [find, setFind] = useState();
     const [back, setBack] = useState(false);
+
     const [person, setPerson] = useState({
         username: '',
         full_name: store.user?.full_name ? store.user?.full_name : '',
         location: '',
         role: ''
-    })
+    });
+
     const [current, setCurrent] = useState(0);
     const [positionDetails, setPositionDetails] = useState([]);
     const [skills, setSkills] = useState([]);
@@ -128,6 +96,7 @@ const StepsComponent = (props) => {
             year: ''
         }
     }]);
+
     const [exp, setExp] = useState({
         position: '',
         company: '',
@@ -141,6 +110,7 @@ const StepsComponent = (props) => {
             year: ''
         }
     });
+
     const [experienceCount, setExperinceCount] = useState(0);
     const [social_accounts, setSocialAccounts] = useState({})
     const [image, setImage] = useState({
@@ -148,12 +118,15 @@ const StepsComponent = (props) => {
         owner: '',
         logo: ''
     });
+
     const [createObjectURL, setCreateObjectURL] = useState({
         teammer: '/img/upload_image.png',
         owner: '/img/upload_image.png',
         logo: '/img/upload_image.png'
     });
+
     const [description, setDescription] = useState('');
+
     const [cv, setCv] = useState([]);
 
     const [editorText, setEditorText] = useState('');
@@ -173,6 +146,7 @@ const StepsComponent = (props) => {
         year_experience: '',
         descriptionEditorText: ''
     });
+
     const [teamArray, setTeamArray] = useState([{
         job_position: '',
         location: '',
@@ -187,18 +161,6 @@ const StepsComponent = (props) => {
     const buttonRef = useRef();
     const ownerRef = useRef();
     const logoRef = useRef();
-    let reactQuillRef = useRef();
-
-    React.useEffect(() => {
-        window.onbeforeunload = function (e) {
-            // if (true) {
-            //     return;
-            // }
-            var dialogText = 'Dialog text here';
-            e.returnValue = dialogText;
-            return dialogText;
-        };
-    }, []);
 
     useEffect(() => {
         // if (!localStorage.getItem('teammers-access-token') && !localStorage.getItem('type')) {
@@ -213,7 +175,7 @@ const StepsComponent = (props) => {
             CKEditor: require("@ckeditor/ckeditor5-react").CKEditor, // v3+
             ClassicEditor: require("@ckeditor/ckeditor5-build-classic")
         };
-        setEditorLoaded(true)
+        setEditorLoaded(true);
         let year_array = [];
         let nowDate = (new Date()).getFullYear();
         for (let i = 2000; i <= nowDate; i++) {
@@ -230,13 +192,16 @@ const StepsComponent = (props) => {
         if (c === 0) {
             find && setCurrent(1)
         }
-    }
+    };
+
     const editButton = (c) => {
         setCurrent(c)
-    }
+    };
+
     const handleChange = (data) => {
         setEditorText(data);
-    }
+    };
+
     const portoflioAdd = (type, element) => {
         if (type === "add") {
             setPortfolios([...portfolios, portfolio]);
@@ -245,7 +210,8 @@ const StepsComponent = (props) => {
             setPortfolios(portfolios.filter(item => item !== element))
         }
 
-    }
+    };
+
     const experienceFunction = (key, data, index) => {
         setExp({
             ...exp,
@@ -259,7 +225,8 @@ const StepsComponent = (props) => {
             } else return item
         })
         setExperience(newArray)
-    }
+    };
+
     const teamFunction = (key, data, index, type) => {
         setTeam({
             ...team,
@@ -273,7 +240,8 @@ const StepsComponent = (props) => {
             } else return item
         })
         setTeamArray(newArray);
-    }
+    };
+
     const addMoreJobPosition = () => {
         // owner
         if (team.location &&
@@ -310,7 +278,8 @@ const StepsComponent = (props) => {
                     All boxes must be filled correctly</p>
             </Notification>, 'topEnd')
         }
-    }
+    };
+
     const addMoreExperience = () => {
         // teaamer
         if (exp.position && exp.company && exp.location && exp.start_date.month &&
@@ -348,17 +317,20 @@ const StepsComponent = (props) => {
                     All boxes must be filled correctly</p>
             </Notification>, 'topEnd')
         }
-    }
+    };
+
     const editWorkExperience = (index) => {
         let element = experience.find((item, i) => i === index);
         setExp(element);
         setExperinceCount(index)
-    }
+    };
+
     const editLookingTeam = (index) => {
         let element = teamArray.find((item, i) => i === index);
         setTeam(element);
         setExperinceCount(index);
-    }
+    };
+
     const getSocialDatas = (e) => {
         let formData = new FormData(e.target);
         let data = {};
@@ -368,7 +340,8 @@ const StepsComponent = (props) => {
         ;
         setSocialAccounts(data)
         setCurrent(3)
-    }
+    };
+
     const uploadToClient = (event, type) => {
         console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
@@ -383,6 +356,7 @@ const StepsComponent = (props) => {
             });
         }
     };
+
     const submitData = () => {
         let date = new Date();
         date.setTime(date.getTime() + (6 * 24 * 60 * 60 * 1000))
@@ -456,6 +430,7 @@ const StepsComponent = (props) => {
             })
         // router.push('/')
     };
+
     const submitOwnerData = () => {
 
         let jobs = teamArray.map(item => {
@@ -536,14 +511,19 @@ const StepsComponent = (props) => {
             })
     };
 
+    // mount
     useEffect(() => {
-        console.log(props);
-        // setPerson({
-        //     username: '',
-        //     full_name: store.user?.full_name ? store.user?.full_name : '',
-        //     location: '',
-        //     role: ''
-        // })
+        // console.log(props);
+
+        window.onbeforeunload = function (e) {
+            // if (true) {
+            //     return;
+            // }
+            var dialogText = 'Dialog text here';
+            e.returnValue = dialogText;
+            return dialogText;
+        };
+
     }, [])
 
     return <div className="container login">
@@ -604,13 +584,15 @@ const StepsComponent = (props) => {
                                 </div>
 
                             </div>
-                        } />
+                        }
+                    />
                     <Steps.Item
                         title={
                             <>
                                 Contact Information {current > 1 &&
                                     <button className="edit" onClick={() => editButton(1)}><AiOutlineEdit /></button>}
-                            </>}
+                            </>
+                        }
                         description={
                             <div className="step_form">
                                 {
@@ -801,159 +783,166 @@ const StepsComponent = (props) => {
                                     </Form>
                                 }
                             </div>
-                        } />
+                        }
+                    />
                     {
-                        find === "1" ? <Steps.Item title={<>Startup information {current > 2 &&
-                            <button className="edit" onClick={() => editButton(2)}><AiOutlineEdit /></button>}</>}
-                            description={
-                                (current !== 0 && current !== 1 && current !== 2) ? (
-                                    find === "1" ? <div>
-                                        <p className="summary_person"><span>Startup Title</span>
-                                            <span>{ownerInformation.startupTitle}</span>
-                                        </p>
-                                        <p className="summary_person"><span>Startup Type</span>
-                                            <span>{props.project_types.find(item => item.value === ownerInformation.startupType)?.label}</span>
-                                        </p>
-                                        <p className="summary_person"><span>Description</span>
-                                            <div dangerouslySetInnerHTML={{
-                                                __html: editorText.length > 10 ?
-                                                    editorText.slice(0, 20) + "..." : editorText
-                                            }}></div>
-                                        </p>
-                                    </div> :
-                                        <div>
-                                            <p className="summary_person"><span>Position</span>
-                                                <span>{positionDetails.map(item => props.positions.find(i => i.value === item)?.label)}</span>
+                        find === "1" ?
+                            <Steps.Item title={<>Startup information {current > 2 &&
+                                <button className="edit" onClick={() => editButton(2)}><AiOutlineEdit /></button>}</>}
+                                description={
+                                    (current !== 0 && current !== 1 && current !== 2) ? (
+                                        find === "1" ? <div>
+                                            <p className="summary_person"><span>Startup Title</span>
+                                                <span>{ownerInformation.startupTitle}</span>
                                             </p>
-                                            <p className="summary_person">
-                                                <span>Experience level</span>
-                                                <span>{props.experience_levels.find(i => i.value === experienceLevel)?.label}</span>
+                                            <p className="summary_person"><span>Startup Type</span>
+                                                <span>{props.project_types.find(item => item.value === ownerInformation.startupType)?.label}</span>
                                             </p>
-                                            <p className="summary_person"><span>Skills</span>
-                                                <span>{skills.map(item => props.skills.find(i => i.value === item)?.label)}</span>
+                                            <p className="summary_person"><span>Description</span>
+                                                <div dangerouslySetInnerHTML={{
+                                                    __html: editorText.length > 10 ?
+                                                        editorText.slice(0, 20) + "..." : editorText
+                                                }}></div>
                                             </p>
-                                            <p className="summary_person">
-                                                <span>Work experience</span>
-                                                <span>....</span>
-                                            </p>
-                                            <p className="summary_person"><span>Portfolio</span>
-                                                <span>....</span>
-                                            </p>
-                                            <p className="summary_person">
-                                                <span>Social media accounts</span>
-                                                <span>....</span>
-                                            </p>
-                                        </div>
-                                ) : <div>
-                                    <Form>
-                                        {/*tests*/}
-                                        <div className="profile_information mb-3">
-                                            <input type="file" className="d-none" ref={logoRef}
-                                                onChange={(e) => uploadToClient(e, 'logo')} />
+                                        </div> :
                                             <div>
-                                                <Image
-                                                    src={createObjectURL.logo}
-                                                    alt='icon'
-                                                    width={64}
-                                                    height={64}
-                                                />
-                                                <button onClick={() => {
-                                                    logoRef.current.click()
-                                                }
-                                                }>Upload Logo
-                                                </button>
+                                                <p className="summary_person"><span>Position</span>
+                                                    <span>{positionDetails.map(item => props.positions.find(i => i.value === item)?.label)}</span>
+                                                </p>
+                                                <p className="summary_person">
+                                                    <span>Experience level</span>
+                                                    <span>{props.experience_levels.find(i => i.value === experienceLevel)?.label}</span>
+                                                </p>
+                                                <p className="summary_person"><span>Skills</span>
+                                                    <span>{skills.map(item => props.skills.find(i => i.value === item)?.label)}</span>
+                                                </p>
+                                                <p className="summary_person">
+                                                    <span>Work experience</span>
+                                                    <span>....</span>
+                                                </p>
+                                                <p className="summary_person"><span>Portfolio</span>
+                                                    <span>....</span>
+                                                </p>
+                                                <p className="summary_person">
+                                                    <span>Social media accounts</span>
+                                                    <span>....</span>
+                                                </p>
+                                            </div>
+                                    )
+                                        :
+                                        <div>
+                                            <Form>
+                                                {/*tests*/}
+                                                <div className="profile_information mb-3">
+                                                    <input type="file" className="d-none" ref={logoRef}
+                                                        onChange={(e) => uploadToClient(e, 'logo')} />
+                                                    <div>
+                                                        <Image
+                                                            src={createObjectURL.logo}
+                                                            alt='icon'
+                                                            width={64}
+                                                            height={64}
+                                                        />
+                                                        <button onClick={() => {
+                                                            logoRef.current.click()
+                                                        }
+                                                        }>Upload Logo
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <Form.Group controlId="title">
+                                                    <Form.ControlLabel>Startup Title</Form.ControlLabel>
+                                                    <Form.Control name="title"
+                                                        value={ownerInformation.startupTitle}
+                                                        onChange={(e) => setOwnerInformation({
+                                                            ...ownerInformation,
+                                                            startupTitle: e
+                                                        })} type="text"
+                                                        placeholder="Startup Title" />
+                                                </Form.Group>
+                                                <Form className="Group">
+                                                    <Form.ControlLabel>Startup type</Form.ControlLabel>
+                                                    <InputPicker
+                                                        size="lg"
+                                                        placeholder="Startup type"
+                                                        name="type"
+                                                        className="w-100 mb-2"
+                                                        data={props.project_types}
+                                                        value={ownerInformation.startupType}
+                                                        onChange={(e) => setOwnerInformation({
+                                                            ...ownerInformation,
+                                                            startupType: e
+                                                        })}
+                                                    />
+                                                </Form>
+                                                <Form.Group className="mt-2">
+                                                    <Form.ControlLabel>Description about
+                                                        startup</Form.ControlLabel>
+                                                    {/*<ReactQuill*/}
+                                                    {/*    className="mt-2"*/}
+                                                    {/*    defaultValue={editorText}*/}
+                                                    {/*    style={{ height: '10rem' }}*/}
+                                                    {/*    onChange={handleChange}*/}
+                                                    {/*/>*/}
+                                                    {editorLoader ? <CKEditor
+                                                        style={{ maxWidth: "400px" }}
+                                                        name={"name"}
+                                                        editor={ClassicEditor}
+                                                        data={editorText}
+                                                        onChange={(event, editor) => {
+                                                            const data = editor.getData();
+                                                            // console.log({ event, editor, data })
+                                                            // onChange(data);
+                                                            console.log(data)
+                                                            handleChange(data)
+                                                        }}
+                                                    /> : ''}
+                                                </Form.Group>
+                                            </Form>
+                                            <div className="d-flex justify-content-end routing-button"
+                                                style={{
+                                                    marginTop: '56px'
+                                                }}>
+                                                <Button
+                                                    onClick={() => setCurrent(1)}
+                                                    type="button"
+                                                    className="previous-button">
+                                                    Previous
+                                                </Button>
+                                                <Form.Group>
+                                                    <ButtonToolbar>
+                                                        <Button
+                                                            onClick={() => {
+                                                                if (ownerInformation.startupTitle && ownerInformation.startupType) {
+                                                                    setCurrent(3)
+                                                                } else {
+                                                                    toaster.push(
+                                                                        <Notification
+                                                                            type={"error"}
+                                                                            header="Failed confirmation!"
+                                                                            closable
+                                                                        >
+                                                                            <p className="text-danger">
+                                                                                An error occurred while
+                                                                                filling in the
+                                                                                information.
+                                                                                All boxes must be filled
+                                                                                correctly
+                                                                            </p>
+                                                                        </Notification>, 'topEnd'
+                                                                    )
+                                                                }
+                                                            }}
+                                                            className="next-button"
+                                                            type="submit">Next</Button>
+                                                    </ButtonToolbar>
+                                                </Form.Group>
                                             </div>
                                         </div>
-                                        <Form.Group controlId="title">
-                                            <Form.ControlLabel>Startup Title</Form.ControlLabel>
-                                            <Form.Control name="title"
-                                                value={ownerInformation.startupTitle}
-                                                onChange={(e) => setOwnerInformation({
-                                                    ...ownerInformation,
-                                                    startupTitle: e
-                                                })} type="text"
-                                                placeholder="Startup Title" />
-                                        </Form.Group>
-                                        <Form className="Group">
-                                            <Form.ControlLabel>Startup type</Form.ControlLabel>
-                                            <InputPicker
-                                                size="lg"
-                                                placeholder="Startup type"
-                                                name="type"
-                                                className="w-100 mb-2"
-                                                data={props.project_types}
-                                                value={ownerInformation.startupType}
-                                                onChange={(e) => setOwnerInformation({
-                                                    ...ownerInformation,
-                                                    startupType: e
-                                                })}
-                                            />
-                                        </Form>
-                                        <Form.Group className="mt-2">
-                                            <Form.ControlLabel>Description about
-                                                startup</Form.ControlLabel>
-                                            {/*<ReactQuill*/}
-                                            {/*    className="mt-2"*/}
-                                            {/*    defaultValue={editorText}*/}
-                                            {/*    style={{ height: '10rem' }}*/}
-                                            {/*    onChange={handleChange}*/}
-                                            {/*/>*/}
-                                            {editorLoader ? <CKEditor
-                                                style={{ maxWidth: "400px" }}
-                                                name={"name"}
-                                                editor={ClassicEditor}
-                                                data={editorText}
-                                                onChange={(event, editor) => {
-                                                    const data = editor.getData();
-                                                    // console.log({ event, editor, data })
-                                                    // onChange(data);
-                                                    console.log(data)
-                                                    handleChange(data)
-                                                }}
-                                            /> : ''}
-                                        </Form.Group>
-                                    </Form>
-                                    <div className="d-flex justify-content-end routing-button"
-                                        style={{
-                                            marginTop: '56px'
-                                        }}>
-                                        <Button
-                                            onClick={() => setCurrent(1)}
-                                            type="button"
-                                            className="previous-button">
-                                            Previous
-                                        </Button>
-                                        <Form.Group>
-                                            <ButtonToolbar>
-                                                <Button
-                                                    onClick={() => {
-                                                        if (ownerInformation.startupTitle && ownerInformation.startupType) {
-                                                            setCurrent(3)
-                                                        } else {
-                                                            toaster.push(
-                                                                <Notification
-                                                                    type={"error"}
-                                                                    header="Failed confirmation!"
-                                                                    closable
-                                                                >
-                                                                    <p className="text-danger">
-                                                                        An error occurred while
-                                                                        filling in the
-                                                                        information.
-                                                                        All boxes must be filled
-                                                                        correctly
-                                                                    </p>
-                                                                </Notification>, 'topEnd'
-                                                            )
-                                                        }
-                                                    }}
-                                                    className="next-button"
-                                                    type="submit">Next</Button>
-                                            </ButtonToolbar>
-                                        </Form.Group>
-                                    </div>
-                                </div>
-                            } /> : <Steps.Item title={<>Position details {current > 2 &&
+                                }
+                            />
+                            :
+                            <Steps.Item title={<>Position details {current > 2 &&
                                 <button className="edit" onClick={() => editButton(2)}>
                                     <AiOutlineEdit /></button>}</>}
                                 description={
@@ -980,7 +969,8 @@ const StepsComponent = (props) => {
                                             <p className="summary_person"><span>Social media accounts</span>
                                                 <span>....</span>
                                             </p>
-                                        </div> :
+                                        </div>
+                                        :
                                         <div className="position_details">
                                             <InputPicker
                                                 size="lg"
@@ -1260,7 +1250,9 @@ const StepsComponent = (props) => {
                                                 </Form>
                                             </div>
                                         </div>
-                                } />}
+                                }
+                            />
+                    }
                     {
                         find === "1" ? <Steps.Item
                             title="Who are you looking for in your team?"
@@ -1460,22 +1452,22 @@ const StepsComponent = (props) => {
 export default withCookie(StepsComponent);
 
 export const getServerSideProps = async (context) => {
-    const auth = getAuth(context);
-    console.log('auth', auth)
-    if (auth === "1")
-        return {
-            redirect: {
-                destination: "/owner/home",
-                permanent: false,
-            },
-        };
-    else if (auth === "2")
-        return {
-            redirect: {
-                destination: "/teammer/home",
-                permanent: false,
-            },
-        };
+    // const auth = getAuth(context);
+    // console.log('auth', auth)
+    // if (auth === "1")
+    //     return {
+    //         redirect: {
+    //             destination: "/owner/home",
+    //             permanent: false,
+    //         },
+    //     };
+    // else if (auth === "2")
+    //     return {
+    //         redirect: {
+    //             destination: "/teammer/home",
+    //             permanent: false,
+    //         },
+    //     };
     // else if (!auth)
     //     return {
     //         redirect: {
@@ -1507,7 +1499,6 @@ export const getServerSideProps = async (context) => {
     const fetchExperienceLevels = await fetch(config.BASE_URL + "experience-levels");
     const experienceLevelsData = await fetchExperienceLevels.json();
 
-    // 123123
     return {
         props: {
             positions: positionsData.data.items.map(item => {
@@ -1560,5 +1551,4 @@ export const getServerSideProps = async (context) => {
             }),
         }
     }
-
 }

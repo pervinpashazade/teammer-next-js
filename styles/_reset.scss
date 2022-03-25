@@ -5,7 +5,7 @@
 ul {
     list-style-type: none;
 }
-.ck.ck-reset.ck-editor.ck-rounded-corners{
+.ck.ck-reset.ck-editor.ck-rounded-corners {
     max-width: 450px !important;
 }
 .custom-tag {
@@ -127,5 +127,67 @@ ul {
     }
     .rs-modal-body {
         margin-top: 1.5rem;
+    }
+}
+
+// steps
+
+.rs-steps {
+    .rs-steps-item {
+        &.rs-steps-item-status-finish {
+            .rs-steps-item-icon-wrapper {
+                border-color: #ccf6ea;
+                background-color: #ccf6ea;
+            }
+
+            .rs-steps-item-tail {
+                background-color: #d3d3d3;
+                border: 2px solid #d3d3d3;
+            }
+        }
+    }
+
+    .rs-steps-item-tail {
+        border-color: #d3d3d3;
+    }
+
+    .rs-steps-item-active {
+        .rs-steps-item-icon-wrapper {
+            background-color: #d4f6ff;
+            color: #01aded !important;
+            border: none;
+        }
+
+        .rs-steps-item-content {
+            .rs-steps-item-title {
+                font-size: 16px;
+                line-height: 20px;
+                font-weight: 400;
+                color: #020c40;
+            }
+        }
+    }
+
+    .rs-steps-item-status-wait {
+        .rs-steps-item-icon-wrapper {
+            background-color: #f2f2f2;
+            color: #d3d3d3 !important;
+            border: none;
+        }
+
+        .rs-steps-item-content {
+            .rs-steps-item-title {
+                background-color: #f2f2f2;
+                border: none;
+                color: #f2f2f2;
+                width: 202px;
+                height: 20px;
+                margin: 20px 0px;
+            }
+
+            .rs-steps-item-description {
+                display: none;
+            }
+        }
     }
 }

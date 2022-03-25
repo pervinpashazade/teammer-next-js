@@ -266,6 +266,241 @@
             color: #020c40;
           }
         }
+
+        .signup-steps-wrapper {
+          width: 100%;
+          padding: 0px 64px;
+          position: relative;
+
+          ._step-item {
+            .btn-edit-step {
+              padding: 0.25rem 0.5rem;
+              margin-left: 0.75rem;
+              svg {
+                width: 16px;
+                height: 16px;
+              }
+            }
+            .step-form {
+              // padding-top: 24px;
+              // .rs-form-control-label {
+              //   color: $text-color-primary;
+              //   font-size: 12px;
+              //   font-weight: 600;
+              //   line-height: 15px;
+              // }
+
+              // .rs-form-control-wrapper {
+              //   width: 100%;
+
+              //   .rs-input {
+              //     width: 100%;
+              //     border-radius: $button-radius-12;
+              //     border: 2px solid #eaeaea;
+              //     padding: 12px;
+              //   }
+              // }
+
+              .step-form-item-summary {
+                p {
+                  display: flex;
+                  font-size: 14px;
+                  line-height: 18px;
+                  color: #020c40;
+                  opacity: 0.5;
+
+                  span:first-child {
+                    font-weight: 600;
+                    margin-right: 68px;
+
+                    &:last-child {
+                      font-weight: 400;
+                    }
+                  }
+                }
+              }
+
+              .upload-avatar-wrapper {
+                margin-top: 24px;
+                h4 {
+                  font-style: normal;
+                  font-weight: 600;
+                  font-size: 12px;
+                  line-height: 15px;
+                  color: $text-color-primary;
+                  margin-top: 24px;
+                }
+
+                div {
+                  display: flex;
+                  justify-content: flex-start;
+
+                  img {
+                    object-fit: cover;
+                    border-radius: 50%;
+                    width: 64px;
+                    height: 64px;
+                  }
+
+                  button {
+                    @include button(0px, transparent, 0px, 0px, 0px, 0px);
+                    color: $primary-color;
+                    font-size: 16px;
+                    line-height: 20px;
+                    font-weight: 600;
+                    margin-left: 20px;
+                  }
+                }
+              }
+
+              .inner-form {
+                h3 {
+                  font-style: normal;
+                  font-weight: 500;
+                  font-size: 18px;
+                  line-height: 125%;
+                  color: #020c40;
+                  margin-top: 24px;
+                }
+                .work-experience-summary {
+                  p:first-child {
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 12px;
+                    line-height: 24px;
+                    color: $primary-color;
+                    margin-bottom: 8px;
+                    margin-top: 16px;
+                  }
+
+                  .edit-header {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: flex-start;
+
+                    .job-title {
+                      h3 {
+                        margin-top: 0px;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 24px;
+                      }
+
+                      p {
+                        margin-top: 4px;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 17px;
+                        color: $text-color-primary;
+                        opacity: 0.5;
+                      }
+                    }
+
+                    button {
+                      border: none;
+                      background: transparent;
+                      color: $primary-color;
+                    }
+                  }
+
+                  .job-section {
+                    .job-divs {
+                      margin-top: 24px;
+                    }
+
+                    h4 {
+                      font-weight: 600;
+                      font-size: 12px;
+                      line-height: 15px;
+                      color: $text-color-primary;
+                    }
+                  }
+                }
+                .portfolio {
+                  .portfolio-add {
+                    display: flex;
+                    justify-content: space-between;
+
+                    button {
+                      background-color: $primary-color;
+                      padding: 9px 8px 5px 13px;
+                      border-radius: 12px;
+
+                      svg {
+                        color: white;
+                        font-size: 18px;
+                      }
+                    }
+                  }
+
+                  .portfolio-links {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 16px;
+
+                    a {
+                      text-decoration: underline;
+                      font-weight: 400;
+                      font-size: 14px;
+                      color: #0052b1;
+                    }
+
+                    button {
+                      background-color: transparent;
+                      color: #0052b1;
+                    }
+                  }
+
+                  .social-media-accounts {
+                    .rs-form-control-label {
+                      color: $text-color-primary;
+                      font-size: 12px;
+                      font-weight: 600;
+                      line-height: 15px;
+                    }
+
+                    .rs-form-control-wrapper {
+                      width: 100%;
+
+                      .rs-input {
+                        width: 100% !important;
+                        border-radius: $button-radius-12;
+                        border: 2px solid #eaeaea;
+                        padding: 12px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            .navigation-btn-wrapper {
+              margin-top: 2rem;
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
+
+              .btn-next-step {
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 20px;
+                color: #fff;
+                background: #2a6fff;
+                padding: 14px 24px;
+                border-radius: 72px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.steps {
+    .right {
+      .inner {
+        align-items: flex-start;
       }
     }
   }

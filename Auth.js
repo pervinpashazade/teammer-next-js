@@ -43,13 +43,13 @@ export const AuthProvider = ({ children }) => {
         return getAuth().onIdTokenChanged(async (user) => {
 
             if (!user) {
-                console.log('no user');
+                // console.log('no user');
                 setCurrentUser(null);
                 setLoading(false);
                 return;
             };
 
-            console.log('Auth User', user);
+            // console.log('Auth User', user);
 
             // const localData = await getLocalUser();
 
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
                 accessToken: user.accessToken
             }).then(res => {
                 if (res?.data.success) {
-                    console.log('LOG auth/login-via-firebase :', res.data);
+                    // console.log('LOG auth/login-via-firebase :', res.data);
 
                     setAuthCookies(
                         res.data.data.token,
@@ -68,8 +68,6 @@ export const AuthProvider = ({ children }) => {
                         res.data.data.user.type,
                         res.data.data.user.id
                     );
-
-                    console.log(('set'));
 
                     setCurrentUser(res.data.data.user);
                 };
@@ -89,21 +87,21 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
 
-        console.log('UPDATE current user : ', currentUser);
+        // console.log('UPDATE current user : ', currentUser);
 
         if (currentUser) {
 
-            if (!currentUser.type) return router.push("/signup/steps");
+            // if (!currentUser.type) return router.push("/signup/steps");
 
             if (currentUser.type === 1) {
                 router.push("/owner/home");
             } else if (currentUser.type === 2) {
                 router.push("/teammer/home");
             } else {
-                router.push("/signup/steps");
+                // router.push("/signup/steps");
             };
         } else {
-            console.log('AuthComponent js Not Auth');
+            // console.log('AuthComponent js Not Auth');
         };
     }, [currentUser]);
 

@@ -419,7 +419,7 @@ const Signup = (props) => {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     )
 };
 
