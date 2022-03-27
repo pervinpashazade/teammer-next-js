@@ -127,8 +127,8 @@ const steps2 = (props) => {
         let nowDate = (new Date()).getFullYear();
         for (let i = 2000; i <= nowDate; i++) {
             yearArr.push({
-                label: `${i}`,
-                value: i,
+                id: i,
+                name: `${i}`,
             });
         }
 
@@ -172,7 +172,6 @@ const steps2 = (props) => {
         title: null,
         description: null,
         type: null,
-        // jobList: []
     });
 
     const [jobList, setJobList] = useState([]);
@@ -226,22 +225,21 @@ const steps2 = (props) => {
             },
             type: {
                 id: null,
-                label: null,
+                name: null,
                 key: "Type"
             },
             payment: {
                 id: null,
-                label: null,
+                name: null,
                 key: "Payment"
             },
             salary: '',
             period: {
                 id: null,
-                label: null,
+                name: null,
                 key: "Salary period"
             },
             experience: '',
-            // skillList: [],
             description: '',
         });
     };
@@ -283,8 +281,8 @@ const steps2 = (props) => {
             key: "Start month",
         },
         start_year: {
-            value: null,
-            label: null,
+            id: null,
+            name: null,
             key: "Start year",
         },
         end_month: {
@@ -293,8 +291,8 @@ const steps2 = (props) => {
             key: "End month",
         },
         end_year: {
-            value: null,
-            label: null,
+            id: null,
+            name: null,
             key: "End year",
         },
     });
@@ -325,8 +323,8 @@ const steps2 = (props) => {
                 key: "Start month",
             },
             start_year: {
-                value: null,
-                label: null,
+                id: null,
+                name: null,
                 key: "Start year",
             },
             end_month: {
@@ -335,8 +333,8 @@ const steps2 = (props) => {
                 key: "End month",
             },
             end_year: {
-                value: null,
-                label: null,
+                id: null,
+                name: null,
                 key: "End year",
             },
         });
@@ -358,21 +356,31 @@ const steps2 = (props) => {
             };
             if (typeof value === 'object') {
 
-                if (key === "start_year" || key === "end_year") {
-                    if (!value.value) {
-                        validationErrors.push({
-                            key: key,
-                            message: `${value.key} field is required`
-                        });
-                    };
-                } else {
-                    if (!value.id) {
-                        validationErrors.push({
-                            key: key,
-                            message: `${value.key} field is required`
-                        });
-                    };
+                // if (key === "end_month") return;
+                // if (key === "end_year") return;
+
+                if (!value.id) {
+                    validationErrors.push({
+                        key: key,
+                        message: `${value.key} field is required`
+                    });
                 };
+
+                // if (key === "start_year") {
+                //     if (!value.value) {
+                //         validationErrors.push({
+                //             key: key,
+                //             message: `${value.key} field is required`
+                //         });
+                //     };
+                // } else {
+                //     if (!value.id) {
+                //         validationErrors.push({
+                //             key: key,
+                //             message: `${value.key} field is required`
+                //         });
+                //     };
+                // };
             };
         };
 
@@ -433,8 +441,8 @@ const steps2 = (props) => {
                 key: "Start month",
             },
             start_year: {
-                value: selectedObj.start_year?.value || null,
-                label: selectedObj.start_year?.label || null,
+                id: selectedObj.start_year?.id || null,
+                name: selectedObj.start_year?.name || null,
                 key: "Start year",
             },
             end_month: {
@@ -443,8 +451,8 @@ const steps2 = (props) => {
                 key: "End month",
             },
             end_year: {
-                value: selectedObj.end_year?.value || null,
-                label: selectedObj.end_year?.label || null,
+                id: selectedObj.end_year?.id || null,
+                name: selectedObj.end_year?.name || null,
                 key: "End year",
             },
         });
@@ -737,6 +745,9 @@ const steps2 = (props) => {
     };
 
     const confirm_step_3 = (socialDatas) => {
+
+        alert('here')
+
         const socialData = getSocialDatas(socialDatas);
 
         setTeammer(prevState => {
@@ -746,7 +757,9 @@ const steps2 = (props) => {
             };
         });
 
-        setCurrentStep(3);
+        if (validateStep(2)) {
+            setCurrentStep(3);
+        };
     };
 
     const [teammerStepValidations, setTeammerStepValidations] = useState({
@@ -875,10 +888,8 @@ const steps2 = (props) => {
                 });
 
                 if (step_1_errors.length && !isValidOwnerUsername.status) {
-                    alert('return FALSE')
                     return false;
                 } else {
-                    alert('return TRUE')
                     return true;
                 };
             };
@@ -1014,13 +1025,136 @@ const steps2 = (props) => {
         };
         // user stype => teammer
         if (selectedUserType === "2") {
+            if (currentStep === 1) {
 
+                // TEST MODE !!!
+                return true;
+                // TEST MODE !!!
+
+                let step_1_errors = [];
+
+                if (!teammer.full_name?.trim()) {
+                    step_1_errors.push({
+                        key: 'full_name',
+                        message: 'Fullname field is required'
+                    });
+                };
+                if (!teammer.username?.trim()) {
+                    step_1_errors.push({
+                        key: 'username',
+                        message: 'Username field is required'
+                    });
+                };
+                if (!teammer.location) {
+                    step_1_errors.push({
+                        key: 'location',
+                        message: 'Location field is required'
+                    });
+                };
+
+                setTeammerStepValidations(prevState => {
+                    return {
+                        ...prevState,
+                        step_1: step_1_errors
+                    };
+                });
+
+                console.log('TEAMMER STEP ! LOG', step_1_errors.length);
+
+                if (step_1_errors.length && !isValidTeammerUsername.status) {
+                    return false;
+                } else {
+                    return true;
+                };
+            };
+            if (currentStep === 2) {
+
+                // TEST MODE !!!
+                return true;
+                // TEST MODE !!!
+
+                let step_2_errors = [];
+
+                if (!teammer.positions.length) {
+                    step_2_errors.push({
+                        key: 'positions',
+                        message: 'Position field is required'
+                    });
+                };
+                if (!teammer.experienceLevel) {
+                    step_2_errors.push({
+                        key: 'experienceLevel',
+                        message: 'Experience level field is required'
+                    });
+                };
+                if (!teammer.skillList.length) {
+                    step_2_errors.push({
+                        key: 'skillList',
+                        message: 'Skills field is required'
+                    });
+                };
+
+                const isValidWorkExp = validateWorkExpForm();
+
+                if (!workExperienceList.length && !isValidWorkExp) {
+                    step_2_errors.push({
+                        key: 'step_2_final',
+                        message: 'You must add at least 1 job position'
+                    });
+                };
+
+                setTeammerStepValidations(prevState => {
+                    return {
+                        ...prevState,
+                        step_2: step_2_errors
+                    };
+                });
+
+                if (step_2_errors.length) {
+                    return false;
+                } else {
+                    return true;
+                };
+            };
+            if (currentStep === 3) {
+
+                // final step
+                // TEST MODE !!!
+                // return true;
+                // TEST MODE !!!
+
+                let step_3_errors = [];
+
+                if (!teammer.avatarFile) {
+                    step_3_errors.push({
+                        key: 'avatarFile',
+                        message: 'Avatar field is required'
+                    });
+                };
+                if (!teammer.about?.trim()) {
+                    step_3_errors.push({
+                        key: 'about',
+                        message: 'Description field is required'
+                    });
+                };
+
+                setTeammerStepValidations(prevState => {
+                    return {
+                        ...prevState,
+                        step_1: step_3_errors
+                    };
+                });
+
+                if (step_3_errors.length) {
+                    return false;
+                } else {
+                    return true;
+                };
+            };
         };
     };
 
     const submitOwnerData = () => {
-        alert('submit owner data');
-
         // jobList bosh gelir 
 
         console.log(
@@ -1046,7 +1180,7 @@ const steps2 = (props) => {
         let body = {
             type: 1,
             photo: owner.avatarFile,
-            username: owner.username,
+            // username: owner.username,
             full_name: owner.full_name,
             detail: {
                 project_role_id: owner.role?.id
@@ -1054,7 +1188,7 @@ const steps2 = (props) => {
             project: {
                 logo: startup.avatarFile,
                 title: startup.title,
-                type_id: startup.type.id,
+                type_id: startup.type?.id,
                 jobs: jobs,
                 description: startup.description,
             }
@@ -1345,11 +1479,18 @@ const steps2 = (props) => {
                                                                         />
                                                                         <div className="validation-errors">
                                                                             {
-                                                                                ownerStepValidations.step_1.map((item, index) => {
-                                                                                    if (item.key === "full_name") {
-                                                                                        return <span key={index}>{item.message}</span>
-                                                                                    };
-                                                                                })
+                                                                                selectedUserType === "1" ?
+                                                                                    ownerStepValidations.step_1.map((item, index) => {
+                                                                                        if (item.key === "full_name") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        };
+                                                                                    })
+                                                                                    :
+                                                                                    teammerStepValidations.step_1.map((item, index) => {
+                                                                                        if (item.key === "full_name") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        };
+                                                                                    })
                                                                             }
                                                                         </div>
                                                                     </Form.Group>
@@ -1406,6 +1547,15 @@ const steps2 = (props) => {
                                                                                         });
                                                                                     }}
                                                                                 />
+                                                                                <div className="validation-errors">
+                                                                                    {
+                                                                                        teammerStepValidations.step_1.map((item, index) => {
+                                                                                            if (item.key === "location") {
+                                                                                                return <span key={index}>{item.message}</span>
+                                                                                            };
+                                                                                        })
+                                                                                    }
+                                                                                </div>
                                                                             </Form.Group>
                                                                     }
                                                                     <div className="navigation-btn-wrapper">
@@ -1416,8 +1566,7 @@ const steps2 = (props) => {
                                                                             Previous
                                                                         </Button>
                                                                         <Button
-                                                                            className="btn-next-step"
-                                                                            disabled={!selectedUserType}
+                                                                            type='button'
                                                                             onClick={() => {
                                                                                 if (validateStep(1)) {
                                                                                     setCurrentStep(2);
@@ -1645,8 +1794,6 @@ const steps2 = (props) => {
                                                                                     Previous
                                                                                 </Button>
                                                                                 <Button
-                                                                                    className="btn-next-step"
-                                                                                    disabled={!selectedUserType}
                                                                                     onClick={() => {
                                                                                         if (validateStep(2)) {
                                                                                             setCurrentStep(3);
@@ -1772,6 +1919,15 @@ const steps2 = (props) => {
                                                                                     </Tag>
                                                                                 })
                                                                             }
+                                                                            <div className="validation-errors">
+                                                                                {
+                                                                                    teammerStepValidations.step_2.map((item, index) => {
+                                                                                        if (item.key === "positions") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        }
+                                                                                    })
+                                                                                }
+                                                                            </div>
                                                                             <InputPicker size="lg"
                                                                                 className="w-100 my-2"
                                                                                 placeholder="Experience Level"
@@ -1787,6 +1943,15 @@ const steps2 = (props) => {
                                                                                     });
                                                                                 }}
                                                                             />
+                                                                            <div className="validation-errors">
+                                                                                {
+                                                                                    teammerStepValidations.step_2.map((item, index) => {
+                                                                                        if (item.key === "experienceLevel") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        }
+                                                                                    })
+                                                                                }
+                                                                            </div>
                                                                             <InputPicker
                                                                                 size="lg"
                                                                                 placeholder="Skills"
@@ -1828,6 +1993,15 @@ const steps2 = (props) => {
                                                                                     </Tag>
                                                                                 })
                                                                             }
+                                                                            <div className="validation-errors">
+                                                                                {
+                                                                                    teammerStepValidations.step_2.map((item, index) => {
+                                                                                        if (item.key === "skillList") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        }
+                                                                                    })
+                                                                                }
+                                                                            </div>
                                                                             <h3>Work Experience</h3>
                                                                             <div className="work-experience-summary">
                                                                                 {
@@ -1835,9 +2009,9 @@ const steps2 = (props) => {
                                                                                         <div key={index}>
                                                                                             <p>
                                                                                                 <span className="from-date">
-                                                                                                    {item.start_month?.name} {item.start_year?.label}
+                                                                                                    {item.start_month?.name} {item.start_year?.name}
                                                                                                 </span>
-                                                                                                <span className="to-date"> - {item.end_month?.name} {item.end_year?.label}</span>
+                                                                                                <span className="to-date"> - {item.end_month?.name} {item.end_year?.name}</span>
                                                                                             </p>
                                                                                             <div className="edit-header">
                                                                                                 <div className="job-title">
@@ -1960,7 +2134,9 @@ const steps2 = (props) => {
                                                                                                 className="w-100 my-2"
                                                                                                 placeholder="Years"
                                                                                                 data={publicDatas.years}
-                                                                                                value={selectedWorkExp.start_year?.value}
+                                                                                                value={selectedWorkExp.start_year?.id}
+                                                                                                valueKey="id"
+                                                                                                labelKey='name'
                                                                                                 onSelect={(id, obj) => {
                                                                                                     setSelectedWorkExp(prevState => {
                                                                                                         return {
@@ -2017,7 +2193,9 @@ const steps2 = (props) => {
                                                                                                 className="w-100 my-2"
                                                                                                 placeholder="Years"
                                                                                                 data={publicDatas.years}
-                                                                                                value={selectedWorkExp.end_year?.value}
+                                                                                                value={selectedWorkExp.end_year?.id}
+                                                                                                valueKey="id"
+                                                                                                labelKey='name'
                                                                                                 onSelect={(id, obj) => {
                                                                                                     setSelectedWorkExp(prevState => {
                                                                                                         return {
@@ -2099,8 +2277,9 @@ const steps2 = (props) => {
                                                                                 <h3>Social media accounts</h3>
                                                                                 {/* social media form */}
                                                                                 <Form
+                                                                                    className="mt-3"
                                                                                     onSubmit={(e, data) => confirm_step_3(data)}
-                                                                                    className="mt-3">
+                                                                                >
                                                                                     <Form.Group
                                                                                         controlId="twitter">
                                                                                         <Form.ControlLabel>Twitter</Form.ControlLabel>
@@ -2147,18 +2326,27 @@ const steps2 = (props) => {
                                                                                             type="url"
                                                                                             placeholder="https://www.linkedin.com/margaretbrown" />
                                                                                     </Form.Group>
-                                                                                    <div
-                                                                                        className="d-flex justify-content-end routing-button">
+                                                                                    <div className="validation-errors">
+                                                                                        {
+                                                                                            teammerStepValidations.step_2.map((item, index) => {
+                                                                                                if (item.key === "step_2_final") {
+                                                                                                    return <span key={index}>{item.message}</span>
+                                                                                                };
+                                                                                            })
+                                                                                        }
+                                                                                    </div>
+                                                                                    <div className="navigation-btn-wrapper">
                                                                                         <Button
-                                                                                            onClick={() => setCurrent(1)}
                                                                                             type="button"
-                                                                                            className="previous-button">Previous</Button><Form.Group>
-                                                                                            <ButtonToolbar>
-                                                                                                <Button
-                                                                                                    className="next-button"
-                                                                                                    type="submit">Next</Button>
-                                                                                            </ButtonToolbar>
-                                                                                        </Form.Group>
+                                                                                            onClick={() => setCurrent(1)}
+                                                                                        >
+                                                                                            Previous
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                            type="submit"
+                                                                                        >
+                                                                                            Next
+                                                                                        </Button>
                                                                                     </div>
                                                                                 </Form>
                                                                             </div>
@@ -2472,8 +2660,7 @@ const steps2 = (props) => {
                                                                                 Previous
                                                                             </Button>
                                                                             <Button
-                                                                                className="btn-next-step"
-                                                                                disabled={!selectedUserType}
+                                                                                type='button'
                                                                                 onClick={() => {
                                                                                     if (validateStep(3)) {
                                                                                         submitOwnerData();
@@ -2511,7 +2698,7 @@ const steps2 = (props) => {
                                                                         />
                                                                         <button
                                                                             onClick={() => {
-                                                                                buttonRef.current.click()
+                                                                                teammerImgRef.current.click()
                                                                             }}
                                                                         >
                                                                             Upload New Photo
@@ -2539,23 +2726,22 @@ const steps2 = (props) => {
                                                                         };
                                                                     })}
                                                                 />
-                                                                <div className="d-flex justify-content-end routing-button">
+                                                                <div className="navigation-btn-wrapper">
                                                                     <Button
                                                                         type="button"
-                                                                        className="previous-button"
                                                                         onClick={() => setCurrentStep(2)}
                                                                     >
                                                                         Previous
                                                                     </Button>
-                                                                    <div>
-                                                                        <Button
-                                                                            type="button"
-                                                                            className="next-button"
-                                                                            onClick={submitTeammerData}
-                                                                        >
-                                                                            Submit
-                                                                        </Button>
-                                                                    </div>
+                                                                    <Button
+                                                                        onClick={() => {
+                                                                            if (validateStep(3)) {
+                                                                                submitTeammerData();
+                                                                            };
+                                                                        }}
+                                                                    >
+                                                                        Submit
+                                                                    </Button>
                                                                 </div>
                                                             </div>
                                                         } />
