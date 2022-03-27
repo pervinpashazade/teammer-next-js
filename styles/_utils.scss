@@ -320,38 +320,38 @@
                 }
               }
 
-              .upload-avatar-wrapper {
-                margin-top: 24px;
-                h4 {
-                  font-style: normal;
-                  font-weight: 600;
-                  font-size: 12px;
-                  line-height: 15px;
-                  color: $text-color-primary;
-                  margin-top: 24px;
-                }
+              // .upload-avatar-wrapper {
+              //   margin-top: 24px;
+              //   h4 {
+              //     font-style: normal;
+              //     font-weight: 600;
+              //     font-size: 12px;
+              //     line-height: 15px;
+              //     color: $text-color-primary;
+              //     margin-top: 24px;
+              //   }
 
-                div {
-                  display: flex;
-                  justify-content: flex-start;
+              //   div {
+              //     display: flex;
+              //     justify-content: flex-start;
 
-                  img {
-                    object-fit: cover;
-                    border-radius: 50%;
-                    width: 64px;
-                    height: 64px;
-                  }
+              //     img {
+              //       object-fit: cover;
+              //       border-radius: 50%;
+              //       width: 64px;
+              //       height: 64px;
+              //     }
 
-                  button {
-                    @include button(0px, transparent, 0px, 0px, 0px, 0px);
-                    color: $primary-color;
-                    font-size: 16px;
-                    line-height: 20px;
-                    font-weight: 600;
-                    margin-left: 20px;
-                  }
-                }
-              }
+              //     button {
+              //       @include button(0px, transparent, 0px, 0px, 0px, 0px);
+              //       color: $primary-color;
+              //       font-size: 16px;
+              //       line-height: 20px;
+              //       font-weight: 600;
+              //       margin-left: 20px;
+              //     }
+              //   }
+              // }
 
               .inner-form {
                 h3 {
@@ -481,14 +481,23 @@
               align-items: center;
               justify-content: flex-end;
 
-              .btn-next-step {
+              button {
                 font-weight: 600;
                 font-size: 16px;
                 line-height: 20px;
-                color: #fff;
-                background: #2a6fff;
                 padding: 14px 24px;
                 border-radius: 72px;
+                margin-left: 2rem;
+
+                &:first-child {
+                  color: #2a6fff;
+                  background-color: transparent;
+                }
+
+                &:last-child {
+                  color: #fff;
+                  background: #2a6fff;
+                }
               }
             }
           }
@@ -502,6 +511,39 @@
       .inner {
         align-items: flex-start;
       }
+    }
+  }
+}
+
+.upload-avatar-wrapper {
+  margin-top: 24px;
+  h4 {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 15px;
+    color: $text-color-primary;
+    margin-top: 24px;
+  }
+
+  div {
+    display: flex;
+    justify-content: flex-start;
+
+    img {
+      object-fit: cover;
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+    }
+
+    button {
+      @include button(0px, transparent, 0px, 0px, 0px, 0px);
+      color: $primary-color;
+      font-size: 16px;
+      line-height: 20px;
+      font-weight: 600;
+      margin-left: 20px;
     }
   }
 }

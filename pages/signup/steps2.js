@@ -8,6 +8,7 @@ import {
     Divider,
     Form,
     Input,
+    InputNumber,
     InputPicker,
     Notification,
     Radio,
@@ -23,8 +24,14 @@ import { BsPlusLg } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
 import config, { months } from '../../src/configuration';
+import { useAuth } from '../../Auth';
+import { getCookie } from '../../src/helpers/cookie';
+import { buildFormData } from '../../src/helpers/buildFormData';
+import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
 
 const steps2 = (props) => {
+
+    const authContext = useAuth();
 
     const [publicDatas, setPublicDatas] = useState({
         positionList: [],
@@ -42,9 +49,8 @@ const steps2 = (props) => {
     const [isEditorLoaded, setIsEditorLoaded] = useState(false);
     const { CKEditor, ClassicEditor } = editorRef.current || {};
 
-    // const handleChangeEditor = (data) => {
-    //     setEditorText(data);
-    // };
+    const [ownerResponseErrors, setOwnerResponseErrors] = useState([]);
+    const [teammerResponseErrors, setTeammerResponseErrors] = useState([]);
 
     // mount
     useEffect(() => {
@@ -122,7 +128,7 @@ const steps2 = (props) => {
         for (let i = 2000; i <= nowDate; i++) {
             yearArr.push({
                 label: `${i}`,
-                value: i
+                value: i,
             });
         }
 
@@ -139,9 +145,18 @@ const steps2 = (props) => {
         });
     };
 
-    const [currentStep, setCurrentStep] = useState(4);
+    const [currentStep, setCurrentStep] = useState(0);
 
-    const [selectedUserType, setSelectedUserType] = useState("2");
+    const [selectedUserType, setSelectedUserType] = useState();
+
+    const [isValidOwnerUsername, setIsValidOwnerUsername] = useState({
+        status: null,
+        message: null
+    });
+    const [isValidTeammerUsername, setIsValidTeammerUsername] = useState({
+        status: null,
+        message: null
+    });
 
     const [owner, setOwner] = useState({
         avatarFile: null,
@@ -157,24 +172,83 @@ const steps2 = (props) => {
         title: null,
         description: null,
         type: null,
-        jobList: []
+        // jobList: []
     });
 
+    const [jobList, setJobList] = useState([]);
     const [selectedJob, setSelectedJob] = useState({
-        uid: null,
-        position: null,
-        location: null,
-        type: null,
-        payment: null,
-        salary: null,
-        period: null,
-        experienceLevel: null,
-        skillList: [],
-        description: null,
+        position: {
+            id: null,
+            name: null,
+            key: "Position",
+        },
+        location: {
+            id: null,
+            name: null,
+            key: "Location",
+        },
+        type: {
+            id: null,
+            name: null,
+            key: "Type"
+        },
+        payment: {
+            id: null,
+            name: null,
+            key: "Payment"
+        },
+        salary: '',
+        period: {
+            id: null,
+            name: null,
+            key: "Salary period"
+        },
+        experience: '',
+        description: '',
     });
+    const [selectedJobErrors, setSelectedJobErrors] = useState([]);
+    const [isEditSelectedJob, setIsEditSelectedJob] = useState({
+        status: false,
+        index: -1,
+    });
+
+    const resetSelectedJob = () => {
+        setSelectedJob({
+            position: {
+                id: null,
+                name: null,
+                key: "Position",
+            },
+            location: {
+                id: null,
+                name: null,
+                key: "Location",
+            },
+            type: {
+                id: null,
+                label: null,
+                key: "Type"
+            },
+            payment: {
+                id: null,
+                label: null,
+                key: "Payment"
+            },
+            salary: '',
+            period: {
+                id: null,
+                label: null,
+                key: "Salary period"
+            },
+            experience: '',
+            // skillList: [],
+            description: '',
+        });
+    };
 
     const ownerImgRef = useRef();
     const startupLogoRef = useRef();
+    const teammerImgRef = useRef();
 
     const [teammer, setTeammer] = useState({
         avatarFile: null,
@@ -186,22 +260,312 @@ const steps2 = (props) => {
         experienceLevel: null,
         skillList: [],
         socialDatas: {},
+        portfolioList: [],
+        about: ''
     });
 
     const [workExperienceList, setWorkExperienceList] = useState([]);
     const [selectedWorkExp, setSelectedWorkExp] = useState({
-        uid: null,
-        position: null,
+        position: {
+            id: null,
+            name: null,
+            key: "Position",
+        },
         companyName: '',
-        location: null,
-        start_month: null,
-        start_year: null,
-        end_month: null,
-        endt_year: null,
+        location: {
+            id: null,
+            name: null,
+            key: "Location",
+        },
+        start_month: {
+            id: null,
+            name: null,
+            key: "Start month",
+        },
+        start_year: {
+            value: null,
+            label: null,
+            key: "Start year",
+        },
+        end_month: {
+            id: null,
+            name: null,
+            key: "End month",
+        },
+        end_year: {
+            value: null,
+            label: null,
+            key: "End year",
+        },
+    });
+    const [selectedWorkExpErrors, setSelectedWorkExpErrors] = useState([]);
+    const [isEditSelectedWorkExp, setIsEditSelectedWorkExp] = useState({
+        status: false,
+        index: -1,
     });
 
+    const [portfolioLink, setPortfolioLink] = useState('');
+
+    const resetSelectedWorkExp = () => {
+        setSelectedWorkExp({
+            position: {
+                id: null,
+                name: null,
+                key: "Position",
+            },
+            companyName: '',
+            location: {
+                id: null,
+                name: null,
+                key: "Location",
+            },
+            start_month: {
+                id: null,
+                name: null,
+                key: "Start month",
+            },
+            start_year: {
+                value: null,
+                label: null,
+                key: "Start year",
+            },
+            end_month: {
+                id: null,
+                name: null,
+                key: "End month",
+            },
+            end_year: {
+                value: null,
+                label: null,
+                key: "End year",
+            },
+        });
+    };
+
+    const validateWorkExpForm = () => {
+        if (!selectedWorkExp) return false;
+
+        let validationErrors = [];
+
+        for (const [key, value] of Object.entries(selectedWorkExp)) {
+            if (typeof value === 'string') {
+                if (!value || !value.trim()) {
+                    validationErrors.push({
+                        key: key,
+                        message: 'This field is required'
+                    });
+                };
+            };
+            if (typeof value === 'object') {
+
+                if (key === "start_year" || key === "end_year") {
+                    if (!value.value) {
+                        validationErrors.push({
+                            key: key,
+                            message: `${value.key} field is required`
+                        });
+                    };
+                } else {
+                    if (!value.id) {
+                        validationErrors.push({
+                            key: key,
+                            message: `${value.key} field is required`
+                        });
+                    };
+                };
+            };
+        };
+
+        setSelectedWorkExpErrors(validationErrors);
+
+        if (validationErrors.length) {
+            return false;
+        } else {
+            return true;
+        };
+    };
+
     const addMoreExperience = () => {
-        alert('add')
+        let isValidForm = validateWorkExpForm();
+        // if not valid form
+        if (!isValidForm) {
+            return;
+        };
+
+        if (!isEditSelectedWorkExp.status && isEditSelectedWorkExp.index < 0) {
+            setWorkExperienceList(prevState => {
+                return [...prevState, selectedWorkExp]
+            });
+        } else {
+            let arr = workExperienceList;
+            arr.splice(isEditSelectedWorkExp.index, 1, selectedWorkExp);
+            setWorkExperienceList(arr);
+            setIsEditSelectedWorkExp({
+                status: false,
+                index: -1
+            });
+        };
+
+        resetSelectedWorkExp();
+    };
+
+    const editWorkExperience = index => {
+
+        const selectedObj = workExperienceList[index];
+
+        console.log('selected obj', selectedObj);
+
+        setSelectedWorkExp({
+            position: {
+                id: selectedObj.position?.id || null,
+                name: selectedObj.position?.name || null,
+                key: "Position",
+            },
+            companyName: selectedObj.companyName || '',
+            location: {
+                id: selectedObj.location?.id || null,
+                name: selectedObj.location?.name || null,
+                key: "Location",
+            },
+            start_month: {
+                id: selectedObj.start_month?.id || null,
+                name: selectedObj.start_month?.name || null,
+                key: "Start month",
+            },
+            start_year: {
+                value: selectedObj.start_year?.value || null,
+                label: selectedObj.start_year?.label || null,
+                key: "Start year",
+            },
+            end_month: {
+                id: selectedObj.end_month?.id || null,
+                name: selectedObj.end_month?.name || null,
+                key: "End month",
+            },
+            end_year: {
+                value: selectedObj.end_year?.value || null,
+                label: selectedObj.end_year?.label || null,
+                key: "End year",
+            },
+        });
+
+        setIsEditSelectedWorkExp({
+            status: true,
+            index: index
+        });
+    };
+
+    const validateAddPositionForm = () => {
+        if (!selectedJob) return false;
+
+        let validationErrors = [];
+
+        for (const [key, value] of Object.entries(selectedJob)) {
+            if (typeof value === 'string') {
+                if (!value || !value.trim()) {
+                    validationErrors.push({
+                        key: key,
+                        message: 'This field is required'
+                    });
+                };
+            };
+            if (typeof value === 'object') {
+
+                if (key === "start_year" || key === "end_year") {
+                    if (!value.value) {
+                        validationErrors.push({
+                            key: key,
+                            message: `${value.key} field is required`
+                        });
+                    };
+                } else {
+                    if (!value.id) {
+                        validationErrors.push({
+                            key: key,
+                            message: `${value.key} field is required`
+                        });
+                    };
+                };
+            };
+        };
+
+        setSelectedJobErrors(validationErrors);
+
+        if (validationErrors.length) {
+            return false;
+        } else {
+            return true;
+        };
+    };
+
+    const addMorePosition = () => {
+
+        console.log('addMorePosition selcetedJob', selectedJob);
+
+        let isValidForm = validateAddPositionForm();
+        // if not valid form
+        if (!isValidForm) {
+            return;
+        };
+
+        if (!isEditSelectedJob.status && isEditSelectedJob.index < 0) {
+            setJobList(prevState => {
+                return [...prevState, selectedJob]
+            });
+        } else {
+            let arr = jobList;
+            arr.splice(isEditSelectedJob.index, 1, selectedJob);
+            setJobList(arr);
+            setIsEditSelectedJob({
+                status: false,
+                index: -1
+            });
+        };
+
+        resetSelectedJob();
+    };
+
+    const editSelectedJob = index => {
+
+        const selectedObj = jobList[index];
+
+        console.log('selected obj', selectedObj);
+
+        setSelectedJob({
+            position: {
+                id: selectedObj.position.id || null,
+                name: selectedObj.position.name || null,
+                key: "Position",
+            },
+            location: {
+                id: selectedObj.location.id || null,
+                name: selectedObj.location.name || null,
+                key: "Location",
+            },
+            type: {
+                id: selectedObj.type.id || null,
+                name: selectedObj.type.name || null,
+                key: "Type"
+            },
+            payment: {
+                id: selectedObj.payment.id || null,
+                name: selectedObj.payment.name || null,
+                key: "Payment"
+            },
+            salary: selectedObj.salary,
+            period: {
+                id: selectedObj.period.id || null,
+                name: selectedObj.period.name || null,
+                key: "Salary period"
+            },
+            experience: selectedObj.experience,
+            description: selectedObj.description,
+        });
+
+        setIsEditSelectedJob({
+            status: true,
+            index: index
+        });
     };
 
     // not working use ref
@@ -219,15 +583,14 @@ const steps2 = (props) => {
             username: null,
             full_name: null,
             location: null,
+            positions: [],
+            experienceLevel: null,
+            skillList: [],
+            socialDatas: {},
+            portfolioList: [],
+            about: ''
         });
     };
-
-    const [teammerStepValidations, setTeammerStepValidations] = useState({
-        step_1: [],
-    });
-    const [ownerStepValidations, setOwnerStepValidations] = useState({
-        step_1: [],
-    });
 
     const handleChangeStep = () => {
         if (!selectedUserType) setCurrentStep(0);
@@ -309,10 +672,6 @@ const steps2 = (props) => {
         // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
-            // setImage({
-            //     ...image,
-            //     [type]: i
-            // });
 
             if (type === 'owner-avatar') {
                 setOwner(prevState => {
@@ -341,12 +700,7 @@ const steps2 = (props) => {
                     };
                 });
             };
-
-            // setCreateObjectURL({
-            //     ...createObjectURL,
-            //     [type]: URL.createObjectURL(i)
-            // });
-        }
+        };
     };
 
     const getSocialDatas = (e) => {
@@ -359,6 +713,27 @@ const steps2 = (props) => {
         };
 
         return data;
+    };
+
+    const portfolioFunction = (type, itemLink) => {
+        if (type === "add") {
+            setTeammer(prevState => {
+                return {
+                    ...prevState,
+                    portfolioList: [...prevState.portfolioList, portfolioLink]
+                };
+            });
+            setPortfolioLink('');
+        }
+        if (type === "remove" && itemLink) {
+            setTeammer(prevState => {
+                return {
+                    ...prevState,
+                    portfolioList: [...prevState.portfolioList.filter(item => item !== itemLink)]
+                };
+            });
+            // setPortfolios(portfolios.filter(item => item !== element))
+        };
     };
 
     const confirm_step_3 = (socialDatas) => {
@@ -374,11 +749,340 @@ const steps2 = (props) => {
         setCurrentStep(3);
     };
 
-    useEffect(() => {
-        // console.clear();
+    const [teammerStepValidations, setTeammerStepValidations] = useState({
+        step_1: [],
+        step_2: [],
+        step_3: [],
+    });
+    const [ownerStepValidations, setOwnerStepValidations] = useState({
+        step_1: [],
+        step_2: [],
+        step_3: [],
+    });
 
-        console.log('TEAMMER STATE DATAS log : ', teammer);
-    }, [teammer]);
+    const checkUsernameAsync = async (username, userType) => {
+
+        if (!username?.trim()) return;
+        if (!userType || !currentStep) {
+            setCurrentStep(0);
+            return false;
+        };
+
+        if (/^[A-z\d_]{5,20}$/i.test(username)) {
+            if (userType === "1") {
+                setIsValidOwnerUsername({
+                    status: true,
+                    message: ''
+                });
+            };
+            if (userType === "2") {
+                setIsValidTeammerUsername({
+                    status: true,
+                    message: ''
+                });
+            };
+            axios.get(config.BASE_URL + `register/check?type=username&value=${username}`).then(res => {
+                if (!res.data.success) {
+                    if (userType === "1") {
+                        setIsValidOwnerUsername({
+                            status: false,
+                            message: res.data.message
+                        });
+                    };
+                    if (userType === "2") {
+                        setIsValidTeammerUsername({
+                            status: false,
+                            message: res.data.message
+                        });
+                    };
+                } else {
+                    if (userType === "1") {
+                        setIsValidOwnerUsername({
+                            status: true,
+                            message: res.data.message
+                        });
+                    };
+                    if (userType === "2") {
+                        setIsValidTeammerUsername({
+                            status: true,
+                            message: res.data.message
+                        });
+                    };
+                };
+            });
+        } else {
+            if (userType === "1") {
+                setIsValidOwnerUsername({
+                    status: false,
+                    message: 'Username is not valid'
+                });
+            };
+            if (userType === "2") {
+                setIsValidTeammerUsername({
+                    status: false,
+                    message: 'Username is not valid'
+                });
+            };
+        };
+    };
+
+    const validateStep = () => {
+        if (!selectedUserType || !currentStep) {
+            setCurrentStep(0);
+            return false;
+        };
+
+        // user stype => owner
+        if (selectedUserType === "1") {
+            if (currentStep === 1) {
+
+                // TEST MODE !!!
+                return true;
+                // TEST MODE !!!
+
+                let step_1_errors = [];
+
+                if (!owner.avatarFile) {
+                    step_1_errors.push({
+                        key: 'avatarFile',
+                        message: 'Avatar field is required'
+                    });
+                };
+                if (!owner.full_name?.trim()) {
+                    step_1_errors.push({
+                        key: 'full_name',
+                        message: 'Fullname field is required'
+                    });
+                };
+                if (!owner.username?.trim()) {
+                    step_1_errors.push({
+                        key: 'username',
+                        message: 'Username field is required'
+                    });
+                };
+                if (!owner.role) {
+                    step_1_errors.push({
+                        key: 'role',
+                        message: 'Role field is required'
+                    });
+                };
+
+                setOwnerStepValidations(prevState => {
+                    return {
+                        ...prevState,
+                        step_1: step_1_errors
+                    };
+                });
+
+                if (step_1_errors.length && !isValidOwnerUsername.status) {
+                    alert('return FALSE')
+                    return false;
+                } else {
+                    alert('return TRUE')
+                    return true;
+                };
+            };
+            if (currentStep === 2) {
+
+                // TEST MODE !!!
+                return true;
+                // TEST MODE !!!
+
+                let step_2_errors = [];
+
+                if (!startup.avatarFile) {
+                    step_2_errors.push({
+                        key: 'avatarFile',
+                        message: 'Logo field is required'
+                    });
+                };
+                if (!startup.title?.trim()) {
+                    step_2_errors.push({
+                        key: 'title',
+                        message: 'Title field is required'
+                    });
+                };
+                if (!startup.type) {
+                    step_2_errors.push({
+                        key: 'type',
+                        message: 'Startup type field is required'
+                    });
+                };
+                if (!startup.description) {
+                    step_2_errors.push({
+                        key: 'description',
+                        message: 'Description field is required'
+                    });
+                };
+
+                setOwnerStepValidations(prevState => {
+                    return {
+                        ...prevState,
+                        step_2: step_2_errors
+                    };
+                });
+            };
+            if (currentStep === 3) {
+                // OWNER FINAL STEP
+                let step_3_errors = [];
+
+                let isValidForm = validateAddPositionForm();
+
+                // // validate and submit all steps form
+
+                // // v1
+                if (!jobList.length && !isValidForm) {
+                    step_3_errors.push({
+                        key: 'final',
+                        message: 'You must add at least 1 job position'
+                    });
+                    setOwnerStepValidations(prevState => {
+                        return {
+                            ...prevState,
+                            step_3: step_3_errors
+                        };
+                    });
+
+                    return;
+                };
+
+                // // v2
+                if (!jobList.length && (isValidForm && !isEditSelectedJob.status)) {
+                    setJobList([selectedJob]);
+                    setOwnerStepValidations(prevState => {
+                        return {
+                            ...prevState,
+                            step_3: []
+                        };
+                    });
+                    submitOwnerData();
+
+                    return;
+                };
+
+                // // v3
+                if (jobList.length && !isValidForm) {
+                    resetSelectedJob();
+                    setOwnerStepValidations(prevState => {
+                        return {
+                            ...prevState,
+                            step_3: []
+                        };
+                    });
+                    submitOwnerData();
+
+                    return;
+                };
+
+                // // v4 (list & editing selected job )
+                if (jobList.length && (isValidForm && isEditSelectedJob)) {
+                    step_3_errors.push({
+                        key: 'final',
+                        message: 'You did not complete editing selected job'
+                    });
+                    setOwnerStepValidations(prevState => {
+                        return {
+                            ...prevState,
+                            step_3: step_3_errors
+                        };
+                    });
+
+                    return;
+                };
+
+                // // v5 (list & new job )
+                if (jobList.length && (isValidForm && !isEditSelectedJob)) {
+                    // let currentJobList = jobList;
+                    // currentJobList.push(selectedJob);
+                    // setJobList(currentJobList);
+
+                    addMorePosition();
+
+                    setOwnerStepValidations(prevState => {
+                        return {
+                            ...prevState,
+                            step_3: []
+                        };
+                    });
+                    submitOwnerData();
+
+                    return;
+                };
+
+                alert('not valid form');
+            };
+        };
+        // user stype => teammer
+        if (selectedUserType === "2") {
+
+        };
+    };
+
+    const submitOwnerData = () => {
+        alert('submit owner data');
+
+        // jobList bosh gelir 
+
+        console.log(
+            'owner data : ', owner,
+            'startup : ', startup,
+            'job list : ', jobList,
+        );
+
+
+        let jobs = jobList.map(item => {
+            return {
+                salary: item.salary,
+                salary_period: item.period?.id,
+                years_of_experience: item.experience,
+                payment_type_id: item.payment?.id,
+                type_id: item.type?.id,
+                location_id: item.location?.id,
+                position_id: item.position?.id,
+                description: item.description
+            };
+        });
+
+        let body = {
+            type: 1,
+            photo: owner.avatarFile,
+            username: owner.username,
+            full_name: owner.full_name,
+            detail: {
+                project_role_id: owner.role?.id
+            },
+            project: {
+                logo: startup.avatarFile,
+                title: startup.title,
+                type_id: startup.type.id,
+                jobs: jobs,
+                description: startup.description,
+            }
+        };
+
+        // console.log('authContext', authContext);
+        // console.log('getToken', getCookie('teammers-access-token'));
+
+        const formData = new FormData();
+        buildFormData(formData, body);
+
+        axios.post(config.BASE_URL + "auth/register-complete", formData, {
+            headers: {
+                "Authorization": "Bearer " + getCookie('teammers-access-token')
+            }
+        }).then(res => {
+            console.log('steps RESPONSE', res);
+        }).catch(error => {
+            if (error.response?.status === 422) {
+                let errors = renderErrorMessages(error.response.data.error.validation);
+                setOwnerResponseErrors(errors);
+            };
+        });
+    };
+
+    const submitTeammerData = () => {
+        alert('submit teammer data');
+    };
 
     return (
         <div className="container">
@@ -533,6 +1237,15 @@ const steps2 = (props) => {
                                                                                 </div>
                                                                             </div>
                                                                         }
+                                                                        <div className="validation-errors mb-4">
+                                                                            {
+                                                                                ownerStepValidations.step_1.map((item, index) => {
+                                                                                    if (item.key === "avatarFile") {
+                                                                                        return <span key={index}>{item.message}</span>
+                                                                                    };
+                                                                                })
+                                                                            }
+                                                                        </div>
                                                                         <Form.ControlLabel>Username</Form.ControlLabel>
                                                                         <Form.Control
                                                                             type="text"
@@ -560,8 +1273,45 @@ const steps2 = (props) => {
                                                                                         }
                                                                                     });
                                                                                 };
+
+                                                                                checkUsernameAsync(e, selectedUserType);
                                                                             }}
+                                                                        // onBlur={(e) => {
+                                                                        //     checkUsernameAsync(e.target.value, selectedUserType);
+                                                                        // }}
                                                                         />
+                                                                        {
+                                                                            selectedUserType === "1" &&
+                                                                            <div className="validation-errors">
+                                                                                {
+                                                                                    ownerStepValidations.step_1.map((item, index) => {
+                                                                                        if (item.key === "username") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        };
+                                                                                    })
+                                                                                }
+                                                                                {
+                                                                                    !isValidOwnerUsername.status &&
+                                                                                    <span>{isValidOwnerUsername.message}</span>
+                                                                                }
+                                                                            </div>
+                                                                        }
+                                                                        {
+                                                                            selectedUserType === "2" &&
+                                                                            <div className="validation-errors">
+                                                                                {
+                                                                                    teammerStepValidations.step_1.map((item, index) => {
+                                                                                        if (item.key === "username") {
+                                                                                            return <span key={index}>{item.message}</span>
+                                                                                        };
+                                                                                    })
+                                                                                }
+                                                                                {
+                                                                                    !isValidTeammerUsername.status &&
+                                                                                    <span>{isValidTeammerUsername.message}</span>
+                                                                                }
+                                                                            </div>
+                                                                        }
                                                                     </Form.Group>
                                                                     <Form.Group controlId="full_name">
                                                                         <Form.ControlLabel>Full Name</Form.ControlLabel>
@@ -593,6 +1343,15 @@ const steps2 = (props) => {
                                                                                 };
                                                                             }}
                                                                         />
+                                                                        <div className="validation-errors">
+                                                                            {
+                                                                                ownerStepValidations.step_1.map((item, index) => {
+                                                                                    if (item.key === "full_name") {
+                                                                                        return <span key={index}>{item.message}</span>
+                                                                                    };
+                                                                                })
+                                                                            }
+                                                                        </div>
                                                                     </Form.Group>
                                                                     {
                                                                         selectedUserType === "1" ?
@@ -612,10 +1371,19 @@ const steps2 = (props) => {
                                                                                             return {
                                                                                                 ...prevState,
                                                                                                 role: obj
-                                                                                            }
+                                                                                            };
                                                                                         });
                                                                                     }}
                                                                                 />
+                                                                                <div className="validation-errors">
+                                                                                    {
+                                                                                        ownerStepValidations.step_1.map((item, index) => {
+                                                                                            if (item.key === "role") {
+                                                                                                return <span key={index}>{item.message}</span>
+                                                                                            };
+                                                                                        })
+                                                                                    }
+                                                                                </div>
                                                                             </Form.Group>
                                                                             :
                                                                             <Form.Group>
@@ -640,64 +1408,24 @@ const steps2 = (props) => {
                                                                                 />
                                                                             </Form.Group>
                                                                     }
-                                                                    <div className="d-flex justify-content-end routing-button">
+                                                                    <div className="navigation-btn-wrapper">
                                                                         <Button
                                                                             type="button"
-                                                                            className="previous-button"
                                                                             onClick={() => setCurrentStep(0)}
                                                                         >
                                                                             Previous
                                                                         </Button>
-                                                                        <Form.Group>
-                                                                            <ButtonToolbar>
-                                                                                <Button
-                                                                                    type="button"
-                                                                                    className="next-button"
-                                                                                    onClick={() => {
-                                                                                        if (selectedUserType === '1') {
-                                                                                            if (owner.username && owner.full_name && owner.role && owner.avatarFile) {
-                                                                                                setCurrentStep(2)
-                                                                                            } else {
-                                                                                                toaster.push(
-                                                                                                    <Notification
-                                                                                                        type={"error"}
-                                                                                                        header="Failed confirmation!"
-                                                                                                        closable
-                                                                                                    >
-                                                                                                        <p className="text-danger">
-                                                                                                            An error occurred while filling in the
-                                                                                                            information.
-                                                                                                            All boxes must be filled correctly
-                                                                                                        </p>
-                                                                                                    </Notification>, 'topEnd'
-                                                                                                )
-                                                                                            }
-                                                                                        }
-                                                                                        if (selectedUserType === '2') {
-                                                                                            if (teammer.username && teammer.full_name && teammer.location) {
-                                                                                                setCurrentStep(2)
-                                                                                            } else {
-                                                                                                toaster.push(
-                                                                                                    <Notification
-                                                                                                        type={"error"}
-                                                                                                        header="Failed confirmation!"
-                                                                                                        closable
-                                                                                                    >
-                                                                                                        <p className="text-danger">
-                                                                                                            An error occurred while filling in the
-                                                                                                            information.
-                                                                                                            All boxes must be filled correctly
-                                                                                                        </p>
-                                                                                                    </Notification>, 'topEnd'
-                                                                                                )
-                                                                                            }
-                                                                                        }
-                                                                                    }}
-                                                                                >
-                                                                                    Next
-                                                                                </Button>
-                                                                            </ButtonToolbar>
-                                                                        </Form.Group>
+                                                                        <Button
+                                                                            className="btn-next-step"
+                                                                            disabled={!selectedUserType}
+                                                                            onClick={() => {
+                                                                                if (validateStep(1)) {
+                                                                                    setCurrentStep(2);
+                                                                                };
+                                                                            }}
+                                                                        >
+                                                                            Next
+                                                                        </Button>
                                                                     </div>
                                                                 </Form>
                                                         }
@@ -707,6 +1435,7 @@ const steps2 = (props) => {
                                             {/* STEP 3 */}
                                             {
                                                 selectedUserType === "1" ?
+                                                    // owner
                                                     <Steps.Item
                                                         className='_step-item'
                                                         title={
@@ -759,7 +1488,8 @@ const steps2 = (props) => {
                                                                                     </p>
                                                                                     <p>
                                                                                         <span>Experience level</span>
-                                                                                        <span>{selectedJob.experienceLevel?.name}</span>
+                                                                                        {/* <span>{selectedJob.experienceLevel?.name}</span> */}
+                                                                                        <span>{selectedJob.experience}</span>
                                                                                     </p>
                                                                                     <p>
                                                                                         <span>Skills</span>
@@ -795,10 +1525,10 @@ const steps2 = (props) => {
                                                                                     />
                                                                                     <div>
                                                                                         <Image
-                                                                                            src={startup.avatarUrl ? startup.avatarUrl : '/img/upload_image.png'}
-                                                                                            alt='icon'
                                                                                             width={64}
                                                                                             height={64}
+                                                                                            alt='icon'
+                                                                                            src={startup.avatarUrl ? startup.avatarUrl : '/img/upload_image.png'}
                                                                                         />
                                                                                         <button
                                                                                             onClick={() => {
@@ -807,6 +1537,15 @@ const steps2 = (props) => {
                                                                                         >
                                                                                             Upload Logo
                                                                                         </button>
+                                                                                    </div>
+                                                                                    <div className="validation-errors mb-4">
+                                                                                        {
+                                                                                            ownerStepValidations.step_2.map((item, index) => {
+                                                                                                if (item.key === "avatarFile") {
+                                                                                                    return <span key={index}>{item.message}</span>
+                                                                                                };
+                                                                                            })
+                                                                                        }
                                                                                     </div>
                                                                                 </div>
                                                                                 <Form.Group controlId="title">
@@ -825,6 +1564,15 @@ const steps2 = (props) => {
                                                                                             });
                                                                                         }}
                                                                                     />
+                                                                                    <div className="validation-errors">
+                                                                                        {
+                                                                                            ownerStepValidations.step_2.map((item, index) => {
+                                                                                                if (item.key === "title") {
+                                                                                                    return <span key={index}>{item.message}</span>
+                                                                                                };
+                                                                                            })
+                                                                                        }
+                                                                                    </div>
                                                                                 </Form.Group>
                                                                                 <Form className="Group">
                                                                                     <Form.ControlLabel>Startup type</Form.ControlLabel>
@@ -846,6 +1594,15 @@ const steps2 = (props) => {
                                                                                             });
                                                                                         }}
                                                                                     />
+                                                                                    <div className="validation-errors mb-4">
+                                                                                        {
+                                                                                            ownerStepValidations.step_2.map((item, index) => {
+                                                                                                if (item.key === "type") {
+                                                                                                    return <span key={index}>{item.message}</span>
+                                                                                                };
+                                                                                            })
+                                                                                        }
+                                                                                    </div>
                                                                                 </Form>
                                                                                 <Form.Group className="mt-2">
                                                                                     <Form.ControlLabel>Description about startup</Form.ControlLabel>
@@ -869,44 +1626,35 @@ const steps2 = (props) => {
                                                                                             :
                                                                                             ''
                                                                                     }
+                                                                                    <div className="validation-errors mb-4">
+                                                                                        {
+                                                                                            ownerStepValidations.step_2.map((item, index) => {
+                                                                                                if (item.key === "description") {
+                                                                                                    return <span key={index}>{item.message}</span>
+                                                                                                };
+                                                                                            })
+                                                                                        }
+                                                                                    </div>
                                                                                 </Form.Group>
                                                                             </Form>
                                                                             <div className="navigation-btn-wrapper">
                                                                                 <Button
                                                                                     type="button"
-                                                                                    className="btn-next-step"
                                                                                     onClick={() => setCurrentStep(1)}
                                                                                 >
                                                                                     Previous
                                                                                 </Button>
-                                                                                <Form.Group>
-                                                                                    <ButtonToolbar>
-                                                                                        <Button
-                                                                                            onClick={() => {
-                                                                                                if (startup.title && startup.type) {
-                                                                                                    setCurrentStep(3)
-                                                                                                } else {
-                                                                                                    toaster.push(
-                                                                                                        <Notification
-                                                                                                            type={"error"}
-                                                                                                            header="Failed confirmation!"
-                                                                                                            closable
-                                                                                                        >
-                                                                                                            <p className="text-danger">
-                                                                                                                An error occurred while
-                                                                                                                filling in the
-                                                                                                                information.
-                                                                                                                All boxes must be filled
-                                                                                                                correctly
-                                                                                                            </p>
-                                                                                                        </Notification>, 'topEnd'
-                                                                                                    )
-                                                                                                }
-                                                                                            }}
-                                                                                            className="next-button"
-                                                                                            type="submit">Next</Button>
-                                                                                    </ButtonToolbar>
-                                                                                </Form.Group>
+                                                                                <Button
+                                                                                    className="btn-next-step"
+                                                                                    disabled={!selectedUserType}
+                                                                                    onClick={() => {
+                                                                                        if (validateStep(2)) {
+                                                                                            setCurrentStep(3);
+                                                                                        };
+                                                                                    }}
+                                                                                >
+                                                                                    Next
+                                                                                </Button>
                                                                             </div>
                                                                         </div>
                                                                 }
@@ -914,6 +1662,7 @@ const steps2 = (props) => {
                                                         }
                                                     />
                                                     :
+                                                    // teammer
                                                     <Steps.Item
                                                         className='_step-item'
                                                         title={
@@ -936,15 +1685,35 @@ const steps2 = (props) => {
                                                                         <div className='step-form-item-summary'>
                                                                             <p>
                                                                                 <span>Position</span>
-                                                                                {/* <span>{positionDetails.map(item => props.positions.find(i => i.value === item)?.label)}</span> */}
+                                                                                <span>
+                                                                                    {
+                                                                                        teammer.positions.map(item => {
+                                                                                            return <div>
+                                                                                                {
+                                                                                                    item.name
+                                                                                                }
+                                                                                            </div>
+                                                                                        })
+                                                                                    }
+                                                                                </span>
                                                                             </p>
                                                                             <p>
                                                                                 <span>Experience level</span>
-                                                                                {/* <span>{props.experience_levels.find(i => i.value === experienceLevel)?.label}</span> */}
+                                                                                <span>{teammer.experienceLevel?.name}</span>
                                                                             </p>
                                                                             <p>
                                                                                 <span>Skills</span>
-                                                                                {/* <span>{skills.map(item => props.skills.find(i => i.value === item)?.label)}</span> */}
+                                                                                <span>
+                                                                                    {
+                                                                                        teammer.skillList.map(item => {
+                                                                                            return <div>
+                                                                                                {
+                                                                                                    item.name
+                                                                                                }
+                                                                                            </div>
+                                                                                        })
+                                                                                    }
+                                                                                </span>
                                                                             </p>
                                                                             <p>
                                                                                 <span>Work experience</span>
@@ -1060,22 +1829,20 @@ const steps2 = (props) => {
                                                                                 })
                                                                             }
                                                                             <h3>Work Experience</h3>
-                                                                            <div
-                                                                                className="work-experience-summary">
+                                                                            <div className="work-experience-summary">
                                                                                 {
                                                                                     workExperienceList.map((item, index) =>
                                                                                         <div key={index}>
                                                                                             <p>
                                                                                                 <span className="from-date">
-                                                                                                    {item.start_date.month && months.find((el) => el.value === item.start_date.month)?.label} {item.start_date.year}
+                                                                                                    {item.start_month?.name} {item.start_year?.label}
                                                                                                 </span>
-                                                                                                <span className="to-date"> -{item.end_date.month && months.find((el) => el.value === item.end_date.month)?.label} {item.end_date.year}
-                                                                                                </span>
+                                                                                                <span className="to-date"> - {item.end_month?.name} {item.end_year?.label}</span>
                                                                                             </p>
                                                                                             <div className="edit-header">
                                                                                                 <div className="job-title">
-                                                                                                    <h3>{props.positions.find(i => i.value === item.position)?.label}</h3>
-                                                                                                    <p>{item.company} / {props.locations.find(i => i.value === item.location)?.label}</p>
+                                                                                                    <h3>{item.position?.name}</h3>
+                                                                                                    <p>{item.companyName} / {item.location?.name}</p>
                                                                                                 </div>
                                                                                                 <button onClick={() => editWorkExperience(index)}>
                                                                                                     <MdModeEditOutline />
@@ -1105,6 +1872,13 @@ const steps2 = (props) => {
                                                                                                 });
                                                                                             }}
                                                                                         />
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'position')?.message
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div className="job-divs">
                                                                                         <h4>Company</h4>
@@ -1120,6 +1894,13 @@ const steps2 = (props) => {
                                                                                                 });
                                                                                             }}
                                                                                         />
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'companyName')?.message
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div className="job-divs">
                                                                                         <h4>Location</h4>
@@ -1140,6 +1921,13 @@ const steps2 = (props) => {
                                                                                                 });
                                                                                             }}
                                                                                         />
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'location')?.message
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
                                                                                     </div>
                                                                                     <div className="job-divs">
                                                                                         <h4>Start date</h4>
@@ -1172,7 +1960,7 @@ const steps2 = (props) => {
                                                                                                 className="w-100 my-2"
                                                                                                 placeholder="Years"
                                                                                                 data={publicDatas.years}
-                                                                                                value={selectedWorkExp.start_year?.id}
+                                                                                                value={selectedWorkExp.start_year?.value}
                                                                                                 onSelect={(id, obj) => {
                                                                                                     setSelectedWorkExp(prevState => {
                                                                                                         return {
@@ -1182,6 +1970,20 @@ const steps2 = (props) => {
                                                                                                     });
                                                                                                 }}
                                                                                             />
+                                                                                        </div>
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'start_month')?.message
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'start_year')?.message
+                                                                                                }
+                                                                                            </span>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div className="job-divs">
@@ -1215,16 +2017,30 @@ const steps2 = (props) => {
                                                                                                 className="w-100 my-2"
                                                                                                 placeholder="Years"
                                                                                                 data={publicDatas.years}
-                                                                                                value={selectedWorkExp.endt_year?.id}
+                                                                                                value={selectedWorkExp.end_year?.value}
                                                                                                 onSelect={(id, obj) => {
                                                                                                     setSelectedWorkExp(prevState => {
                                                                                                         return {
                                                                                                             ...prevState,
-                                                                                                            endt_year: obj
+                                                                                                            end_year: obj
                                                                                                         };
                                                                                                     });
                                                                                                 }}
                                                                                             />
+                                                                                        </div>
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'end_month')?.message
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div className="validation-errors">
+                                                                                            <span>
+                                                                                                {
+                                                                                                    selectedWorkExpErrors.find(x => x.key === 'end_year')?.message
+                                                                                                }
+                                                                                            </span>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -1233,42 +2049,55 @@ const steps2 = (props) => {
                                                                                     onClick={addMoreExperience}
                                                                                 >
                                                                                     <BsPlusLg className="mr-2" />
-                                                                                    Add More Experience
+                                                                                    {
+                                                                                        !isEditSelectedWorkExp.status ?
+                                                                                            'Add More Experience'
+                                                                                            :
+                                                                                            'Edit Selected Experience'
+                                                                                    }
                                                                                 </button>
                                                                             </div>
                                                                             <hr />
-                                                                            {/* <div className="portfolio">
+                                                                            <div className="portfolio">
                                                                                 <h3>Portfolio</h3>
                                                                                 {
-                                                                                    portfolios.length > 0 && portfolios.map((item, index) =>
+                                                                                    teammer.portfolioList.length > 0 && teammer.portfolioList.map((item, index) =>
                                                                                         <div
                                                                                             key={index}
-                                                                                            className="portfolio-links">
-                                                                                            <a>{item}</a>
-                                                                                            <button
+                                                                                            className="portfolio-links"
+                                                                                        >
+                                                                                            <Link href={item} passHref>
+                                                                                                <a>{item}</a>
+                                                                                            </Link>
+                                                                                            <Button
                                                                                                 onClick={() => {
-                                                                                                    portoflioAdd('remove', item);
-                                                                                                }}><FaRegTrashAlt />
-                                                                                            </button>
-                                                                                        </div>)
+                                                                                                    portfolioFunction('remove', item);
+                                                                                                }}
+                                                                                            >
+                                                                                                <FaRegTrashAlt />
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                    )
                                                                                 }
                                                                                 <div className="portfolio-add">
                                                                                     <Input
                                                                                         placeholder="Enter link"
-                                                                                        onChange={(e) => setPortfolio(e)}
+                                                                                        onChange={(e) => setPortfolioLink(e)}
                                                                                         className="w-100 mr-2"
-                                                                                        value={portfolio} />
+                                                                                        value={portfolioLink}
+                                                                                    />
                                                                                     <Button
-                                                                                        onClick={() => portoflioAdd('add')}
+                                                                                        onClick={() => portfolioFunction('add')}
                                                                                     >
                                                                                         <BsPlusLg
                                                                                             className="mr-2 " />
                                                                                     </Button>
                                                                                 </div>
                                                                                 <hr />
-                                                                            </div> */}
+                                                                            </div>
                                                                             <div className="step_form">
                                                                                 <h3>Social media accounts</h3>
+                                                                                {/* social media form */}
                                                                                 <Form
                                                                                     onSubmit={(e, data) => confirm_step_3(data)}
                                                                                     className="mt-3">
@@ -1277,7 +2106,7 @@ const steps2 = (props) => {
                                                                                         <Form.ControlLabel>Twitter</Form.ControlLabel>
                                                                                         <Form.Control
                                                                                             name="twitter"
-                                                                                            type="text"
+                                                                                            type="url"
                                                                                             placeholder="https://www.twitter.com/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group
@@ -1285,13 +2114,13 @@ const steps2 = (props) => {
                                                                                         <Form.ControlLabel>Facebook</Form.ControlLabel>
                                                                                         <Form.Control
                                                                                             name="facebook"
-                                                                                            type="text"
+                                                                                            type="url"
                                                                                             placeholder="https://www.facebook.com/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group controlId="github">
                                                                                         <Form.ControlLabel>Github</Form.ControlLabel>
                                                                                         <Form.Control name="github"
-                                                                                            type="text"
+                                                                                            type="url"
                                                                                             placeholder="https://www.github.com/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group
@@ -1299,7 +2128,7 @@ const steps2 = (props) => {
                                                                                         <Form.ControlLabel>Behance</Form.ControlLabel>
                                                                                         <Form.Control
                                                                                             name="behance"
-                                                                                            type="text"
+                                                                                            type="url"
                                                                                             placeholder="http://www.behance.net/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group
@@ -1307,7 +2136,7 @@ const steps2 = (props) => {
                                                                                         <Form.ControlLabel>Dribble</Form.ControlLabel>
                                                                                         <Form.Control
                                                                                             name="dribble"
-                                                                                            type="text"
+                                                                                            type="url"
                                                                                             placeholder="http://www.dribble.com/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group
@@ -1315,19 +2144,9 @@ const steps2 = (props) => {
                                                                                         <Form.ControlLabel>Linkedin</Form.ControlLabel>
                                                                                         <Form.Control
                                                                                             name="linkedin"
-                                                                                            type="text"
+                                                                                            type="url"
                                                                                             placeholder="https://www.linkedin.com/margaretbrown" />
                                                                                     </Form.Group>
-                                                                                    {/* <Uploader className="upload"
-                                                                                        onChange={(fileList, fileType) => setCv(fileList)}
-                                                                                        action=""
-                                                                                        maxPreviewFileSize={2}
-                                                                                        defaultFileList={cv}
-                                                                                    >
-                                                                                        <button type="button">
-                                                                                            Import from Linkedin
-                                                                                        </button>
-                                                                                    </Uploader> */}
                                                                                     <div
                                                                                         className="d-flex justify-content-end routing-button">
                                                                                         <Button
@@ -1349,6 +2168,398 @@ const steps2 = (props) => {
                                                         }
                                                     />
                                             }
+                                            {/* STEP 4 */}
+                                            {
+                                                selectedUserType === "1" ?
+                                                    <Steps.Item
+                                                        className='_step-item'
+                                                        title="Who are you looking for in your team?"
+                                                        description={
+                                                            <div className='step-form'>
+                                                                {
+                                                                    jobList.length > 0 && jobList.map((item, index) =>
+                                                                        item.position && (
+                                                                            <div key={index}>
+                                                                                <div
+                                                                                    className="edit-header d-flex justify-content-between align-items-baseline"
+                                                                                >
+                                                                                    <div className="job-title">
+                                                                                        <h5>Position: {' '}{' '}</h5>
+                                                                                    </div>
+                                                                                    <p>
+                                                                                        {item.position.name}
+                                                                                    </p>
+                                                                                    <MdModeEditOutline
+                                                                                        className='c-pointer'
+                                                                                        onClick={() => editSelectedJob(index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                        )
+                                                                    )
+                                                                }
+                                                                <div className="position_details">
+                                                                    {/* add position form */}
+                                                                    <Form>
+                                                                        <Form.Group>
+                                                                            <Form.ControlLabel>
+                                                                                Job Position
+                                                                            </Form.ControlLabel>
+                                                                            <InputPicker
+                                                                                size="lg"
+                                                                                className="w-100 mb-2"
+                                                                                placeholder="Job Position"
+                                                                                data={publicDatas.positionList}
+                                                                                value={selectedJob.position?.id}
+                                                                                valueKey="id"
+                                                                                labelKey='name'
+                                                                                onSelect={(id, obj) => {
+                                                                                    setSelectedJob(prevState => {
+                                                                                        return {
+                                                                                            ...prevState,
+                                                                                            position: obj
+                                                                                        };
+                                                                                    });
+                                                                                }}
+                                                                            />
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'position')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <Form.Group>
+                                                                            <InputPicker
+                                                                                size="lg"
+                                                                                className="w-100 mb-2"
+                                                                                placeholder="Location"
+                                                                                data={publicDatas.locationList}
+                                                                                value={selectedJob.location?.id}
+                                                                                valueKey="id"
+                                                                                labelKey='name'
+                                                                                onSelect={(id, obj) => {
+                                                                                    setSelectedJob(prevState => {
+                                                                                        return {
+                                                                                            ...prevState,
+                                                                                            location: obj
+                                                                                        };
+                                                                                    });
+                                                                                }}
+                                                                            />
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'location')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <Form.Group>
+                                                                            <InputPicker
+                                                                                size="lg"
+                                                                                className="w-100 mb-2"
+                                                                                placeholder="Job type"
+                                                                                data={publicDatas.jobTypeList}
+                                                                                value={selectedJob.type?.id}
+                                                                                valueKey="id"
+                                                                                labelKey='name'
+                                                                                onSelect={(id, obj) => {
+                                                                                    setSelectedJob(prevState => {
+                                                                                        return {
+                                                                                            ...prevState,
+                                                                                            type: obj
+                                                                                        };
+                                                                                    });
+                                                                                }}
+                                                                            />
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'type')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <Form.Group>
+                                                                            <InputPicker
+                                                                                size="lg"
+                                                                                placeholder="Payment"
+                                                                                className="w-100 mb-2"
+                                                                                data={publicDatas.paymentTypeList}
+                                                                                value={selectedJob.payment?.id}
+                                                                                valueKey="id"
+                                                                                labelKey='name'
+                                                                                onSelect={(id, obj) => {
+                                                                                    setSelectedJob(prevState => {
+                                                                                        return {
+                                                                                            ...prevState,
+                                                                                            payment: obj
+                                                                                        };
+                                                                                    });
+                                                                                }}
+                                                                            />
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'payment')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <Form.Group>
+                                                                            <div className='d-flex justify-content-between align-items-baseline'>
+                                                                                <Input
+                                                                                    type="number"
+                                                                                    min={0}
+                                                                                    placeholder='Salary'
+                                                                                    value={selectedJob.salary || ''}
+                                                                                    onChange={(e) => {
+                                                                                        setSelectedJob(prevState => {
+                                                                                            return {
+                                                                                                ...prevState,
+                                                                                                salary: e
+                                                                                            };
+                                                                                        });
+                                                                                    }}
+                                                                                />
+                                                                                <InputPicker
+                                                                                    size="lg"
+                                                                                    style={{
+                                                                                        maxWidth: '100px',
+                                                                                        marginLeft: "5px"
+                                                                                    }}
+                                                                                    className="w-100 mb-2"
+                                                                                    placeholder="Periods"
+                                                                                    data={[
+                                                                                        {
+                                                                                            id: 1,
+                                                                                            name: 'hour',
+                                                                                        }, {
+                                                                                            id: 2,
+                                                                                            name: 'day',
+                                                                                        }, {
+                                                                                            id: 3,
+                                                                                            name: 'week',
+                                                                                        }, {
+                                                                                            id: 4,
+                                                                                            name: 'month',
+                                                                                        }
+                                                                                    ]}
+                                                                                    valueKey="id"
+                                                                                    labelKey='name'
+                                                                                    value={selectedJob.period?.id}
+                                                                                    onSelect={(id, obj) => {
+                                                                                        setSelectedJob(prevState => {
+                                                                                            return {
+                                                                                                ...prevState,
+                                                                                                period: obj
+                                                                                            };
+                                                                                        });
+                                                                                    }}
+                                                                                />
+                                                                            </div>
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'salary')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'period')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <Form.Group>
+                                                                            <Form.ControlLabel>Years of experience</Form.ControlLabel>
+                                                                            <InputNumber
+                                                                                min={0}
+                                                                                max={50}
+                                                                                className="w-100"
+                                                                                value={selectedJob.experience}
+                                                                                onChange={(e) => {
+                                                                                    setSelectedJob(prevState => {
+                                                                                        return {
+                                                                                            ...prevState,
+                                                                                            experience: e
+                                                                                        };
+                                                                                    });
+                                                                                }}
+                                                                            />
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'experience')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <Form.Group>
+                                                                            <Form.ControlLabel>Description about Job Position</Form.ControlLabel>
+                                                                            {
+                                                                                isEditorLoaded ?
+                                                                                    <CKEditor
+                                                                                        name={"name"}
+                                                                                        editor={ClassicEditor}
+                                                                                        data={selectedJob.description || ''}
+                                                                                        onChange={(event, editor) => {
+                                                                                            const data = editor.getData();
+
+                                                                                            setSelectedJob(prevState => {
+                                                                                                return {
+                                                                                                    ...prevState,
+                                                                                                    description: data
+                                                                                                };
+                                                                                            });
+                                                                                        }}
+                                                                                    />
+                                                                                    :
+                                                                                    ''
+                                                                            }
+                                                                            <div className="validation-errors">
+                                                                                <span>
+                                                                                    {
+                                                                                        selectedJobErrors.find(x => x.key === 'description')?.message
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                        </Form.Group>
+                                                                        <button
+                                                                            type='button'
+                                                                            className="add-more-experience"
+                                                                            onClick={addMorePosition}
+                                                                        >
+                                                                            <BsPlusLg className="mr-2" />
+                                                                            {
+                                                                                !isEditSelectedWorkExp.status ?
+                                                                                    'Add New Job Position'
+                                                                                    :
+                                                                                    'Edit Selected Job Position'
+                                                                            }
+                                                                        </button>
+                                                                        <div className="validation-errors">
+                                                                            {
+                                                                                ownerStepValidations.step_3.map((item, index) => {
+                                                                                    if (item.key === "final") {
+                                                                                        return <span key={index}>{item.message}</span>
+                                                                                    };
+                                                                                })
+                                                                            }
+                                                                        </div>
+                                                                        <div className="my-4">
+                                                                            {
+                                                                                ownerResponseErrors.map((item, index) => {
+                                                                                    return <p
+                                                                                        key={index}
+                                                                                        className="text-danger font-weight-bold"
+                                                                                    >
+                                                                                        {item}
+                                                                                    </p>
+                                                                                })
+                                                                            }
+                                                                        </div>
+                                                                        <div className="navigation-btn-wrapper">
+                                                                            <Button
+                                                                                type="button"
+                                                                                onClick={() => setCurrentStep(2)}
+                                                                            >
+                                                                                Previous
+                                                                            </Button>
+                                                                            <Button
+                                                                                className="btn-next-step"
+                                                                                disabled={!selectedUserType}
+                                                                                onClick={() => {
+                                                                                    if (validateStep(3)) {
+                                                                                        submitOwnerData();
+                                                                                    };
+                                                                                }}
+                                                                            >
+                                                                                Submit
+                                                                            </Button>
+                                                                        </div>
+                                                                    </Form>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    />
+                                                    :
+                                                    <Steps.Item
+                                                        className='_step-item'
+                                                        title="Profile information"
+                                                        description={
+                                                            <div className="profile_information">
+                                                                <div className="upload-avatar-wrapper mb-4">
+                                                                    <input
+                                                                        type="file"
+                                                                        name="myImage"
+                                                                        className="d-none"
+                                                                        ref={teammerImgRef}
+                                                                        onChange={(e) => uploadFile(e, 'teammer-avatar')}
+                                                                    />
+                                                                    <div>
+                                                                        <Image
+                                                                            width={64}
+                                                                            height={64}
+                                                                            alt='icon'
+                                                                            src={teammer.avatarUrl ? teammer.avatarUrl : '/img/upload_image.png'}
+                                                                        />
+                                                                        <button
+                                                                            onClick={() => {
+                                                                                buttonRef.current.click()
+                                                                            }}
+                                                                        >
+                                                                            Upload New Photo
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <h4
+                                                                    style={{
+                                                                        fontWeight: 600,
+                                                                        fontSize: '12px',
+                                                                        lineHeight: '15px',
+                                                                        color: '#020c40'
+                                                                    }}
+                                                                >
+                                                                    Description about yourself
+                                                                </h4>
+                                                                <Input
+                                                                    as="textarea"
+                                                                    rows={3}
+                                                                    placeholder="Write something about yourself"
+                                                                    onBlur={(e) => setTeammer(prevState => {
+                                                                        return {
+                                                                            ...prevState,
+                                                                            about: e.target.value
+                                                                        };
+                                                                    })}
+                                                                />
+                                                                <div className="d-flex justify-content-end routing-button">
+                                                                    <Button
+                                                                        type="button"
+                                                                        className="previous-button"
+                                                                        onClick={() => setCurrentStep(2)}
+                                                                    >
+                                                                        Previous
+                                                                    </Button>
+                                                                    <div>
+                                                                        <Button
+                                                                            type="button"
+                                                                            className="next-button"
+                                                                            onClick={submitTeammerData}
+                                                                        >
+                                                                            Submit
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        } />
+                                            }
                                         </Steps>
                                     </div>
                                 </div>
@@ -1356,8 +2567,8 @@ const steps2 = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 

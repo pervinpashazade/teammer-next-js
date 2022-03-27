@@ -71,6 +71,8 @@ export const AuthProvider = ({ children }) => {
 
                     setCurrentUser(res.data.data.user);
                 };
+            }).catch(error => {
+                console.log('login-via-firebase error', error.response);
             });
             // };
 

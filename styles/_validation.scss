@@ -14,13 +14,13 @@
     border: 2px solid #ff7629 !important;
     border-radius: $button-radius-12;
   }
-  .validation-errors {
-    color: #ff7629;
-    margin-top: 0.5rem;
-    span {
-      display: block;
-      font-size: 16px;
-      font-weight: 500;
-    }
+}
+.validation-errors {
+  color: #ff7629;
+  margin-top: 0.5rem;
+  span {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
   }
 }
