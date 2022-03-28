@@ -1,15 +1,30 @@
 import Image from 'next/image'
 import Link from 'next/link';
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Button, Form, Modal } from 'rsuite'
+import {FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {useAuth} from "../../../Auth";
 
 function AuthModal(props) {
-
+    const firebaseAuth = getAuth();
+    const googleProvider = new GoogleAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
+    const authContext = useAuth()
     const {
         isOpen,
         setIsOpen
     } = props;
-
+    const withGoogleService = () => {
+        signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
+    };
+    const withFacebookService = () => {
+        signInWithPopup(firebaseAuth, facebookProvider).catch(err => console.log('withFacebookService', err));
+    };
+    useEffect(()=>{
+        if(authContext.currentUser){
+            setIsOpen(!isOpen)
+        }
+    },[authContext.currentUser])
     return (
         <Modal
             size='sm'
@@ -48,6 +63,7 @@ function AuthModal(props) {
                 <div className="social-auth-wrapper">
                     <Button
                         className='google'
+                        onClick={withGoogleService}
                     >
                         <Image
                             src={'/icons/google.svg'}
@@ -67,7 +83,7 @@ function AuthModal(props) {
                             layout='fixed'
                         />
                     </Button>
-                    <Button>
+                    <Button onClick={withFacebookService}>
                         <Image
                             src={'/social-images/facebook2.svg'}
                             alt='img'
