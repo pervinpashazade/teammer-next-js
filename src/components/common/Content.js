@@ -10,6 +10,7 @@ import Subscribe from "../Subscribe";
 const Content = (props) => {
 
     const {
+        jobList,
         positionList,
         startup_of_week_list,
     } = props;
@@ -22,7 +23,7 @@ const Content = (props) => {
         <div className="row">
             <div className="col-md-8 mb-4">
                 <StartUpByCategory
-                    jobList={jobs.length === 0 ? props.jobList : jobs}
+                    jobList={jobs.length === 0 ? jobList : jobs}
                     positionList={positionList}
                 />
                 <StartUpByCategory
