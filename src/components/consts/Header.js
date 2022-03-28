@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -314,7 +314,9 @@ const Header = (props) => {
     const toggleMenu = () => {
         setIsOpen(!isOpen)
     };
-
+    useEffect(()=>{
+       user && console.log(user)
+    },[user])
     return (
         <div className="header">
             <div className="row">
@@ -338,6 +340,8 @@ const Header = (props) => {
                                             alt='logo'
                                             width={136}
                                             height={18}
+                                            quality={100}
+                                            layout="fixed"
                                         />
                                     </a>
                                 </Link>

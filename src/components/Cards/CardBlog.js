@@ -13,7 +13,7 @@ const CardWeek = () => {
                     alt='img'
                     width={348}
                     height={117}
-                    layout='fixed'
+                    layout='responsive'
                 />
             </div>
             <div className="card-activity">
