@@ -18,6 +18,7 @@ import {
     setPersistence,
     inMemoryPersistence,
     signInWithRedirect,
+    browserLocalPersistence,
 } from "firebase/auth";
 import Header from "../src/components/consts/NotAuth/Header";
 
@@ -130,7 +131,7 @@ const Login = (props) => {
     const withGoogleService = () => {
         // signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
 
-        setPersistence(firebaseAuth, inMemoryPersistence)
+        setPersistence(firebaseAuth, browserLocalPersistence)
             .then(() => {
                 // In memory persistence will be applied to the signed in Google user
                 // even though the persistence was set to 'none' and a page redirect
