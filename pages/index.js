@@ -23,7 +23,6 @@ const Home = (props) => {
     }, []);
 
     useEffect(() => {
-
         console.log('NOT COMPLETED LOG');
 
         if (authContext.currentUser) {

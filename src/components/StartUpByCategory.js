@@ -68,20 +68,18 @@ const StartUpByCategory = (props) => {
                                 </div>
                             }
                             {
-                                user?.type !== 2 ?
-                                    <div className="blur col-12 d-flex">
-                                        <div className="login-signup">
-                                            <p>Sign up or Log in to continue searching</p>
-                                            <div>
-                                                <Link href="/login" passHref><a className="login">Log in</a></Link>
-                                                <Link href="/signup" passHref><Button className="sign-up">Sign Up</Button></Link>
-                                            </div>
+                                !user &&
+                                <div className="blur col-12 d-flex">
+                                    <div className="login-signup">
+                                        <p>Sign up or Log in to continue searching</p>
+                                        <div>
+                                            <Link href="/login" passHref><a className="login">Log in</a></Link>
+                                            <Link href="/signup" passHref><Button className="sign-up">Sign Up</Button></Link>
                                         </div>
-                                        <div className="col-6 d-none d-md-block"><CardStartUp /></div>
-                                        <div className="col-md-6 col-12"><CardStartUp /></div>
                                     </div>
-                                    :
-                                    null
+                                    <div className="col-6 d-none d-md-block"><CardStartUp /></div>
+                                    <div className="col-md-6 col-12"><CardStartUp /></div>
+                                </div>
                             }
                         </div>
                     </div>

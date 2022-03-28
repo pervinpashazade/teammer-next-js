@@ -34,6 +34,14 @@ const Home = (props) => {
 
     const [jobs, setJobs] = useState([]);
 
+    useEffect(() => {
+        console.log('NOT COMPLETED LOG');
+
+        if (authContext.currentUser) {
+            setUser(authContext.currentUser);
+        };
+    }, [authContext.currentUser]);
+
     return (
         <div className="teammer-home">
             <div className="teammer-home-baner">

@@ -313,9 +313,11 @@ const Header = (props) => {
     const toggleMenu = () => {
         setIsOpen(!isOpen)
     };
-    useEffect(()=>{
-       user && console.log(user)
-    },[user])
+
+    // useEffect(()=>{
+    //    user && console.log(user)
+    // },[user]);
+    
     return (
         <div className="header">
             <div className="row">
