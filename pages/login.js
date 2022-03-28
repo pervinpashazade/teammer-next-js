@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import Image from "next/image";
 import { setAuthCookies, setCookie } from "../src/helpers/cookie";
 import { withCookie } from 'next-cookie';
-// import getAuth from "../lib/session";
 import { loginService } from "../src/services/Auth/loginService";
 
 import { useAuth } from "../Auth";
@@ -14,9 +13,11 @@ import {
     getAuth,
     GoogleAuthProvider,
     signInWithPopup,
-    // createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     FacebookAuthProvider,
+    setPersistence,
+    inMemoryPersistence,
+    signInWithRedirect,
 } from "firebase/auth";
 import Header from "../src/components/consts/NotAuth/Header";
 
@@ -127,7 +128,22 @@ const Login = (props) => {
     };
 
     const withGoogleService = () => {
-        signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
+        // signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
+
+        setPersistence(firebaseAuth, inMemoryPersistence)
+            .then(() => {
+                // In memory persistence will be applied to the signed in Google user
+                // even though the persistence was set to 'none' and a page redirect
+                // occurred.
+                return signInWithRedirect(auth, googleProvider);
+            })
+            .catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+
+                console.log('withGoogleService', error.message)
+            });
     };
 
     const withFacebookService = () => {

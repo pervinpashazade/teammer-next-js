@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -218,17 +218,33 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     );
 });
 
-const CustomComponentNotification = ({ placement, loading, children, count = 3 }) => (
+const CustomComponentNotification = ({ placement, loading, children, count = 0 }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverNotification content={`I am positioned to the ${placement}`} />
+            <DefaultPopoverNotification
+                content={`I am positioned to the ${placement}`}
+            />
         }
     >
         {
-            count > 0 ? <Badge content={count} color="blue">
+            count > 0 ?
+                <Badge content={count} color="blue">
+                    <li>
+                        <div className="c-pointer">
+                            <Image
+                                src={'/icons/bell.svg'}
+                                alt='img'
+                                className="icon"
+                                width={20}
+                                height={20}
+                                layout='fixed'
+                            />
+                        </div>
+                    </li>
+                </Badge> :
                 <li>
                     <div className="c-pointer">
                         <Image
@@ -241,18 +257,6 @@ const CustomComponentNotification = ({ placement, loading, children, count = 3 }
                         />
                     </div>
                 </li>
-            </Badge> : <li>
-                <div className="c-pointer">
-                    <Image
-                        src={'/icons/bell.svg'}
-                        alt='img'
-                        className="icon"
-                        width={20}
-                        height={20}
-                        layout='fixed'
-                    />
-                </div>
-            </li>
         }
 
     </Whisper>
@@ -317,7 +321,7 @@ const Header = (props) => {
     // useEffect(()=>{
     //    user && console.log(user)
     // },[user]);
-    
+
     return (
         <div className="header">
             <div className="row">
@@ -350,9 +354,17 @@ const Header = (props) => {
                             </div>
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
-                                    <CustomComponentNotification placement="bottomEnd" loading={loading} />
-                                    <a className="mx-3"><CustomComponentMessage placement="bottomEnd"
-                                        loading={loading} /></a>
+                                    <CustomComponentNotification
+                                        count={user?.unread_notifications_count}
+                                        loading={loading}
+                                        placement="bottomEnd"
+                                    />
+                                    <a className="mx-3">
+                                        <CustomComponentMessage
+                                            placement="bottomEnd"
+                                            loading={loading}
+                                        />
+                                    </a>
                                     <li className="nav-item">
                                         <Link
                                             href={
@@ -401,8 +413,15 @@ const Header = (props) => {
                                 </ul>
                             </div>
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
-                                <CustomComponentNotification placement="bottomEnd" loading={loading} />
-                                <CustomComponentMessage placement="bottomEnd" loading={loading} />
+                                <CustomComponentNotification
+                                    count={user?.unread_notifications_count}
+                                    loading={loading}
+                                    placement="bottomEnd"
+                                />
+                                <CustomComponentMessage
+                                    placement="bottomEnd"
+                                    loading={loading}
+                                />
                                 {
                                     <li className="nav-item">
                                         {
@@ -487,9 +506,12 @@ const Header = (props) => {
                             </a>
                         </li>
                         <li>
-                            <a className="text-link">Pricing &nbsp; <Link href="/">
-                                🌟
-                            </Link></a>
+                            <a className="text-link">
+                                Pricing &nbsp;
+                                <Link href="/">
+                                    🌟
+                                </Link>
+                            </a>
                             <a className="arrowRightButton">
                                 <Link href="/">
                                     <Image

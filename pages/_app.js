@@ -6,6 +6,7 @@ import 'rsuite/dist/rsuite.min.css';
 import '../styles/bootstrap/bootstrap.scss';
 import '../styles/style.scss';
 import "../firebase.js";
+import CheckAuthentication from "../src/containers/CheckAuthentication";
 
 function MyApp({
     Component,
@@ -19,12 +20,14 @@ function MyApp({
 
     return (
         <AuthProvider>
-            {
-                Component.layout ?
-                    <Layout>
-                        <Component {...pageProps} />
-                    </Layout> : <Component {...pageProps} />
-            }
+            <CheckAuthentication>
+                {
+                    Component.layout ?
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout> : <Component {...pageProps} />
+                }
+            </CheckAuthentication>
         </AuthProvider>
     )
 };
