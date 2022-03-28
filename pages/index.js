@@ -4,6 +4,7 @@ import config from '../src/configuration';
 import Head from 'next/head';
 import '../src/axios-interceptor'
 import axios from "axios";
+import { useAuth } from "../Auth";
 
 const Home = (props) => {
 
@@ -20,7 +21,6 @@ const Home = (props) => {
             };
         });
     }, []);
-
 
     useEffect(() => {
 

@@ -33,12 +33,14 @@ const Content = (props) => {
             <div className="row">
                 <div className="col-md-8 mb-4">
                     <StartUpByCategory
-                        jobList={jobs.length === 0 ? jobList : jobs}
+                        user={user}
                         positionList={positionList}
+                        jobList={jobs.length === 0 ? jobList : jobs}
                     />
                     <StartUpByCategory
-                        jobList={jobs.length === 0 ? jobList : jobs}
+                        user={user}
                         positionList={positionList}
+                        jobList={jobs.length === 0 ? jobList : jobs}
                     />
                 </div>
                 <div className="col-md-4 mb-4">
