@@ -9,7 +9,7 @@ import {
     Modal,
     Input
 } from 'rsuite';
-import { months } from "../../../pages/signup/steps";
+import { months } from '../../configuration';
 
 
 function CardTeammerWorkExperience(props) {
@@ -163,9 +163,7 @@ function CardTeammerWorkExperience(props) {
                                             size="size"
                                             className="w-100"
                                             placeholder="Month"
-                                            data={
-                                                months
-                                            }
+                                            data={months}
                                             value={formData?.start_month}
                                             onChange={(e) => {
                                                 setFormData({ ...formData, start_month: e })

@@ -70,7 +70,7 @@ function Startup(props) {
                 };
             })
                 .catch(err => {
-                    if (err.response.status === 422) {
+                    if (err.response?.status === 422) {
                         toaster.push(
                             <Notification
                                 type={"warning"}
@@ -85,10 +85,9 @@ function Startup(props) {
                     }
                 })
             getData();
-
         } else {
             setIsOpenLoginModal(true);
-        }
+        };
     };
 
     const rejectApplicationToJob = () => {
