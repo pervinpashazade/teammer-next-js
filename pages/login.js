@@ -135,7 +135,7 @@ const Login = (props) => {
                 // In memory persistence will be applied to the signed in Google user
                 // even though the persistence was set to 'none' and a page redirect
                 // occurred.
-                return signInWithRedirect(auth, googleProvider);
+                return signInWithRedirect(firebaseAuth, googleProvider);
             })
             .catch((error) => {
                 // Handle Errors here.
