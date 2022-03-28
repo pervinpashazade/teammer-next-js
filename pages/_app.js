@@ -13,6 +13,7 @@ function MyApp({
 }) {
 
     // React.useEffect(() => {
+    //     useless
     //     initializeFirebase();
     // }, []);
 

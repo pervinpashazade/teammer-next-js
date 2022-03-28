@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -6,11 +6,9 @@ import {
     Avatar,
     Whisper,
     Popover,
-    Badge, Button
+    Badge,
 } from 'rsuite';
 import { RiArrowRightLine } from 'react-icons/ri';
-import { wrapper } from "../../store/redux-store";
-import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import menu from '../../../public/img/menu.png'
 import cancel from '../../../public/img/cancel.png';
@@ -18,56 +16,133 @@ import homeIcon from '../../../public/img/home-icon.png'
 import arrowRight from '../../../public/img/arrow-right 1.png'
 import { withCookie } from 'next-cookie';
 import { useRouter } from "next/router";
-import clearCookie from "../../../lib/removeCookie";
-import { getAuth, signOut } from 'firebase/auth';
+import { logoutService } from '../../services/Auth/logoutService';
+import { useAuth } from '../../../Auth';
 
-const CustomComponentUserProfile = ({ placement, loading, children, userType = "1" }) => {
-    // console.log(userType)
-    
-    const auth = getAuth();
+const CustomComponentUserProfile = ({ placement, loading, children, user, context }) => {
 
     const router = useRouter();
 
-    const clearCookieFunction = () => {
-        clearCookie();
-        router.push("/");
-    }
+    const renderPopover = () => {
+
+        if (!user) {
+            return <Popover>
+                <p>
+                    <Link href="/login">
+                        <a className="text-dark">Login</a>
+                    </Link>
+                </p>
+            </Popover>
+        };
+
+        if (!user.type) {
+            return (
+                <Popover>
+                    <p>
+                        <Link
+                            href="/signup/steps"
+                            passHref
+                        >
+                            <a className="text-dark">Complete registration</a>
+                        </Link>
+                    </p>
+                    <p
+                        style={{
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => logoutService(context, router)}
+                    >
+                        <a className="text-dark">Log out</a>
+                    </p>
+                </Popover>
+            )
+        };
+
+        return (
+            <Popover>
+                <p>
+                    <Link
+                        href={
+                            user.type === 1 ? '/owner/home'
+                                : user.type === 2 ?
+                                    '/teammer/home'
+                                    :
+                                    '/login'
+                        }
+                        passHref
+                    >
+                        <a className="text-dark">Home</a>
+                    </Link>
+                    :
+                    <Link
+                        href="/signup/steps"
+                        passHref
+                    >
+                        <a className="text-dark">Complete registration</a>
+                    </Link>
+                </p >
+            </Popover >
+        );
+    };
+
     return <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            userType === "1" ?
+            user ?
+                user.type ?
+                    user.type === 1 ?
+                        <Popover>
+                            <p><Link href="/owner/home"><a className="text-dark">Home</a></Link></p>
+                            <p>
+                                <Link href="/owner/profile"><a className="text-dark">My profile</a></Link>
+                            </p>
+                            <p
+                                style={{
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => logoutService(context, router)}
+                            >
+                                <a className="text-dark">Log out</a>
+                            </p>
+                        </Popover>
+                        :
+                        user.type === 2 ?
+                            <Popover>
+                                <p><Link href="/teammer/home"><a className="text-dark">Home</a></Link></p>
+                                <p><Link href="/teammer/profile"><a className="text-dark">My profile</a></Link></p>
+                                <p style={{
+                                    cursor: 'pointer'
+                                }}
+                                    onClick={() => logoutService(context, router)}
+                                >
+                                    <a className="text-dark">Log out</a>
+                                </p>
+                            </Popover>
+                            :
+                            null
+                    :
+                    <Popover>
+                        <p><Link href="/signup/steps"><a className="text-dark">Complete registration</a></Link></p>
+                        <p style={{
+                            cursor: 'pointer'
+                        }}
+                            onClick={() => logoutService(context, router)}
+                        >
+                            <a className="text-dark">Log out</a>
+                        </p>
+                    </Popover>
+                :
                 <Popover>
-                    <p><Link href="/owner/home"><a className="text-dark">Home</a></Link></p>
-                    <p >
-                        <Link href="/owner/profile"><a className="text-dark">My profile</a></Link>
-                    </p>
-                    <p style={{
-                        cursor: 'pointer'
-                    }} onClick={() => {
-                        clearCookieFunction();
-                        signOut(auth)
-                    }}
-                    ><a className="text-dark">Log out</a></p>
-                </Popover> : userType === "2" ? <Popover>
-                    <p><Link href="/teammer/home"><a className="text-dark">Home</a></Link></p>
-                    <p><Link href="/teammer/profile"><a className="text-dark">My profile</a></Link></p>
-                    <p style={{
-                        cursor: 'pointer'
-                    }}
-                        onClick={() => { clearCookieFunction(); signOut(auth) }}
-                    >
-                        <a className="text-dark">Log out</a>
-                    </p>
-                </Popover> : <Popover>
                     <p><Link href="/login"><a className="text-dark">Login</a></Link></p>
                 </Popover>
         }
     >
-
-        <a className="c-pointer"> <Avatar circle
-            src="https://www.w3schools.com/howto/img_avatar.png" /></a>
+        <a className="c-pointer">
+            <Avatar circle
+                src="https://www.w3schools.com/howto/img_avatar.png" />
+        </a>
     </Whisper>
 };
 
@@ -82,7 +157,6 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
                         className="showAll"
                     >
                         <a>
-                            {/* <img src="/icons/eye.svg" /> */}
                             <Image
                                 src={'/icons/eye.svg'}
                                 alt='img'
@@ -116,7 +190,6 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
                     <span>Your messages</span>
                     <Link href="/chat" className="showAll">
                         <a>
-                            {/* <img src="/icons/eye.svg" /> */}
                             <Image
                                 src={'/icons/eye.svg'}
                                 alt='img'
@@ -228,20 +301,20 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
 
 const Header = (props) => {
 
-    const { cookie } = props;
+    const { authContext } = useAuth();
 
-    const [userType, setUserType] = useState(
-        cookie.get('teammers-type') ? cookie.get('teammers-type') : ''
-    );
+    const {
+        user,
+        cookie,
+    } = props;
 
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
+
     const toggleMenu = () => {
         setIsOpen(!isOpen)
-    }
-    useEffect(() => {
+    };
 
-    }, [])
     return (
         <div className="header">
             <div className="row">
@@ -277,19 +350,19 @@ const Header = (props) => {
                                         loading={loading} /></a>
                                     <li className="nav-item">
                                         <Link
-                                            // href="/login"
                                             href={
-                                                userType ?
-                                                    userType === "1" ?
+                                                user && user.type ?
+                                                    user.type === 1 ?
                                                         "/owner/profile"
                                                         :
-                                                        userType === "2" ?
+                                                        user.type === 2 ?
                                                             "/teammer/profile"
                                                             :
                                                             "/login"
                                                     :
                                                     "/login"
                                             }
+                                            passHref
                                         >
                                             <a>
                                                 <Avatar circle
@@ -300,9 +373,6 @@ const Header = (props) => {
                                 </ul>
                             </div>
                         </div>
-                        {/*<button className="navbar-toggler" type="button">*/}
-                        {/*    <span className="navbar-toggler-icon"></span>*/}
-                        {/*</button>*/}
                         <div className="d-md-inline-block d-none">
                             <CustomInputGroupWidthButton
                                 size="lg"
@@ -331,16 +401,12 @@ const Header = (props) => {
                                 {
                                     <li className="nav-item">
                                         {
-                                            userType === "1" ?
-                                                <CustomComponentUserProfile placement="bottomEnd" loading={loading}
-                                                    userType="1" />
-                                                : userType === "2" ?
-                                                    <CustomComponentUserProfile placement="bottomEnd" loading={loading}
-                                                        userType="2" /> :
-                                                    <CustomComponentUserProfile placement="bottomEnd" loading={loading}
-                                                        userType="none" />
-
-
+                                            <CustomComponentUserProfile
+                                                user={user}
+                                                loading={loading}
+                                                placement="bottomEnd"
+                                                context={authContext}
+                                            />
                                         }
                                     </li>
                                 }
@@ -356,7 +422,6 @@ const Header = (props) => {
                     </div>
                 </div>
             </div>
-
             <div className={isOpen ? "responsive-menu add-margin" : "responsive-menu"}>
                 <div className="responsive-menu-header">
                     <a className="navbar-brand">

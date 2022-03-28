@@ -56,20 +56,24 @@ const Login = (props) => {
         };
     }, [])
 
-    // React.useEffect(() => {
+    React.useEffect(() => {
 
-    //     console.log('login page context', authContext);
+        if (authContext.currentUser) {
+            if (!authContext.currentUser.type) {
+                router.push('/signup/steps');
+                return;
+            };
+            if (!authContext.currentUser.type === 1) {
+                router.push('/owner/home');
+                return;
+            };
+            if (!authContext.currentUser.type === 2) {
+                router.push('/teammer/home');
+                return;
+            };
+        };
 
-    //     // if (authContext.currentUser) {
-    //     //     if (authContext.currentUser.type === 1) {
-    //     //         router.push("/owner/home");
-    //     //     } else if (authContext.currentUser.type === 2) {
-    //     //         router.push("/teammer/home");
-    //     //     } else {
-    //     //         router.push("/signup/steps");
-    //     //     };
-    //     // }
-    // }, [authContext.currentUser])
+    }, [authContext.currentUser])
 
     const login_form = async (event) => {
 
@@ -94,8 +98,6 @@ const Login = (props) => {
             return;
         };
 
-        //
-
         const loginResult = await loginService(data);
 
         console.log('loginResult', loginResult);
@@ -109,29 +111,19 @@ const Login = (props) => {
                 loginResult.data.user.id
             );
 
-            await signInWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-
-                console.log('userCredential.user', user);
-                // ...
-            })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    // ..
-                });;
-
-
             // loginResult.data.user.is_complete_registration ?
             //     (loginResult.data.user.type === 1 ? router.push('/owner/home')
             //         :
             //         router.push('/teammer/home')) : router.push("/signup/steps");
+
+            // console.log('authContext', authContext);
+
+            authContext.setCurrentUser(loginResult.data.user);
+
         } else {
             setErrorMessage(loginResult.message)
             setValidation(false)
         };
-
     };
 
     const withGoogleService = () => {

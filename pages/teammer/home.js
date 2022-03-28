@@ -30,69 +30,66 @@ const Home = (props) => {
 
     const authContext = useAuth();
 
-    const store = useSelector(store => store);
+    const [user, setUser] = useState(authContext.currentUse);
 
-    const [user, setUser] = useState(null);
     const [jobs, setJobs] = useState([]);
 
-    useEffect(async () => {
-        const fetchUser = await fetch(NEXT_URL + 'api/auth');
-        const resObj = await fetchUser.json();
-        if (resObj.success) {
-            // console.log('resObj', resObj);
-            setUser(resObj?.user)
-        };
-    }, [])
-
     // useEffect(() => {
-    //     console.log('teammer props', props);
-    // }, [props]);
 
-    return <div className="teammer-home">
-        <div className="teammer-home-baner">
-            <h2>
-                🖖 Hello, {
-                    user?.full_name ? ` ${user?.full_name}` : ''
+    //     console.log('LOG TEST !@#');
+
+    //     if (authContext.currentUser) {
+    //         setUser(authContext.currentUser);
+    //     };
+    // }, [authContext.currentUser]);
+
+    return (
+        <div className="teammer-home">
+            <div className="teammer-home-baner">
+                {
+                    user &&
+                    <h2>
+                        🖖 Hello , {user.full_name}
+                    </h2>
                 }
-            </h2>
-            <h3>Time to reach new heights</h3>
-        </div>
-        <h4> &#128526; What are you looking for?</h4>
-
-        <SearchHome getData={setJobs} />
-
-        <div className="row">
-            <div className="col-md-8 mb-4">
-                <StartUpByCategory
-                    jobList={props.jobList}
-                    positionList={props.positionList}
-                />
-                <StartUpByCategory
-                    jobList={props.jobList}
-                    positionList={props.positionList}
-                />
+                <h3>Time to reach new heights</h3>
             </div>
-            <div className="col-md-4 mb-4">
-                <StartUpWeek
-                    startupList={props.startup_of_week_list}
-                />
-                <StartUpBlog />
+            <h4>&#128526; What are you looking for?</h4>
+            <SearchHome getData={setJobs} />
+            <div className="row">
+                <div className="col-md-8 mb-4">
+                    <StartUpByCategory
+                        user={user}
+                        jobList={props.jobList}
+                        positionList={props.positionList}
+                    />
+                    <StartUpByCategory
+                        user={user}
+                        jobList={props.jobList}
+                        positionList={props.positionList}
+                    />
+                </div>
+                <div className="col-md-4 mb-4">
+                    <StartUpWeek
+                        startupList={props.startup_of_week_list}
+                    />
+                    <StartUpBlog />
+                </div>
+            </div>
+            {/*    subscribe  */}
+            <div className="subscribe">
+                <div className="left-card d-flex flex-column align-items-center">
+                    <h3>Subscribe to our newsletter!</h3>
+                    <span>Get updates every 2 days</span>
+                    <CustomInputGroupWidthButton
+                        size="lg"
+                        placeholder="Your email here"
+                        className="search-input"
+                    />
+                </div>
             </div>
         </div>
-        {/*    subscribe  */}
-        <div className="subscribe">
-            <div className="left-card d-flex flex-column align-items-center">
-                <h3>Subscribe to our newsletter!</h3>
-                <span>Get updates every 2 days</span>
-                <CustomInputGroupWidthButton
-                    size="lg"
-                    placeholder="Your email here"
-                    className="search-input"
-                />
-            </div>
-        </div>
-
-    </div>
+    )
 }
 
 Home.layout = true
@@ -122,7 +119,7 @@ export const getServerSideProps = async (context) => {
 
     return {
         props: {
-            // protected: false,
+            protected: false,
             positionList: positionsData.data.items || [],
             jobList: jobListData?.data?.items || [],
             startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],
