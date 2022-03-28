@@ -7,6 +7,10 @@ import axios from "axios";
 
 const Home = (props) => {
 
+    const authContext = useAuth();
+
+    const [user, setUser] = useState(authContext.currentUse);
+
     const [positionList, setPositionList] = useState([]);
 
     useEffect(() => {
@@ -16,6 +20,16 @@ const Home = (props) => {
             };
         });
     }, []);
+
+
+    useEffect(() => {
+
+        console.log('NOT COMPLETED LOG');
+
+        if (authContext.currentUser) {
+            setUser(authContext.currentUser);
+        };
+    }, [authContext.currentUser]);
 
     return (
         <div>
