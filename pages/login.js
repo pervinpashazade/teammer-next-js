@@ -47,18 +47,6 @@ const Login = (props) => {
     const [errorMessage, setErrorMessage] = useState('');
 
     React.useEffect(() => {
-        window.onbeforeunload = function (e) {
-            // if (true) {
-            //     return;
-            // }
-            var dialogText = 'Dialog text here';
-            e.returnValue = dialogText;
-            return dialogText;
-        };
-    }, [])
-
-    React.useEffect(() => {
-
         if (authContext.currentUser) {
             if (!authContext.currentUser.type) {
                 router.push('/signup/steps');
@@ -74,7 +62,34 @@ const Login = (props) => {
             };
         };
 
-    }, [authContext.currentUser])
+        window.onbeforeunload = function (e) {
+            // if (true) {
+            //     return;
+            // }
+            var dialogText = 'Dialog text here';
+            e.returnValue = dialogText;
+            return dialogText;
+        };
+    }, [])
+
+    // React.useEffect(() => {
+
+    //     if (authContext.currentUser) {
+    //         if (!authContext.currentUser.type) {
+    //             router.push('/signup/steps');
+    //             return;
+    //         };
+    //         if (!authContext.currentUser.type === 1) {
+    //             router.push('/owner/home');
+    //             return;
+    //         };
+    //         if (!authContext.currentUser.type === 2) {
+    //             router.push('/teammer/home');
+    //             return;
+    //         };
+    //     };
+
+    // }, [authContext.currentUser])
 
     const login_form = async (event) => {
 
@@ -129,19 +144,6 @@ const Login = (props) => {
 
     const withGoogleService = () => {
         signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
-
-        // setPersistence(firebaseAuth, inMemoryPersistence).then(() => {
-        //     // In memory persistence will be applied to the signed in Google user
-        //     // even though the persistence was set to 'none' and a page redirect
-        //     // occurred.
-        //     return signInWithRedirect(firebaseAuth, googleProvider);
-        // }).catch((error) => {
-        //     // Handle Errors here.
-        //     const errorCode = error.code;
-        //     const errorMessage = error.message;
-
-        //     console.log('withGoogleService', error.message)
-        // });
     };
 
     const withFacebookService = () => {

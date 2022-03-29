@@ -7,7 +7,7 @@ function CheckAuthentication({ children }) {
     const authContext = useAuth();
 
     useEffect(() => {
-        console.log('CHECK AUTHENTICATION => ', authContext.currentUser);
+        // console.log('CHECK AUTHENTICATION => ', authContext.currentUser);
 
         // console.log('FIRE BASE CHECK => , ', getAuth().);
 
