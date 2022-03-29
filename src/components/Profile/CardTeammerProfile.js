@@ -15,6 +15,7 @@ const CardTeammerProfile = ({ props, cookie }) => {
     const router = useRouter();
 
     const {
+        user,
         viewProfileLink,
         id,
         full_name,
@@ -40,12 +41,15 @@ const CardTeammerProfile = ({ props, cookie }) => {
     }
 
     // React.useEffect(() => {
-    //     console.log('user log', cookie.get('teammers-type'));
-    //     setLogedUser({
-    //         id: cookie.get('teammers-id'),
-    //         teammer_type: cookie.get('teammers-type'),
-    //     })
-    // }, []);
+    //     // console.log('user log', cookie.get('teammers-type'));
+    //     // setLogedUser({
+    //     //     id: cookie.get('teammers-id'),
+    //     //     teammer_type: cookie.get('teammers-type'),
+    //     // })
+
+    //     console.log('CARD TEAMMER LOG USER => ', user);
+
+    // }, [user]);
 
     return (
         <div className='profile-card-teammer'>
@@ -63,11 +67,11 @@ const CardTeammerProfile = ({ props, cookie }) => {
                         size="sm"
                         icon={
                             <Image
-                                src={'/social-images/facebook_muted.svg'}
-                                alt='img'
                                 width={16}
                                 height={16}
                                 layout='fixed'
+                                alt='img'
+                                src={'/social-images/facebook_muted.svg'}
                             />
                         }
                     />
@@ -130,7 +134,6 @@ const CardTeammerProfile = ({ props, cookie }) => {
                                 {full_name}
                             </h1>
                     }
-
                     <h3>
                         {bio_position}
                         {
