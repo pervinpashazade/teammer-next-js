@@ -16,7 +16,8 @@ const Home = (props) => {
 
     useEffect(() => {
         axios.get(config.BASE_URL + 'positions').then(res => {
-            if (res.data.success) {
+            console.log(res)
+            if (res && res.data.success) {
                 setPositionList(res.data.data.items)
             };
         });

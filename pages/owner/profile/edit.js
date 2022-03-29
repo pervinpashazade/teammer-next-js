@@ -1,49 +1,84 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from 'next/link';
 import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
 import Banner from '../../../src/components/Lib/Banner';
-import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
-import { RiSettingsLine } from 'react-icons/ri';
-import { FaRegTimesCircle } from 'react-icons/fa';
-import { Avatar, Button, Form, Input, InputPicker, Tag } from 'rsuite';
+import {MdModeEdit, MdOutlineWorkOutline} from 'react-icons/md';
+import {RiSettingsLine} from 'react-icons/ri';
+import {FaRegTimesCircle} from 'react-icons/fa';
+import {Avatar, Button, Form, Input, InputPicker, Tag} from 'rsuite';
 import CardTeammerPortfolio from '../../../src/components/Profile/CardTeammerPortfolio';
 import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeammerWorkExperience';
 import Image from 'next/image';
-import { Cookie, withCookie } from 'next-cookie';
+import {Cookie, withCookie} from 'next-cookie';
 import config from '../../../src/configuration';
-import { getFetchData } from '../../../lib/fetchData';
-import { getToken } from '../../../lib/session';
+import {getFetchData} from '../../../lib/fetchData';
+import {getToken} from '../../../lib/session';
+import axios from "axios";
+import {getCookie} from "../../../src/helpers/cookie";
 
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
 const EditComponent = (props) => {
-
+    const token = getCookie('teammers-access-token')
+    const [positions, setPositions] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [locations, setLocations] = useState([]);
     const [selectedPositions, setSelectedPositions] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
-
+    const [owner, setOwner] = useState({
+        full_name: props.userData.full_name
+    })
     const [portfolioUrlList, setPortfolioUrlList] = useState(props.userData?.detail?.portfolio)
-
-    const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
-    const [isOpenEditModal, setIsOpenEditModal] = useState(false);
-
-    const toggleEditModal = () => {
-        setIsOpenEditModal(!isOpenEditModal);
-    };
-    const toggleCreateModal = () => {
-        setIsOpenCreateModal(!isOpenCreateModal);
-    };
-
-    React.useEffect(() => {
-        console.clear();
-        console.log('user datas', props.userData);
-    }, [props])
-
+    useEffect(async () => {
+        axios.get(config.BASE_URL + "positions")
+            .then(res => {
+                setPositions(res.data.data.items.map(item => {
+                    return {
+                        value: item.id,
+                        label: item.name ? item.name : ''
+                    }
+                }))
+            })
+        axios.get(config.BASE_URL + "skills")
+            .then(res => {
+                setSkills(res.data.data.items.map(item => {
+                    return {
+                        value: item.id,
+                        label: item.name ? item.name : ''
+                    }
+                }))
+            })
+        axios.get(config.BASE_URL + "locations")
+            .then(res => setLocations(res.data.data.items.map(item => {
+                return {
+                    value: item.id,
+                    label: item.name ? item.name : ''
+                }
+            })))
+        axios.get(config.BASE_URL+"auth/user?include=project,skills,positions,experiences,detail.location",{
+            headers : {
+                Authorization : "Bearer "+token
+            }
+        })
+            .then(res => {
+                console.log(res)
+            })
+        // const fetchUserInfo = getFetchData("auth/user?include=project,skills,positions,experiences,detail.location", token);
+        // console.log(fetchUserInfo)
+    }, [])
+    console.log(props);
+    const setData = (key, data) => {
+        setOwner({
+            ...owner,
+            [key]: data
+        })
+    }
     return (
         <div>
             <div className='teammer-profile-edit'>
-                <BreadCrumb />
+                <BreadCrumb/>
                 <Banner
-                    styles={{ marginBottom: '2.5rem' }}
+                    styles={{marginBottom: '2.5rem'}}
                 />
                 <div className="profile-wrapper">
                     <div className="left-side">
@@ -51,7 +86,7 @@ const EditComponent = (props) => {
                             <li className='active'>
                                 <Link href="/owner/profile/edit">
                                     <a>
-                                        <MdModeEdit />
+                                        <MdModeEdit/>
                                         <span>Edit Profile</span>
                                     </a>
                                 </Link>
@@ -59,7 +94,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/owner/profile/settings">
                                     <a>
-                                        <RiSettingsLine />
+                                        <RiSettingsLine/>
                                         <span>Account Settings</span>
                                     </a>
                                 </Link>
@@ -67,7 +102,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/owner/profile/company">
                                     <a>
-                                        <MdOutlineWorkOutline />
+                                        <MdOutlineWorkOutline/>
                                         <span>Company</span>
                                     </a>
                                 </Link>
@@ -75,7 +110,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/owner/profile/blocked-users">
                                     <a>
-                                        <FaRegTimesCircle />
+                                        <FaRegTimesCircle/>
                                         <span>Blocked Users</span>
                                     </a>
                                 </Link>
@@ -100,6 +135,7 @@ const EditComponent = (props) => {
                                 color="blue"
                                 appearance="primary"
                                 className='save-btn'
+
                             >
                                 Save Changes
                             </Button>
@@ -133,7 +169,8 @@ const EditComponent = (props) => {
                                             <Form.Control
                                                 name="name"
                                                 placeholder="Enter your fullname"
-                                                value={props.userData?.full_name}
+                                                onChange={(e) => setData('full_name', e)}
+                                                value={owner.full_name}
                                             />
                                         </Form.Group>
                                     </div>
@@ -144,7 +181,7 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Position"
-                                                data={props.positionList}
+                                                data={positions}
                                                 onChange={(e) => {
                                                     if (e && !selectedPositions.some(i => i === e))
                                                         setSelectedPositions([...selectedPositions, e])
@@ -170,7 +207,7 @@ const EditComponent = (props) => {
                                     <div className="col-md-4 mb-4">
                                         <Form.Group controlId="experience">
                                             <Form.ControlLabel>Years of experience</Form.ControlLabel>
-                                            <Form.Control name="experience" placeholder="Year" />
+                                            <Form.Control name="experience" placeholder="Year" type="number" min="0"/>
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
@@ -180,7 +217,7 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Skills"
-                                                data={props.skillList}
+                                                data={skills}
                                                 onChange={(e) => {
                                                     if (e && !selectedSkills.some(i => i === e))
                                                         setSelectedSkills([...selectedSkills, e])
@@ -210,7 +247,7 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Location"
-                                                data={props.locationList}
+                                                data={locations}
                                             />
                                         </Form.Group>
                                     </div>
@@ -218,22 +255,22 @@ const EditComponent = (props) => {
                             </div>
                         </div>
                         <div className="delete-account-wrapper">
-                            <Button
-                                color="blue"
-                                appearance="primary"
-                                className="btn-custom-outline btn-danger delete-account-btn"
-                            >
-                                <div>
-                                    <Image
-                                        src={'/icons/trash_red.svg'}
-                                        alt='alt'
-                                        layout={'fixed'}
-                                        width={16}
-                                        height={16}
-                                    />
-                                    Delete Account
-                                </div>
-                            </Button>
+                            {/*<Button*/}
+                            {/*    color="blue"*/}
+                            {/*    appearance="primary"*/}
+                            {/*    className="btn-custom-outline btn-danger delete-account-btn"*/}
+                            {/*>*/}
+                            {/*    <div>*/}
+                            {/*        <Image*/}
+                            {/*            src={'/icons/trash_red.svg'}*/}
+                            {/*            alt='alt'*/}
+                            {/*            layout={'fixed'}*/}
+                            {/*            width={16}*/}
+                            {/*            height={16}*/}
+                            {/*        />*/}
+                            {/*        Delete Account*/}
+                            {/*    </div>*/}
+                            {/*</Button>*/}
                         </div>
                     </div>
                 </div>
@@ -246,40 +283,11 @@ EditComponent.layout = true;
 
 export default EditComponent;
 
-export const getServerSideProps = async (context) => {
-
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
-
-    const fetchUserInfo = await getFetchData("auth/user?include=project,skills,positions,experiences,detail.location", getToken(context));
-
-    const fetchSkills = await fetch(config.BASE_URL + "skills");
-    const skillsData = await fetchSkills.json();
-
-    const fetchLocations = await fetch(config.BASE_URL + "locations");
-    const locationData = await fetchLocations.json();
-
-    return {
-        props: {
-            userData: fetchUserInfo?.data,
-            positionList: positionsData.data.items.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name
-                }
-            }),
-            skillList: skillsData.data.items.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name ? item.name : ''
-                }
-            }),
-            locationList: locationData.data.items.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name ? item.name : ''
-                }
-            }),
-        }
-    }
-};
+// export const getServerSideProps = async (context) => {
+//     const fetchUserInfo = await getFetchData("auth/user?include=project,skills,positions,experiences,detail.location", getToken(context));
+//     return {
+//         props: {
+//             userData: fetchUserInfo?.data,
+//         }
+//     }
+// };
