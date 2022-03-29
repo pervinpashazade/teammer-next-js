@@ -1,39 +1,168 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
 import Banner from '../../../src/components/Lib/Banner';
-import {MdModeEdit, MdOutlineWorkOutline} from 'react-icons/md';
-import {RiSettingsLine} from 'react-icons/ri';
-import {FaRegTimesCircle} from 'react-icons/fa';
-import {Avatar, Button, Form, Input, InputPicker, Notification, Tag, toaster} from 'rsuite';
+import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
+import { RiSettingsLine } from 'react-icons/ri';
+import { FaRegTimesCircle } from 'react-icons/fa';
+import { Avatar, Button, Form, Input, InputPicker, Notification, Tag, toaster } from 'rsuite';
 import CardTeammerPortfolio from '../../../src/components/Profile/CardTeammerPortfolio';
 import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeammerWorkExperience';
 import Image from 'next/image';
-import {Cookie, withCookie} from 'next-cookie';
+import { Cookie, withCookie } from 'next-cookie';
+import { buildFormData } from '../../../src/helpers/buildFormData';
 import config from '../../../src/configuration';
-import {getFetchData} from '../../../lib/fetchData';
-import getAuth, {getToken} from '../../../lib/session';
-import {buildFormData} from "../../signup/steps";
+import { getFetchData } from '../../../lib/fetchData';
+import getAuth, { getToken } from '../../../lib/session';
+import { useAuth } from "../../../Auth";
+import axios from 'axios';
+import { getCookie } from '../../../src/helpers/cookie';
 
 // const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
 const EditComponent = (props) => {
-    console.log(props)
-    const [userData, setUserData] = useState(props.userData)
-    console.log(userData);
-    const [userInfo, setUserInfo] = useState({
-        full_name: userData.full_name && userData.full_name,
-        positions: userData.positions && userData.positions,
-        year_of_experience: userData.detail.years_of_experience && userData.detail.years_of_experience,
-        skills: userData.skills && userData.skills,
-        location: userData.detail.location && userData.detail.location.id,
-        description: userData.detail.about && userData.detail.about,
-        cv: userData.detail.cv && userData.detail.cv,
-        portfolio: userData.detail.portfolio && userData.detail.portfolio,
-        photo: userData.detail.photo && userData.detail.photo,
-        experiences: userData.experiences && userData.experiences,
-        experience_level: userData.detail.experience_level.id && userData.detail.experience_level.id
+
+    //
+    const authContext = useAuth();
+
+    console.log(authContext?.currentUser);
+
+    const [teammer, setTeammer] = useState({
+        avatarFile: null,
+        avatarUrl: null,
+        username: null,
+        full_name: null,
+        location: null,
+        positions: [],
+        experience: '',
+        experienceLevel: null,
+        skillList: [],
+        socialDatas: {},
+        portfolioList: [],
+        about: '',
+        workExperienceList: [],
     });
+
+    const [publicDatas, setPublicDatas] = useState({
+        positionList: [],
+        roleList: [],
+        projectTypeList: [],
+        locationList: [],
+        jobTypeList: [],
+        paymentTypeList: [],
+        skillList: [],
+        experienceLevelList: [],
+        years: [],
+    });
+
+    const getPublicDatas = async () => {
+        let positionList = [];
+        let roleList = [];
+        let projectTypeList = [];
+        let locationList = [];
+        let jobTypeList = [];
+        let paymentTypeList = [];
+        let skillList = [];
+        let experienceLevelList = [];
+
+        await axios.get(config.BASE_URL + 'positions').then(res => {
+            if (res.data.success) {
+                positionList = res.data.data.items;
+            };
+        });
+        await axios.get(config.BASE_URL + 'project/roles').then(res => {
+            if (res.data.success) {
+                roleList = res.data.data;
+            };
+        });
+        await axios.get(config.BASE_URL + 'project/types').then(res => {
+            if (res.data.success) {
+                projectTypeList = res.data.data;
+            };
+        });
+        await axios.get(config.BASE_URL + 'locations').then(res => {
+            if (res.data.success) {
+                locationList = res.data.data.items;
+            };
+        });
+        await axios.get(config.BASE_URL + 'job/types').then(res => {
+            if (res.data.success) {
+                jobTypeList = res.data.data;
+            };
+        });
+        await axios.get(config.BASE_URL + 'job/payment_types').then(res => {
+            if (res.data.success) {
+                paymentTypeList = res.data.data;
+            };
+        });
+        await axios.get(config.BASE_URL + 'skills').then(res => {
+            if (res.data.success) {
+                skillList = res.data.data.items;
+            };
+        });
+        await axios.get(config.BASE_URL + 'experience-levels').then(res => {
+            if (res.data.success) {
+                experienceLevelList = res.data.data;
+            };
+        });
+
+        setPublicDatas({
+            positionList: positionList,
+            roleList: roleList,
+            projectTypeList: projectTypeList,
+            locationList: locationList,
+            jobTypeList: jobTypeList,
+            paymentTypeList: paymentTypeList,
+            skillList: skillList,
+            experienceLevelList: experienceLevelList,
+        });
+    };
+
+    React.useEffect(() => {
+        getPublicDatas();
+    }, []);
+
+    React.useEffect(() => {
+        if (authContext.currentUser) {
+            setTeammer({
+                avatarUrl: authContext.currentUser.detail.photo,
+                username: authContext.currentUser.username,
+                full_name: authContext.currentUser.full_name,
+                location: authContext.currentUser.detail.location,
+                positions: authContext.currentUser.positions,
+                experienceLevel: authContext.currentUser.detail.experience_level,
+                skillList: authContext.currentUser.skills,
+                socialDatas: authContext.currentUser.detail.social_accounts,
+                portfolioList: authContext.currentUser.detail.portfolio,
+                about: authContext.currentUser.detail.about,
+                experience: authContext.currentUser.detail.years_of_experience,
+                workExperienceList: authContext.currentUser.experiences,
+            });
+        };
+    }, [authContext.currentUser]);
+
+    React.useEffect(() => {
+        console.log('EDIT V2 TEAMMER =>', teammer);
+    }, [teammer]);
+
+    //
+
+    const [userData, setUserData] = useState(props.userData);
+
+    const [userInfo, setUserInfo] = useState({
+        full_name: userData?.full_name && userData?.full_name,
+        positions: userData?.positions && userData?.positions,
+        year_of_experience: userData?.detail?.years_of_experience && userData?.detail?.years_of_experience,
+        skills: userData?.skills && userData?.skills,
+        location: userData?.detail?.location && userData?.detail?.location.id,
+        description: userData?.detail?.about && userData?.detail?.about,
+        cv: userData?.detail?.cv && userData?.detail?.cv,
+        portfolio: userData?.detail?.portfolio && userData?.detail?.portfolio,
+        photo: userData?.detail?.photo && userData?.detail?.photo,
+        experiences: userData?.experiences && userData?.experiences,
+        experience_level: userData?.detail?.experience_level.id && userData?.detail?.experience_level.id
+    });
+
     const [formData, setFormData] = useState({
         id: '',
         position: '',
@@ -44,15 +173,19 @@ const EditComponent = (props) => {
         end_month: '',
         end_year: '',
         current: false
-    })
+    });
+
     const [selectedPositions, setSelectedPositions] = useState([]);
+
     const [selectedSkills, setSelectedSkills] = useState([]);
+
     const [portfolioUrlList, setPortfolioUrlList] = useState({
-        cvFileName: props.userData?.detail.cv,
+        cvFileName: props.userData?.detail?.cv,
         cv: '',
-        portfolio: props.userData?.detail.portfolio
-    })
-    const [image, setImage] = useState({})
+        portfolio: props.userData?.detail?.portfolio
+    });
+
+    const [image, setImage] = useState({});
     const photoRef = useRef();
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
@@ -62,10 +195,10 @@ const EditComponent = (props) => {
         setUserInfo({
             ...userInfo,
             experiences: fetchUserInfo.data.experiences
-        })
-    }
+        });
+    };
+
     const editModal = (id) => {
-        console.log(userInfo.experiences.find(item => item.id === id));
         let element = userInfo.experiences.find(item => item.id === id);
         setFormData({
             id: id,
@@ -77,14 +210,15 @@ const EditComponent = (props) => {
             start_year: element.start_date ? Number(element.start_date.split("-")[1]) : "",
             end_month: element.end_date ? Number(element.end_date.split("-")[0]) : "",
             end_year: element.end_date ? Number(element.end_date.split("-")[1]) : "",
-        })
+        });
         setIsOpenCreateModal(!isOpenCreateModal);
-    }
+    };
+
     const toggle = () => {
-        setIsOpenCreateModal(!isOpenCreateModal)
-    }
+        setIsOpenCreateModal(!isOpenCreateModal);
+    };
+
     const toggleEditModal = async () => {
-        console.log(formData);
         if (formData.position
             && formData.company
             && formData.location
@@ -140,10 +274,10 @@ const EditComponent = (props) => {
                     Some fields are empty!
                 </Notification>, 'topEnd'
             );
-        }
+        };
     };
+
     const toggleCreateModal = async () => {
-        console.log(formData);
         if (formData.position
             && formData.company
             && formData.location
@@ -200,92 +334,132 @@ const EditComponent = (props) => {
         }
     };
 
-    const changeHandle = (type, data) => {
-        setUserInfo({
-            ...userInfo,
-            [type]: data
-        })
-    }
+    const handleChangeInput = (type, value) => {
+        // setUserInfo({
+        //     ...userInfo,
+        //     [type]: data
+        // });
+
+        setTeammer(prevState => {
+            return {
+                ...prevState,
+                [type]: value
+            };
+        });
+    };
+
+    // const uploadFile = (event) => {
+    //     console.log(event)
+    //     if (event.target.files) {
+    //         let file_extension = event.target.files[0].type.split("/").pop();
+    //         if (file_extension === "png" || file_extension === "jpg") {
+    //             setUserInfo({
+    //                 ...userInfo,
+    //                 photo: URL.createObjectURL(event.target.files[0])
+    //             });
+    //             setImage(event.target.files[0])
+    //         } else {
+    //             toaster.push(
+    //                 <Notification type={"error"} header="Success!" closable>
+    //                     You did'nt upload photo , please select only .jpg and .png images
+    //                 </Notification>, 'topEnd'
+    //             );
+    //         }
+    //     }
+    // };
+
     const uploadFile = (event) => {
-        console.log(event)
-        if (event.target.files) {
-            let file_extension = event.target.files[0].type.split("/").pop();
-            if (file_extension === "png" || file_extension === "jpg") {
-                setUserInfo({
-                    ...userInfo,
-                    photo: URL.createObjectURL(event.target.files[0])
+        if (event.target.files && event.target.files[0]) {
+            const i = event.target.files[0];
+            if (i.type === "image/jpeg" || i.type === "image/png") {
+                setTeammer(prevState => {
+                    return {
+                        ...prevState,
+                        avatarFile: i,
+                        avatarUrl: URL.createObjectURL(i)
+                    };
                 });
-                setImage(event.target.files[0])
             } else {
-                toaster.push(
-                    <Notification type={"error"} header="Success!" closable>
-                        You did'nt upload photo , please select only .jpg and .png images
-                    </Notification>, 'topEnd'
-                );
-            }
-        }
-    }
+                alert('Please select only .jpg and .png images');
+            };
+        };
+    };
+
     const saveChanges = async () => {
         let body = {
-            full_name: userInfo.full_name,
+            full_name: teammer.full_name,
             detail: {
-                experience_level_id: userInfo.experience_level,
-                location_id: userInfo.location,
-                about: userInfo.description,
-                years_of_experience: userInfo.year_of_experience,
+                experience_level_id: teammer.experienceLevel?.id,
+                location_id: teammer.location?.id,
+                about: teammer.about,
+                years_of_experience: teammer.experience,
             },
-            positions: userInfo.positions.map(item => item.id),
-            skills: userInfo.skills.map(item => item.id),
-            experiences: userInfo.experiences.map(item => {
+            positions: teammer.positions.map(item => item.id),
+            skills: teammer.skillList.map(item => item.id),
+            experiences: teammer.workExperienceList.map(item => {
                 return {
                     company: item.company,
                     start_date: item.start_date,
                     end_date: item.end_date
                 }
             }),
-        }
-        if (userInfo.cv !== portfolioUrlList.cvFileName) {
-            body['cv'] = portfolioUrlList.cv;
-            body.photo = image;
-            let formdata = new FormData();
-            let data = buildFormData(formdata, body);
-            let response = await fetch(config.BASE_URL + "users",
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + props.token
-                    },
-                    body: JSON.stringify(data)
-                })
-            let res = await response.json();
-            console.log(res)
-        } else {
-            body['cv'] = userInfo.cv;
-            body.photo = userInfo.photo;
-            let formdata = new FormData();
-            let data = buildFormData(formdata, body);
-            let response = await fetch(config.BASE_URL+"users",
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + props.token
-                    },
-                    body: JSON.stringify(data)
-                })
-            let res = await response.json();
-            console.log(res)
+        };
 
-        }
-        console.log(body)
-    }
+        console.log('EDIT BODY', body);
+
+        // if (userInfo.cv !== portfolioUrlList.cvFileName) {
+        //     body['cv'] = portfolioUrlList.cv;
+        //     body.photo = image;
+        //     let formdata = new FormData();
+        //     let data = buildFormData(formdata, body);
+        //     let response = await fetch(config.BASE_URL + "users",
+        //         {
+        //             method: 'PUT',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': 'Bearer ' + props.token
+        //             },
+        //             body: JSON.stringify(data)
+        //         })
+        //     let res = await response.json();
+        //     console.log(res)
+        // } else {
+        //     body['cv'] = userInfo.cv;
+        //     body.photo = userInfo.photo;
+        //     let formdata = new FormData();
+        //     let data = buildFormData(formdata, body);
+        //     let response = await fetch(config.BASE_URL + "users",
+        //         {
+        //             method: 'PUT',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 'Authorization': 'Bearer ' + props.token
+        //             },
+        //             body: JSON.stringify(data)
+        //         })
+        //     let res = await response.json();
+        //     console.log(res)
+
+        // }
+
+            let formdata = new FormData();
+            let data = buildFormData(formdata, body);
+
+        axios.put(config.BASE_URL + 'users', data, {
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+            }
+        }).then(res => {
+            console.log('edit res', res);
+        });
+    };
+
     return (
         <div>
             <div className='teammer-profile-edit'>
-                <BreadCrumb/>
+                <BreadCrumb />
                 <Banner
-                    styles={{marginBottom: '2.5rem'}}
+                    styles={{ marginBottom: '2.5rem' }}
                 />
                 <div className="profile-wrapper">
                     <div className="left-side">
@@ -293,7 +467,7 @@ const EditComponent = (props) => {
                             <li className='active'>
                                 <Link href="/teammer/profile/edit">
                                     <a>
-                                        <MdModeEdit/>
+                                        <MdModeEdit />
                                         <span>Edit Profile</span>
                                     </a>
                                 </Link>
@@ -301,7 +475,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/teammer/profile/settings">
                                     <a>
-                                        <RiSettingsLine/>
+                                        <RiSettingsLine />
                                         <span>Account Settings</span>
                                     </a>
                                 </Link>
@@ -309,7 +483,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/teammer/profile/subscription">
                                     <a>
-                                        <MdOutlineWorkOutline/>
+                                        <MdOutlineWorkOutline />
                                         <span>Manage Subscription</span>
                                     </a>
                                 </Link>
@@ -317,7 +491,7 @@ const EditComponent = (props) => {
                             <li>
                                 <Link href="/teammer/profile/blocked-users">
                                     <a>
-                                        <FaRegTimesCircle/>
+                                        <FaRegTimesCircle />
                                         <span>Blocked Users</span>
                                     </a>
                                 </Link>
@@ -328,13 +502,13 @@ const EditComponent = (props) => {
                         <div className="page-header">
                             <div className="profile-title">
                                 <Avatar
-                                    size="lg"
                                     circle
-                                    src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
-                                    alt="username surname"
+                                    size="lg"
+                                    src={teammer.avatarUrl ? teammer.avatarUrl : "/img/upload_image.png"}
+                                    alt={teammer.username}
                                 />
                                 <div className="profile-title-content">
-                                    <h4>{props.userData?.full_name}</h4>
+                                    <h4>{teammer.full_name}</h4>
                                     <span>Edit Profile</span>
                                 </div>
                             </div>
@@ -354,13 +528,18 @@ const EditComponent = (props) => {
                                 </div>
                                 <div className="user-avatar-wrapper">
                                     <Avatar
-                                        size="lg"
                                         circle
-                                        src={userInfo.photo ? userInfo.photo : "https://www.w3schools.com/howto/img_avatar.png"}
-                                        alt="username surname"
+                                        size="lg"
+                                        src={teammer.avatarUrl ? teammer.avatarUrl : "/img/upload_image.png"}
+                                        alt={teammer.username}
                                     />
                                 </div>
-                                <input type="file" onChange={uploadFile} ref={photoRef} className="d-none"/>
+                                <input
+                                    type="file"
+                                    onChange={uploadFile}
+                                    ref={photoRef}
+                                    className="d-none"
+                                />
                                 <Button
                                     color="blue"
                                     appearance="primary"
@@ -378,9 +557,9 @@ const EditComponent = (props) => {
                                             <Form.Control
                                                 name="name"
                                                 placeholder="Enter your fullname"
-                                                value={userInfo.full_name}
+                                                value={teammer.full_name}
                                                 onChange={(e) => {
-                                                    changeHandle('full_name', e)
+                                                    handleChangeInput('full_name', e)
                                                 }}
                                             />
                                         </Form.Group>
@@ -392,30 +571,37 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Position"
-                                                data={props.positionList}
-                                                onChange={(e) => {
-                                                    if (e && !userInfo.positions.some(i => i.id === e)) {
-                                                        let element = props.positionList.find(item => item.value === e);
-                                                        let newElement = {
-                                                            id: element.value,
-                                                            name: element.label
-                                                        }
-                                                        setUserInfo({
-                                                            ...userInfo,
-                                                            positions: [...userInfo.positions, newElement]
-                                                        })
-                                                    }
+                                                data={publicDatas.positionList}
+                                                valueKey="id"
+                                                labelKey='name'
+                                                onSelect={(e, obj) => {
+                                                    if (e && !teammer.positions.some(item => item.id === e)) {
+                                                        setTeammer(prevState => {
+                                                            return {
+                                                                ...prevState,
+                                                                positions: [
+                                                                    ...prevState.positions,
+                                                                    obj
+                                                                ]
+                                                            };
+                                                        });
+                                                    };
                                                 }}
                                             />
                                             {
-                                                userInfo.positions.length > 0 && userInfo.positions.map((item, index) => {
+                                                teammer.positions?.length > 0 && teammer.positions.map((item, index) => {
                                                     return <Tag
-                                                        key={index}
                                                         closable
-                                                        className="custom-tag mt-2"
+                                                        key={index}
+                                                        className="close-tag my-2"
                                                         onClose={() => {
-                                                            let data = userInfo.positions.filter(i => i.id !== item.id);
-                                                            setUserInfo({...userInfo, positions: data});
+                                                            let data = teammer.positions.filter(x => x.id !== item.id);
+                                                            setTeammer(prevState => {
+                                                                return {
+                                                                    ...prevState,
+                                                                    positions: data
+                                                                };
+                                                            });
                                                         }}
                                                     >
                                                         {item.name}
@@ -427,11 +613,13 @@ const EditComponent = (props) => {
                                     <div className="col-md-4 mb-4">
                                         <Form.Group controlId="experience">
                                             <Form.ControlLabel>Years of experience</Form.ControlLabel>
-                                            <Form.Control name="experience" placeholder="Year"
-                                                          onChange={(e) => {
-                                                              changeHandle('year_of_experience', e)
-                                                          }}
-                                                          value={userInfo.year_of_experience} type="number"/>
+                                            <Form.Control
+                                                type="number"
+                                                name="experience"
+                                                placeholder="Year"
+                                                value={teammer.experience}
+                                                onChange={(e) => handleChangeInput('experience', e)}
+                                            />
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
@@ -441,30 +629,37 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Skills"
-                                                data={props.skillList}
-                                                onChange={(e) => {
-                                                    if (e && !userInfo.skills.some(i => i.id === e)) {
-                                                        let element = props.skillList.find(item => item.value === e);
-                                                        let newElement = {
-                                                            id: element.value,
-                                                            name: element.label
-                                                        }
-                                                        setUserInfo({
-                                                            ...userInfo,
-                                                            skills: [...userInfo.skills, newElement]
-                                                        })
-                                                    }
+                                                data={publicDatas.skillList}
+                                                valueKey="id"
+                                                labelKey='name'
+                                                onSelect={(e, obj) => {
+                                                    if (e && !teammer.skillList.some(item => item.id === e)) {
+                                                        setTeammer(prevState => {
+                                                            return {
+                                                                ...prevState,
+                                                                skillList: [
+                                                                    ...prevState.skillList,
+                                                                    obj
+                                                                ]
+                                                            };
+                                                        });
+                                                    };
                                                 }}
                                             />
                                             {
-                                                userInfo.skills.length > 0 && userInfo.skills.map((item, index) => {
+                                                teammer.skillList?.length > 0 && teammer.skillList.map((item, index) => {
                                                     return <Tag
-                                                        key={index}
                                                         closable
-                                                        className="custom-tag mt-2"
+                                                        key={index}
+                                                        className="close-tag my-2"
                                                         onClose={() => {
-                                                            let data = userInfo.skills.filter(i => i.id !== item.id);
-                                                            setUserInfo({...userInfo, skills: data});
+                                                            let data = teammer.skillList.filter(x => x.id !== item.id);
+                                                            setTeammer(prevState => {
+                                                                return {
+                                                                    ...prevState,
+                                                                    skillList: data
+                                                                };
+                                                            });
                                                         }}
                                                     >
                                                         {item.name}
@@ -480,10 +675,12 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Experience"
-                                                value={userInfo.experience_level}
-                                                data={props.experiencesList}
-                                                onChange={(e) => {
-                                                    changeHandle('experience_level', e)
+                                                value={teammer.experienceLevel?.id}
+                                                data={publicDatas.experienceLevelList}
+                                                valueKey="id"
+                                                labelKey='name'
+                                                onSelect={(id, obj) => {
+                                                    handleChangeInput('experienceLevel', obj)
                                                 }}
                                             />
                                         </Form.Group>
@@ -495,10 +692,12 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Location"
-                                                value={userInfo.location}
-                                                data={props.locationList}
-                                                onChange={(e) => {
-                                                    changeHandle('location', e)
+                                                value={teammer.location?.id}
+                                                data={publicDatas.locationList}
+                                                valueKey="id"
+                                                labelKey='name'
+                                                onSelect={(id, obj) => {
+                                                    handleChangeInput('location', obj)
                                                 }}
                                             />
                                         </Form.Group>
@@ -506,12 +705,15 @@ const EditComponent = (props) => {
                                     <div className="col-md-12 mb-4">
                                         <Form.Group controlId="about">
                                             <Form.ControlLabel>Textarea</Form.ControlLabel>
-                                            {/* <Form.Control rows={5} name="about" accepter={Textarea} /> */}
-                                            <Input onChange={(e) => {
-                                                console.log(e)
-                                                changeHandle('description', e)
-                                            }} as="textarea" rows={3} value={userInfo.description}
-                                                   placeholder="Textarea"/>
+                                            <Input
+                                                as="textarea"
+                                                rows={3}
+                                                placeholder="Textarea"
+                                                value={teammer.about}
+                                                onChange={(e) => {
+                                                    handleChangeInput('about', e)
+                                                }}
+                                            />
                                         </Form.Group>
                                     </div>
                                 </Form>
@@ -571,56 +773,20 @@ export default EditComponent;
 
 export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
-    if (auth !== "2") {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: false,
-            },
-        };
-    }
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
+    // if (auth !== "2") {
+    //     return {
+    //         redirect: {
+    //             destination: "/",
+    //             permanent: false,
+    //         },
+    //     };
+    // }
 
     const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
 
-    const fetchSkills = await fetch(config.BASE_URL + "skills");
-    const skillsData = await fetchSkills.json();
-
-    const fetchLocations = await fetch(config.BASE_URL + "locations");
-    const locationData = await fetchLocations.json();
-
-    const fetchExperiences = await fetch(config.BASE_URL + "experience-levels");
-    const experiencesData = await fetchExperiences.json();
-    console.log("experience", experiencesData)
     return {
         props: {
             userData: fetchUserInfo?.data,
-            positionList: positionsData.data.items.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name
-                }
-            }),
-            skillList: skillsData.data.items.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name ? item.name : ''
-                }
-            }),
-            locationList: locationData.data.items.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name ? item.name : ''
-                }
-            }),
-            experiencesList: experiencesData.data.map(item => {
-                return {
-                    value: item.id,
-                    label: item.name ? item.name : ''
-                }
-            }),
-            token: getToken(context)
         }
     }
 };

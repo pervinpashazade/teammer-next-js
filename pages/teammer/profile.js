@@ -10,6 +10,7 @@ import config from '../../src/configuration';
 import { getFetchData } from '../../lib/fetchData';
 import getAuth, { getToken } from "../../lib/session";
 import ProPanel from '../../src/components/ProPanel';
+import { useAuth } from '../../Auth';
 
 const ProfileTeammer = (props) => {
 
@@ -17,7 +18,16 @@ const ProfileTeammer = (props) => {
         joinedProjectList,
     } = props;
 
+    const authContext = useAuth();
+
+    const [user, setUser] = useState();
+
+    React.useEffect(() => {
+        setUser(authContext.currentUser);
+    }, [authContext.currentUser]);
+
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
+
     const [formData, setFormData] = useState({
         id: '',
         position: '',
@@ -29,9 +39,11 @@ const ProfileTeammer = (props) => {
         end_year: '',
         current: false
     });
+
     const [userInfo, setUserInfo] = useState({
         experiences: props.userData.experiences && props.userData.experiences
     });
+
     const getData = async () => {
         const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
         // console.log(fetchUserInfo)
@@ -39,10 +51,12 @@ const ProfileTeammer = (props) => {
             ...userInfo,
             experiences: fetchUserInfo.data.experiences
         })
-    }
+    };
+
     const toggle = () => {
         setIsOpenCreateModal(!isOpenCreateModal)
-    }
+    };
+
     const editModal = (id) => {
         // console.log(userInfo.experiences.find(item => item.id === id));
         let element = userInfo.experiences.find(item => item.id === id);
@@ -59,6 +73,7 @@ const ProfileTeammer = (props) => {
         });
         setIsOpenCreateModal(!isOpenCreateModal);
     };
+
     const toggleEditModal = async () => {
         // console.log(formData);
         if (formData.position
@@ -118,6 +133,7 @@ const ProfileTeammer = (props) => {
             );
         }
     };
+
     const toggleCreateModal = async () => {
         // console.log(formData);
         if (formData.position
@@ -191,6 +207,7 @@ const ProfileTeammer = (props) => {
                     <CardTeammerProfile
                         props={
                             {
+                                user: user,
                                 isProfile: true,
                                 full_name: props.userData?.full_name,
                                 photo: props.userData.detail?.photo,

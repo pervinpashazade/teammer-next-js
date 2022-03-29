@@ -4,19 +4,14 @@ import Image from 'next/image';
 import Header from '../../src/components/consts/NotAuth/Header';
 import {
     Button,
-    ButtonToolbar,
-    Divider,
     Form,
     Input,
     InputNumber,
     InputPicker,
-    Notification,
     Radio,
     RadioGroup,
     Steps,
     Tag,
-    toaster,
-    Uploader
 } from 'rsuite';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdModeEditOutline } from 'react-icons/md';
@@ -24,14 +19,14 @@ import { BsPlusLg } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
 import config, { months } from '../../src/configuration';
-import { useAuth } from '../../Auth';
+// import { useAuth } from '../../Auth';
 import { getCookie } from '../../src/helpers/cookie';
 import { buildFormData } from '../../src/helpers/buildFormData';
 import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
 
 const steps2 = (props) => {
 
-    const authContext = useAuth();
+    // const authContext = useAuth();
 
     const [publicDatas, setPublicDatas] = useState({
         positionList: [],
@@ -677,36 +672,38 @@ const steps2 = (props) => {
     };
 
     const uploadFile = (event, type) => {
-        // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
-
-            if (type === 'owner-avatar') {
-                setOwner(prevState => {
-                    return {
-                        ...prevState,
-                        avatarFile: i,
-                        avatarUrl: URL.createObjectURL(i)
-                    };
-                });
-            };
-            if (type === 'startup-logo') {
-                setStartup(prevState => {
-                    return {
-                        ...prevState,
-                        avatarFile: i,
-                        avatarUrl: URL.createObjectURL(i)
-                    };
-                });
-            };
-            if (type === 'teammer-avatar') {
-                setTeammer(prevState => {
-                    return {
-                        ...prevState,
-                        avatarFile: i,
-                        avatarUrl: URL.createObjectURL(i)
-                    };
-                });
+            if (i.type === "image/jpeg" || i.type === "image/png") {
+                if (type === 'owner-avatar') {
+                    setOwner(prevState => {
+                        return {
+                            ...prevState,
+                            avatarFile: i,
+                            avatarUrl: URL.createObjectURL(i)
+                        };
+                    });
+                };
+                if (type === 'startup-logo') {
+                    setStartup(prevState => {
+                        return {
+                            ...prevState,
+                            avatarFile: i,
+                            avatarUrl: URL.createObjectURL(i)
+                        };
+                    });
+                };
+                if (type === 'teammer-avatar') {
+                    setTeammer(prevState => {
+                        return {
+                            ...prevState,
+                            avatarFile: i,
+                            avatarUrl: URL.createObjectURL(i)
+                        };
+                    });
+                };
+            } else {
+                alert('Please select only .jpg and .png images');
             };
         };
     };
