@@ -48,9 +48,6 @@ function AuthModal(props) {
         };
 
         const loginResult = await loginService(data);
-
-        console.log('loginResult', loginResult);
-
         if (loginResult?.success) {
 
             setAuthCookies(

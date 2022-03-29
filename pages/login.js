@@ -113,11 +113,7 @@ const Login = (props) => {
             setErrorMessage('Password must be between 8 - 16 characters')
             return;
         };
-
         const loginResult = await loginService(data);
-
-        console.log('loginResult', loginResult);
-
         if (loginResult?.success) {
 
             setAuthCookies(
