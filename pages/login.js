@@ -125,13 +125,15 @@ const Login = (props) => {
 
             authContext.setCurrentUser(loginResult.data.user);
 
-            loginResult.data.user.is_complete_registration ?
-                (loginResult.data.user.type === 1 ?
+            if (loginResult.data.user.is_complete_registration) {
+                if (loginResult.data.user.type === 1) {
                     router.push('/owner/home')
-                    :
-                    router.push('/teammer/home'))
-                :
+                } else {
+                    router.push('/teammer/home')
+                }
+            } else {
                 router.push("/signup/steps");
+            };
 
             // console.log('authContext', authContext);
 

@@ -48,6 +48,9 @@ export const AuthProvider = ({ children }) => {
             axios.post(config.BASE_URL + 'auth/login-via-firebase', {
                 accessToken: user.accessToken
             }).then(res => {
+
+                console.log('AUTH FIREBASE ', res);
+
                 if (res?.data.success) {
                     // console.log('LOG auth/login-via-firebase :', res.data);
 
@@ -59,9 +62,21 @@ export const AuthProvider = ({ children }) => {
                     );
 
                     setCurrentUser(res.data.data.user);
+
+
+                    if (res.data.data.user.is_complete_registration) {
+                        if (res.data.data.user.type === 1) {
+                            router.push('/owner/home')
+                        } else {
+                            router.push('/teammer/home')
+                        }
+                    } else {
+                        router.push("/signup/steps");
+                    };
+
                 };
             }).catch(error => {
-                console.log('login-via-firebase error', error.response);
+                console.log('login-via-firebase error', error);
             });
 
             return;
