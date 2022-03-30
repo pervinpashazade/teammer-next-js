@@ -25,7 +25,9 @@ const EditComponent = (props) => {
     //
     const authContext = useAuth();
 
-    console.log(authContext?.currentUser);
+    // console.log(authContext?.currentUser);
+
+    const [validationErrors, setValidationErrors] = useState([]);
 
     const [teammer, setTeammer] = useState({
         avatarFile: null,
@@ -120,30 +122,31 @@ const EditComponent = (props) => {
 
     React.useEffect(() => {
         getPublicDatas();
+
+        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences', {
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+            }
+        }).then(res => {
+            console.log('res data', res);
+            if (res.data.success) {
+                setTeammer({
+                    avatarUrl: res.data.data.detail.photo,
+                    username: res.data.data.username,
+                    full_name: res.data.data.full_name,
+                    location: res.data.data.detail.location,
+                    positions: res.data.data.positions,
+                    experienceLevel: res.data.data.detail.experience_level,
+                    skillList: res.data.data.skills,
+                    socialDatas: res.data.data.detail.social_accounts,
+                    portfolioList: res.data.data.detail.portfolio,
+                    about: res.data.data.detail.about,
+                    experience: res.data.data.detail.years_of_experience,
+                    workExperienceList: res.data.data.experiences,
+                });
+            };
+        });
     }, []);
-
-    React.useEffect(() => {
-        if (authContext.currentUser) {
-            setTeammer({
-                avatarUrl: authContext.currentUser.detail.photo,
-                username: authContext.currentUser.username,
-                full_name: authContext.currentUser.full_name,
-                location: authContext.currentUser.detail.location,
-                positions: authContext.currentUser.positions,
-                experienceLevel: authContext.currentUser.detail.experience_level,
-                skillList: authContext.currentUser.skills,
-                socialDatas: authContext.currentUser.detail.social_accounts,
-                portfolioList: authContext.currentUser.detail.portfolio,
-                about: authContext.currentUser.detail.about,
-                experience: authContext.currentUser.detail.years_of_experience,
-                workExperienceList: authContext.currentUser.experiences,
-            });
-        };
-    }, [authContext.currentUser]);
-
-    React.useEffect(() => {
-        console.log('EDIT V2 TEAMMER =>', teammer);
-    }, [teammer]);
 
     //
 
@@ -242,7 +245,7 @@ const EditComponent = (props) => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + props.token
+                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
                 },
                 body: JSON.stringify(data)
             })
@@ -335,11 +338,6 @@ const EditComponent = (props) => {
     };
 
     const handleChangeInput = (type, value) => {
-        // setUserInfo({
-        //     ...userInfo,
-        //     [type]: data
-        // });
-
         setTeammer(prevState => {
             return {
                 ...prevState,
@@ -347,26 +345,6 @@ const EditComponent = (props) => {
             };
         });
     };
-
-    // const uploadFile = (event) => {
-    //     console.log(event)
-    //     if (event.target.files) {
-    //         let file_extension = event.target.files[0].type.split("/").pop();
-    //         if (file_extension === "png" || file_extension === "jpg") {
-    //             setUserInfo({
-    //                 ...userInfo,
-    //                 photo: URL.createObjectURL(event.target.files[0])
-    //             });
-    //             setImage(event.target.files[0])
-    //         } else {
-    //             toaster.push(
-    //                 <Notification type={"error"} header="Success!" closable>
-    //                     You did'nt upload photo , please select only .jpg and .png images
-    //                 </Notification>, 'topEnd'
-    //             );
-    //         }
-    //     }
-    // };
 
     const uploadFile = (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -385,7 +363,78 @@ const EditComponent = (props) => {
         };
     };
 
+    const validateForm = () => {
+        if (!teammer) return false;
+
+        console.log('LOG FORM TEAMMER EDIT', teammer);
+
+        let validationErrors = [];
+
+        if (!teammer.full_name || !teammer.full_name.trim()) {
+            validationErrors.push({
+                key: 'full_name',
+                message: 'Fullname field is required'
+            });
+        } else if (teammer.full_name.length < 3) {
+            validationErrors.push({
+                key: 'full_name',
+                message: 'Fullname must be at least 3 characters'
+            });
+        };
+        if (!teammer.positions || !teammer.positions.length) {
+            validationErrors.push({
+                key: 'positions',
+                message: 'You must add at least 1 position'
+            });
+        };
+        if (!teammer.experience) {
+            validationErrors.push({
+                key: 'experience',
+                message: 'Years of experience field is required'
+            });
+        } else if (teammer.experience < 0 || teammer.experience > 50) {
+            validationErrors.push({
+                key: 'experience',
+                message: 'Years of experience is not valid'
+            });
+        };
+        if (!teammer.skillList || !teammer.skillList.length) {
+            validationErrors.push({
+                key: 'skillList',
+                message: 'You must add at least 1 skill'
+            });
+        };
+        if (!teammer.experienceLevel?.id) {
+            validationErrors.push({
+                key: 'experienceLevel',
+                message: 'Experience level field is required'
+            });
+        };
+        if (!teammer.location?.id) {
+            validationErrors.push({
+                key: 'location',
+                message: 'Location field is required'
+            });
+        };
+
+        console.log('TEAMMER EDIT ERRORS', validationErrors);
+
+        setValidationErrors(validationErrors);
+
+        if (validationErrors.length) {
+            return false;
+        } else {
+            return true;
+        };
+    };
+
     const saveChanges = async () => {
+
+
+        const isValid = validateForm();
+
+        if (!isValid) return;
+
         let body = {
             full_name: teammer.full_name,
             detail: {
@@ -400,12 +449,18 @@ const EditComponent = (props) => {
                 return {
                     company: item.company,
                     start_date: item.start_date,
-                    end_date: item.end_date
+                    end_date: item.end_date,
+                    location_id: item.location_id,
+                    position_id: item.position_id,
                 }
             }),
         };
 
-        console.log('EDIT BODY', body);
+        if (teammer.avatarFile) {
+            body.photo = teammer.avatarFile
+        };
+
+        // console.log('EDIT BODY', body);
 
         // if (userInfo.cv !== portfolioUrlList.cvFileName) {
         //     body['cv'] = portfolioUrlList.cv;
@@ -442,16 +497,31 @@ const EditComponent = (props) => {
 
         // }
 
+        // let formdata = new FormData();
+        // let data = buildFormData(formdata, body);
+
+        if (!teammer.avatarFile) {
+            axios.put(config.BASE_URL + 'users', body, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+                }
+            }).then(res => {
+                console.log('edit res', res);
+            });
+        } else {
             let formdata = new FormData();
             let data = buildFormData(formdata, body);
+            axios.put(config.BASE_URL + 'users', data, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+                }
+            }).then(res => {
+                console.log('edit res', res);
+            });
+            alert('noo')
+        }
 
-        axios.put(config.BASE_URL + 'users', data, {
-            headers: {
-                'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-            }
-        }).then(res => {
-            console.log('edit res', res);
-        });
+
     };
 
     return (
@@ -508,7 +578,10 @@ const EditComponent = (props) => {
                                     alt={teammer.username}
                                 />
                                 <div className="profile-title-content">
-                                    <h4>{teammer.full_name}</h4>
+                                    {
+                                        authContext?.currentUser &&
+                                        <h4>{authContext.currentUser?.full_name}</h4>
+                                    }
                                     <span>Edit Profile</span>
                                 </div>
                             </div>
@@ -562,9 +635,18 @@ const EditComponent = (props) => {
                                                     handleChangeInput('full_name', e)
                                                 }}
                                             />
+                                            <div className="validation-errors">
+                                                {
+                                                    validationErrors.map((item, index) => {
+                                                        if (item.key === "full_name") {
+                                                            return <span key={index}>{item.message}</span>
+                                                        };
+                                                    })
+                                                }
+                                            </div>
                                         </Form.Group>
                                     </div>
-                                    <div className="col-md-8 mb-4">
+                                    <div className="col-md-8">
                                         <Form.Group controlId="position">
                                             <Form.ControlLabel>Position</Form.ControlLabel>
                                             <InputPicker
@@ -610,11 +692,13 @@ const EditComponent = (props) => {
                                             }
                                         </Form.Group>
                                     </div>
-                                    <div className="col-md-4 mb-4">
+                                    <div className="col-md-4">
                                         <Form.Group controlId="experience">
                                             <Form.ControlLabel>Years of experience</Form.ControlLabel>
                                             <Form.Control
                                                 type="number"
+                                                min={0}
+                                                max={50}
                                                 name="experience"
                                                 placeholder="Year"
                                                 value={teammer.experience}
@@ -623,7 +707,25 @@ const EditComponent = (props) => {
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
-                                        <Form.Group controlId="position">
+                                        <div className="validation-errors">
+                                            {
+                                                validationErrors.map((item, index) => {
+                                                    if (item.key === "positions") {
+                                                        return <span key={index}>{item.message}</span>
+                                                    };
+                                                })
+                                            }
+                                            {
+                                                validationErrors.map((item, index) => {
+                                                    if (item.key === "experience") {
+                                                        return <span key={index}>{item.message}</span>
+                                                    };
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="col-md-12 mb-4">
+                                        <Form.Group controlId="Skills">
                                             <Form.ControlLabel>Skills</Form.ControlLabel>
                                             <InputPicker
                                                 size="md"
@@ -666,10 +768,19 @@ const EditComponent = (props) => {
                                                     </Tag>
                                                 })
                                             }
+                                            <div className="validation-errors">
+                                                {
+                                                    validationErrors.map((item, index) => {
+                                                        if (item.key === "skillList") {
+                                                            return <span key={index}>{item.message}</span>
+                                                        };
+                                                    })
+                                                }
+                                            </div>
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
-                                        <Form.Group controlId="location">
+                                        <Form.Group controlId="experienceLevel">
                                             <Form.ControlLabel>Experience</Form.ControlLabel>
                                             <InputPicker
                                                 size="md"
@@ -683,6 +794,15 @@ const EditComponent = (props) => {
                                                     handleChangeInput('experienceLevel', obj)
                                                 }}
                                             />
+                                            <div className="validation-errors">
+                                                {
+                                                    validationErrors.map((item, index) => {
+                                                        if (item.key === "experienceLevel") {
+                                                            return <span key={index}>{item.message}</span>
+                                                        };
+                                                    })
+                                                }
+                                            </div>
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
@@ -700,6 +820,15 @@ const EditComponent = (props) => {
                                                     handleChangeInput('location', obj)
                                                 }}
                                             />
+                                            <div className="validation-errors">
+                                                {
+                                                    validationErrors.map((item, index) => {
+                                                        if (item.key === "location") {
+                                                            return <span key={index}>{item.message}</span>
+                                                        };
+                                                    })
+                                                }
+                                            </div>
                                         </Form.Group>
                                     </div>
                                     <div className="col-md-12 mb-4">
@@ -714,6 +843,15 @@ const EditComponent = (props) => {
                                                     handleChangeInput('about', e)
                                                 }}
                                             />
+                                            <div className="validation-errors">
+                                                {
+                                                    validationErrors.map((item, index) => {
+                                                        if (item.key === "about") {
+                                                            return <span key={index}>{item.message}</span>
+                                                        };
+                                                    })
+                                                }
+                                            </div>
                                         </Form.Group>
                                     </div>
                                 </Form>
@@ -762,8 +900,8 @@ const EditComponent = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 };
 
@@ -771,22 +909,25 @@ EditComponent.layout = true;
 
 export default EditComponent;
 
-export const getServerSideProps = async (context) => {
-    const auth = getAuth(context);
-    // if (auth !== "2") {
-    //     return {
-    //         redirect: {
-    //             destination: "/",
-    //             permanent: false,
-    //         },
-    //     };
-    // }
+// export const getServerSideProps = async (context) => {
+//     // const auth = getAuth(context);
+//     // if (auth !== "2") {
+//     //     return {
+//     //         redirect: {
+//     //             destination: "/",
+//     //             permanent: false,
+//     //         },
+//     //     };
+//     // }
 
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
+//     // const fetchUserInfo = await getFetchData(
+//     //     "auth/user?include=skills,positions,experiences,detail.location",
+//     //     getToken(context)
+//     // );
 
-    return {
-        props: {
-            userData: fetchUserInfo?.data,
-        }
-    }
-};
+//     // return {
+//     //     props: {
+//     //         userData: fetchUserInfo?.data,
+//     //     }
+//     // }
+// };
