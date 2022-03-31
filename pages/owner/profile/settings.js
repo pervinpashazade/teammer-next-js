@@ -15,7 +15,7 @@ import {getCookie} from "../../../src/helpers/cookie";
 
 function Setting(props) {
     const [owner, setOwner] = useState({
-        project_role_id : '',
+        project_role_id: '',
         username: '',
         email: '',
         photo: '',
@@ -46,7 +46,7 @@ function Setting(props) {
         })
     }
     const saveChanges = () => {
-        if ((!owner.password || !owner.new_password) && owner.password.trim() !== owner.new_password.trim()) {
+        if ((!owner.password && !owner.new_password) || owner.password.trim() !== owner.new_password.trim()) {
             setValidation(true)
         } else {
             axios.put(config.BASE_URL + "users", owner, {

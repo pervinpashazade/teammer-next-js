@@ -46,7 +46,11 @@ $font-12: 12px;
   background-color: $back-color !important;
   padding: $top $right $bottom $left !important;
 }
-
+.div-box-shadow{
+  box-shadow: $box-shadow;
+  border-radius: 12px;
+  padding: 20px;
+}
 .rs-anime-fade {
   max-width: 300px !important;
 }
