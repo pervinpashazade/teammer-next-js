@@ -11,7 +11,7 @@ const withAuth = (WrappedComponent) => {
             if (!accessToken && (router.pathname.includes("owner") || router.pathname.includes("teammer") ||
                 router.pathname.includes("steps"))) {
                 router.push('/login');
-                return null;
+                return null;    
             } else if (accessToken && !roleType &&
                 (router.pathname.includes("owner") ||
                     router.pathname.includes("teammer") ||
@@ -21,7 +21,7 @@ const withAuth = (WrappedComponent) => {
             } else if (accessToken && roleType === "1" && !router.pathname.includes("owner")) {
                 router.push("/owner/home");
                 return null;
-            } else if (accessToken && roleType === "2" && router.pathname.includes("teammer")){
+            } else if (accessToken && roleType === "2" && !router.pathname.includes("teammer")){
                 router.push("/teammer/home");
                 return null;
             }

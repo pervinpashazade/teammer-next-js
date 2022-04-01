@@ -23,7 +23,6 @@ function CardTeammerWorkExperience(props) {
         workExperienceList,
         positionList,
         locationList,
-        submitFunc,
     } = props;
 
     const [validationErrors, setValidationErrors] = useState([]);
@@ -166,7 +165,7 @@ function CardTeammerWorkExperience(props) {
 
         if (validationErrors.length) return;
 
-        submitFunc(selectedWorkExp);
+        createModal.submitFunc(selectedWorkExp);
     };
 
     return (
@@ -210,7 +209,6 @@ function CardTeammerWorkExperience(props) {
                                     item.location?.id &&
                                         item.location.name ? item.location.name : ''
                                 }
-                                {/* {locationList?.find(i => i.value === item.location_id)?.label} */}
                             </p>
                             {
                                 editMode &&
@@ -226,7 +224,10 @@ function CardTeammerWorkExperience(props) {
                                             layout='fixed'
                                         />
                                     }
-                                    onClick={() => createModal.toggleEdit(item.id)}
+                                    onClick={() => {
+                                        setSelectedWorkExp(item);
+                                        editModal.toggle();
+                                    }}
                                 />
                             }
                         </li>
@@ -528,7 +529,7 @@ function CardTeammerWorkExperience(props) {
                     open={editModal.isOpen}
                     className='work-exp-modal'
                     onClose={() => {
-                        editModal.toggleFunc();
+                        editModal.toggle();
                         resetState();
                     }}
                 >

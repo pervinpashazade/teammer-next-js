@@ -153,6 +153,8 @@ const EditComponent = (props) => {
 
     //
 
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
     const [userData, setUserData] = useState(props.userData);
 
     const [userInfo, setUserInfo] = useState({
@@ -190,6 +192,10 @@ const EditComponent = (props) => {
 
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
+    };
+
+    const toggleEditModal = () => {
+        setIsOpenEditModal(!isOpenEditModal);
     };
 
     // const toggleEditModal = async () => {
@@ -471,9 +477,6 @@ const EditComponent = (props) => {
 
         // }
 
-        // let formdata = new FormData();
-        // let data = buildFormData(formdata, body);
-
         if (teammer.avatarFile || teammer.cvFile) {
             body['_method'] = 'PUT';
             let formdata = new FormData();
@@ -484,6 +487,9 @@ const EditComponent = (props) => {
                 }
             }).then(res => {
                 console.log('edit res', res);
+                if (res.data.success) {
+                    setShowSuccessAlert(true);
+                };
             });
         } else {
             axios.put(config.BASE_URL + 'users', body, {
@@ -492,6 +498,9 @@ const EditComponent = (props) => {
                 }
             }).then(res => {
                 console.log('edit res', res);
+                if (res.data.success) {
+                    setShowSuccessAlert(true);
+                };
             });
         };
     };
@@ -532,10 +541,15 @@ const EditComponent = (props) => {
                         workExperienceList: [...prevState.workExperienceList, data]
                     }
                 });
+                setIsOpenCreateModal(false);
             };
         });
 
-        console.log('SUBMIT DATA', data);
+        // console.log('SUBMIT DATA', data);
+    };
+
+    const editWorkExperience = data => {
+        alert('edit work exp');
     };
 
     return (
@@ -608,6 +622,14 @@ const EditComponent = (props) => {
                                 Save Changes
                             </Button>
                         </div>
+                        {
+                            showSuccessAlert &&
+                            <div className="w-100">
+                                <div className="alert alert-success">
+                                    User information successfully edited.
+                                </div>
+                            </div>
+                        }
                         <div className="user-info-wrapper">
                             <div className="change-avatar-side">
                                 <div className="side_title">
@@ -881,7 +903,7 @@ const EditComponent = (props) => {
                             setPortfolioUrlList={setTeammerPortfolio}
                         />
                         <CardTeammerWorkExperience
-                            workExperienceList={userInfo.experiences}
+                            workExperienceList={teammer.workExperienceList}
                             editMode={true}
                             positionList={publicDatas.positionList}
                             locationList={publicDatas.locationList}
@@ -889,8 +911,14 @@ const EditComponent = (props) => {
                                 isOpen: isOpenCreateModal,
                                 title: "Add Work Experience",
                                 toggle: toggleCreateModal,
+                                submitFunc: addWorkExperience,
                             }}
-                            submitFunc={addWorkExperience}
+                            editModal={{
+                                isOpen: isOpenEditModal,
+                                title: "Edit Work Experience",
+                                toggle: toggleEditModal,
+                                submitFunc: editWorkExperience,
+                            }}
                         />
                         <div className="delete-account-wrapper">
                             <Button
