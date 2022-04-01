@@ -13,33 +13,162 @@ import { months } from '../../configuration';
 
 
 function CardTeammerWorkExperience(props) {
-    const [years, setYears] = useState([])
+
+    const [years, setYears] = useState([]);
+
     const {
         editMode,
         createModal,
         editModal,
         workExperienceList,
-    } = props;
-    const {
-        formData,
-        setFormData,
-        positionsList,
+        positionList,
         locationList,
-    } = createModal;
-    // React.useEffect(() => {
-    //     console.log('propssss', props);
-    // }, [props])
+        submitFunc,
+    } = props;
+
+    const [validationErrors, setValidationErrors] = useState([]);
+    const [selectedWorkExp, setSelectedWorkExp] = useState({
+        isCurrent: false,
+        position: {
+            id: null,
+            name: null,
+            key: "Position",
+        },
+        companyName: '',
+        location: {
+            id: null,
+            name: null,
+            key: "Location",
+        },
+        start_month: {
+            id: null,
+            name: null,
+            key: "Start month",
+        },
+        start_year: {
+            id: null,
+            name: null,
+            key: "Start year",
+        },
+        end_month: {
+            id: null,
+            name: null,
+            key: "End month",
+        },
+        end_year: {
+            id: null,
+            name: null,
+            key: "End year",
+        },
+    });
+
+    const resetState = () => {
+        setSelectedWorkExp({
+            isCurrent: false,
+            position: {
+                id: null,
+                name: null,
+                key: "Position",
+            },
+            companyName: '',
+            location: {
+                id: null,
+                name: null,
+                key: "Location",
+            },
+            start_month: {
+                id: null,
+                name: null,
+                key: "Start month",
+            },
+            start_year: {
+                id: null,
+                name: null,
+                key: "Start year",
+            },
+            end_month: {
+                id: null,
+                name: null,
+                key: "End month",
+            },
+            end_year: {
+                id: null,
+                name: null,
+                key: "End year",
+            },
+        });
+        setValidationErrors([]);
+    };
+
     useEffect(() => {
-        let year_array = [];
+        let yearArr = [];
         let nowDate = (new Date()).getFullYear();
         for (let i = 2000; i <= nowDate; i++) {
-            year_array.push({
-                label: `${i}`,
-                value: i
-            })
-            setYears(year_array);
-        }
-    }, [])
+            yearArr.push({
+                id: i,
+                name: `${i}`,
+            });
+        };
+        setYears(yearArr);
+    }, []);
+
+    const validateWorkExpForm = () => {
+        if (!selectedWorkExp) return false;
+
+        let validationErrors = [];
+
+        if (!selectedWorkExp.position.id) {
+            validationErrors.push({
+                key: 'position',
+                message: `Position field is required`
+            });
+        };
+        if (!selectedWorkExp.companyName?.trim()) {
+            validationErrors.push({
+                key: 'companyName',
+                message: `Company name field is required`
+            });
+        };
+        if (!selectedWorkExp.location.id) {
+            validationErrors.push({
+                key: 'location',
+                message: `Location field is required`
+            });
+        };
+        if (!selectedWorkExp.start_month.id) {
+            validationErrors.push({
+                key: 'start_month',
+                message: `Start month field is required`
+            });
+        };
+        if (!selectedWorkExp.start_year.id) {
+            validationErrors.push({
+                key: 'start_year',
+                message: `Start year field is required`
+            });
+        };
+        if (!selectedWorkExp.isCurrent) {
+            if (!selectedWorkExp.end_month.id) {
+                validationErrors.push({
+                    key: 'end_month',
+                    message: `End month field is required`
+                });
+            };
+            if (!selectedWorkExp.end_year.id) {
+                validationErrors.push({
+                    key: 'end_year',
+                    message: `End year field is required`
+                });
+            };
+        };
+
+        setValidationErrors(validationErrors);
+
+        if (validationErrors.length) return;
+
+        submitFunc(selectedWorkExp);
+    };
+
     return (
         <div className='work-experience-card-teammer'>
             <div className="card-top">
@@ -110,7 +239,10 @@ function CardTeammerWorkExperience(props) {
                     size='sm'
                     open={createModal.isOpen}
                     className='work-exp-modal'
-                    onClose={() => createModal.toggle()}
+                    onClose={() => {
+                        createModal.toggle();
+                        resetState();
+                    }}
                 >
                     <Modal.Header>
                         <Modal.Title>{createModal.title}</Modal.Title>
@@ -123,120 +255,232 @@ function CardTeammerWorkExperience(props) {
                                     size="md"
                                     className="w-100"
                                     placeholder="Position"
-                                    value={formData?.position}
-                                    data={
-                                        positionsList
-                                    }
-                                    onChange={(e) => {
-                                        setFormData({ ...formData, position: e })
+                                    value={selectedWorkExp.position?.id}
+                                    valueKey="id"
+                                    labelKey='name'
+                                    data={positionList}
+                                    onSelect={(id, obj) => {
+                                        setSelectedWorkExp(prevState => {
+                                            return {
+                                                ...prevState,
+                                                position: obj
+                                            }
+                                        });
                                     }}
                                 />
+                                <div className="validation-errors">
+                                    <span>
+                                        {
+                                            validationErrors.find(x => x.key === 'position')?.message
+                                        }
+                                    </span>
+                                </div>
                             </Form.Group>
                             <Form.Group controlId="company">
                                 <Form.ControlLabel>Company</Form.ControlLabel>
-                                <Input placeholder="Company"
+                                <Input
+                                    placeholder="Enter Company name"
+                                    value={selectedWorkExp.companyName}
                                     onChange={(e) => {
-                                        setFormData({ ...formData, company: e })
+                                        setSelectedWorkExp(prevState => {
+                                            return {
+                                                ...prevState,
+                                                companyName: e
+                                            };
+                                        });
                                     }}
-                                    value={formData?.company} type="text" />
+                                />
+                                <div className="validation-errors">
+                                    <span>
+                                        {
+                                            validationErrors.find(x => x.key === 'companyName')?.message
+                                        }
+                                    </span>
+                                </div>
                             </Form.Group>
                             <Form.Group controlId="location">
                                 <Form.ControlLabel>Location</Form.ControlLabel>
                                 <InputPicker
                                     size="md"
                                     className="w-100"
-                                    placeholder="Location"
-                                    data={
-                                        locationList
-                                    }
-                                    value={formData?.location}
-                                    onChange={(e) => {
-                                        setFormData({ ...formData, location: e })
+                                    placeholder="Your location"
+                                    data={locationList}
+                                    value={selectedWorkExp.location?.id}
+                                    valueKey="id"
+                                    labelKey='name'
+                                    onSelect={(id, obj) => {
+                                        setSelectedWorkExp(prevState => {
+                                            return {
+                                                ...prevState,
+                                                location: obj
+                                            };
+                                        });
                                     }}
                                 />
+                                <div className="validation-errors">
+                                    <span>
+                                        {
+                                            validationErrors.find(x => x.key === 'location')?.message
+                                        }
+                                    </span>
+                                </div>
                             </Form.Group>
                             <div className="date-wrapper">
                                 <div className='wrapper-item'>
                                     <Form.Group controlId="start_month">
                                         <Form.ControlLabel>Start date</Form.ControlLabel>
                                         <InputPicker
-                                            size="size"
+                                            size="md"
                                             className="w-100"
                                             placeholder="Month"
                                             data={months}
-                                            value={formData?.start_month}
-                                            onChange={(e) => {
-                                                setFormData({ ...formData, start_month: e })
+                                            valueKey="id"
+                                            labelKey='name'
+                                            value={selectedWorkExp.start_month?.id}
+                                            onSelect={(id, obj) => {
+                                                setSelectedWorkExp(prevState => {
+                                                    return {
+                                                        ...prevState,
+                                                        start_month: obj
+                                                    };
+                                                });
                                             }}
                                         />
+                                        <div className="validation-errors">
+                                            <span>
+                                                {
+                                                    validationErrors.find(x => x.key === 'start_month')?.message
+                                                }
+                                            </span>
+                                        </div>
                                     </Form.Group>
                                     <Form.Group controlId="start_year">
                                         <Form.ControlLabel>
                                             <span className='invisible'>Year</span>
                                         </Form.ControlLabel>
                                         <InputPicker
-                                            size="size"
+                                            size="md"
                                             className="w-100"
                                             placeholder="Year"
-                                            data={
-                                                years
-                                            }
-                                            value={formData?.start_year}
-                                            onChange={(e) => {
-                                                setFormData({ ...formData, start_year: e })
+                                            data={years}
+                                            value={selectedWorkExp.start_year?.id}
+                                            valueKey="id"
+                                            labelKey='name'
+                                            onSelect={(id, obj) => {
+                                                setSelectedWorkExp(prevState => {
+                                                    return {
+                                                        ...prevState,
+                                                        start_year: obj
+                                                    };
+                                                });
                                             }}
                                         />
+                                        <div className="validation-errors">
+                                            <span>
+                                                {
+                                                    validationErrors.find(x => x.key === 'start_year')?.message
+                                                }
+                                            </span>
+                                        </div>
                                     </Form.Group>
                                 </div>
                                 <div className='wrapper-item'>
-                                    <Form.Group controlId="start_month">
-                                        <Form.ControlLabel className={formData?.current ? "text-muted" : ""}><>End
-                                            date
-                                        </>
+                                    <Form.Group controlId="end_month">
+                                        <Form.ControlLabel
+                                            className={selectedWorkExp.isCurrent ? "text-muted" : ""}
+                                        >
+                                            End date
                                         </Form.ControlLabel>
                                         <InputPicker
-                                            size="size"
+                                            size="md"
                                             className="w-100"
                                             placeholder="Month"
-                                            data={
-                                                months
-                                            }
-                                            value={formData?.end_month}
-                                            onChange={(e) => {
-                                                setFormData({ ...formData, end_month: e })
+                                            data={months}
+                                            valueKey="id"
+                                            labelKey='name'
+                                            value={selectedWorkExp.end_month?.id}
+                                            disabled={selectedWorkExp.isCurrent}
+                                            onSelect={(id, obj) => {
+                                                setSelectedWorkExp(prevState => {
+                                                    return {
+                                                        ...prevState,
+                                                        end_month: obj
+                                                    };
+                                                });
                                             }}
-                                            disabled={formData?.current}
                                         />
+                                        <div className="validation-errors">
+                                            <span>
+                                                {
+                                                    validationErrors.find(x => x.key === 'end_month')?.message
+                                                }
+                                            </span>
+                                        </div>
                                     </Form.Group>
                                     <Form.Group controlId="start_year">
                                         <Form.ControlLabel>
                                             <span className='invisible'>Year</span>
                                         </Form.ControlLabel>
                                         <InputPicker
-                                            size="size"
+                                            disabled={selectedWorkExp.isCurrent}
+                                            size="md"
                                             className="w-100"
                                             placeholder="Year"
-                                            disabled={formData?.current}
-                                            data={
-                                                years
-                                            }
-                                            value={formData?.end_year}
-                                            onChange={(e) => {
-                                                setFormData({ ...formData, end_year: e })
+                                            data={years}
+                                            value={selectedWorkExp.end_year?.id}
+                                            valueKey="id"
+                                            labelKey='name'
+                                            onSelect={(id, obj) => {
+                                                setSelectedWorkExp(prevState => {
+                                                    return {
+                                                        ...prevState,
+                                                        end_year: obj
+                                                    };
+                                                });
                                             }}
                                         />
+                                        <div className="validation-errors">
+                                            <span>
+                                                {
+                                                    validationErrors.find(x => x.key === 'end_year')?.message
+                                                }
+                                            </span>
+                                        </div>
                                     </Form.Group>
                                 </div>
                             </div>
-                            <Checkbox checked={formData?.current} onChange={(e, checked) => {
-                                checked ? setFormData({
-                                    ...formData,
-                                    end_month: '',
-                                    end_year: '',
-                                    current: checked
-                                }) :
-                                    setFormData({ ...formData, current: checked })
-                            }}> I’m currently working in this position</Checkbox>
+                            <Checkbox
+                                checked={selectedWorkExp.isCurrent}
+                                onChange={(e, checked) => {
+                                    if (checked) {
+                                        setSelectedWorkExp(prevState => {
+                                            return {
+                                                ...prevState,
+                                                end_month: {
+                                                    id: null,
+                                                    name: null,
+                                                    key: "End month",
+                                                },
+                                                end_year: {
+                                                    id: null,
+                                                    name: null,
+                                                    key: "End year",
+                                                },
+                                                isCurrent: checked
+                                            }
+                                        });
+                                    } else {
+                                        setSelectedWorkExp(prevState => {
+                                            return {
+                                                ...prevState,
+                                                isCurrent: checked
+                                            }
+                                        });
+                                    };
+                                }}
+                            >
+                                I’m currently working in this position
+                            </Checkbox>
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -261,13 +505,7 @@ function CardTeammerWorkExperience(props) {
                             color="blue"
                             appearance="primary"
                             className='btn-submit'
-                            onClick={() => {
-                                console.log(formData.id)
-                                if (formData.id) {
-                                    createModal.toggleEditFunc()
-                                } else createModal.toggleFunc()
-                            }
-                            }
+                            onClick={validateWorkExpForm}
                         >
                             <div className='icon-btn-wrapper'>
                                 <Image
@@ -289,7 +527,10 @@ function CardTeammerWorkExperience(props) {
                     size='sm'
                     open={editModal.isOpen}
                     className='work-exp-modal'
-                    onClose={() => editModal.toggleFunc()}
+                    onClose={() => {
+                        editModal.toggleFunc();
+                        resetState();
+                    }}
                 >
                     <Modal.Header>
                         <Modal.Title>{editModal.title}</Modal.Title>

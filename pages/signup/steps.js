@@ -125,7 +125,7 @@ const steps2 = (props) => {
                 id: i,
                 name: `${i}`,
             });
-        }
+        };
 
         setPublicDatas({
             positionList: positionList,
