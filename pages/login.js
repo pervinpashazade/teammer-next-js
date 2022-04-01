@@ -42,7 +42,6 @@ const Login = (props) => {
     const { cookie } = props;
     const [check, setCheck] = useState({});
     const [validation, setValidation] = useState(true);
-    const dispatch = useDispatch();
     const router = useRouter();
     const [errorMessage, setErrorMessage] = useState('');
 

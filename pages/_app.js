@@ -7,6 +7,7 @@ import '../styles/bootstrap/bootstrap.scss';
 import '../styles/style.scss';
 import "../firebase.js";
 import CheckAuthentication from "../src/containers/CheckAuthentication";
+import withAuth from "../hooks/withAuth";
 
 function MyApp({
     Component,
@@ -32,4 +33,4 @@ function MyApp({
     )
 };
 
-export default wrapper.withRedux(MyApp);
+export default withAuth(MyApp);

@@ -5,26 +5,24 @@ import Banner from '../../../src/components/Lib/Banner';
 import {MdModeEdit, MdOutlineWorkOutline} from 'react-icons/md';
 import {RiSettingsLine} from 'react-icons/ri';
 import {FaRegTimesCircle} from 'react-icons/fa';
-import {Avatar, Button, Form, Input, InputPicker, Notification, Tag, toaster} from 'rsuite';
-import CardTeammerPortfolio from '../../../src/components/Profile/CardTeammerPortfolio';
-import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeammerWorkExperience';
-import Image from 'next/image';
-import {Cookie, withCookie} from 'next-cookie';
+import {Avatar, Button, Form, InputPicker, Notification, Tag, toaster} from 'rsuite';
 import config from '../../../src/configuration';
-import {getFetchData} from '../../../lib/fetchData';
-import {getToken} from '../../../lib/session';
 import axios from "axios";
 import {getCookie} from "../../../src/helpers/cookie";
-
-// const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
+import {buildFormData} from "../../signup/steps_old";
 
 const EditComponent = (props) => {
     const photoRef = useRef();
     const [locations, setLocations] = useState([]);
+    const [projects, setProjects] = useState([]);
+    const [validation, setValidation] = useState(false);
+    const [notification, setNotification] = useState(false);
+    const [photo, setPhoto] = useState('')
     const [owner, setOwner] = useState({
         full_name: '',
         location: '',
-        // photo: ''
+        photo: '',
+        project_role_id: ''
     })
     useEffect(async () => {
         axios.get(config.BASE_URL + "locations")
@@ -34,25 +32,45 @@ const EditComponent = (props) => {
                     label: item.name ? item.name : ''
                 }
             })))
+        await axios.get(config.BASE_URL + 'project/roles').then(res => {
+            if (res.data.success) {
+                setProjects(res.data.data.map(item => {
+                    return {
+                        value: item.id,
+                        label: item.name ? item.name : ''
+                    }
+                }));
+            }
+        });
         axios.get(config.BASE_URL + "auth/user?include=project,skills,positions,experiences,detail.location", {
             headers: {
                 Authorization: "Bearer " + getCookie('teammers-access-token')
             }
         })
             .then(res => {
-                console.log(res);
+                console.log(res.data.data)
+                let data = res.data?.data
                 setOwner({
-                    full_name: res.data?.data?.full_name,
-                    location: res.data?.data?.detail?.location?.id,
-                    // photo: res.data?.data?.detail?.photo
+                    full_name: data?.full_name,
+                    location: data?.detail?.location?.id,
+                    photo: data?.detail?.photo,
+                    project_role_id: data?.detail?.project_role_id ? data?.detail?.project_role_id : ""
                 })
             })
-    }, [])
+    }, []);
+    useEffect(() => {
+        if (notification) {
+            setTimeout(() => {
+                setNotification(false);
+            }, 5000)
+        }
+    }, [notification])
     const uploadFile = (event) => {
-        console.log(event.target.files)
-        if (event.target.files) {
+        console.log("event target ", event.target.files.length)
+        if (event.target.files.length) {
             let file_extension = event.target.files[0].type.split("/").pop();
             if (file_extension === "png" || file_extension === "jpeg") {
+                setPhoto(event.target.files[0])
                 setOwner({
                     ...owner,
                     photo: URL.createObjectURL(event.target.files[0])
@@ -67,14 +85,48 @@ const EditComponent = (props) => {
         }
     }
     const saveChanges = () => {
-        axios.put(config.BASE_URL + "users",owner , {
-            headers: {
-                Authorization: "Bearer " + getCookie('teammers-access-token')
+
+        if (owner.project_role_id) {
+            console.log(photo)
+            let data = {
+                detail: {
+                    project_role_id: owner.project_role_id,
+                    location_id: owner.location,
+                },
+                full_name: owner.full_name,
             }
-        })
-            .then(res => {
-                console.log(res)
+            const formData = new FormData();
+            if (photo) {
+                data.detail['photo'] = photo;
+                buildFormData(formData, data);
+
+                axios.put(config.BASE_URL + "users", formData, {
+                    headers: {
+                        Authorization: "Bearer " + getCookie('teammers-access-token'),
+                        _method: "put",
+                    }
+                })
+                    .then(res => {
+                        console.log(res);
+                        setNotification(true)
+                    })
+                return
+            }
+            axios.put(config.BASE_URL + "users", data, {
+                headers: {
+                    Authorization: "Bearer " + getCookie('teammers-access-token')
+                }
             })
+                .then(res => {
+                    console.log(res);
+                    setNotification(true)
+                })
+            setValidation(false);
+        } else {
+
+            setValidation(true);
+        }
+
     }
     const setData = (key, data) => {
         setOwner({
@@ -82,6 +134,8 @@ const EditComponent = (props) => {
             [key]: data
         })
     }
+    console.log(owner);
+
     return (
         <div>
             <div className='teammer-profile-edit'>
@@ -148,6 +202,8 @@ const EditComponent = (props) => {
                                 Save Changes
                             </Button>
                         </div>
+                        <div>{notification &&
+                        <div className="alert-success">Profile changes edited successfly!</div>}</div>
                         <div className="user-info-wrapper">
                             <div className="change-avatar-side">
                                 <div className="side_title">
@@ -195,6 +251,19 @@ const EditComponent = (props) => {
                                                 value={owner.location}
                                                 onChange={(e) => setOwner({...owner, location: e})}
                                             />
+                                        </Form.Group>
+                                        <Form.Group controlId="location">
+                                            <Form.ControlLabel>Roles</Form.ControlLabel>
+                                            <InputPicker
+                                                size="md"
+                                                className="w-100"
+                                                placeholder="Roles"
+                                                data={projects}
+                                                value={owner.project_role_id}
+                                                onChange={(e) => setOwner({...owner, project_role_id: e})}
+                                            />
+                                            {validation &&
+                                            <p className="login-validation">Project role is required!</p>}
                                         </Form.Group>
                                     </div>
                                 </Form>

@@ -1,23 +1,77 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
 import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
 import Banner from '../../../src/components/Lib/Banner';
-import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
-import { RiSettingsLine } from 'react-icons/ri';
-import { FaRegTimesCircle } from 'react-icons/fa';
-import { Avatar, Button, Form } from 'rsuite';
-import { Cookie, withCookie } from 'next-cookie';
+import {MdModeEdit, MdOutlineWorkOutline} from 'react-icons/md';
+import {RiSettingsLine} from 'react-icons/ri';
+import {FaRegTimesCircle} from 'react-icons/fa';
+import {Avatar, Button, Form} from 'rsuite';
+import {Cookie, withCookie} from 'next-cookie';
 import config from '../../../src/configuration';
-import { getFetchData } from '../../../lib/fetchData';
-import { getToken } from '../../../lib/session';
+import {getFetchData} from '../../../lib/fetchData';
+import {getToken} from '../../../lib/session';
+import axios from "axios";
+import {getCookie} from "../../../src/helpers/cookie";
 
 function BlockedUsers(props) {
-
+    const [blockUser, setBlockUsers] = useState([]);
+    const [owner, setOwner] = useState({
+        full_name: '',
+        location: '',
+        photo: ''
+    })
+    const getUnBlockUsers = () => {
+        axios.get(config.BASE_URL + "users/blocks",
+            {
+                headers: {
+                    Authorization: "Bearer " + getCookie('teammers-access-token')
+                }
+            }
+        )
+            .then(res => {
+                res.data && setBlockUsers(res.data.data.map(item => {
+                    return {
+                        photo: item.detail.photo,
+                        name: item.full_name,
+                        id: item.id
+                    }
+                }))
+            })
+    }
+    useEffect(() => {
+        axios.get(config.BASE_URL + "auth/user?include=project,skills,positions,experiences,detail.location", {
+            headers: {
+                Authorization: "Bearer " + getCookie('teammers-access-token')
+            }
+        })
+            .then(res => {
+                console.log(res);
+                setOwner({
+                    full_name: res.data?.data?.full_name,
+                    location: res.data?.data?.detail?.location?.id,
+                    photo: res.data?.data?.detail?.photo
+                })
+            })
+        getUnBlockUsers();
+    }, []);
+    const unBlockUser = (id) => {
+        axios.post(config.BASE_URL + "users/unblock", {
+            id: id
+        }, {
+            headers: {
+                Authorization: "Bearer " + getCookie('teammers-access-token')
+            }
+        })
+            .then((res)=>{
+                    console.log(res);
+                    getUnBlockUsers();
+            })
+    }
     return (
         <div className='teammer-profile-edit'>
-            <BreadCrumb />
+            <BreadCrumb/>
             <Banner
-                styles={{ marginBottom: '2.5rem' }}
+                styles={{marginBottom: '2.5rem'}}
             />
             <div className="profile-wrapper">
                 <div className="left-side">
@@ -25,7 +79,7 @@ function BlockedUsers(props) {
                         <li>
                             <Link href="/owner/profile/edit">
                                 <a>
-                                    <MdModeEdit />
+                                    <MdModeEdit/>
                                     <span>Edit Profile</span>
                                 </a>
                             </Link>
@@ -33,7 +87,7 @@ function BlockedUsers(props) {
                         <li>
                             <Link href="/owner/profile/settings">
                                 <a>
-                                    <RiSettingsLine />
+                                    <RiSettingsLine/>
                                     <span>Account Settings</span>
                                 </a>
                             </Link>
@@ -41,7 +95,7 @@ function BlockedUsers(props) {
                         <li>
                             <Link href="/owner/profile/company">
                                 <a>
-                                    <MdOutlineWorkOutline />
+                                    <MdOutlineWorkOutline/>
                                     <span>Company</span>
                                 </a>
                             </Link>
@@ -49,7 +103,7 @@ function BlockedUsers(props) {
                         <li className='active'>
                             <Link href="/owner/profile/blocked-users">
                                 <a>
-                                    <FaRegTimesCircle />
+                                    <FaRegTimesCircle/>
                                     <span>Blocked Users</span>
                                 </a>
                             </Link>
@@ -62,11 +116,11 @@ function BlockedUsers(props) {
                             <Avatar
                                 size="lg"
                                 circle
-                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                src={owner.photo ? owner.photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
-                                <h4>{props.userData?.full_name}</h4>
+                                <h4>{owner.full_name}</h4>
                                 <span>Edit Profile</span>
                             </div>
                         </div>
@@ -76,74 +130,96 @@ function BlockedUsers(props) {
                             <p className='form-title pl-0'>Blocked Users</p>
                             <p>See and manage the accounts you have blocked.</p>
                             <ul className="blocked-users-list">
-                                <li>
-                                    <div className="_user-info">
-                                        <Avatar
-                                            circle
-                                            src="/img/avatar1.png"
-                                            alt="@SevenOutman"
-                                        />
-                                        <span>Denis Delton</span>
-                                    </div>
-                                    <Button
-                                        color="blue"
-                                        appearance="primary"
-                                        className="btn-custom-outline unblock-btn"
-                                    >
-                                        Unblock
-                                    </Button>
-                                </li>
-                                <li>
-                                    <div className="_user-info">
-                                        <Avatar
-                                            circle
-                                            src="/img/avatar1.png"
-                                            alt="@SevenOutman"
-                                        />
-                                        <span>Denis Delton</span>
-                                    </div>
-                                    <Button
-                                        color="blue"
-                                        appearance="primary"
-                                        className="btn-custom-outline unblock-btn"
-                                    >
-                                        Unblock
-                                    </Button>
-                                </li>
-                                <li>
-                                    <div className="_user-info">
-                                        <Avatar
-                                            circle
-                                            src="/img/avatar1.png"
-                                            alt="@SevenOutman"
-                                        />
-                                        <span>Denis Delton</span>
-                                    </div>
-                                    <Button
-                                        color="blue"
-                                        appearance="primary"
-                                        className="btn-custom-outline unblock-btn"
-                                    >
-                                        Unblock
-                                    </Button>
-                                </li>
-                                <li>
-                                    <div className="_user-info">
-                                        <Avatar
-                                            circle
-                                            src="/img/avatar1.png"
-                                            alt="@SevenOutman"
-                                        />
-                                        <span>Denis Delton</span>
-                                    </div>
-                                    <Button
-                                        color="blue"
-                                        appearance="primary"
-                                        className="btn-custom-outline unblock-btn"
-                                    >
-                                        Unblock
-                                    </Button>
-                                </li>
+                                {
+                                    blockUser.length > 0 && blockUser.map(item => {
+                                        return <li>
+                                            <div className="_user-info">
+                                                <Avatar
+                                                    circle
+                                                    src={item.photo ? item.photo : ""}
+                                                    alt="User"
+                                                />
+                                                <span>{item.name}</span>
+                                            </div>
+                                            <Button
+                                                color="blue"
+                                                appearance="primary"
+                                                className="btn-custom-outline unblock-btn"
+                                                onClick={() => unBlockUser(item.id)}
+                                            >
+                                                Unblock
+                                            </Button>
+                                        </li>
+                                    })
+                                }
+                                {/*<li>*/}
+                                {/*    <div className="_user-info">*/}
+                                {/*        <Avatar*/}
+                                {/*            circle*/}
+                                {/*            src="/img/avatar1.png"*/}
+                                {/*            alt="@SevenOutman"*/}
+                                {/*        />*/}
+                                {/*        <span>Denis Delton</span>*/}
+                                {/*    </div>*/}
+                                {/*    <Button*/}
+                                {/*        color="blue"*/}
+                                {/*        appearance="primary"*/}
+                                {/*        className="btn-custom-outline unblock-btn"*/}
+                                {/*    >*/}
+                                {/*        Unblock*/}
+                                {/*    </Button>*/}
+                                {/*</li>*/}
+                                {/*<li>*/}
+                                {/*    <div className="_user-info">*/}
+                                {/*        <Avatar*/}
+                                {/*            circle*/}
+                                {/*            src="/img/avatar1.png"*/}
+                                {/*            alt="@SevenOutman"*/}
+                                {/*        />*/}
+                                {/*        <span>Denis Delton</span>*/}
+                                {/*    </div>*/}
+                                {/*    <Button*/}
+                                {/*        color="blue"*/}
+                                {/*        appearance="primary"*/}
+                                {/*        className="btn-custom-outline unblock-btn"*/}
+                                {/*    >*/}
+                                {/*        Unblock*/}
+                                {/*    </Button>*/}
+                                {/*</li>*/}
+                                {/*<li>*/}
+                                {/*    <div className="_user-info">*/}
+                                {/*        <Avatar*/}
+                                {/*            circle*/}
+                                {/*            src="/img/avatar1.png"*/}
+                                {/*            alt="@SevenOutman"*/}
+                                {/*        />*/}
+                                {/*        <span>Denis Delton</span>*/}
+                                {/*    </div>*/}
+                                {/*    <Button*/}
+                                {/*        color="blue"*/}
+                                {/*        appearance="primary"*/}
+                                {/*        className="btn-custom-outline unblock-btn"*/}
+                                {/*    >*/}
+                                {/*        Unblock*/}
+                                {/*    </Button>*/}
+                                {/*</li>*/}
+                                {/*<li>*/}
+                                {/*    <div className="_user-info">*/}
+                                {/*        <Avatar*/}
+                                {/*            circle*/}
+                                {/*            src="/img/avatar1.png"*/}
+                                {/*            alt="@SevenOutman"*/}
+                                {/*        />*/}
+                                {/*        <span>Denis Delton</span>*/}
+                                {/*    </div>*/}
+                                {/*    <Button*/}
+                                {/*        color="blue"*/}
+                                {/*        appearance="primary"*/}
+                                {/*        className="btn-custom-outline unblock-btn"*/}
+                                {/*    >*/}
+                                {/*        Unblock*/}
+                                {/*    </Button>*/}
+                                {/*</li>*/}
                             </ul>
                         </div>
                     </div>
@@ -152,16 +228,6 @@ function BlockedUsers(props) {
         </div>
     )
 }
+
 BlockedUsers.layout = true
 export default BlockedUsers;
-
-export const getServerSideProps = async (context) => {
-
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
-
-    return {
-        props: {
-            userData: fetchUserInfo?.data,
-        }
-    }
-};
