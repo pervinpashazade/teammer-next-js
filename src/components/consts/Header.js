@@ -20,7 +20,7 @@ import { logoutService } from '../../services/Auth/logoutService';
 import { useAuth } from '../../../Auth';
 
 const CustomComponentUserProfile = ({ placement, loading, children, user, context }) => {
-
+    console.log(user);
     const router = useRouter();
 
     const renderPopover = () => {
