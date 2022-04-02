@@ -11,7 +11,11 @@ function CardTeammerPortfolio(props) {
         classNames,
         portfolioUrlList,
         setPortfolioUrlList,
+        cvUrl,
+        full_name,
     } = props;
+
+    const urlRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
     // React.useEffect(() => {
     //     console.log('component card props', props);
@@ -22,6 +26,7 @@ function CardTeammerPortfolio(props) {
 
     const inputRef = useRef();
 
+    // wrong
     const uploadFile = (event) => {
         // console.log(event)
         if (event.target.files) {
@@ -62,13 +67,15 @@ function CardTeammerPortfolio(props) {
                             type="file"
                         />
                         {
-                            portfolioUrlList.cvFileName &&
+                            cvUrl &&
                             <a
-                                href={portfolioUrlList.cvFileName}
+                                href={cvUrl}
                                 target="_blank"
                                 download
                             >
-                                {portfolioUrlList.cvFileName}
+                                {
+                                    full_name ? full_name : 'CV'
+                                }
                             </a>
                         }
                     </div>
@@ -123,31 +130,33 @@ function CardTeammerPortfolio(props) {
             <div className="card-content">
                 <ul>
                     {
-                        portfolioUrlList.portfolio?.map((item, index) => {
-                            return <li key={index} className="d-flex justify-content-between align-items-center">
-                                <a href={item} target="_blank">{item}</a>
-                                <IconButton
-                                    size="sm"
-                                    className='bg-transparent ml-2'
-                                    icon={
-                                        <span onClick={() => {
-                                            setPortfolioUrlList({
-                                                ...portfolioUrlList,
-                                                portfolio: portfolioUrlList.portfolio.filter(i => i !== item)
-                                            })
+                        portfolioUrlList.map((item, index) => {
+                            return (
+                                <li
+                                    key={index}
+                                    className="d-flex justify-content-between align-items-center"
+                                >
+                                    <a href={item} target="_blank">{item}</a>
+                                    <IconButton
+                                        size="sm"
+                                        className='bg-transparent ml-2'
+                                        icon={
+                                            <span onClick={() => {
+                                                setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))
+                                            }}
+                                            >
+                                                <Image
+                                                    src={'/icons/trash.svg'}
+                                                    alt='img'
+                                                    width={16}
+                                                    height={16}
+                                                    layout='fixed'
+                                                />
+                                            </span>
                                         }
-                                        }>
-                                            <Image
-                                                src={'/icons/trash.svg'}
-                                                alt='img'
-                                                width={16}
-                                                height={16}
-                                                layout='fixed'
-                                            />
-                                        </span>
-                                    }
-                                />
-                            </li>
+                                    />
+                                </li>
+                            )
                         })
                     }
                 </ul>
@@ -157,6 +166,7 @@ function CardTeammerPortfolio(props) {
                 <div className="card-bottom">
                     <div className="add-to-list-wrapper">
                         <Input
+                            type='url'
                             className='mr-3'
                             placeholder='Enter portfolio link'
                             value={newPortfolioLink}
@@ -176,14 +186,14 @@ function CardTeammerPortfolio(props) {
                                 />
                             }
                             onClick={() => {
-                                if (portfolioUrlList.portfolio.some(item => item !== newPortfolioLink) && newPortfolioLink.trim()) {
-                                    setPortfolioUrlList({
-                                        ...portfolioUrlList,
-                                        portfolio: [...portfolioUrlList.portfolio, newPortfolioLink]
-                                    })
-                                    setNewPortfolioLink('')
-                                }
+                                if (!urlRegex.test(newPortfolioLink)) return;
 
+                                if (portfolioUrlList.some(item => item !== newPortfolioLink) && newPortfolioLink.trim()) {
+                                    let arr = portfolioUrlList;
+                                    arr.push(newPortfolioLink);
+                                    setPortfolioUrlList(arr);
+                                    setNewPortfolioLink('')
+                                };
                             }}
                         />
                     </div>

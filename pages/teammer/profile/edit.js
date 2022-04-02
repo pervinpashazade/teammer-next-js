@@ -32,6 +32,8 @@ const EditComponent = (props) => {
     const [teammer, setTeammer] = useState({
         avatarFile: null,
         avatarUrl: null,
+        cvFile: null,
+        cvUrl: null,
         username: null,
         full_name: null,
         location: null,
@@ -123,15 +125,16 @@ const EditComponent = (props) => {
     React.useEffect(() => {
         getPublicDatas();
 
-        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences', {
+        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location', {
             headers: {
                 'Authorization': 'Bearer ' + getCookie('teammers-access-token')
             }
         }).then(res => {
-            console.log('res data', res);
+            console.log('res data', res.data.data);
             if (res.data.success) {
                 setTeammer({
                     avatarUrl: res.data.data.detail.photo,
+                    cvUrl: res.data.data.detail.cv,
                     username: res.data.data.username,
                     full_name: res.data.data.full_name,
                     location: res.data.data.detail.location,
@@ -150,6 +153,8 @@ const EditComponent = (props) => {
 
     //
 
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
     const [userData, setUserData] = useState(props.userData);
 
     const [userInfo, setUserInfo] = useState({
@@ -166,176 +171,148 @@ const EditComponent = (props) => {
         experience_level: userData?.detail?.experience_level.id && userData?.detail?.experience_level.id
     });
 
-    const [formData, setFormData] = useState({
-        id: '',
-        position: '',
-        company: '',
-        location: '',
-        start_month: '',
-        start_year: '',
-        end_month: '',
-        end_year: '',
-        current: false
-    });
-
-    const [selectedPositions, setSelectedPositions] = useState([]);
-
-    const [selectedSkills, setSelectedSkills] = useState([]);
-
     const [portfolioUrlList, setPortfolioUrlList] = useState({
         cvFileName: props.userData?.detail?.cv,
         cv: '',
         portfolio: props.userData?.detail?.portfolio
     });
 
-    const [image, setImage] = useState({});
     const photoRef = useRef();
+
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
 
-    const getData = async () => {
-        const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
-        setUserInfo({
-            ...userInfo,
-            experiences: fetchUserInfo.data.experiences
-        });
-    };
+    // const getData = async () => {
+    //     const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
+    //     setUserInfo({
+    //         ...userInfo,
+    //         experiences: fetchUserInfo.data.experiences
+    //     });
+    // };
 
-    const editModal = (id) => {
-        let element = userInfo.experiences.find(item => item.id === id);
-        setFormData({
-            id: id,
-            position: element.position.id,
-            company: element.company,
-            location: element.location_id,
-            current: element.current,
-            start_month: element.start_date ? Number(element.start_date.split("-")[0]) : "",
-            start_year: element.start_date ? Number(element.start_date.split("-")[1]) : "",
-            end_month: element.end_date ? Number(element.end_date.split("-")[0]) : "",
-            end_year: element.end_date ? Number(element.end_date.split("-")[1]) : "",
-        });
+    const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
 
-    const toggle = () => {
-        setIsOpenCreateModal(!isOpenCreateModal);
+    const toggleEditModal = () => {
+        setIsOpenEditModal(!isOpenEditModal);
     };
 
-    const toggleEditModal = async () => {
-        if (formData.position
-            && formData.company
-            && formData.location
-            && formData.start_month
-            && formData.start_year) {
-            let data = {
-                location_id: formData.location,
-                position_id: formData.position,
-                company: formData.company,
-                start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
-                // end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
-                // current: formData.current
-            }
-            if (formData.current) {
-                data.end_date = ""
-                // data.current = true;
-            } else {
-                data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
-            }
-            let response = await fetch(config.BASE_URL + "experiences/" + formData.id, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-                },
-                body: JSON.stringify(data)
-            })
-            let res = await response.json();
-            console.log(res)
-            if (res.success) {
-                getData();
-                setFormData({
-                    id: '',
-                    position: '',
-                    company: '',
-                    location: '',
-                    start_month: '',
-                    start_year: '',
-                    end_month: '',
-                    end_year: '',
-                    current: false
-                })
-                toaster.push(
-                    <Notification type={"success"} header="Success!" closable>
-                        Work experience updated!
-                    </Notification>, 'topEnd'
-                );
-                setIsOpenCreateModal(!isOpenCreateModal);
-            }
-        } else {
-            toaster.push(
-                <Notification type={"error"} header="Success!" closable>
-                    Some fields are empty!
-                </Notification>, 'topEnd'
-            );
-        };
-    };
+    // const toggleEditModal = async () => {
+    //     if (formData.position
+    //         && formData.company
+    //         && formData.location
+    //         && formData.start_month
+    //         && formData.start_year) {
+    //         let data = {
+    //             location_id: formData.location,
+    //             position_id: formData.position,
+    //             company: formData.company,
+    //             start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
+    //             // end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+    //             // current: formData.current
+    //         }
+    //         if (formData.current) {
+    //             data.end_date = ""
+    //             // data.current = true;
+    //         } else {
+    //             data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+    //         }
+    //         let response = await fetch(config.BASE_URL + "experiences/" + formData.id, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+    //             },
+    //             body: JSON.stringify(data)
+    //         })
+    //         let res = await response.json();
+    //         console.log(res)
+    //         if (res.success) {
+    //             getData();
+    //             setFormData({
+    //                 id: '',
+    //                 position: '',
+    //                 company: '',
+    //                 location: '',
+    //                 start_month: '',
+    //                 start_year: '',
+    //                 end_month: '',
+    //                 end_year: '',
+    //                 current: false
+    //             })
+    //             toaster.push(
+    //                 <Notification type={"success"} header="Success!" closable>
+    //                     Work experience updated!
+    //                 </Notification>, 'topEnd'
+    //             );
+    //             setIsOpenCreateModal(!isOpenCreateModal);
+    //         }
+    //     } else {
+    //         toaster.push(
+    //             <Notification type={"error"} header="Success!" closable>
+    //                 Some fields are empty!
+    //             </Notification>, 'topEnd'
+    //         );
+    //     };
+    // };
 
-    const toggleCreateModal = async () => {
-        if (formData.position
-            && formData.company
-            && formData.location
-            && formData.start_month
-            && formData.start_year) {
-            let data = {
-                location_id: formData.location,
-                position_id: formData.position,
-                company: formData.company,
-                start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
-                end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
-                // current: formData.current
-            }
-            // if (formData.current) {
-            //     data.end_date = ""
-            //     data.current = true;
-            // } else {
-            //     data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
-            // }
-            let response = await fetch(config.BASE_URL + "experiences", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + props.token
-                },
-                body: JSON.stringify(data)
-            })
-            let res = await response.json()
-            if (res.success) {
-                getData();
-                setFormData({
-                    position: '',
-                    company: '',
-                    location: '',
-                    start_month: '',
-                    start_year: '',
-                    end_month: '',
-                    end_year: '',
-                    current: false
-                })
-                toaster.push(
-                    <Notification type={"success"} header="Success!" closable>
-                        New work experience added!
-                    </Notification>, 'topEnd'
-                );
-                setIsOpenCreateModal(!isOpenCreateModal);
-            }
-        } else {
-            toaster.push(
-                <Notification type={"error"} header="Success!" closable>
-                    Some fields are empty!
-                </Notification>, 'topEnd'
-            );
-        }
-    };
+    // const toggleCreateModal = async () => {
+    //     if (formData.position
+    //         && formData.company
+    //         && formData.location
+    //         && formData.start_month
+    //         && formData.start_year) {
+    //         let data = {
+    //             location_id: formData.location,
+    //             position_id: formData.position,
+    //             company: formData.company,
+    //             start_date: `${formData.start_month < 10 ? '0' + formData.start_month : formData.start_month}-${formData.start_year}`,
+    //             end_date: `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+    //             // current: formData.current
+    //         }
+    //         // if (formData.current) {
+    //         //     data.end_date = ""
+    //         //     data.current = true;
+    //         // } else {
+    //         //     data.end_date = `${formData.end_month < 10 ? '0' + formData.end_month : formData.end_month}-${formData.end_year}`
+    //         // }
+    //         let response = await fetch(config.BASE_URL + "experiences", {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': 'Bearer ' + props.token
+    //             },
+    //             body: JSON.stringify(data)
+    //         })
+    //         let res = await response.json()
+    //         if (res.success) {
+    //             getData();
+    //             setFormData({
+    //                 position: '',
+    //                 company: '',
+    //                 location: '',
+    //                 start_month: '',
+    //                 start_year: '',
+    //                 end_month: '',
+    //                 end_year: '',
+    //                 current: false
+    //             })
+    //             toaster.push(
+    //                 <Notification type={"success"} header="Success!" closable>
+    //                     New work experience added!
+    //                 </Notification>, 'topEnd'
+    //             );
+    //             setIsOpenCreateModal(!isOpenCreateModal);
+    //         }
+    //     } else {
+    //         toaster.push(
+    //             <Notification type={"error"} header="Success!" closable>
+    //                 Some fields are empty!
+    //             </Notification>, 'topEnd'
+    //         );
+    //     }
+    // };
 
     const handleChangeInput = (type, value) => {
         setTeammer(prevState => {
@@ -365,8 +342,6 @@ const EditComponent = (props) => {
 
     const validateForm = () => {
         if (!teammer) return false;
-
-        console.log('LOG FORM TEAMMER EDIT', teammer);
 
         let validationErrors = [];
 
@@ -417,8 +392,6 @@ const EditComponent = (props) => {
             });
         };
 
-        console.log('TEAMMER EDIT ERRORS', validationErrors);
-
         setValidationErrors(validationErrors);
 
         if (validationErrors.length) {
@@ -429,7 +402,6 @@ const EditComponent = (props) => {
     };
 
     const saveChanges = async () => {
-
 
         const isValid = validateForm();
 
@@ -442,6 +414,7 @@ const EditComponent = (props) => {
                 location_id: teammer.location?.id,
                 about: teammer.about,
                 years_of_experience: teammer.experience,
+                portfolio: teammer.portfolioList,
             },
             positions: teammer.positions.map(item => item.id),
             skills: teammer.skillList.map(item => item.id),
@@ -459,6 +432,13 @@ const EditComponent = (props) => {
         if (teammer.avatarFile) {
             body.photo = teammer.avatarFile
         };
+
+        if (teammer.avatarFile) {
+            body.photo = teammer.avatarFile;
+        };
+        // if (teammer.cvFile) {
+        //     body.cv = teammer.cvFile;
+        // };
 
         // console.log('EDIT BODY', body);
 
@@ -497,31 +477,79 @@ const EditComponent = (props) => {
 
         // }
 
-        // let formdata = new FormData();
-        // let data = buildFormData(formdata, body);
-
-        if (!teammer.avatarFile) {
+        if (teammer.avatarFile || teammer.cvFile) {
+            body['_method'] = 'PUT';
+            let formdata = new FormData();
+            let data = buildFormData(formdata, body);
+            axios.post(config.BASE_URL + 'users', data, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+                }
+            }).then(res => {
+                console.log('edit res', res);
+                if (res.data.success) {
+                    setShowSuccessAlert(true);
+                };
+            });
+        } else {
             axios.put(config.BASE_URL + 'users', body, {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie('teammers-access-token')
                 }
             }).then(res => {
                 console.log('edit res', res);
+                if (res.data.success) {
+                    setShowSuccessAlert(true);
+                };
             });
-        } else {
-            let formdata = new FormData();
-            let data = buildFormData(formdata, body);
-            axios.put(config.BASE_URL + 'users', data, {
-                headers: {
-                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-                }
-            }).then(res => {
-                console.log('edit res', res);
-            });
-            alert('noo')
+        };
+    };
+
+    const setTeammerPortfolio = (list) => {
+        setTeammer(prevState => {
+            return {
+                ...prevState,
+                portfolioList: list
+            }
+        });
+    };
+
+    const addWorkExperience = data => {
+        if (!data) return;
+
+        let body = {
+            company: data.companyName,
+            position_id: data.position.id,
+            location_id: data.position.id,
+            start_date: `${data.start_month?.id < 10 ? '0' + data.start_month?.id : data.start_month?.id}-${data.start_year?.id}`,
         }
 
+        if (data.end_month?.id && data.end_year?.id) {
+            body.start_date = `${data.start_month?.id < 10 ? '0' + data.start_month?.id : data.start_month?.id}-${data.start_year?.id}`;
+        };
 
+        axios.post(config.BASE_URL + "experiences", body, {
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('teammers-access-token')
+            }
+        }).then(res => {
+            if (res.data.success) {
+                delete data.isCurrnet;
+                setTeammer(prevState => {
+                    return {
+                        ...prevState,
+                        workExperienceList: [...prevState.workExperienceList, data]
+                    }
+                });
+                setIsOpenCreateModal(false);
+            };
+        });
+
+        // console.log('SUBMIT DATA', data);
+    };
+
+    const editWorkExperience = data => {
+        alert('edit work exp');
     };
 
     return (
@@ -594,6 +622,14 @@ const EditComponent = (props) => {
                                 Save Changes
                             </Button>
                         </div>
+                        {
+                            showSuccessAlert &&
+                            <div className="w-100">
+                                <div className="alert alert-success">
+                                    User information successfully edited.
+                                </div>
+                            </div>
+                        }
                         <div className="user-info-wrapper">
                             <div className="change-avatar-side">
                                 <div className="side_title">
@@ -861,23 +897,27 @@ const EditComponent = (props) => {
                             title="CV"
                             editMode={true}
                             classNames="mb-3"
-                            portfolioUrlList={portfolioUrlList}
-                            setPortfolioUrlList={setPortfolioUrlList}
+                            cvUrl={teammer.cvUrl}
+                            full_name={teammer.full_name}
+                            portfolioUrlList={teammer.portfolioList}
+                            setPortfolioUrlList={setTeammerPortfolio}
                         />
                         <CardTeammerWorkExperience
-                            workExperienceList={userInfo.experiences}
+                            workExperienceList={teammer.workExperienceList}
                             editMode={true}
+                            positionList={publicDatas.positionList}
+                            locationList={publicDatas.locationList}
                             createModal={{
                                 isOpen: isOpenCreateModal,
-                                toggle: toggle,
-                                toggleFunc: toggleCreateModal,
-                                toggleEdit: editModal,
-                                toggleEditFunc: toggleEditModal,
                                 title: "Add Work Experience",
-                                formData: formData,
-                                setFormData: setFormData,
-                                positionsList: props.positionList,
-                                locationList: props.locationList,
+                                toggle: toggleCreateModal,
+                                submitFunc: addWorkExperience,
+                            }}
+                            editModal={{
+                                isOpen: isOpenEditModal,
+                                title: "Edit Work Experience",
+                                toggle: toggleEditModal,
+                                submitFunc: editWorkExperience,
                             }}
                         />
                         <div className="delete-account-wrapper">
