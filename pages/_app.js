@@ -14,10 +14,11 @@ function MyApp({
     pageProps: { session, ...pageProps },
 }) {
 
-    // React.useEffect(() => {
-    //     useless
-    //     initializeFirebase();
-    // }, []);
+    const router = useRouter();
+
+    React.useEffect(() => {
+        document.body.classList.toggle('overflow-hidden', router.pathname === "/signup/steps");
+    }, [router.pathname]);
 
     return (
         <AuthProvider>

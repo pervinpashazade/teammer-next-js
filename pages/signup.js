@@ -120,14 +120,14 @@ const Signup = (props) => {
         if (!password) {
             validationErrors.push("Password field is required");
         };
-        if (password.length < 8) {
-            validationErrors.push("Password must be at least 8 characters");
-        };
-        if (password.length > 16) {
-            validationErrors.push("Password must be maximum 16 characters");
-        };
         if (!/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/.test(password)) {
-            validationErrors.push("Password is not valid");
+            if (password.length < 8) {
+                validationErrors.push("Password must be at least 8 characters");
+            } else if (password.length > 16) {
+                validationErrors.push("Password must be maximum 16 characters");
+            } else {
+                validationErrors.push("Password is not valid");
+            };
         };
 
         setFormValidation(prevState => {

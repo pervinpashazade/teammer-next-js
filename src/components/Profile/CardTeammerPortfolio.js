@@ -1,10 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
+<<<<<<< HEAD
+import { IconButton, Input } from 'rsuite';
+import { URL_REGEX } from '../../configuration';
+=======
 import Link from 'next/link';
 import {Button, IconButton, Input, InputPicker, Modal, Notification, toaster} from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import axios from "axios";
 import config from "../../configuration";
+>>>>>>> ba9e634811e8863d9797601f7df2b994dc7ba42b
 
 function CardTeammerPortfolio(props) {
     const {
@@ -16,8 +21,6 @@ function CardTeammerPortfolio(props) {
         cvUrl,
         full_name,
     } = props;
-
-    const urlRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
     // React.useEffect(() => {
     //     console.log('component card props', props);
@@ -191,7 +194,7 @@ function CardTeammerPortfolio(props) {
                                 />
                             }
                             onClick={() => {
-                                if (!urlRegex.test(newPortfolioLink)) return;
+                                if (!URL_REGEX.test(newPortfolioLink)) return;
 
                                 if (portfolioUrlList.some(item => item !== newPortfolioLink) && newPortfolioLink.trim()) {
                                     let arr = portfolioUrlList;
