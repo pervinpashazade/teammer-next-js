@@ -46,7 +46,7 @@ const Home = (props) => {
     });
 
     const [data, setData] = useState(items)
-
+    console.log('datasssss' , data)
     const filterFuncation = (key, e, type) => {
         let array = filter[key];
         if (type === "add") {

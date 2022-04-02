@@ -1,29 +1,32 @@
 import axios from 'axios';
+import {getCookie} from "./helpers/cookie";
 
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
-    // let teammers-access-token = localStorage.getItem('teammers-access-token')
-    console.log('interceptor config request', config)
+    let accessToken = getCookie('teammers-access-token');
+    config.headers['Authorization'] = "Bearer " + accessToken;
     return config;
 }, function (error) {
-    // Do something with request error
-    console.log('interceptor error', error.response)
     return Promise.reject(error);
 });
-
-// Add a response interceptor
 axios.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    console.log('interceptor response', response);
     return response;
 }, function (error) {
-    
-    console.log('interceptor error', error.response)
-    
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    // if (error.response.code === 403) {
-    //     router.push("/login")
-    // }
+    const status = error ? error.response.status : 401;
+    switch (status) {
+        case 401:
+            //do something
+            break;
+        case 422:
+            //do something
+            return Promise.reject(error);
+            break;
+        case 429:
+            // do something
+            break;
+        default:
+            return Promise.reject(error);
+
+
+    }
 });

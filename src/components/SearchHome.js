@@ -34,7 +34,7 @@ function SearchHome({ token, getData }) {
                 "include=project,type,position")
         let response = await fetch(config.BASE_URL + link);
         let resData = await response.json();
-        getData(resData.data.items)
+       resData.data.items ? getData(resData.data.items) : getData([])
     }
     return (
         <div className="home-search">

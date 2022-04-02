@@ -8,7 +8,7 @@ import '../styles/style.scss';
 import "../firebase.js";
 import CheckAuthentication from "../src/containers/CheckAuthentication";
 import withAuth from "../hooks/withAuth";
-
+import "../src/axios-interceptor";
 function MyApp({
     Component,
     pageProps: { session, ...pageProps },

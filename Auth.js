@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
 
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
     useEffect(async () => {
 
         const jwtgetCookie = getCookie('teammers-access-token');

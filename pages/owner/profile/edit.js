@@ -103,7 +103,6 @@ const EditComponent = (props) => {
                 axios.put(config.BASE_URL + "users", formData, {
                     headers: {
                         Authorization: "Bearer " + getCookie('teammers-access-token'),
-                        _method: "put",
                     }
                 })
                     .then(res => {
