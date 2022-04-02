@@ -11,7 +11,7 @@ const withAuth = (WrappedComponent) => {
             if (!accessToken && (router.pathname.includes("owner") || router.pathname.includes("teammer") ||
                 router.pathname.includes("steps"))) {
                 router.push('/login');
-                return null;    
+                return null;
             } else if (accessToken && !roleType &&
                 (router.pathname.includes("owner") ||
                     router.pathname.includes("teammer") ||

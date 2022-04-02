@@ -1,7 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
+<<<<<<< HEAD
 import { IconButton, Input } from 'rsuite';
 import { URL_REGEX } from '../../configuration';
+=======
+import Link from 'next/link';
+import {Button, IconButton, Input, InputPicker, Modal, Notification, toaster} from 'rsuite';
+import ActionLink from '../Lib/ActionLink';
+import axios from "axios";
+import config from "../../configuration";
+>>>>>>> ba9e634811e8863d9797601f7df2b994dc7ba42b
 
 function CardTeammerPortfolio(props) {
     const {
@@ -22,7 +30,6 @@ function CardTeammerPortfolio(props) {
     const [newPortfolioLink, setNewPortfolioLink] = useState('');
 
     const inputRef = useRef();
-
     // wrong
     const uploadFile = (event) => {
         // console.log(event)
@@ -38,6 +45,7 @@ function CardTeammerPortfolio(props) {
             // console.log(event.target.files[0])
         }
     };
+
 
     return (
         <div className={`resume-card ${classNames ? classNames : ''}`}>
@@ -127,35 +135,38 @@ function CardTeammerPortfolio(props) {
             <div className="card-content">
                 <ul>
                     {
-                        portfolioUrlList.map((item, index) => {
-                            return (
-                                <li
-                                    key={index}
-                                    className="d-flex justify-content-between align-items-center"
-                                >
-                                    <a href={item} target="_blank">{item}</a>
-                                    <IconButton
-                                        size="sm"
-                                        className='bg-transparent ml-2'
-                                        icon={
-                                            <span onClick={() => {
-                                                setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))
-                                            }}
-                                            >
-                                                <Image
-                                                    src={'/icons/trash.svg'}
-                                                    alt='img'
-                                                    width={16}
-                                                    height={16}
-                                                    layout='fixed'
-                                                />
-                                            </span>
-                                        }
-                                    />
-                                </li>
-                            )
-                        })
+                        console.log(portfolioUrlList)
                     }
+                    {/*{*/}
+                    {/*    portfolioUrlList.map((item, index) => {*/}
+                    {/*        return (*/}
+                    {/*            <li*/}
+                    {/*                key={index}*/}
+                    {/*                className="d-flex justify-content-between align-items-center"*/}
+                    {/*            >*/}
+                    {/*                <a href={item} target="_blank">{item}</a>*/}
+                    {/*                <IconButton*/}
+                    {/*                    size="sm"*/}
+                    {/*                    className='bg-transparent ml-2'*/}
+                    {/*                    icon={*/}
+                    {/*                        <span onClick={() => {*/}
+                    {/*                            setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))*/}
+                    {/*                        }}*/}
+                    {/*                        >*/}
+                    {/*                            <Image*/}
+                    {/*                                src={'/icons/trash.svg'}*/}
+                    {/*                                alt='img'*/}
+                    {/*                                width={16}*/}
+                    {/*                                height={16}*/}
+                    {/*                                layout='fixed'*/}
+                    {/*                            />*/}
+                    {/*                        </span>*/}
+                    {/*                    }*/}
+                    {/*                />*/}
+                    {/*            </li>*/}
+                    {/*        )*/}
+                    {/*    })*/}
+                    {/*}*/}
                 </ul>
             </div>
             {

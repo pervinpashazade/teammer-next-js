@@ -10,7 +10,7 @@ const Home = (props) => {
 
     const authContext = useAuth();
 
-    const [user, setUser] = useState(authContext.currentUse);
+    const [user, setUser] = useState(authContext.currentUser);
 
     const [positionList, setPositionList] = useState([]);
 

@@ -12,6 +12,7 @@ import {getFetchData} from '../../../lib/fetchData';
 import {getToken} from '../../../lib/session';
 import axios from "axios";
 import {getCookie} from "../../../src/helpers/cookie";
+import validation_422 from "../../../src/validation/validation_422";
 
 function Setting(props) {
     const [owner, setOwner] = useState({
@@ -22,7 +23,8 @@ function Setting(props) {
         password: '',
         new_password: ''
     })
-    const [validation, setValidation] = useState(false)
+    const [validation, setValidation] = useState(false);
+    const [validaiton422, setValidation422] = useState({})
     useEffect(() => {
         axios.get(config.BASE_URL + "auth/user?include=project,skills,positions,experiences,detail.location", {
             headers: {
@@ -38,6 +40,7 @@ function Setting(props) {
                     photo: res.data?.data?.detail?.photo
                 })
             })
+
     }, []);
     const setData = (key, data) => {
         setOwner({
@@ -56,6 +59,9 @@ function Setting(props) {
             })
                 .then(res => {
                     console.log(res)
+                })
+                .catch((error) => {
+                    setValidation422(validation_422(error));
                 })
             setValidation(false)
         }
@@ -185,6 +191,7 @@ function Setting(props) {
                                                       placeholder="Enter your confirm password"/>
                                     </Form.Group>
                                 </div>
+                                {validaiton422.password && <p className="login-validation mt-3">{validaiton422.password}</p>}
                             </Form>
                         </div>
                     </div>
