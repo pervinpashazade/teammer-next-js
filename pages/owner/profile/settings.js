@@ -16,13 +16,12 @@ import validation_422 from "../../../src/validation/validation_422";
 
 function Setting(props) {
     const [owner, setOwner] = useState({
-        project_role_id: '',
         username: '',
         email: '',
-        photo: '',
         password: '',
         new_password: ''
     })
+    const [photo, setPhoto] = useState('')
     const [validation, setValidation] = useState(false);
     const [validaiton422, setValidation422] = useState({})
     useEffect(() => {
@@ -37,8 +36,8 @@ function Setting(props) {
                     ...owner,
                     username: res.data?.data?.username,
                     email: res.data?.data?.email,
-                    photo: res.data?.data?.detail?.photo
-                })
+                });
+                setPhoto(res.data?.data?.detail?.photo)
             })
 
     }, []);
@@ -49,16 +48,19 @@ function Setting(props) {
         })
     }
     const saveChanges = () => {
-        if ((!owner.password && !owner.new_password) || owner.password.trim() !== owner.new_password.trim()) {
+        if (owner.password.trim() !== owner.new_password.trim()) {
             setValidation(true)
         } else {
-            axios.put(config.BASE_URL + "users", owner, {
-                headers: {
-                    Authorization: "Bearer " + getCookie('teammers-access-token')
-                }
-            })
+            let data = {};
+            if(owner.password.length > 0) {
+                data['password'] = owner.password;
+                data['email'] = owner.email;
+                data['username'] = owner.username;
+            }
+            axios.put(config.BASE_URL + "users", data)
                 .then(res => {
-                    console.log(res)
+                    console.log(res);
+                    setValidation422({})
                 })
                 .catch((error) => {
                     setValidation422(validation_422(error));
@@ -115,7 +117,7 @@ function Setting(props) {
                             <Avatar
                                 size="lg"
                                 circle
-                                src={owner.photo ? owner.photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                src={photo ? photo : "https://www.w3schools.com/howto/img_avatar.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
@@ -146,6 +148,8 @@ function Setting(props) {
                                             onChange={(e) => setData('username', e)}
                                         />
                                     </Form.Group>
+                                    {validaiton422.username &&
+                                    <p className="login-validation mt-3">{validaiton422.username}</p>}
                                 </div>
                                 <div className="col-md-12 mb-0">
                                     <Form.Group controlId="email">
@@ -191,7 +195,8 @@ function Setting(props) {
                                                       placeholder="Enter your confirm password"/>
                                     </Form.Group>
                                 </div>
-                                {validaiton422.password && <p className="login-validation mt-3">{validaiton422.password}</p>}
+                                {validaiton422.password &&
+                                <p className="login-validation mt-3">{validaiton422.password}</p>}
                             </Form>
                         </div>
                     </div>

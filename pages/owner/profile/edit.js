@@ -97,25 +97,18 @@ const EditComponent = (props) => {
             }
             const formData = new FormData();
             if (photo) {
-                data.detail['photo'] = photo;
+                data['photo'] = photo;
+                data._method = "PUT";
                 buildFormData(formData, data);
 
-                axios.put(config.BASE_URL + "users", formData, {
-                    headers: {
-                        Authorization: "Bearer " + getCookie('teammers-access-token'),
-                    }
-                })
+                axios.post(config.BASE_URL + "users", formData)
                     .then(res => {
                         console.log(res);
                         setNotification(true)
                     })
                 return
             }
-            axios.put(config.BASE_URL + "users", data, {
-                headers: {
-                    Authorization: "Bearer " + getCookie('teammers-access-token')
-                }
-            })
+            axios.put(config.BASE_URL + "users", data)
                 .then(res => {
                     console.log(res);
                     setNotification(true)

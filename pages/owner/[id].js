@@ -20,7 +20,6 @@ const ProfileOwner = (props) => {
         joinedProjectList,
     } = props;
     const router = useRouter();
-    console.log(router)
     const teammerId = Number(router.query.id)
     const [open , setOpen] = useState(false)
     // const [teammerId , setTeammerId] = useState('')
@@ -40,7 +39,6 @@ const ProfileOwner = (props) => {
     },[])
     React.useEffect(() => {
         // console.clear();
-        console.log('view teammer props', props);
     }, [props]);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
@@ -87,12 +85,10 @@ const ProfileOwner = (props) => {
         setOpen(!open);
     };
     const submitAddToTeam = async () => {
-        console.log(teammerId);
         if (currentUser?.id) {
             axios.post(config.BASE_URL + "jobs/" + jobName + "/add-to-team", {
                 id: teammerId
             }).then(res => {
-                console.log('adks')
                 toaster.push(
                     <Notification type={"success"} header="Success!" closable>
                         New Teammer added!
@@ -101,13 +97,12 @@ const ProfileOwner = (props) => {
                 setOpen(!open);
                 setJobName(0);
                 setJobs([]);
-                setTeammerId('');
                 setStartUpName('');
             })
                 .catch(error => {
                 toaster.push(
                     <Notification type={"error"} header="Warning!" closable>
-                        Something went wrong
+                        {error.response?.data?.message}
                     </Notification>, 'topEnd'
                 );
             })
@@ -162,7 +157,6 @@ const ProfileOwner = (props) => {
                 </div>
                 <Modal open={open} onClose={() => {
                     setOpen(!open);
-                    setTeammerId('')
                 }}>
                     <Modal.Header>
                         <Modal.Title>Add to team</Modal.Title>

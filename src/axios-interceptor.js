@@ -12,7 +12,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
-    const status = error ? error.response.status : 401;
+    const status = error.response ? error.response.status : 401;
     switch (status) {
         case 401:
             //do something
