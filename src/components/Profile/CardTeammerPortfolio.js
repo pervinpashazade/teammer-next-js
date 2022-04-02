@@ -130,35 +130,38 @@ function CardTeammerPortfolio(props) {
             <div className="card-content">
                 <ul>
                     {
-                        portfolioUrlList.map((item, index) => {
-                            return (
-                                <li
-                                    key={index}
-                                    className="d-flex justify-content-between align-items-center"
-                                >
-                                    <a href={item} target="_blank">{item}</a>
-                                    <IconButton
-                                        size="sm"
-                                        className='bg-transparent ml-2'
-                                        icon={
-                                            <span onClick={() => {
-                                                setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))
-                                            }}
-                                            >
-                                                <Image
-                                                    src={'/icons/trash.svg'}
-                                                    alt='img'
-                                                    width={16}
-                                                    height={16}
-                                                    layout='fixed'
-                                                />
-                                            </span>
-                                        }
-                                    />
-                                </li>
-                            )
-                        })
+                        console.log(portfolioUrlList)
                     }
+                    {/*{*/}
+                    {/*    portfolioUrlList.map((item, index) => {*/}
+                    {/*        return (*/}
+                    {/*            <li*/}
+                    {/*                key={index}*/}
+                    {/*                className="d-flex justify-content-between align-items-center"*/}
+                    {/*            >*/}
+                    {/*                <a href={item} target="_blank">{item}</a>*/}
+                    {/*                <IconButton*/}
+                    {/*                    size="sm"*/}
+                    {/*                    className='bg-transparent ml-2'*/}
+                    {/*                    icon={*/}
+                    {/*                        <span onClick={() => {*/}
+                    {/*                            setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))*/}
+                    {/*                        }}*/}
+                    {/*                        >*/}
+                    {/*                            <Image*/}
+                    {/*                                src={'/icons/trash.svg'}*/}
+                    {/*                                alt='img'*/}
+                    {/*                                width={16}*/}
+                    {/*                                height={16}*/}
+                    {/*                                layout='fixed'*/}
+                    {/*                            />*/}
+                    {/*                        </span>*/}
+                    {/*                    }*/}
+                    {/*                />*/}
+                    {/*            </li>*/}
+                    {/*        )*/}
+                    {/*    })*/}
+                    {/*}*/}
                 </ul>
             </div>
             {
