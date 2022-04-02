@@ -18,7 +18,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import { BsPlusLg } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
-import config, { months } from '../../src/configuration';
+import config, { months, URL_REGEX } from '../../src/configuration';
 // import { useAuth } from '../../Auth';
 import { getCookie } from '../../src/helpers/cookie';
 import { buildFormData } from '../../src/helpers/buildFormData';
@@ -55,16 +55,18 @@ const steps2 = (props) => {
             CKEditor: require("@ckeditor/ckeditor5-react").CKEditor, // v3+
             ClassicEditor: require("@ckeditor/ckeditor5-build-classic")
         };
+
         setIsEditorLoaded(true);
 
-        // window.onbeforeunload = function (e) {
-        //     // if (true) {
-        //     //     return;
-        //     // }
-        //     var dialogText = 'Dialog text here';
-        //     e.returnValue = dialogText;
-        //     return dialogText;
-        // };
+        window.onbeforeunload = function (e) {
+            // if (true) {
+            //     return;
+            // }
+
+            var dialogText = 'Dialog text here';
+            e.returnValue = dialogText;
+            return dialogText;
+        };
     }, []);
 
     const getPublicDatas = async () => {
@@ -360,22 +362,6 @@ const steps2 = (props) => {
                         message: `${value.key} field is required`
                     });
                 };
-
-                // if (key === "start_year") {
-                //     if (!value.value) {
-                //         validationErrors.push({
-                //             key: key,
-                //             message: `${value.key} field is required`
-                //         });
-                //     };
-                // } else {
-                //     if (!value.id) {
-                //         validationErrors.push({
-                //             key: key,
-                //             message: `${value.key} field is required`
-                //         });
-                //     };
-                // };
             };
         };
 
@@ -619,14 +605,6 @@ const steps2 = (props) => {
         return true // false;
     };
 
-    const goNextStep = () => {
-
-        const isValid = handleChangeStep();
-
-        // 6 => max step count !!!
-        if (isValid && currentStep < 4) setCurrentStep(currentStep + 1);
-    };
-
     const editStep = step => {
         setCurrentStep(step);
     };
@@ -722,13 +700,15 @@ const steps2 = (props) => {
 
     const portfolioFunction = (type, itemLink) => {
         if (type === "add") {
-            setTeammer(prevState => {
-                return {
-                    ...prevState,
-                    portfolioList: [...prevState.portfolioList, portfolioLink]
-                };
-            });
-            setPortfolioLink('');
+            if (URL_REGEX.test(portfolioLink)) {
+                setTeammer(prevState => {
+                    return {
+                        ...prevState,
+                        portfolioList: [...prevState.portfolioList, portfolioLink]
+                    };
+                });
+                setPortfolioLink('');
+            };
         }
         if (type === "remove" && itemLink) {
             setTeammer(prevState => {
@@ -737,13 +717,10 @@ const steps2 = (props) => {
                     portfolioList: [...prevState.portfolioList.filter(item => item !== itemLink)]
                 };
             });
-            // setPortfolios(portfolios.filter(item => item !== element))
         };
     };
 
     const confirm_step_3 = (socialDatas) => {
-
-        alert('here')
 
         const socialData = getSocialDatas(socialDatas);
 
@@ -771,7 +748,6 @@ const steps2 = (props) => {
     });
 
     const checkUsernameAsync = async (username, userType) => {
-
         if (!username?.trim()) return;
         if (!userType || !currentStep) {
             setCurrentStep(0);
@@ -884,7 +860,7 @@ const steps2 = (props) => {
                     };
                 });
 
-                if (step_1_errors.length && !isValidOwnerUsername.status) {
+                if (step_1_errors.length || !isValidOwnerUsername.status) {
                     return false;
                 } else {
                     return true;
@@ -1506,7 +1482,7 @@ const steps2 = (props) => {
                                                                                     name="role"
                                                                                     className="w-100 mb-2"
                                                                                     placeholder="Roles in Startup"
-                                                                                    value={owner.role?.id}
+                                                                                    value={owner.role?.id || null}
                                                                                     valueKey="id"
                                                                                     labelKey="name"
                                                                                     data={publicDatas.roleList}
@@ -1515,6 +1491,14 @@ const steps2 = (props) => {
                                                                                             return {
                                                                                                 ...prevState,
                                                                                                 role: obj
+                                                                                            };
+                                                                                        });
+                                                                                    }}
+                                                                                    onClean={() => {
+                                                                                        setOwner(prevState => {
+                                                                                            return {
+                                                                                                ...prevState,
+                                                                                                role: null
                                                                                             };
                                                                                         });
                                                                                     }}
@@ -1538,6 +1522,7 @@ const steps2 = (props) => {
                                                                                     className="w-100 mb-2"
                                                                                     placeholder="Location"
                                                                                     value={teammer.location?.id}
+                                                                                    cleanable={false}
                                                                                     valueKey="id"
                                                                                     labelKey="name"
                                                                                     data={publicDatas.locationList}
@@ -1736,12 +1721,20 @@ const steps2 = (props) => {
                                                                                         data={publicDatas.projectTypeList}
                                                                                         valueKey="id"
                                                                                         labelKey="name"
-                                                                                        value={startup.type?.id}
+                                                                                        value={startup.type?.id || null}
                                                                                         onSelect={(id, obj) => {
                                                                                             setStartup(prevState => {
                                                                                                 return {
                                                                                                     ...prevState,
                                                                                                     type: obj
+                                                                                                };
+                                                                                            });
+                                                                                        }}
+                                                                                        onClean={() => {
+                                                                                            setStartup(prevState => {
+                                                                                                return {
+                                                                                                    ...prevState,
+                                                                                                    type: null
                                                                                                 };
                                                                                             });
                                                                                         }}
@@ -1885,11 +1878,11 @@ const steps2 = (props) => {
                                                                                 className="w-100"
                                                                                 placeholder="Position"
                                                                                 data={publicDatas.positionList}
+                                                                                value={null}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
                                                                                 onSelect={(e, obj) => {
                                                                                     if (e && !teammer.positions.some(item => item.id === e)) {
-
                                                                                         setTeammer(prevState => {
                                                                                             return {
                                                                                                 ...prevState,
@@ -1960,6 +1953,7 @@ const steps2 = (props) => {
                                                                                 placeholder="Skills"
                                                                                 className="w-100 my-2"
                                                                                 data={publicDatas.skillList}
+                                                                                value={null}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
                                                                                 onSelect={(id, obj) => {
@@ -2287,23 +2281,26 @@ const steps2 = (props) => {
                                                                                         controlId="twitter">
                                                                                         <Form.ControlLabel>Twitter</Form.ControlLabel>
                                                                                         <Form.Control
-                                                                                            name="twitter"
                                                                                             type="url"
-                                                                                            placeholder="https://www.twitter.com/margaretbrown" />
+                                                                                            name="twitter"
+                                                                                            placeholder="https://www.twitter.com/margaretbrown"
+                                                                                        />
                                                                                     </Form.Group>
-                                                                                    <Form.Group
-                                                                                        controlId="facebook">
+                                                                                    <Form.Group controlId="facebook">
                                                                                         <Form.ControlLabel>Facebook</Form.ControlLabel>
                                                                                         <Form.Control
-                                                                                            name="facebook"
                                                                                             type="url"
-                                                                                            placeholder="https://www.facebook.com/margaretbrown" />
+                                                                                            name="facebook"
+                                                                                            placeholder="https://www.facebook.com/margaretbrown"
+                                                                                        />
                                                                                     </Form.Group>
                                                                                     <Form.Group controlId="github">
                                                                                         <Form.ControlLabel>Github</Form.ControlLabel>
-                                                                                        <Form.Control name="github"
+                                                                                        <Form.Control
+                                                                                            name="github"
                                                                                             type="url"
-                                                                                            placeholder="https://www.github.com/margaretbrown" />
+                                                                                            placeholder="https://www.github.com/margaretbrown"
+                                                                                        />
                                                                                     </Form.Group>
                                                                                     <Form.Group
                                                                                         controlId="behance">
@@ -2325,9 +2322,10 @@ const steps2 = (props) => {
                                                                                         controlId="linkedin">
                                                                                         <Form.ControlLabel>Linkedin</Form.ControlLabel>
                                                                                         <Form.Control
-                                                                                            name="linkedin"
                                                                                             type="url"
-                                                                                            placeholder="https://www.linkedin.com/margaretbrown" />
+                                                                                            name="linkedin"
+                                                                                            placeholder="https://www.linkedin.com/margaretbrown"
+                                                                                        />
                                                                                     </Form.Group>
                                                                                     <div className="validation-errors">
                                                                                         {
@@ -2405,6 +2403,7 @@ const steps2 = (props) => {
                                                                                 value={selectedJob.position?.id}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
+                                                                                cleanable={false}
                                                                                 onSelect={(id, obj) => {
                                                                                     setSelectedJob(prevState => {
                                                                                         return {
@@ -2429,6 +2428,7 @@ const steps2 = (props) => {
                                                                                 placeholder="Location"
                                                                                 data={publicDatas.locationList}
                                                                                 value={selectedJob.location?.id}
+                                                                                cleanable={false}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
                                                                                 onSelect={(id, obj) => {
@@ -2455,6 +2455,7 @@ const steps2 = (props) => {
                                                                                 placeholder="Job type"
                                                                                 data={publicDatas.jobTypeList}
                                                                                 value={selectedJob.type?.id}
+                                                                                cleanable={false}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
                                                                                 onSelect={(id, obj) => {
@@ -2481,6 +2482,7 @@ const steps2 = (props) => {
                                                                                 className="w-100 mb-2"
                                                                                 data={publicDatas.paymentTypeList}
                                                                                 value={selectedJob.payment?.id}
+                                                                                cleanable={false}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
                                                                                 onSelect={(id, obj) => {

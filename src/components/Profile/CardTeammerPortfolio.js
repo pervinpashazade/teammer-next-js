@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { IconButton, Input } from 'rsuite';
-import ActionLink from '../Lib/ActionLink';
+import { URL_REGEX } from '../../configuration';
 
 function CardTeammerPortfolio(props) {
     const {
@@ -14,8 +13,6 @@ function CardTeammerPortfolio(props) {
         cvUrl,
         full_name,
     } = props;
-
-    const urlRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
     // React.useEffect(() => {
     //     console.log('component card props', props);
@@ -186,7 +183,7 @@ function CardTeammerPortfolio(props) {
                                 />
                             }
                             onClick={() => {
-                                if (!urlRegex.test(newPortfolioLink)) return;
+                                if (!URL_REGEX.test(newPortfolioLink)) return;
 
                                 if (portfolioUrlList.some(item => item !== newPortfolioLink) && newPortfolioLink.trim()) {
                                     let arr = portfolioUrlList;

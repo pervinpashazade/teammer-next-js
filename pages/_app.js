@@ -8,16 +8,18 @@ import '../styles/style.scss';
 import "../firebase.js";
 import CheckAuthentication from "../src/containers/CheckAuthentication";
 import withAuth from "../hooks/withAuth";
+import { useRouter } from "next/router";
 
 function MyApp({
     Component,
     pageProps: { session, ...pageProps },
 }) {
 
-    // React.useEffect(() => {
-    //     useless
-    //     initializeFirebase();
-    // }, []);
+    const router = useRouter();
+
+    React.useEffect(() => {
+        document.body.classList.toggle('overflow-hidden', router.pathname === "/signup/steps");
+    }, [router.pathname]);
 
     return (
         <AuthProvider>
