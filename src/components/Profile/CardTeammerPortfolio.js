@@ -1,8 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { IconButton, Input } from 'rsuite';
+import {Button, IconButton, Input, InputPicker, Modal, Notification, toaster} from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
+import axios from "axios";
+import config from "../../configuration";
 
 function CardTeammerPortfolio(props) {
     const {
@@ -25,7 +27,6 @@ function CardTeammerPortfolio(props) {
     const [newPortfolioLink, setNewPortfolioLink] = useState('');
 
     const inputRef = useRef();
-
     // wrong
     const uploadFile = (event) => {
         // console.log(event)
@@ -41,6 +42,7 @@ function CardTeammerPortfolio(props) {
             // console.log(event.target.files[0])
         }
     };
+
 
     return (
         <div className={`resume-card ${classNames ? classNames : ''}`}>

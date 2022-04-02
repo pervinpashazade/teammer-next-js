@@ -182,7 +182,7 @@ const CardTeammerProfile = ({props, cookie}) => {
                 {
                     !isProfile && loggedUser?.teammer_type === "1" &&
                     <div className="d-flex justify-content-around profile-buttons pt-3">
-                        <Button onClick={() => addToTeam(full_name)}>Add to team</Button>
+                        <Button onClick={() => addToTeam(full_name , id)}>Add to team</Button>
                         <Button>
                             <Image
                                 src={'/icons/envelope_white.svg'}

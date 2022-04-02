@@ -31,6 +31,7 @@ const Home = (props) => {
 
     const cookies = useCookie(cookie)
     const [open, setOpen] = useState(false);
+    const [teammerId , setTeammerId] = useState('')
     const [teammerName, setTeammerName] = useState('')
     const [firstRender, setFirstRender] = useState(false)
     const [activePage, setActivePage] = useState(1);
@@ -46,7 +47,6 @@ const Home = (props) => {
     });
 
     const [data, setData] = useState(items)
-    console.log('datasssss' , data)
     const filterFuncation = (key, e, type) => {
         let array = filter[key];
         if (type === "add") {
@@ -62,10 +62,8 @@ const Home = (props) => {
     };
 
     const getJobs = async (e) => {
-        // console.log(projects.data.items.find(item => item.id === e))
         if (e) {
             let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'));
-            console.log(res.data.items.find(item => item.id === e))
             setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
                 return {
                     label: item.position.name,
@@ -80,18 +78,11 @@ const Home = (props) => {
     };
 
     const submitAddToTeam = async () => {
-        console.log('id', id);
         if (id) {
-            let res = await fetch(config.BASE_URL + "jobs/" + startupName + "/add-to-team", {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + cookies.get('teammers-access-token')
-                },
-                body: JSON.stringify({ id: jobName })
-            })
-            if (res) {
+            axios.post(config.BASE_URL + "jobs/" + jobName + "/add-to-team", {
+                id: teammerId
+            }).then(res => {
+                console.log('adks')
                 toaster.push(
                     <Notification type={"success"} header="Success!" closable>
                         New Teammer added!
@@ -99,22 +90,18 @@ const Home = (props) => {
                 );
                 setOpen(!open);
                 setJobName(0);
-                setJobs([])
-            }
-        } else {
-
+                setJobs([]);
+                setTeammerId('');
+                setStartUpName('');
+            }).catch(error => {
+                toaster.push(
+                    <Notification type={"error"} header="Warning!" closable>
+                        {error.response.data.message}
+                    </Notification>, 'topEnd'
+                );
+            })
         }
-    };
-
-    // const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
-    //     <InputGroup {...props} inside>
-    //         <Input placeholder={placeholder} />
-    //         <InputGroup.Button className="search-input-btn">
-    //             Search
-    //         </InputGroup.Button>
-    //     </InputGroup>
-    // );
-
+    }
     const getData = () => {
         let link = '';
         if (filter.project_types.length > 0) link = link + "&filter[position]=" + filter.project_types.toString();
@@ -135,7 +122,8 @@ const Home = (props) => {
         setFirstRender(true)
     }, [activePage, dropdown, filter]);
 
-    const addToTeam = (data) => {
+    const addToTeam = (data , id) => {
+        setTeammerId(id)
         setTeammerName(data);
         setOpen(!open);
     };
@@ -288,7 +276,10 @@ const Home = (props) => {
                     />
                 </div>
             </div>
-            <Modal open={open} onClose={() => setOpen(!open)}>
+            <Modal open={open} onClose={() => {
+                setOpen(!open);
+                setTeammerId('')
+            }}>
                 <Modal.Header>
                     <Modal.Title>Add to team</Modal.Title>
                 </Modal.Header>
@@ -312,10 +303,13 @@ const Home = (props) => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => setOpen(!open)} appearance="subtle">
+                    <Button onClick={() => {
+                        setOpen(!open);
+                        setTeammerId('')
+                    }} appearance="subtle">
                         Cancel
                     </Button>
-                    <Button onClick={() => submitAddToTeam()} appearance="primary">
+                    <Button onClick={() => submitAddToTeam()} appearance="primary" disabled={!jobName}>
                         Ok
                     </Button>
                 </Modal.Footer>
@@ -344,7 +338,7 @@ export const getServerSideProps = async (context) => {
     const skills = await getFetchData("skills", getToken(context));
     const locations = await getFetchData("locations", getToken(context));
     const projects = await getFetchData("users/projects", getToken(context));
-    console.log(projects)
+
     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
     return {
         props: {
