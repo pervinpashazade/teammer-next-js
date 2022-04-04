@@ -7,7 +7,7 @@ body {
   height: 100% !important;
 }
 
-.overflow-hidden{
+.overflow-hidden {
   overflow: hidden !important;
 }
 
@@ -17,6 +17,7 @@ body {
     padding: 5px;
   }
 }
+
 .responsive-menu {
   position: fixed;
   width: 90%;
@@ -30,19 +31,23 @@ body {
   border-bottom-right-radius: 48px;
   margin-left: -90%;
   transition: all 0.4s;
+
   &.add-margin {
     margin-left: 0%;
   }
+
   .responsive-menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 25px;
   }
+
   .responsive-menu-links {
     ul {
       margin: 0px;
       padding: 0px;
+
       li {
         list-style-type: none;
         display: flex;
@@ -51,12 +56,14 @@ body {
         margin: 10px 20px 10px 20px;
         padding-bottom: 10px;
         border-bottom: 1px solid #edf3ff;
+
         .text-link {
           font-size: 18px;
           font-weight: 500;
           display: flex;
           align-items: center;
         }
+
         .arrowRightButton {
           border: 2px solid #eaeaea;
           padding: 8px 10px 3px;
@@ -66,6 +73,7 @@ body {
     }
   }
 }
+
 .c-pointer {
   cursor: pointer;
 }
@@ -160,8 +168,9 @@ div.icon-btn-wrapper {
     .links {
       width: 100%;
     }
-    ul:first-child {
-    }
+
+    ul:first-child {}
+
     ul {
       display: flex;
       justify-content: space-between;
@@ -179,6 +188,7 @@ div.icon-btn-wrapper {
           transition: 0.8s;
           margin-right: 32px;
           cursor: pointer;
+
           &:hover {
             color: $text-color-primary;
           }
@@ -187,6 +197,7 @@ div.icon-btn-wrapper {
             color: $text-color-primary;
           }
         }
+
         a.icons {
           margin-right: 24px;
         }
@@ -353,24 +364,95 @@ div.icon-btn-wrapper {
   }
 }
 
-//card Start up
-.card-opportunity {
-  background-color: white;
-  display: flex;
-  justify-content: space-between;
-  border-radius: 12px;
-  box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
-  margin: 10px 0px;
+//card Start up 
+.job-card {
+  width: 100%;
   min-height: 160px;
-  .logo {
+  display: flex;
+  border-radius: 12px;
+  background-color: #fff;
+  margin-bottom: 1rem;
+  box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
+  cursor: pointer;
+
+  .logo-wrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
     width: 30%;
+    align-items: center;
+    padding: 1rem;
+
     h2 {
       font-size: 24px;
       font-weight: 700 !important;
       line-height: 30px;
+    }
+  }
+
+  ._content {
+    width: 100%;
+    padding: 1rem;
+    border-left: 1px solid #EAEAEA;
+
+    ._top {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .75rem;
+
+      ._owner-info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        p {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 17px;
+          color: #020C40;
+          opacity: 0.5;
+          margin-left: .5rem;
+          margin-bottom: 0;
+        }
+      }
+
+      button {
+        display: flex;
+        align-items: center;
+        padding: 0;
+      }
+    }
+
+    ._body {
+      ._card-data {
+        margin-bottom: .75rem;
+        &:last-child{
+          margin-bottom: 0;
+        }
+        p {
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 20px;
+          color: #020C40;
+          margin-bottom: 2px;
+        }
+
+        h3 {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 17px;
+          color: #020C40;
+          margin: 0;
+
+          a {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 17px;
+            color: #020C40;
+          }
+        }
+      }
     }
   }
 
@@ -397,6 +479,7 @@ div.icon-btn-wrapper {
           margin-left: 8px;
         }
       }
+
       .rs-avatar {
         width: 24px !important;
         height: 24px !important;
@@ -555,9 +638,11 @@ div.icon-btn-wrapper {
     box-shadow: $box-shadow;
     padding: 16px;
     border-radius: 12px;
+
     .startup-card {
       padding: 12px 0px;
       border-bottom: 1px solid #eaeaea;
+
       .image-blog {
         img {
           width: 100%;
@@ -625,8 +710,10 @@ div.icon-btn-wrapper {
       display: flex;
       justify-content: flex-start;
       align-items: center;
+
       div {
         padding-left: 8px;
+
         h6 {
           @include font-size(14px);
           color: #020c40;
@@ -735,11 +822,13 @@ div.icon-btn-wrapper {
 // home slider
 .pro-slider {
   margin-bottom: 35px;
+
   .title {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
+
     h4 {
       font-weight: 600;
       font-size: 20px;
@@ -747,6 +836,7 @@ div.icon-btn-wrapper {
       color: #020c40;
       margin: 0;
     }
+
     .view-list {
       font-weight: 600;
       font-size: 16px;
@@ -754,8 +844,10 @@ div.icon-btn-wrapper {
       color: #2a6fff;
     }
   }
+
   .slider-wrapper {
     position: relative;
+
     .btn-left {
       position: absolute;
       top: 35%;
@@ -763,6 +855,7 @@ div.icon-btn-wrapper {
       z-index: 100;
       background: inherit !important;
     }
+
     .btn-right {
       position: absolute;
       top: 35%;
@@ -770,12 +863,14 @@ div.icon-btn-wrapper {
       z-index: 100;
       background: inherit !important;
     }
+
     .home-swiper {
       width: 95%;
       min-height: 195px;
       padding: 10px;
       border-radius: $border-radius-20;
     }
+
     .slider-item {
       position: relative;
       background-color: #fff;
@@ -783,11 +878,13 @@ div.icon-btn-wrapper {
       text-align: center;
       box-shadow: $box-shadow3;
       border-radius: 12px;
+
       img {
         width: 40px;
         height: 40px;
         object-fit: cover;
       }
+
       h5 {
         font-size: $font-16;
         font-weight: 500;
@@ -795,11 +892,13 @@ div.icon-btn-wrapper {
         margin-top: 8px;
         margin-bottom: 4px;
       }
+
       span {
         font-weight: normal;
         font-size: 14px;
         line-height: 17px;
       }
+
       .action-btn {
         position: absolute;
         width: 32px;
@@ -820,18 +919,22 @@ div.icon-btn-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   h5 {
     font-weight: 600;
     font-size: 20px;
     line-height: 24px;
     color: #020c40;
   }
+
   .view-all-wrapper {
     display: flex;
     align-items: center;
+
     button {
       display: flex;
       align-items: center;
+
       span {
         color: #2a6fff;
         margin-left: 0.5rem;
@@ -840,10 +943,12 @@ div.icon-btn-wrapper {
         line-height: 20px;
       }
     }
+
     a {
       display: flex;
       align-items: center;
       text-decoration: none;
+
       span {
         color: #2a6fff;
         margin-left: 0.5rem;
@@ -860,10 +965,12 @@ div.icon-btn-wrapper {
   display: flex;
   align-items: center;
   margin: 1rem 0;
+
   .goback-btn {
     display: inherit;
     align-items: inherit;
     margin-right: 40px;
+
     button {
       padding: 7px;
       line-height: 0;
@@ -879,6 +986,7 @@ div.icon-btn-wrapper {
         color: #23ce95;
       }
     }
+
     span {
       font-weight: 600;
       font-size: 14px;
@@ -886,9 +994,11 @@ div.icon-btn-wrapper {
       color: rgba(4, 14, 65, 0.5);
     }
   }
+
   .custom-breadcrumb {
     display: flex;
     align-items: center;
+
     span {
       font-weight: normal;
       font-size: 12px;
@@ -896,12 +1006,14 @@ div.icon-btn-wrapper {
       color: rgba(4, 14, 65, 0.5);
       margin-right: 4px;
     }
+
     span.active {
       font-weight: 500;
       font-size: 12px;
       line-height: 15px;
       color: rgba(4, 14, 65, 0.5);
     }
+
     .breadcrumb-icon {
       svg {
         width: 10px;
@@ -918,6 +1030,7 @@ div.icon-btn-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+
   p {
     margin-bottom: 0;
     font-weight: 600;
@@ -925,6 +1038,7 @@ div.icon-btn-wrapper {
     line-height: 52px;
     text-align: center;
   }
+
   &::before {
     content: "";
     position: absolute;
@@ -944,12 +1058,14 @@ div.icon-btn-wrapper {
   margin-top: 48px;
   margin-bottom: 40px;
   text-align: end;
+
   .delete-account-btn {
     color: $red !important;
     border: none;
     font-weight: 600;
     font-size: 14px;
     line-height: 17px;
+
     div {
       display: flex;
       align-items: center;
@@ -962,12 +1078,14 @@ div.icon-btn-wrapper {
     }
   }
 }
+
 .delete-account-btn {
   color: $red !important;
   border: none;
   font-weight: 600;
   font-size: 14px;
   line-height: 17px;
+
   div {
     display: flex;
     align-items: center;
@@ -991,25 +1109,30 @@ div.icon-btn-wrapper {
 .about-us {
   .content {
     padding: 2rem 13.75rem;
+
     h5.title {
       font-weight: 600;
       font-size: 24px;
       line-height: 170%;
     }
+
     p.content-text {
       font-weight: 500;
       font-size: 14px;
       line-height: 180%;
       margin-bottom: 2rem;
     }
+
     .case-wrapper {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
+
       .case-item {
         max-width: 187px;
         margin-bottom: 3rem;
+
         span {
           display: block;
           font-weight: 500;
@@ -1017,6 +1140,7 @@ div.icon-btn-wrapper {
           line-height: 150%;
           color: rgba(2, 12, 64, 0.5);
         }
+
         h5 {
           font-weight: bold;
           font-size: 32px;
@@ -1024,31 +1148,38 @@ div.icon-btn-wrapper {
         }
       }
     }
+
     .team-members {
       margin-top: 2.5rem;
       margin-bottom: 0.75rem;
+
       .team-wrapper {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
         margin-top: 2rem;
+
         .team-item {
           display: flex;
           align-items: center;
           margin-bottom: 2.25rem;
+
           .details {
             margin-left: 1rem;
+
             h5._name {
               font-weight: 600;
               font-size: 18px;
               line-height: 24px;
             }
+
             h5._position {
               font-weight: 500;
               font-size: 16px;
               line-height: 20px;
               opacity: 0.5;
             }
+
             h5._username {
               font-weight: 500;
               font-size: 16px;
@@ -1060,6 +1191,7 @@ div.icon-btn-wrapper {
         }
       }
     }
+
     .testimonial {
       margin-top: 2.5rem;
       margin-bottom: 0.75rem;
@@ -1076,13 +1208,16 @@ div.icon-btn-wrapper {
     border-radius: 28px;
     padding: 24px 74px;
     margin-bottom: 60px;
+
     .content {
       background: #fff;
       padding: 32px 205px;
+
       .title-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
+
         h5 {
           font-weight: 600;
           font-size: 24px;
@@ -1093,6 +1228,7 @@ div.icon-btn-wrapper {
       }
     }
   }
+
   h4.page-title {
     font-weight: 600;
     font-size: 16px;
@@ -1100,12 +1236,14 @@ div.icon-btn-wrapper {
     text-align: center;
     margin-bottom: 2rem;
   }
+
   .services {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     padding: 0 7.25rem;
+
     .service-item {
       padding-top: 2rem;
       max-width: 200px;
@@ -1113,15 +1251,18 @@ div.icon-btn-wrapper {
       flex-direction: column;
       align-items: center;
       margin-bottom: 60px;
+
       .rs-avatar {
         width: 120px;
         height: 120px;
+
         img {
           width: 100%;
           height: 100%;
           object-fit: cover;
         }
       }
+
       p {
         font-weight: normal;
         font-size: 16px;
@@ -1132,9 +1273,11 @@ div.icon-btn-wrapper {
       }
     }
   }
+
   .app-plan-container {
     display: flex;
     justify-content: center;
+
     // padding: 0 13.5rem;
     .app-plan {
       min-width: 660px;
@@ -1149,13 +1292,16 @@ div.icon-btn-wrapper {
 
       .gradient-wrapper {
         position: relative;
+
         ._text-container {
           position: absolute;
+
           ._text-monthly {
             background: linear-gradient(90deg, #0080dc, #00bef6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
           }
+
           ._text-annualy {
             background: linear-gradient(90deg, #00d7ac, #00bbd9);
             -webkit-background-clip: text;
@@ -1163,25 +1309,31 @@ div.icon-btn-wrapper {
           }
         }
       }
+
       .app-plan_top {
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0px 21px;
         margin-bottom: 2.5rem;
+
         ._top-left {
           display: flex;
           align-items: center;
+
           .gradient-wrapper {
             width: 120px;
             height: 29px;
           }
+
           h4 {
             margin-left: 1rem;
           }
         }
+
         .custom-switch {
           margin: 0 3rem;
+
           span.rs-toggle-presentation {
             background: linear-gradient(90deg, #0080dc, #00bef6);
           }
@@ -1192,17 +1344,21 @@ div.icon-btn-wrapper {
             }
           }
         }
+
         ._top-right {
           display: flex;
           align-items: center;
+
           .gradient-wrapper {
             width: 120px;
             height: 29px;
           }
+
           h4 {
             margin-right: 1rem;
           }
         }
+
         h4.plan-title {
           font-weight: 500;
           font-size: 24px;
@@ -1215,11 +1371,13 @@ div.icon-btn-wrapper {
           }
         }
       }
+
       .app-plan_body {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
+
         .price {
           display: flex;
           align-items: center;
@@ -1238,6 +1396,7 @@ div.icon-btn-wrapper {
             }
           }
         }
+
         .btn-active-plan {
           border: 1px solid #2a6fff;
           border-radius: 72px;
@@ -1252,6 +1411,7 @@ div.icon-btn-wrapper {
             margin-right: 5px;
           }
         }
+
         .btn-choose-plan {
           background: #2a6fff;
           border-radius: 72px;
@@ -1277,6 +1437,7 @@ div.icon-btn-wrapper {
           background-image: url("/img/price_plan_subtract-left.png");
           background-repeat: no-repeat;
         }
+
         &::after {
           content: "";
           position: absolute;
@@ -1304,8 +1465,10 @@ div.icon-btn-wrapper {
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
+
     .title {
       padding: 2rem 4rem 1rem 4rem;
+
       h1 {
         font-weight: bold;
         font-size: 32px;
@@ -1315,6 +1478,7 @@ div.icon-btn-wrapper {
       }
     }
   }
+
   p {
     font-weight: 500;
     font-size: 16px;
@@ -1322,6 +1486,7 @@ div.icon-btn-wrapper {
     color: #7f7f7f;
     opacity: 0.8;
     margin-bottom: 2rem;
+
     a {
       margin-left: 0.5rem;
       font-weight: 600;
@@ -1330,11 +1495,13 @@ div.icon-btn-wrapper {
       color: #2a6fff;
     }
   }
+
   ._hr {
     width: 100%;
     height: 1px;
     background: #eaeaea;
     position: relative;
+
     span {
       position: absolute;
       display: inline-block;
@@ -1345,9 +1512,11 @@ div.icon-btn-wrapper {
       transform: translate(-50%, -50%);
     }
   }
+
   .form {
     margin-top: 2.5rem;
   }
+
   ._modal-footer {
     display: flex;
     flex-wrap: wrap;
@@ -1366,6 +1535,7 @@ div.icon-btn-wrapper {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+
       span {
         margin-left: 0.5rem;
       }
@@ -1386,6 +1556,7 @@ div.icon-btn-wrapper {
       align-items: center;
       padding: 1rem 2.75rem 1rem 2.75rem;
       text-align: center;
+
       button {
         &._login-btn {
           display: block;
@@ -1398,6 +1569,7 @@ div.icon-btn-wrapper {
           margin-bottom: 2rem;
         }
       }
+
       a {
         display: block;
         width: 100%;
@@ -1414,6 +1586,7 @@ div.icon-btn-wrapper {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 2.5rem;
+
   button {
     background: #fff;
     border: 2px solid #eaeaea;
@@ -1423,10 +1596,12 @@ div.icon-btn-wrapper {
     display: flex;
     align-items: center;
     margin-right: 1rem;
+
     &.google {
       border-radius: 62px;
       padding: 12px 24px;
     }
+
     span {
       margin-left: 0.5rem;
       font-weight: 600;
