@@ -1,22 +1,20 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Button, ButtonToolbar, Checkbox, Divider, Form, Notification, toaster } from "rsuite";
+import { Button, ButtonToolbar, Checkbox, Divider, Form } from "rsuite";
 import { useRouter } from "next/router";
 import axios from "axios";
 import config from "../src/configuration";
 import Image from "next/image";
 import { setAuthCookies, setCookie } from "../src/helpers/cookie";
-import { withCookie } from 'next-cookie';
 import Header from "../src/components/consts/NotAuth/Header";
-
+import { useAuth } from "../Auth";
 import {
     getAuth,
     GoogleAuthProvider,
     signInWithPopup,
-    createUserWithEmailAndPassword,
+    // createUserWithEmailAndPassword,
     FacebookAuthProvider,
 } from "firebase/auth";
-import { async } from "@firebase/util";
 
 const renderErrorMessages = err => {
     let errList = [];
@@ -32,7 +30,7 @@ const Signup = (props) => {
 
     const router = useRouter();
 
-    const { cookie } = props;
+    const authContext = useAuth()
 
     const firebaseAuth = getAuth();
     const googleProvider = new GoogleAuthProvider();
@@ -177,9 +175,6 @@ const Signup = (props) => {
             full_name: body.full_name,
             password: body.password
         }).then(async (res) => {
-
-            // console.log('signup form res', res);
-
             if (res.data.success) {
                 setAuthCookies(
                     res.data.data.token,
@@ -187,18 +182,23 @@ const Signup = (props) => {
                     res.data.data.user.type,
                     res.data.data.user.id
                 );
-                await createUserWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
-                    // Signed in 
-                    // const user = userCredential.user;
 
-                    // console.log('userCredential.user', user);
-                    // ...
-                })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        // ..
-                    });;
+                authContext.setCurrentUser(res.data.data.user);
+
+                router.push("/signup/steps");
+
+                // await createUserWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
+                //     // Signed in 
+                //     // const user = userCredential.user;
+
+                //     // console.log('userCredential.user', user);
+                //     // ...
+                // })
+                //     .catch((error) => {
+                //         const errorCode = error.code;
+                //         const errorMessage = error.message;
+                //         // ..
+                //     });
             };
 
         }).catch(error => {
@@ -425,7 +425,7 @@ const Signup = (props) => {
 
 Signup.layout = false;
 
-export default withCookie(Signup);
+export default Signup;
 
 // export const getServerSideProps = (context) => {
 //     const auth = getAuth(context);

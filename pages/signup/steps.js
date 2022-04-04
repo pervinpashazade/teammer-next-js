@@ -20,7 +20,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
 import config, { months, URL_REGEX } from '../../src/configuration';
 // import { useAuth } from '../../Auth';
-import { getCookie } from '../../src/helpers/cookie';
+import { getCookie, setCookie } from '../../src/helpers/cookie';
 import { buildFormData } from '../../src/helpers/buildFormData';
 import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
 
@@ -79,42 +79,42 @@ const steps2 = (props) => {
         let skillList = [];
         let experienceLevelList = [];
 
-        await axios.get(config.BASE_URL + 'positions').then(res => {
+        await axios.get(config.BASE_URL + 'positions?noPagination=1').then(res => {
             if (res.data.success) {
                 positionList = res.data.data.items;
             };
         });
-        await axios.get(config.BASE_URL + 'project/roles').then(res => {
+        await axios.get(config.BASE_URL + 'project/roles?noPagination=1').then(res => {
             if (res.data.success) {
                 roleList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'project/types').then(res => {
+        await axios.get(config.BASE_URL + 'project/types?noPagination=1').then(res => {
             if (res.data.success) {
                 projectTypeList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'locations').then(res => {
+        await axios.get(config.BASE_URL + 'locations?noPagination=1').then(res => {
             if (res.data.success) {
                 locationList = res.data.data.items;
             };
         });
-        await axios.get(config.BASE_URL + 'job/types').then(res => {
+        await axios.get(config.BASE_URL + 'job/types?noPagination=1').then(res => {
             if (res.data.success) {
                 jobTypeList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'job/payment_types').then(res => {
+        await axios.get(config.BASE_URL + 'job/payment_types?noPagination=1').then(res => {
             if (res.data.success) {
                 paymentTypeList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'skills').then(res => {
+        await axios.get(config.BASE_URL + 'skills?noPagination=1').then(res => {
             if (res.data.success) {
                 skillList = res.data.data.items;
             };
         });
-        await axios.get(config.BASE_URL + 'experience-levels').then(res => {
+        await axios.get(config.BASE_URL + 'experience-levels?noPagination=1').then(res => {
             if (res.data.success) {
                 experienceLevelList = res.data.data;
             };
@@ -258,6 +258,40 @@ const steps2 = (props) => {
         portfolioList: [],
         about: ''
     });
+
+    // not working use ref
+    const resetState = () => {
+        setOwner({
+            avatarFile: null,
+            avatarUrl: null,
+            full_name: null,
+            username: null,
+            role: null,
+        });
+        setOwnerStepValidations({
+            step_1: [],
+            step_2: [],
+            step_3: [],
+        })
+        setTeammer({
+            avatarFile: null,
+            avatarUrl: null,
+            username: null,
+            full_name: null,
+            location: null,
+            positions: [],
+            experienceLevel: null,
+            skillList: [],
+            socialDatas: {},
+            portfolioList: [],
+            about: ''
+        });
+        setTeammerStepValidations({
+            step_1: [],
+            step_2: [],
+            step_3: [],
+        })
+    };
 
     const [workExperienceList, setWorkExperienceList] = useState([]);
     const [selectedWorkExp, setSelectedWorkExp] = useState({
@@ -520,6 +554,11 @@ const steps2 = (props) => {
 
         console.log('selected obj', selectedObj);
 
+        setIsEditSelectedJob({
+            status: true,
+            index: index
+        });
+
         setSelectedJob({
             position: {
                 id: selectedObj.position.id || null,
@@ -550,59 +589,6 @@ const steps2 = (props) => {
             experience: selectedObj.experience,
             description: selectedObj.description,
         });
-
-        setIsEditSelectedJob({
-            status: true,
-            index: index
-        });
-    };
-
-    // not working use ref
-    const resetUserDatas = () => {
-        setOwner({
-            avatarFile: null,
-            avatarUrl: null,
-            full_name: null,
-            username: null,
-            role: null,
-        });
-        setTeammer({
-            avatarFile: null,
-            avatarUrl: null,
-            username: null,
-            full_name: null,
-            location: null,
-            positions: [],
-            experienceLevel: null,
-            skillList: [],
-            socialDatas: {},
-            portfolioList: [],
-            about: ''
-        });
-    };
-
-    const handleChangeStep = () => {
-        if (!selectedUserType) setCurrentStep(0);
-
-        // owner
-        if (selectedUserType === "1") {
-            switch (currentStep) {
-                case 0:
-                    if (currentStep >= 0 && currentStep <= 4) {
-
-                    };
-                    break;
-
-                default:
-                    break;
-            }
-        };
-        // teammer
-        if (selectedUserType === "2") {
-
-        };
-
-        return true // false;
     };
 
     const editStep = step => {
@@ -610,13 +596,17 @@ const steps2 = (props) => {
     };
 
     const renderFirstStep = () => {
+
+        console.log('teammer', teammer);
+        console.log('owner', owner);
+
         return (
             <div>
                 <RadioGroup name="list" value={selectedUserType}>
                     <Radio
                         value="1"
                         onChange={value => {
-                            resetUserDatas();
+                            resetState();
                             setSelectedUserType(value);
                         }}
                     >
@@ -625,7 +615,7 @@ const steps2 = (props) => {
                     <Radio
                         value="2"
                         onChange={value => {
-                            resetUserDatas();
+                            resetState();
                             setSelectedUserType(value);
                         }}
                     >
@@ -646,7 +636,7 @@ const steps2 = (props) => {
                     </Button>
                 </div>
             </div>
-        )
+        );
     };
 
     const uploadFile = (event, type) => {
@@ -700,15 +690,15 @@ const steps2 = (props) => {
 
     const portfolioFunction = (type, itemLink) => {
         if (type === "add") {
-            if (URL_REGEX.test(portfolioLink)) {
-                setTeammer(prevState => {
-                    return {
-                        ...prevState,
-                        portfolioList: [...prevState.portfolioList, portfolioLink]
-                    };
-                });
-                setPortfolioLink('');
-            };
+            // if (URL_REGEX.test(portfolioLink)) {
+            setTeammer(prevState => {
+                return {
+                    ...prevState,
+                    portfolioList: [...prevState.portfolioList, portfolioLink]
+                };
+            });
+            setPortfolioLink('');
+            // };
         }
         if (type === "remove" && itemLink) {
             setTeammer(prevState => {
@@ -918,52 +908,6 @@ const steps2 = (props) => {
 
                 let isValidForm = validateAddPositionForm();
 
-                // // validate and submit all steps form
-
-                // // v1
-                if (!jobList.length && !isValidForm) {
-                    step_3_errors.push({
-                        key: 'final',
-                        message: 'You must add at least 1 job position'
-                    });
-                    setOwnerStepValidations(prevState => {
-                        return {
-                            ...prevState,
-                            step_3: step_3_errors
-                        };
-                    });
-
-                    return;
-                };
-
-                // // v2
-                if (!jobList.length && (isValidForm && !isEditSelectedJob.status)) {
-                    setJobList([selectedJob]);
-                    setOwnerStepValidations(prevState => {
-                        return {
-                            ...prevState,
-                            step_3: []
-                        };
-                    });
-                    submitOwnerData();
-
-                    return;
-                };
-
-                // // v3
-                if (jobList.length && !isValidForm) {
-                    resetSelectedJob();
-                    setOwnerStepValidations(prevState => {
-                        return {
-                            ...prevState,
-                            step_3: []
-                        };
-                    });
-                    submitOwnerData();
-
-                    return;
-                };
-
                 // // v4 (list & editing selected job )
                 if (jobList.length && (isValidForm && isEditSelectedJob)) {
                     step_3_errors.push({
@@ -980,24 +924,103 @@ const steps2 = (props) => {
                     return;
                 };
 
-                // // v5 (list & new job )
-                if (jobList.length && (isValidForm && !isEditSelectedJob)) {
-                    // let currentJobList = jobList;
-                    // currentJobList.push(selectedJob);
-                    // setJobList(currentJobList);
-
-                    addMorePosition();
-
+                if (!jobList.length && !isValidForm) {
+                    step_3_errors.push({
+                        key: 'final',
+                        message: 'You must add at least 1 job position'
+                    });
                     setOwnerStepValidations(prevState => {
                         return {
                             ...prevState,
-                            step_3: []
+                            step_3: step_3_errors
                         };
                     });
-                    submitOwnerData();
 
                     return;
                 };
+
+                submitOwnerData();
+
+                // // validate and submit all steps form
+
+                // // v1
+                // if (!jobList.length && !isValidForm) {
+                //     step_3_errors.push({
+                //         key: 'final',
+                //         message: 'You must add at least 1 job position'
+                //     });
+                //     setOwnerStepValidations(prevState => {
+                //         return {
+                //             ...prevState,
+                //             step_3: step_3_errors
+                //         };
+                //     });
+
+                //     return;
+                // };
+
+                // // // v2
+                // if (!jobList.length && (isValidForm && !isEditSelectedJob.status)) {
+                //     setJobList([selectedJob]);
+                //     setOwnerStepValidations(prevState => {
+                //         return {
+                //             ...prevState,
+                //             step_3: []
+                //         };
+                //     });
+                //     submitOwnerData();
+
+                //     return;
+                // };
+
+                // // // v3
+                // if (jobList.length && !isValidForm) {
+                //     resetSelectedJob();
+                //     setOwnerStepValidations(prevState => {
+                //         return {
+                //             ...prevState,
+                //             step_3: []
+                //         };
+                //     });
+                //     submitOwnerData();
+
+                //     return;
+                // };
+
+                // // // v4 (list & editing selected job )
+                // if (jobList.length && (isValidForm && isEditSelectedJob)) {
+                //     step_3_errors.push({
+                //         key: 'final',
+                //         message: 'You did not complete editing selected job'
+                //     });
+                //     setOwnerStepValidations(prevState => {
+                //         return {
+                //             ...prevState,
+                //             step_3: step_3_errors
+                //         };
+                //     });
+
+                //     return;
+                // };
+
+                // // // v5 (list & new job )
+                // if (jobList.length && (isValidForm && !isEditSelectedJob)) {
+                //     // let currentJobList = jobList;
+                //     // currentJobList.push(selectedJob);
+                //     // setJobList(currentJobList);
+
+                //     addMorePosition();
+
+                //     setOwnerStepValidations(prevState => {
+                //         return {
+                //             ...prevState,
+                //             step_3: []
+                //         };
+                //     });
+                //     submitOwnerData();
+
+                //     return;
+                // };
 
                 alert('not valid form');
             };
@@ -1134,32 +1157,119 @@ const steps2 = (props) => {
     };
 
     const submitOwnerData = () => {
-        // jobList bosh gelir 
+        // // jobList bosh gelir 
+        let jobs = [];
 
-        console.log(
-            'owner data : ', owner,
-            'startup : ', startup,
-            'job list : ', jobList,
-        );
+        // // v2
+        if (!jobList.length && !isEditSelectedJob.status) {
+            // setJobList([selectedJob]);
+            setOwnerStepValidations(prevState => {
+                return {
+                    ...prevState,
+                    step_3: []
+                };
+            });
+
+            jobs = [
+                ...jobs,
+                {
+                    salary: selectedJob.salary,
+                    salary_period: selectedJob.period?.id,
+                    years_of_experience: selectedJob.experience,
+                    payment_type_id: selectedJob.payment?.id,
+                    type_id: selectedJob.type?.id,
+                    location_id: selectedJob.location?.id,
+                    position_id: selectedJob.position?.id,
+                    description: selectedJob.description
+                }
+            ];
+        };
+
+        // // v3
+        if (jobList.length) {
+            resetSelectedJob();
+            setOwnerStepValidations(prevState => {
+                return {
+                    ...prevState,
+                    step_3: []
+                };
+            });
+
+            jobs = jobList.map(item => {
+                return {
+                    salary: item.salary,
+                    salary_period: item.period?.id,
+                    years_of_experience: item.experience,
+                    payment_type_id: item.payment?.id,
+                    type_id: item.type?.id,
+                    location_id: item.location?.id,
+                    position_id: item.position?.id,
+                    description: item.description
+                };
+            });
+        };
+
+        // // v5 (list & new job )
+        if (jobList.length && !isEditSelectedJob) {
+            // let currentJobList = jobList;
+            // currentJobList.push(selectedJob);
+            // setJobList(currentJobList);
+
+            // addMorePosition();
+
+            setOwnerStepValidations(prevState => {
+                return {
+                    ...prevState,
+                    step_3: []
+                };
+            });
 
 
-        let jobs = jobList.map(item => {
-            return {
-                salary: item.salary,
-                salary_period: item.period?.id,
-                years_of_experience: item.experience,
-                payment_type_id: item.payment?.id,
-                type_id: item.type?.id,
-                location_id: item.location?.id,
-                position_id: item.position?.id,
-                description: item.description
-            };
-        });
+            jobs = jobList.map(item => {
+                return {
+                    salary: item.salary,
+                    salary_period: item.period?.id,
+                    years_of_experience: item.experience,
+                    payment_type_id: item.payment?.id,
+                    type_id: item.type?.id,
+                    location_id: item.location?.id,
+                    position_id: item.position?.id,
+                    description: item.description
+                };
+            });
+
+            jobs = [
+                ...jobs,
+                {
+                    salary: selectedJob.salary,
+                    salary_period: selectedJob.period?.id,
+                    years_of_experience: selectedJob.experience,
+                    payment_type_id: selectedJob.payment?.id,
+                    type_id: selectedJob.type?.id,
+                    location_id: selectedJob.location?.id,
+                    position_id: selectedJob.position?.id,
+                    description: selectedJob.description
+                }
+            ];
+        };
+
+        // let jobs = jobList.map(item => {
+        //     return {
+        //         salary: item.salary,
+        //         salary_period: item.period?.id,
+        //         years_of_experience: item.experience,
+        //         payment_type_id: item.payment?.id,
+        //         type_id: item.type?.id,
+        //         location_id: item.location?.id,
+        //         position_id: item.position?.id,
+        //         description: item.description
+        //     };
+        // });
 
         let body = {
             type: 1,
             photo: owner.avatarFile,
-            // username: owner.username,
+            username: owner.username,
             full_name: owner.full_name,
             detail: {
                 project_role_id: owner.role?.id
@@ -1173,18 +1283,23 @@ const steps2 = (props) => {
             }
         };
 
+        console.log('body ', body);
+
         // console.log('authContext', authContext);
         // console.log('getToken', getCookie('teammers-access-token'));
-
+        
         const formData = new FormData();
         buildFormData(formData, body);
 
-        axios.post(config.BASE_URL + "auth/register-complete", formData, {
-            headers: {
-                "Authorization": "Bearer " + getCookie('teammers-access-token')
-            }
-        }).then(res => {
+        axios.post(config.BASE_URL + "auth/register-complete", formData).then(res => {
             console.log('steps RESPONSE', res);
+
+            if(res.data.success){
+                removeCookie('teammers-type');
+                setCookie('teammers-type', 1);
+                router.push('/owner/add-to-team');
+            };
+
         }).catch(error => {
             if (error.response?.status === 422) {
                 let errors = renderErrorMessages(error.response.data.error.validation);
@@ -1194,7 +1309,15 @@ const steps2 = (props) => {
     };
 
     const submitTeammerData = () => {
-        alert('submit teammer data');
+
+        console.log('teammer data', teammer);
+
+        console.log('workExperienceList data', workExperienceList);
+
+        // let body = {
+        //     type: 2,
+        //     positions: jobList
+        // }
     };
 
     return (
@@ -1359,40 +1482,44 @@ const steps2 = (props) => {
                                                                                 })
                                                                             }
                                                                         </div>
+                                                                        {/* username */}
                                                                         <Form.ControlLabel>Username</Form.ControlLabel>
-                                                                        <Form.Control
-                                                                            type="text"
-                                                                            name="username"
-                                                                            placeholder="Username"
-                                                                            value={
-                                                                                selectedUserType === "2" ?
-                                                                                    teammer.username
-                                                                                    :
-                                                                                    owner.username
-                                                                            }
-                                                                            onChange={(e) => {
-                                                                                if (selectedUserType === "2") {
+                                                                        {
+                                                                            selectedUserType === "2" &&
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                name="username"
+                                                                                placeholder="Username"
+                                                                                value={teammer.username}
+                                                                                onChange={(e) => {
                                                                                     setTeammer(prevState => {
                                                                                         return {
                                                                                             ...prevState,
                                                                                             username: e
                                                                                         }
                                                                                     });
-                                                                                } else {
+                                                                                    checkUsernameAsync(e, selectedUserType);
+                                                                                }}
+                                                                            />
+                                                                        }
+                                                                        {
+                                                                            selectedUserType === "1" &&
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                name="username"
+                                                                                placeholder="Username"
+                                                                                value={owner.username}
+                                                                                onChange={(e) => {
                                                                                     setOwner(prevState => {
                                                                                         return {
                                                                                             ...prevState,
                                                                                             username: e
                                                                                         }
                                                                                     });
-                                                                                };
-
-                                                                                checkUsernameAsync(e, selectedUserType);
-                                                                            }}
-                                                                        // onBlur={(e) => {
-                                                                        //     checkUsernameAsync(e.target.value, selectedUserType);
-                                                                        // }}
-                                                                        />
+                                                                                    checkUsernameAsync(e, selectedUserType);
+                                                                                }}
+                                                                            />
+                                                                        }
                                                                         {
                                                                             selectedUserType === "1" &&
                                                                             <div className="validation-errors">
@@ -1428,34 +1555,40 @@ const steps2 = (props) => {
                                                                     </Form.Group>
                                                                     <Form.Group controlId="full_name">
                                                                         <Form.ControlLabel>Full Name</Form.ControlLabel>
-                                                                        <Form.Control
-                                                                            type="text"
-                                                                            name="full_name"
-                                                                            placeholder="Full Name"
-                                                                            value={
-                                                                                selectedUserType === "2" ?
-                                                                                    teammer.full_name
-                                                                                    :
-                                                                                    owner.full_name
-                                                                            }
-                                                                            onChange={(e) => {
-                                                                                if (selectedUserType === "2") {
+                                                                        {
+                                                                            selectedUserType === "2" &&
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                name="full_name"
+                                                                                placeholder="Full Name"
+                                                                                value={teammer.full_name}
+                                                                                onChange={(e) => {
                                                                                     setTeammer(prevState => {
                                                                                         return {
                                                                                             ...prevState,
                                                                                             full_name: e
                                                                                         }
                                                                                     });
-                                                                                } else {
+                                                                                }}
+                                                                            />
+                                                                        }
+                                                                        {
+                                                                            selectedUserType === "1" &&
+                                                                            <Form.Control
+                                                                                type="text"
+                                                                                name="full_name"
+                                                                                placeholder="Full Name"
+                                                                                value={owner.full_name}
+                                                                                onChange={(e) => {
                                                                                     setOwner(prevState => {
                                                                                         return {
                                                                                             ...prevState,
                                                                                             full_name: e
                                                                                         }
                                                                                     });
-                                                                                };
-                                                                            }}
-                                                                        />
+                                                                                }}
+                                                                            />
+                                                                        }
                                                                         <div className="validation-errors">
                                                                             {
                                                                                 selectedUserType === "1" ?
@@ -1928,6 +2061,7 @@ const steps2 = (props) => {
                                                                                 className="w-100 my-2"
                                                                                 placeholder="Experience Level"
                                                                                 data={publicDatas.experienceLevelList}
+                                                                                value={teammer.experienceLevel?.id || null}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
                                                                                 onSelect={(id, obj) => {
@@ -2256,16 +2390,15 @@ const steps2 = (props) => {
                                                                                 }
                                                                                 <div className="portfolio-add">
                                                                                     <Input
-                                                                                        placeholder="Enter link"
-                                                                                        onChange={(e) => setPortfolioLink(e)}
                                                                                         className="w-100 mr-2"
+                                                                                        placeholder="Enter link"
                                                                                         value={portfolioLink}
+                                                                                        onChange={(e) => setPortfolioLink(e)}
                                                                                     />
                                                                                     <Button
                                                                                         onClick={() => portfolioFunction('add')}
                                                                                     >
-                                                                                        <BsPlusLg
-                                                                                            className="mr-2 " />
+                                                                                        <BsPlusLg className="mr-2 " />
                                                                                     </Button>
                                                                                 </div>
                                                                                 <hr />

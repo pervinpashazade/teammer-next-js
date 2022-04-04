@@ -1,15 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-<<<<<<< HEAD
-import { IconButton, Input } from 'rsuite';
 import { URL_REGEX } from '../../configuration';
-=======
 import Link from 'next/link';
-import {Button, IconButton, Input, InputPicker, Modal, Notification, toaster} from 'rsuite';
+import { Button, IconButton, Input, InputPicker, Modal, Notification, toaster } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import axios from "axios";
 import config from "../../configuration";
->>>>>>> ba9e634811e8863d9797601f7df2b994dc7ba42b
 
 function CardTeammerPortfolio(props) {
     const {
@@ -30,6 +26,7 @@ function CardTeammerPortfolio(props) {
     const [newPortfolioLink, setNewPortfolioLink] = useState('');
 
     const inputRef = useRef();
+
     // wrong
     const uploadFile = (event) => {
         // console.log(event)

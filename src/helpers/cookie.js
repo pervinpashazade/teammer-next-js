@@ -1,4 +1,4 @@
-export function setCookie(name, value, days) {
+export function setCookie(name, value, days = 6) {
     var expires = "";
     if (days) {
         var date = new Date();

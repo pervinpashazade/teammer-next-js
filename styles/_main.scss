@@ -6,6 +6,11 @@ body {
   background-color: linear-gradient(180.62deg, #fcfcfc 2.19%, #eff5fc 99.49%) !important;
   height: 100% !important;
 }
+
+.overflow-hidden{
+  overflow: hidden !important;
+}
+
 .custom-input-color {
   input {
     background-color: #fafafa;

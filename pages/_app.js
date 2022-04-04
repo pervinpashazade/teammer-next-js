@@ -9,6 +9,7 @@ import "../firebase.js";
 import CheckAuthentication from "../src/containers/CheckAuthentication";
 import withAuth from "../hooks/withAuth";
 import "../src/axios-interceptor";
+import { useRouter } from "next/router";
 function MyApp({
     Component,
     pageProps: { session, ...pageProps },
