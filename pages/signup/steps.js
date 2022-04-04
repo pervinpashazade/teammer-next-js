@@ -12,6 +12,7 @@ import {
     RadioGroup,
     Steps,
     Tag,
+    Uploader,
 } from 'rsuite';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdModeEditOutline } from 'react-icons/md';
@@ -142,9 +143,9 @@ const steps2 = (props) => {
         });
     };
 
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(3);
 
-    const [selectedUserType, setSelectedUserType] = useState();
+    const [selectedUserType, setSelectedUserType] = useState("2");
 
     const [isValidOwnerUsername, setIsValidOwnerUsername] = useState({
         status: null,
@@ -248,6 +249,8 @@ const steps2 = (props) => {
     const [teammer, setTeammer] = useState({
         avatarFile: null,
         avatarUrl: null,
+        cvFile: [],
+        cvUrl: null,
         username: null,
         full_name: null,
         location: null,
@@ -276,6 +279,8 @@ const steps2 = (props) => {
         setTeammer({
             avatarFile: null,
             avatarUrl: null,
+            cvFile: [],
+            cvUrl: null,
             username: null,
             full_name: null,
             location: null,
@@ -711,7 +716,6 @@ const steps2 = (props) => {
     };
 
     const confirm_step_3 = (socialDatas) => {
-
         const socialData = getSocialDatas(socialDatas);
 
         setTeammer(prevState => {
@@ -1063,7 +1067,7 @@ const steps2 = (props) => {
 
                 console.log('TEAMMER STEP ! LOG', step_1_errors.length);
 
-                if (step_1_errors.length && !isValidTeammerUsername.status) {
+                if (step_1_errors.length || !isValidTeammerUsername.status) {
                     return false;
                 } else {
                     return true;
@@ -1095,6 +1099,12 @@ const steps2 = (props) => {
                         message: 'Skills field is required'
                     });
                 };
+                if (!teammer.cvFile[0]) {
+                    step_2_errors.push({
+                        key: "cv",
+                        message: "CV field is required"
+                    });
+                }
 
                 const isValidWorkExp = validateWorkExpForm();
 
@@ -1287,14 +1297,14 @@ const steps2 = (props) => {
 
         // console.log('authContext', authContext);
         // console.log('getToken', getCookie('teammers-access-token'));
-        
+
         const formData = new FormData();
         buildFormData(formData, body);
 
         axios.post(config.BASE_URL + "auth/register-complete", formData).then(res => {
             console.log('steps RESPONSE', res);
 
-            if(res.data.success){
+            if (res.data.success) {
                 removeCookie('teammers-type');
                 setCookie('teammers-type', 1);
                 router.push('/owner/add-to-team');
@@ -1310,14 +1320,144 @@ const steps2 = (props) => {
 
     const submitTeammerData = () => {
 
-        console.log('teammer data', teammer);
+        let workExperiences = [];
 
-        console.log('workExperienceList data', workExperienceList);
+        // // v2
+        if (!workExperienceList.length && !isEditSelectedWorkExp.status) {
+            // setJobList([selectedJob]);
+            setTeammerStepValidations(prevState => {
+                return {
+                    ...prevState,
+                    step_3: []
+                };
+            });
 
-        // let body = {
-        //     type: 2,
-        //     positions: jobList
-        // }
+            console.log('state exp', selectedWorkExp);
+
+            workExperiences = [
+                ...workExperiences,
+                {
+                    location_id: selectedWorkExp.location?.id,
+                    position_id: selectedWorkExp.position?.id,
+                    company: selectedWorkExp.companyName,
+                    start_date: (selectedWorkExp.start_month?.id < 10 ? "0" + selectedWorkExp.start_month?.id : selectedWorkExp.start_month?.id) +
+                        "-" + selectedWorkExp.start_year?.id,
+                    end_date: (selectedWorkExp.end_month?.id < 10 ? "0" + selectedWorkExp.end_month?.id : selectedWorkExp.end_month?.id) +
+                        "-" + selectedWorkExp.end_year?.id,
+                }
+            ];
+        };
+
+        // // v3
+        if (workExperienceList.length) {
+            resetSelectedWorkExp();
+            setTeammerStepValidations(prevState => {
+                return {
+                    ...prevState,
+                    step_3: []
+                };
+            });
+
+            workExperiences = workExperienceList.map(item => {
+                return {
+                    location_id: item.location?.id,
+                    position_id: item.position?.id,
+                    company: item.companyName,
+                    start_date: (item.start_month?.id < 10 ? "0" + item.start_month?.id : item.start_month?.id) +
+                        "-" + item.start_year?.id,
+                    end_date: (item.end_month?.id < 10 ? "0" + item.end_month?.id : item.end_month?.id) +
+                        "-" + item.end_year?.id,
+                };
+            });
+        };
+
+        // // v5 (list & new job )
+        if (workExperienceList.length && !isEditSelectedWorkExp) {
+            // let currentJobList = jobList;
+            // currentJobList.push(selectedJob);
+            // setJobList(currentJobList);
+
+            // addMorePosition();
+
+            setTeammerStepValidations(prevState => {
+                return {
+                    ...prevState,
+                    step_3: []
+                };
+            });
+
+            workExperiences = workExperienceList.map(item => {
+                return {
+                    location_id: item.location?.id,
+                    position_id: item.position?.id,
+                    company: item.companyName,
+                    start_date: (item.start_month?.id < 10 ? "0" + item.start_month?.id : item.start_month?.id) +
+                        "-" + item.start_year?.id,
+                    end_date: (item.end_month?.id < 10 ? "0" + item.end_month?.id : item.end_month?.id) +
+                        "-" + item.end_year?.id,
+                };
+            });
+
+            workExperiences = [
+                ...workExperiences,
+                {
+                    location_id: selectedWorkExp.location?.id,
+                    position_id: selectedWorkExp.position?.id,
+                    company: selectedWorkExp.companyName,
+                    start_date: (selectedWorkExp.start_month?.id < 10 ? "0" + selectedWorkExp.start_month?.id : selectedWorkExp.start_month?.id) +
+                        "-" + selectedWorkExp.start_year?.id,
+                    end_date: (selectedWorkExp.end_month?.id < 10 ? "0" + selectedWorkExp.end_month?.id : selectedWorkExp.end_month?.id) +
+                        "-" + selectedWorkExp.end_year?.id,
+                }
+            ];
+        };
+
+        let socialAccounts = [];
+
+        for (const [key, value] of Object.entries(teammer.socialDatas)) {
+            if (value) {
+                socialAccounts.push({ [key]: value });
+            };
+        };
+
+        let body = {
+            type: 2,
+            photo: teammer.avatarFile,
+            username: teammer.username,
+            full_name: teammer.full_name,
+            positions: teammer.positions.map(item => item.id),
+            skills: teammer.skillList.map(item => item.id),
+            cv: teammer.cvFile[0]?.blobFile,
+            detail: {
+                location_id: teammer.location?.id,
+                experience_level_id: teammer.experienceLevel?.id,
+                social_accounts: socialAccounts,
+                about: teammer.about,
+                portfolio: teammer.portfolioList
+            },
+            experiences: workExperiences,
+        };
+
+        console.log('teammer body', body);
+
+        const formData = new FormData();
+        buildFormData(formData, body);
+
+        axios.post(config.BASE_URL + "auth/register-complete", formData).then(res => {
+            console.log('steps RESPONSE', res);
+
+            if (res.data.success) {
+                removeCookie('teammers-type');
+                setCookie('teammers-type', 2);
+                router.push('/teammer/subscribe')
+            };
+
+        }).catch(error => {
+            if (error.response?.status === 422) {
+                let errors = renderErrorMessages(error.response.data.error.validation);
+                setTeammerResponseErrors(errors);
+            };
+        });
     };
 
     return (
@@ -2469,10 +2609,39 @@ const steps2 = (props) => {
                                                                                             })
                                                                                         }
                                                                                     </div>
+                                                                                    <Uploader className="upload"
+                                                                                        action=""
+                                                                                        multiple={false}
+                                                                                        defaultFileList={
+                                                                                            teammer.cvFile?.length ? [teammer.cvFile[0]]
+                                                                                                :
+                                                                                                []
+                                                                                        }
+                                                                                        maxPreviewFileSize={2}
+                                                                                        onChange={(fileList, fileType) => setTeammer(prevState => {
+                                                                                            return {
+                                                                                                ...prevState,
+                                                                                                cvFile: fileList
+                                                                                            }
+                                                                                        })}
+                                                                                    >
+                                                                                        <button type="button">
+                                                                                            Import from Linkedin
+                                                                                        </button>
+                                                                                    </Uploader>
+                                                                                    <div className="validation-errors">
+                                                                                        {
+                                                                                            teammerStepValidations.step_2.map((item, index) => {
+                                                                                                if (item.key === "cv") {
+                                                                                                    return <span key={index}>{item.message}</span>
+                                                                                                };
+                                                                                            })
+                                                                                        }
+                                                                                    </div>
                                                                                     <div className="navigation-btn-wrapper">
                                                                                         <Button
                                                                                             type="button"
-                                                                                            onClick={() => setCurrent(1)}
+                                                                                            onClick={() => setCurrentStep(1)}
                                                                                         >
                                                                                             Previous
                                                                                         </Button>
@@ -2864,6 +3033,18 @@ const steps2 = (props) => {
                                                                         };
                                                                     })}
                                                                 />
+                                                                <div className="my-4">
+                                                                    {
+                                                                        teammerResponseErrors.map((item, index) => {
+                                                                            return <p
+                                                                                key={index}
+                                                                                className="text-danger font-weight-bold"
+                                                                            >
+                                                                                {item}
+                                                                            </p>
+                                                                        })
+                                                                    }
+                                                                </div>
                                                                 <div className="navigation-btn-wrapper">
                                                                     <Button
                                                                         type="button"
