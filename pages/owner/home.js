@@ -245,7 +245,7 @@ const Home = (props) => {
                                                 id: item.id,
                                                 full_name: item.full_name,
                                                 photo: item.detail.photo,
-                                                location: item.detail.location.name + " , " + item.detail.location.country_code,
+                                                location: item.detail.location?.name + " , " + item.detail.location?.country_code,
                                                 skills: item.skills,
                                                 positions: item.positions,
                                                 year_of_experience: item.detail.years_of_experience,

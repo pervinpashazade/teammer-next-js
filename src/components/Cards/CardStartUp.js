@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Image from "next/image";
-import { Avatar } from "rsuite"
+import {Avatar} from "rsuite"
 import axios from 'axios';
 import config from '../../configuration';
-import { withCookie } from 'next-cookie';
+import {withCookie} from 'next-cookie';
 import Link from 'next/link';
+import {useAuth} from "../../../Auth";
+import AuthModal from "../Modals/AuthModal";
+import {useRouter} from "next/router";
 
 const CardStartUp = (props) => {
-    const { cookie } = props;
+    console.log(props)
     const {
         jobId,
         startupId,
@@ -18,14 +21,17 @@ const CardStartUp = (props) => {
         onClick,
     } = props;
 
-    // React.useEffect(() => {
-    //     console.log('jobId', jobId);
-    // }, [props]);
+    const {currentUser} = useAuth();
+    const router = useRouter();
+    const [isOpenLoginModal , setIsOpenLoginModal] = useState(false);
 
+    const routing =()=>{
+        router.push(`/job/${jobId}`)
+    }
     const attackSaveProject = () => {
         if (!jobId) return;
 
-        axios.post(config.BASE_URL + 'users/save-project', { id: jobId }, {
+        axios.post(config.BASE_URL + 'users/save-project', {id: jobId}, {
             headers: {
                 'Authorization': 'Bearer ' + cookie.get('teammers-access-token')
             }
@@ -33,15 +39,22 @@ const CardStartUp = (props) => {
             console.log('res', res);
         }).catch(error => console.log('errorres', error.response));
     };
-
+    const checkSave = () => {
+        if(currentUser){
+            axios.post(config.BASE_URL+'user/save-project',{
+                id : jobId,
+                type : 'job'
+            })
+        }
+        else setIsOpenLoginModal(true)
+    }
     return (
-        <Link href={`/job/${jobId}`} passHref>
             <a>
                 <div className="card-opportunity">
-                    <div className="logo"><h2>LOGO</h2></div>
+                    <a className="logo c-pointer" onClick={routing}><h2>LOGO</h2></a>
                     <div className="position">
                         <div className="person">
-                            <div>
+                            <div onClick={routing} className="c-pointer">
                                 <Avatar
                                     circle
                                     src={
@@ -54,20 +67,21 @@ const CardStartUp = (props) => {
                             </div>
                             <div
                                 className='save-job-icon'
-                                onClick={attackSaveProject}
                             >
-                                <Image
-                                    src={'/icons/save.svg'}
-                                    alt='img'
-                                    width={12}
-                                    height={24}
-                                    layout='fixed'
-                                />
+                                <a onClick={checkSave}>
+                                    <Image
+                                        src={'/icons/save.svg'}
+                                        alt='img'
+                                        width={12}
+                                        height={24}
+                                        layout='fixed'
+                                    />
+                                </a>
                             </div>
                         </div>
                         <div className="job-info">
                             <p>Job Position</p>
-                            <p>{position}</p>
+                            <p onClick={routing} className="c-pointer">{position}</p>
                         </div>
                         <div className="job-info">
                             <p>Name of the startup</p>
@@ -79,10 +93,13 @@ const CardStartUp = (props) => {
                                 </Link>
                             </p>
                         </div>
+                        <AuthModal
+                            isOpen={isOpenLoginModal}
+                            setIsOpen={setIsOpenLoginModal}
+                        />
                     </div>
                 </div>
             </a>
-        </Link>
     )
 }
 export default withCookie(CardStartUp);
