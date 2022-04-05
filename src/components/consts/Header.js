@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -8,18 +8,20 @@ import {
     Popover,
     Badge,
 } from 'rsuite';
-import { RiArrowRightLine } from 'react-icons/ri';
+import {RiArrowRightLine} from 'react-icons/ri';
 import Image from "next/image";
 import menu from '../../../public/img/menu.png'
 import cancel from '../../../public/img/cancel.png';
 import homeIcon from '../../../public/img/home-icon.png'
 import arrowRight from '../../../public/img/arrow-right 1.png'
-import { withCookie } from 'next-cookie';
-import { useRouter } from "next/router";
-import { logoutService } from '../../services/Auth/logoutService';
-import { useAuth } from '../../../Auth';
+import {withCookie} from 'next-cookie';
+import {useRouter} from "next/router";
+import {logoutService} from '../../services/Auth/logoutService';
+import {useAuth} from '../../../Auth';
+import axios from "axios";
+import config from "../../configuration";
 
-const CustomComponentUserProfile = ({ placement, loading, children, user, context }) => {
+const CustomComponentUserProfile = ({placement, loading, children, user, context}) => {
     console.log(user);
     const router = useRouter();
 
@@ -33,7 +35,8 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
                     </Link>
                 </p>
             </Popover>
-        };
+        }
+        ;
 
         if (!user.type) {
             return (
@@ -56,7 +59,8 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
                     </p>
                 </Popover>
             )
-        };
+        }
+        ;
 
         return (
             <Popover>
@@ -80,8 +84,8 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
                     >
                         <a className="text-dark">Complete registration</a>
                     </Link>
-                </p >
-            </Popover >
+                </p>
+            </Popover>
         );
     };
 
@@ -115,7 +119,7 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
                                 <p style={{
                                     cursor: 'pointer'
                                 }}
-                                    onClick={() => logoutService(context, router)}
+                                   onClick={() => logoutService(context, router)}
                                 >
                                     <a className="text-dark">Log out</a>
                                 </p>
@@ -128,7 +132,7 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
                         <p style={{
                             cursor: 'pointer'
                         }}
-                            onClick={() => logoutService(context, router)}
+                           onClick={() => logoutService(context, router)}
                         >
                             <a className="text-dark">Log out</a>
                         </p>
@@ -141,12 +145,13 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
     >
         <a className="c-pointer">
             <Avatar circle
-                src="https://www.w3schools.com/howto/img_avatar.png" />
+                    src="https://www.w3schools.com/howto/img_avatar.png"/>
         </a>
     </Whisper>
 };
 
-const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
+const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
+    console.log("notification props",props);
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -164,25 +169,25 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
                                 height={18}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine /></button>
+                            Show all <button><RiArrowRightLine/></button>
                         </a>
                     </Link>
                 </div>
-                <div className="message-person">
+                {props.data ? props.data.map((item, index) => <div key={index} className="message-person my-md-2">
                     <div>
-                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" />
+                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png"/>
                     </div>
                     <div className="message-text">
-                        <p>Denis Delton wants to add you to their Netflix team.</p>
+                        <p>{item?.data.message}</p>
                         <p>2 min ago</p>
                     </div>
-                </div>
+                </div>) : ''}
             </div>
         </Popover>
     );
 });
 
-const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
+const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -197,12 +202,12 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
                                 height={20}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine /></button>
+                            Show all <button><RiArrowRightLine/></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
-                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" /></div>
+                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png"/></div>
                     <div className="message-text">
                         <p>Denis Delton</p>
                         <p>Yeah! I’m interested...</p>
@@ -218,13 +223,14 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     );
 });
 
-const CustomComponentNotification = ({ placement, loading, children, count = 0 }) => (
+const CustomComponentNotification = ({data , placement, loading, children, count = 0}) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
             <DefaultPopoverNotification
+                data={data}
                 content={`I am positioned to the ${placement}`}
             />
         }
@@ -262,13 +268,13 @@ const CustomComponentNotification = ({ placement, loading, children, count = 0 }
     </Whisper>
 );
 
-const CustomComponentMessage = ({ placement, loading, children }) => (
+const CustomComponentMessage = ({placement, loading, children}) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverMessage content={`I am positioned to the ${placement}`} />
+            <DefaultPopoverMessage content={`I am positioned to the ${placement}`}/>
         }
     >
         <li>
@@ -286,9 +292,9 @@ const CustomComponentMessage = ({ placement, loading, children }) => (
     </Whisper>
 );
 
-const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
+const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
     <InputGroup {...props} inside>
-        <Input placeholder={placeholder} />
+        <Input placeholder={placeholder}/>
         <InputGroup.Button>
             {/* <img src="/icons/search.svg" /> */}
             <Image
@@ -305,7 +311,7 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
 
 const Header = (props) => {
 
-    const { authContext } = useAuth();
+    const {authContext} = useAuth();
     const {
         user,
         cookie,
@@ -313,14 +319,19 @@ const Header = (props) => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
-
+    const [notifications, setNotificaitons] = useState([]);
     const toggleMenu = () => {
         setIsOpen(!isOpen)
     };
 
-    // useEffect(()=>{
-    //    user && console.log(user)
-    // },[user]);
+    useEffect(() => {
+        axios.get(config.BASE_URL + "users/notifications?per_page=4")
+            .then(res => {
+                if (res.data.success) {
+                    if (res.data.data?.items) setNotificaitons(res.data.data.items)
+                }
+            })
+    }, []);
 
     return (
         <div className="header">
@@ -355,6 +366,7 @@ const Header = (props) => {
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
                                     <CustomComponentNotification
+                                        data={notifications}
                                         count={user?.unread_notifications_count}
                                         loading={loading}
                                         placement="bottomEnd"
@@ -383,7 +395,7 @@ const Header = (props) => {
                                         >
                                             <a>
                                                 <Avatar circle
-                                                    src="https://www.w3schools.com/howto/img_avatar.png" />
+                                                        src="https://www.w3schools.com/howto/img_avatar.png"/>
                                             </a>
                                         </Link>
                                     </li>
@@ -414,6 +426,7 @@ const Header = (props) => {
                             </div>
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
                                 <CustomComponentNotification
+                                    data={notifications}
                                     count={user?.unread_notifications_count}
                                     loading={loading}
                                     placement="bottomEnd"
