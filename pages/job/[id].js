@@ -10,6 +10,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import config, { NEXT_URL } from '../../src/configuration';
 import AuthModal from '../../src/components/Modals/AuthModal';
+import {useAuth} from "../../Auth";
 
 function Startup(props) {
 
@@ -19,7 +20,7 @@ function Startup(props) {
         startupJobList,
         similarJobList,
     } = props;
-
+    const {currentUser} = useAuth();
     const [jobData, setJobData] = useState(fetchJobData);
     const [token, setToken] = useState('');
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
@@ -29,13 +30,13 @@ function Startup(props) {
         const resObj = await fetchUser.json();
         setToken(resObj?.user?.token);
     }, [])
-
     React.useEffect(() => {
         console.log('props job', jobData);
         setJobData(fetchJobData);
     }, [fetchJobData]);
 
     const getData = async () => {
+        if(currentUser) setIsOpenLoginModal(true)
         if (!jobData) return;
 
         const fetchData = await fetch(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`)
@@ -47,14 +48,11 @@ function Startup(props) {
     }
 
     const applyToJob = () => {
+
         if (!jobData) return;
 
         if (token) {
-            axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`, null, {
-                headers: {
-                    "Authorization": token
-                }
-            }).then(res => {
+            axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`, null).then(res => {
                 if (res.data.success) {
                     toaster.push(
                         <Notification

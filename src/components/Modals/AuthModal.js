@@ -20,9 +20,11 @@ function AuthModal(props) {
     } = props;
     const withGoogleService = () => {
         signInWithPopup(firebaseAuth, googleProvider).catch(err => console.log('withGoogleService', err));
+        setIsOpen(false)
     };
     const withFacebookService = () => {
         signInWithPopup(firebaseAuth, facebookProvider).catch(err => console.log('withFacebookService', err));
+        setIsOpen(false);
     };
     const login_form = async (event) => {
 
@@ -31,12 +33,13 @@ function AuthModal(props) {
 
         for (let [key, value] of data.entries()) {
             body[key] = value;
-        };
-
+        }
+        ;
         if (!body.email) {
             setValidation(false);
             return;
-        };
+        }
+        ;
         if (!body.password) {
             setValidation(false);
         } else if (body.password.length < 8) {
@@ -45,11 +48,12 @@ function AuthModal(props) {
         } else if (body.password.length > 16) {
             setErrorMessage('Password must be between 8 - 16 characters')
             return;
-        };
+        }
+        ;
 
         const loginResult = await loginService(data);
         if (loginResult?.success) {
-
+            setIsOpen(false);
             setAuthCookies(
                 loginResult.data.token,
                 loginResult.data.user.full_name,
@@ -63,19 +67,13 @@ function AuthModal(props) {
             //         router.push('/teammer/home')) : router.push("/signup/steps");
 
             // console.log('authContext', authContext);
-            setIsOpen(false)
             authContext.setCurrentUser(loginResult.data.user);
 
         } else {
             setErrorMessage(loginResult.message)
             setValidation(false)
-        };
-    };
-    useEffect(()=>{
-        if(authContext.currentUser){
-            setIsOpen(!isOpen)
         }
-    },[authContext.currentUser])
+    };
     return (
         <div className="not-auth-layout login">
             <Modal
@@ -150,21 +148,25 @@ function AuthModal(props) {
                         login_form(event)
                     }}>
                         <Form.Group controlId="email">
-                            <Form.ControlLabel className={validation ? '' : 'login-validation'}>E-mail or username</Form.ControlLabel>
-                            <Form.Control className={validation ? '' : 'login-border-color'} name="email" type="email" placeholder="Name@domain.com" />
+                            <Form.ControlLabel className={validation ? '' : 'login-validation'}>E-mail or
+                                username</Form.ControlLabel>
+                            <Form.Control className={validation ? '' : 'login-border-color'} name="email" type="email"
+                                          placeholder="Name@domain.com"/>
                         </Form.Group>
                         <Form.Group controlId="password">
-                            <Form.ControlLabel className={validation ? '' : 'login-validation'}>Password</Form.ControlLabel>
-                            <Form.Control className={validation ? '' : 'login-border-color'} name="password" type="password" placeholder="at least 8 characters" />
+                            <Form.ControlLabel
+                                className={validation ? '' : 'login-validation'}>Password</Form.ControlLabel>
+                            <Form.Control className={validation ? '' : 'login-border-color'} name="password"
+                                          type="password" placeholder="at least 8 characters"/>
                         </Form.Group>
                         <p className="text-danger font-weight-bold">{errorMessage}</p>
                         <Form.Group>
                             <ButtonToolbar>
                                 <Button className="submit-btn btn-block" style={{
-                                    backgroundColor : "#2a6fff",
-                                    borderRadius : "72px",
-                                    padding : "13px 24px",
-                                    color : "white"
+                                    backgroundColor: "#2a6fff",
+                                    borderRadius: "72px",
+                                    padding: "13px 24px",
+                                    color: "white"
                                 }} type="submit">Log in</Button>
                             </ButtonToolbar>
                         </Form.Group>

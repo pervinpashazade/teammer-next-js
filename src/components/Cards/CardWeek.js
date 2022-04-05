@@ -1,4 +1,4 @@
-import { Avatar } from "rsuite";
+import {Avatar} from "rsuite";
 
 const CardWeek = (props) => {
 
@@ -21,9 +21,9 @@ const CardWeek = (props) => {
                         }
                     />
                 </div>
-                <button className="status">
+                {type && <button className="status">
                     {type}
-                </button>
+                </button>}
             </div>
             <div className="job-name">
                 <h5>
