@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Image from "next/image";
-import { Avatar, Button } from "rsuite"
+import {Avatar, Button} from "rsuite"
 import axios from 'axios';
 import config from '../../configuration';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
+import AuthModal from "../Modals/AuthModal";
+import {useAuth} from "../../../Auth";
 
 const CardStartUp = (props) => {
 
@@ -23,11 +25,21 @@ const CardStartUp = (props) => {
     // React.useEffect(() => {
     //     console.log('jobId', jobId);
     // }, [props]);
-
+    const {currentUser} = useAuth();
+    const routing = () => {
+        router.push(`/job/${jobId}`)
+    }
+    const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
+    const checkSave = () => {
+        if (currentUser) {
+            attackSaveProject()
+        } else setIsOpenLoginModal(true)
+    }
     const attackSaveProject = () => {
         if (!jobId) return;
 
-        axios.post(config.BASE_URL + 'users/save-project', { id: jobId }).then(res => {
+        axios.post(config.BASE_URL + 'users/save-project', {id: jobId, type: 'project'})
+            .then(res => {
             console.log('res', res);
         }).catch(error => console.log('errorres', error.response));
     };
@@ -37,9 +49,8 @@ const CardStartUp = (props) => {
         //     <a>
         <div
             className="job-card"
-            onClick={() => router.push(`/job/${jobId}`)}
         >
-            <div className="logo-wrapper">
+            <div onClick={routing} className="logo-wrapper">
                 <h2>LOGO</h2>
             </div>
             <div className="_content">
@@ -57,7 +68,7 @@ const CardStartUp = (props) => {
                         <p className="name">{ownerFullname}</p>
                     </div>
                     <Button
-                        onClick={attackSaveProject}
+                        onClick={checkSave}
                     >
                         <Image
                             src={'/icons/save.svg'}
@@ -69,7 +80,7 @@ const CardStartUp = (props) => {
                     </Button>
                 </div>
                 <div className="_body">
-                    <div className="_card-data">
+                    <div className="_card-data" onClick={routing}>
                         <p>Job Position</p>
                         <h3>{position}</h3>
                     </div>
@@ -126,6 +137,7 @@ const CardStartUp = (props) => {
                             </p>
                         </div>
                     </div> */}
+            <AuthModal isOpen={isOpenLoginModal} setIsOpen={setIsOpenLoginModal}/>
         </div>
         //     </a>
         // </Link>
