@@ -7,6 +7,7 @@
     background-color: #fcf9f1;
     margin-top: 24px;
     padding: 24px 74px;
+
     .product-div {
       max-width: 100%;
       height: 93px;
@@ -18,6 +19,7 @@
       align-items: center;
       box-shadow: $box-shadow;
       justify-content: sp;
+
       h3 {
         display: flex;
         align-items: baseline;
@@ -27,6 +29,7 @@
       }
     }
   }
+
   h4 {
     font-size: 24px;
     line-height: 30px;
@@ -35,6 +38,7 @@
     margin-top: 60px;
     margin-bottom: 30px;
   }
+
   .refer {
     height: 105px !important;
     box-shadow: $box-shadow;
@@ -47,6 +51,7 @@
     background-size: contain;
     display: flex;
     align-items: center;
+
     .refer-friend {
       display: flex;
       justify-content: space-between;
@@ -54,10 +59,12 @@
       width: 80%;
       min-width: 70%;
       margin-left: 40px;
+
       h5 {
         font-size: 16px;
         font-weight: 600;
       }
+
       button {
         @include button($button-radius-72, transparent, 13px, 24px, 15px, 24px);
         color: $primary-color !important;
@@ -67,16 +74,19 @@
     }
   }
 }
+
 .refer-link-h2 {
   font-size: 32px !important;
   text-align: center;
   font-weight: 700;
   margin: 24px 0px;
 }
+
 .copy-link {
   font-size: 12px;
   font-weight: 600;
 }
+
 .copy-button {
   @include button($button-radius-12, $primary-color, 10px, 14px, 8px, 12px);
   color: white;
@@ -95,17 +105,20 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
     h2 {
       font-size: 48px;
       font-weight: 600;
       line-height: 60px;
     }
+
     h3 {
       font-size: 40px;
       font-weight: 600;
       line-height: 50px;
     }
   }
+
   h4 {
     text-align: center;
     font-size: 24px;
@@ -118,17 +131,19 @@
 // teammer profile
 .profile-teammer {
   .profile-wrapper {
-    display: flex;
     .left-side {
-      width: 392px;
-      min-width: 392px;
+      // width: 392px;
+      // min-width: 392px;
       margin-top: -70px;
     }
+
     .content {
       width: 100%;
-      padding: 1rem 0px 0px 1.5rem;
+      padding-top: 1rem;
+
       .portfolio-wrapper {
         margin-bottom: 3rem;
+
         h5 {
           font-weight: 600;
           font-size: 20px;
@@ -136,6 +151,7 @@
           color: $secondary-color;
           margin-bottom: 1.5rem;
         }
+
         // .resume-card {
         //   background: #ffffff;
         //   box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
@@ -186,17 +202,21 @@
         //   }
         // }
       }
+
       .panel-joined {
         border: none;
         margin-top: 2.5rem;
+
         .rs-panel-header {
           padding-top: 0;
           padding-left: 0;
           padding-right: 0;
+
           svg {
             top: 5px;
           }
         }
+
         .rs-panel-title {
           span {
             font-weight: 600;
@@ -205,6 +225,7 @@
             color: $secondary-color;
           }
         }
+
         .rs-panel-body {
           display: flex;
           justify-content: space-between;
@@ -216,37 +237,38 @@
     }
   }
 }
+
 // edit teammer profile
 .teammer-profile-edit {
   .profile-wrapper {
-    display: flex;
     .left-side {
       width: 300px;
       min-width: 300px;
-      margin-top: 204px;
     }
+
     .content {
       width: 100%;
-      padding: 1rem 0px 0px 1.5rem;
+      padding-top: 1rem;
+
       .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         margin-bottom: 2rem;
-        padding: 0px 1rem;
+
         .profile-title {
           display: flex;
           align-items: center;
+
           .rs-avatar {
             width: 92px;
             height: 92px;
             margin-right: 1.5rem;
+
             img {
               width: 100%;
               height: 100%;
               object-fit: cover;
             }
           }
+
           .profile-title-content {
             h4 {
               font-weight: 600;
@@ -254,6 +276,7 @@
               line-height: 29px;
               margin-bottom: 0.75rem;
             }
+
             span {
               font-weight: 600;
               font-size: 20px;
@@ -262,6 +285,7 @@
             }
           }
         }
+
         .save-btn {
           padding: 13px 24px;
           border-radius: 72px;
@@ -272,21 +296,21 @@
           color: #fff;
         }
       }
+
       .user-info-wrapper {
         box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
         border-radius: 12px;
         padding: 1rem 0;
         margin-bottom: 1rem;
         width: 100%;
-        display: flex;
+
         .change-avatar-side {
-          width: 32%;
-          min-width: 32%;
           padding: 1rem;
-          border-right: 1px solid #eaeaea;
           text-align: center;
+
           .side_title {
             text-align: start;
+
             span {
               font-weight: 500;
               font-size: 20px;
@@ -295,16 +319,19 @@
               margin-bottom: 1rem;
             }
           }
+
           .rs-avatar {
             width: 124px;
             height: 124px;
             margin-bottom: 1.5rem;
+
             img {
               width: 100%;
               height: 100%;
               object-fit: cover;
             }
           }
+
           .change-avatar-btn {
             width: 100%;
             padding-top: 13px;
@@ -317,6 +344,7 @@
             border-radius: 72px;
           }
         }
+
         .user-info-form-wrapper {
           width: 100%;
           padding: 1rem 1rem 1rem 1.5rem;
@@ -330,6 +358,7 @@
             padding-right: 1rem;
           }
         }
+
         .subscription-active-plan-card {
           ._card-top {
             width: 100%;
@@ -346,6 +375,7 @@
               margin: 0;
               display: flex;
               align-items: center;
+
               span {
                 font-weight: bold;
                 font-size: 20px;
@@ -353,6 +383,7 @@
                 margin: 0 0.5rem;
               }
             }
+
             .unsubcribe-btn {
               color: $primary-color;
               font-weight: 600;
@@ -361,12 +392,14 @@
               border: none;
             }
           }
+
           ._card-content {
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding-top: 1rem;
+
             div {
               p {
                 font-weight: bold;
@@ -374,6 +407,7 @@
                 line-height: 125%;
                 margin-bottom: 0.5rem;
               }
+
               span {
                 font-weight: normal;
                 font-size: 14px;
@@ -382,22 +416,27 @@
             }
           }
         }
+
         ul.blocked-users-list {
           padding: 0;
           margin: 0;
+
           li {
             padding: 1rem 0;
             border-bottom: 1px solid #eaeaea;
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             ._user-info {
               display: flex;
               align-items: center;
+
               .rs-avatar {
                 width: 32px;
                 height: 32px;
                 margin-right: 0.5rem;
+
                 img {
                   width: 100%;
                   height: 100%;
@@ -405,6 +444,7 @@
                 }
               }
             }
+
             .unblock-btn {
               color: $primary-color;
               font-weight: 600;
@@ -412,12 +452,14 @@
               line-height: 17px;
               border: none;
             }
+
             &:last-child {
               border: none;
             }
           }
         }
       }
+
       .change-plan-title {
         margin-top: 3.75rem;
         margin-bottom: 1rem;
@@ -425,6 +467,7 @@
         font-size: 20px;
         line-height: 125%;
       }
+
       .subscribe-wrapper {
         min-height: 492px;
         background: #fff;
@@ -433,15 +476,19 @@
         box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
         border-radius: 28px;
         padding: 2rem 7.75rem 2rem 7.75rem;
+
         .gradient-wrapper {
           position: relative;
+
           ._text-container {
             position: absolute;
+
             ._text-monthly {
               background: linear-gradient(90deg, #0080dc, #00bef6);
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
             }
+
             ._text-annualy {
               background: linear-gradient(90deg, #00d7ac, #00bbd9);
               -webkit-background-clip: text;
@@ -449,25 +496,31 @@
             }
           }
         }
+
         ._top {
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 0px 21px;
           margin-bottom: 2.5rem;
+
           ._top-left {
             display: flex;
             align-items: center;
+
             .gradient-wrapper {
               width: 120px;
               height: 29px;
             }
+
             h4 {
               margin-left: 1rem;
             }
           }
+
           .custom-switch {
             margin: 0 3rem;
+
             span.rs-toggle-presentation {
               background: linear-gradient(90deg, #0080dc, #00bef6);
             }
@@ -478,17 +531,21 @@
               }
             }
           }
+
           ._top-right {
             display: flex;
             align-items: center;
+
             .gradient-wrapper {
               width: 120px;
               height: 29px;
             }
+
             h4 {
               margin-right: 1rem;
             }
           }
+
           h4.plan-title {
             font-weight: 500;
             font-size: 24px;
@@ -501,8 +558,10 @@
             }
           }
         }
+
         ._body {
           margin-bottom: 30px;
+
           p.title {
             text-align: center;
             margin-bottom: 1.25rem;
@@ -510,9 +569,11 @@
             font-size: 16px;
             line-height: 125%;
           }
+
           ul.plan-list {
             margin: 0;
             padding: 0;
+
             li {
               display: flex;
               align-items: center;
@@ -528,14 +589,17 @@
             }
           }
         }
+
         ._bottom {
           display: flex;
           align-items: center;
           justify-content: center;
           flex-direction: column;
           position: relative;
+
           .price {
             margin-bottom: 2rem;
+
             &::before {
               content: "";
               position: absolute;
@@ -546,6 +610,7 @@
               background-image: url("/img/Confetti1.png");
               background-repeat: no-repeat;
             }
+
             &::after {
               content: "";
               position: absolute;
@@ -557,6 +622,7 @@
               background-repeat: no-repeat;
             }
           }
+
           .btn-active-plan {
             border: 1px solid #2a6fff;
             border-radius: 72px;
@@ -571,6 +637,7 @@
               margin-right: 5px;
             }
           }
+
           .btn-choose-plan {
             background: #2a6fff;
             border-radius: 72px;
@@ -590,6 +657,7 @@
     }
   }
 }
+
 // profile card teammer
 .profile-card-teammer {
   background-color: #fff;
@@ -618,6 +686,7 @@
         object-fit: cover;
       }
     }
+
     .icons-wrapper {
       .rs-btn-icon {
         background: transparent !important;
@@ -628,20 +697,24 @@
 
   .card-content {
     margin-top: 1rem;
+
     .profile {
       border-bottom: 1px solid #eaeaea;
+
       h1 {
         font-weight: 600;
         font-size: 24px;
         line-height: 29px;
         margin-bottom: 0.5rem;
       }
+
       h3 {
         font-weight: 500;
         font-size: 16px;
         line-height: 24px;
         margin-bottom: 1rem;
       }
+
       ._info-wrap {
         display: flex;
         align-items: center;
@@ -649,24 +722,29 @@
         font-size: 14px;
         line-height: 17px;
         margin-bottom: 1rem;
+
         img {
           margin-right: 0.5rem;
         }
       }
     }
+
     .tag-wrapper {
       padding: 1rem 0px 0.75rem 0px;
       border-bottom: 1px solid #eaeaea;
+
       .custom-tag {
         margin: 0px 0px 0.5rem 0.25rem;
       }
     }
+
     .bio-wrapper {
       padding: 1rem 0px 1rem 0px;
       font-weight: normal;
       font-size: 14px;
       line-height: 26px;
     }
+
     .profile-buttons {
       button {
         @include button($button-radius-72, $primary-color, 13px, 24px, 13px, 24px);
@@ -677,35 +755,42 @@
     }
   }
 }
+
 // work experience card teammer
 .work-experience-card-teammer {
   background-color: #fff;
   box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
   border-radius: 12px;
   padding: 16px;
+
   .card-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     h4 {
       font-weight: 500;
       font-size: 19px;
       line-height: 125%;
       margin-bottom: 0;
     }
+
     .add-exp-btn {
       background-color: $primary-color;
       color: #fff;
       padding: 8px;
     }
   }
+
   ul.experience-wrapper {
     padding: 0;
     margin: 0;
+
     li {
       position: relative;
       padding: 12px 0px;
       border-bottom: 1px solid #eaeaea;
+
       span.date {
         font-weight: 500;
         font-size: 12px;
@@ -713,12 +798,14 @@
         color: $primary-color;
         margin-bottom: 0.5rem;
       }
+
       h3 {
         font-weight: 500;
         font-size: 16px;
         line-height: 24px;
         margin-bottom: 0.25rem;
       }
+
       p {
         font-weight: 500;
         font-size: 14px;
@@ -726,6 +813,7 @@
         margin-bottom: 0;
         opacity: 0.5;
       }
+
       .edit-exp-btn {
         position: absolute;
         top: 35%;
@@ -738,33 +826,40 @@
     }
   }
 }
+
 // edit work experience modal
 .work-exp-modal {
   .rs-modal-body {
     .date-wrapper {
       width: 100%;
       display: flex;
+
       div.wrapper-item {
         width: 50%;
         display: flex;
+
         .rs-form-group {
           &:first-child {
             margin-right: 1rem !important;
           }
         }
+
         &:first-child {
           padding-right: 1rem;
         }
+
         &:last-child {
           padding-left: 1rem;
         }
       }
     }
   }
+
   .rs-modal-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     .btn-cancel {
       color: $primary-color;
       border: 1px solid $primary-color;
@@ -773,6 +868,7 @@
       font-size: 18px;
       padding: 13px 24px;
     }
+
     .btn-submit {
       color: #fff;
       background: $primary-color;
@@ -783,37 +879,45 @@
       line-height: 22px;
       padding: 13px 24px;
     }
+
     &::before {
       content: none;
     }
+
     &::after {
       content: none;
     }
   }
 }
+
 // card teammer cv portfolio links
 .resume-card {
   background: #ffffff;
   box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
   border-radius: 12px;
+
   .card-top {
     width: 100%;
     padding: 1rem;
     border-bottom: 1px solid #eaeaea;
+
     p._title {
       font-weight: 500;
       font-size: 20px;
       line-height: 125%;
       margin-bottom: 1rem;
     }
+
     .resume-wrap {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       .resume {
         display: flex;
         align-items: center;
+
         span {
           font-weight: normal;
           font-size: 14px;
@@ -822,6 +926,7 @@
           margin-right: 1rem;
         }
       }
+
       .view-resume-btn {
         border: 2px solid #2a6fff;
         border-radius: 8px;
@@ -829,13 +934,17 @@
       }
     }
   }
+
   .card-content {
     padding: 1rem;
+
     ul {
       padding: 0;
       margin: 0;
+
       li {
         margin-bottom: 0.5rem;
+
         a {
           font-weight: normal;
           font-size: 14px;
@@ -843,14 +952,17 @@
           text-decoration-line: underline;
           color: $primary-color;
         }
+
         &:last-child {
           margin-bottom: 0;
         }
       }
     }
   }
+
   .card-bottom {
     padding: 0 1rem 1rem 1rem;
+
     .add-to-list-wrapper {
       width: 100%;
       display: flex;
@@ -858,15 +970,18 @@
     }
   }
 }
+
 // profile edit navigation
 ul.profile-edit-nav {
   padding: 0;
   margin: 0;
   padding-right: 2.75rem;
+
   li {
     cursor: pointer;
     padding-top: 30px;
     padding-bottom: 30px;
+
     a {
       display: flex;
       align-items: center;
@@ -879,6 +994,7 @@ ul.profile-edit-nav {
         height: 24px;
         opacity: 0.5;
       }
+
       span {
         font-weight: 600;
         font-size: 20px;
@@ -898,6 +1014,7 @@ ul.profile-edit-nav {
         svg {
           opacity: 1;
         }
+
         span {
           color: $secondary-color;
           opacity: 1;
@@ -911,6 +1028,7 @@ ul.profile-edit-nav {
           color: $secondary-color;
           opacity: 1;
         }
+
         span {
           color: $secondary-color;
           opacity: 1;
