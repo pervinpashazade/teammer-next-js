@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {useRouter} from 'next/router'
+import React, { useState } from 'react';
+import { useRouter } from 'next/router'
 import {
     Avatar,
     Button,
@@ -8,10 +8,10 @@ import {
 } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import Image from 'next/image';
-import {withCookie} from 'next-cookie';
-import {useAuth} from "../../../Auth";
+import { useAuth } from "../../../Auth";
+import { getCookie } from '../../helpers/cookie';
 
-const CardTeammerProfile = ({props, cookie}) => {
+const CardTeammerProfile = ({ props }) => {
     const context = useAuth();
     console.log(context);
     const router = useRouter();
@@ -33,8 +33,8 @@ const CardTeammerProfile = ({props, cookie}) => {
     } = props;
 
     const [loggedUser, setLogedUser] = useState({
-        id: cookie.get('teammers-id'),
-        teammer_type: cookie.get('teammers-type'),
+        id: getCookie('teammers-id'),
+        teammer_type: getCookie('teammers-type'),
     });
 
     const viewProfile = () => {
@@ -182,7 +182,7 @@ const CardTeammerProfile = ({props, cookie}) => {
                 {
                     !isProfile && loggedUser?.teammer_type === "1" &&
                     <div className="d-flex justify-content-around profile-buttons pt-3">
-                        <Button onClick={() => addToTeam(full_name , id)}>Add to team</Button>
+                        <Button onClick={() => addToTeam(full_name, id)}>Add to team</Button>
                         <Button>
                             <Image
                                 src={'/icons/envelope_white.svg'}
@@ -199,4 +199,4 @@ const CardTeammerProfile = ({props, cookie}) => {
     )
 }
 
-export default withCookie(CardTeammerProfile);
+export default CardTeammerProfile;
