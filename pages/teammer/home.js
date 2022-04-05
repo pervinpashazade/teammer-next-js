@@ -48,8 +48,8 @@ const Home = (props) => {
         });
 
         // project.owner => include 500 error
-        // axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position&per_page=6').then(res => {
-        axios.get(config.BASE_URL + 'jobs?include=project,position&per_page=6').then(res => {
+        axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position&per_page=6').then(res => {
+        // axios.get(config.BASE_URL + 'jobs?include=project,position&per_page=6').then(res => {
             if (res.data.success) {
                 setJobList(res.data.data.items);
             };
@@ -87,12 +87,12 @@ const Home = (props) => {
                 <div className="col-md-8 mb-4">
                     <StartUpByCategory
                         user={user}
-                        jobList={props.jobList}
+                        jobList={jobList}
                         positionList={positionList}
                     />
                     <StartUpByCategory
                         user={user}
-                        jobList={props.jobList}
+                        jobList={jobList}
                         positionList={positionList}
                     />
                 </div>
