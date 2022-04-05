@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Avatar, Button, Notification, Panel, Tag, toaster } from 'rsuite';
+import React, {useState} from 'react';
+import {Avatar, Button, Notification, Panel, Tag, toaster} from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
-import { getFetchData } from '../../lib/fetchData';
-import { getToken } from "../../lib/session";
+import {getFetchData} from '../../lib/fetchData';
+import {getToken} from "../../lib/session";
 import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
-import config, { NEXT_URL } from '../../src/configuration';
+import config, {NEXT_URL} from '../../src/configuration';
 import AuthModal from '../../src/components/Modals/AuthModal';
 import {useAuth} from "../../Auth";
 
@@ -36,15 +36,14 @@ function Startup(props) {
     }, [fetchJobData]);
 
     const getData = async () => {
-        if(currentUser) setIsOpenLoginModal(true)
+        if (!currentUser) setIsOpenLoginModal(true)
         if (!jobData) return;
-
-        const fetchData = await fetch(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`)
-        const data = await fetchData.json();
-
-        if (data.success) {
-            setJobData(data.data);
-        };
+        axios.get(config.BASE_URL + `jobs/${jobData.id}?include=project,position,location,type`)
+            .then((res) => {
+                if (res.data.success) {
+                    setJobData(res.data.data);
+                }
+            })
     }
 
     const applyToJob = () => {
@@ -65,7 +64,9 @@ function Startup(props) {
                             </p>
                         </Notification>, 'topEnd'
                     );
-                };
+                    getData();
+                }
+                ;
             })
                 .catch(err => {
                     if (err.response?.status === 422) {
@@ -82,10 +83,10 @@ function Startup(props) {
                         );
                     }
                 })
-            getData();
         } else {
             setIsOpenLoginModal(true);
-        };
+        }
+        ;
     };
 
     const rejectApplicationToJob = () => {
@@ -109,15 +110,16 @@ function Startup(props) {
                         </p>
                     </Notification>, 'topEnd'
                 );
-            };
+            }
+            ;
         });
     };
 
     return (
         <>
             <div className='profile-job'>
-                <BreadCrumb />
-                <Banner />
+                <BreadCrumb/>
+                <Banner/>
                 <div className="profile-wrapper">
                     <div className="content">
                         <div className="row">
@@ -152,7 +154,7 @@ function Startup(props) {
                             <div className="tag-wrapper">
                                 {
                                     jobData?.type?.name &&
-                                    <Tag size="lg" className="custom-tag mb-4">Motion</Tag>
+                                    <Tag size="lg" className="custom-tag mb-4">{jobData?.type?.name}</Tag>
                                 }
                             </div>
                             <ul>
@@ -208,6 +210,9 @@ function Startup(props) {
                                 }
                             </ul>
                             <div className="btn-wrapper">
+                                {
+                                    console.error('salam men burdayam', jobData)
+                                }
                                 {
                                     jobData?.self_request ?
                                         jobData.self_request.request_from === 2 ?
@@ -284,18 +289,21 @@ export const getServerSideProps = async (context) => {
     );
     if (jobData?.data?.project?.id) {
         startupJobs = startupJobList.data?.items?.filter(x => x.id !== jobData.data.id) || []
-    };
+    }
+    ;
     // startup other jobs end
 
     // similar job list start
     let postion_id = '';
     if (jobData?.data?.position?.id) {
         postion_id = jobData.data.position.id;
-    };
+    }
+    ;
     const filteredSimilarJobList = await getFetchData(`jobs?filter[position_id]=${postion_id}&include=project,project.type,position&per_page=5`);
     if (jobData?.data?.id && filteredSimilarJobList?.data?.items) {
         similarJobs = filteredSimilarJobList.data.items.filter(x => x.id !== jobData.data.id)
-    };
+    }
+    ;
     // similar job list end
 
     return {
