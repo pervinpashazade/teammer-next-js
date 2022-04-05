@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
 import Banner from '../../../src/components/Lib/Banner';
@@ -10,8 +10,28 @@ import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
 import { getFetchData } from '../../../lib/fetchData';
 import { getToken } from '../../../lib/session';
+import axios from 'axios';
 
 function Setting(props) {
+
+    const [teammer, setTeammer] = useState({
+        email: '',
+        username: '',
+        avatarUrl: '',
+    });
+
+    React.useEffect(() => {
+        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location').then(res => {
+            console.log('res data', res.data.data);
+            if (res.data.success) {
+                setTeammer({
+                    email: res.data.data.email,
+                    username: res.data.data.username,
+                    avatarUrl: res.data.data.detail.photo,
+                });
+            };
+        });
+    }, []);
 
     return (
         <div className='teammer-profile-edit'>
@@ -62,11 +82,11 @@ function Setting(props) {
                             <Avatar
                                 size="lg"
                                 circle
-                                src={props.userData?.detail?.photo ? props.userData.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                src={teammer.avatarUrl ? teammer.avatarUrl : "https://www.w3schools.com/howto/img_avatar.png"}
                                 alt="username surname"
                             />
                             <div className="profile-title-content">
-                                <h4>{props.userData?.full_name}</h4>
+                                <h4>{teammer.full_name}</h4>
                                 <span>Edit Profile</span>
                             </div>
                         </div>
@@ -88,7 +108,7 @@ function Setting(props) {
                                         <Form.Control
                                             name="name"
                                             placeholder="Enter your username"
-                                            value={props.userData?.username}
+                                            value={teammer.username}
                                         />
                                     </Form.Group>
                                 </div>
@@ -96,10 +116,10 @@ function Setting(props) {
                                     <Form.Group controlId="email">
                                         <Form.ControlLabel>Email</Form.ControlLabel>
                                         <Form.Control
-                                            name="email"
                                             type='email'
+                                            value={teammer.email}
+                                            disabled={true}
                                             placeholder="Enter your email"
-                                            value={props.userData?.email}
                                         />
                                     </Form.Group>
                                 </div>
@@ -139,13 +159,13 @@ function Setting(props) {
 Setting.layout = true;
 export default Setting;
 
-export const getServerSideProps = async (context) => {
+// export const getServerSideProps = async (context) => {
 
-    const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
+//     const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", getToken(context));
 
-    return {
-        props: {
-            userData: fetchUserInfo?.data,
-        }
-    }
-};
+//     return {
+//         props: {
+//             userData: fetchUserInfo?.data,
+//         }
+//     }
+// };
