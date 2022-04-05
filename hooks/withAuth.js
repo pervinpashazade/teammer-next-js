@@ -19,11 +19,11 @@ const withAuth = (WrappedComponent) => {
                 router.push("/signup/steps");
                 return null;
             } else if (accessToken && roleType === "1" && (!router.pathname.includes("owner") && !router.pathname.includes("job") &&
-                !router.pathname.includes("chat"))) {
+                !router.pathname.includes("chat")&& !router.pathname.includes("notifications"))) {
                 router.push("/owner/home");
                 return null;
             } else if (accessToken && roleType === "2" && (!router.pathname.includes("teammer") && !router.pathname.includes("job") &&
-                !router.pathname.includes("chat"))) {
+                !router.pathname.includes("chat") && !router.pathname.includes("notifications"))) {
                 router.push("/teammer/home");
                 return null;
             }

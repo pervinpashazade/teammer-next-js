@@ -151,14 +151,14 @@ const CustomComponentUserProfile = ({placement, loading, children, user, context
 };
 
 const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
-    console.log("notification props",props);
+    console.log("notification props", props);
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
                 <div className="message">
                     <span>Notifications</span>
                     <Link
-                        href="/"
+                        href="/notifications"
                         className="showAll"
                     >
                         <a>
@@ -223,7 +223,7 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
     );
 });
 
-const CustomComponentNotification = ({data , placement, loading, children, count = 0}) => (
+const CustomComponentNotification = ({data, placement, loading, children, count = 0}) => (
     <Whisper
         trigger="click"
         placement={placement}
@@ -311,7 +311,7 @@ const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
 
 const Header = (props) => {
 
-    const {authContext} = useAuth();
+    const {currentUser, authContext} = useAuth();
     const {
         user,
         cookie,
@@ -319,16 +319,16 @@ const Header = (props) => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = React.useState(false);
-    const [notifications, setNotificaitons] = useState([]);
+    const [notifications, setNotifications] = useState([]);
     const toggleMenu = () => {
         setIsOpen(!isOpen)
     };
 
     useEffect(() => {
-        axios.get(config.BASE_URL + "users/notifications?per_page=4")
+        if (currentUser) axios.get(config.BASE_URL + "users/notifications?per_page=4")
             .then(res => {
                 if (res.data.success) {
-                    if (res.data.data?.items) setNotificaitons(res.data.data.items)
+                    if (res.data.data?.items) setNotifications(res.data.data.items)
                 }
             })
     }, []);
