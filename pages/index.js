@@ -25,8 +25,7 @@ const Home = (props) => {
         });
 
         // project.owner => include 500 error
-        // axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position&per_page=6').then(res => {
-        axios.get(config.BASE_URL + 'jobs?include=project,position&per_page=6').then(res => {
+        axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position&per_page=6').then(res => {
             if (res.data.success) {
                 setJobList(res.data.data.items);
             };
@@ -41,7 +40,7 @@ const Home = (props) => {
     }, []);
 
     useEffect(() => {
-        console.log('NOT COMPLETED LOG');
+        // console.log('NOT COMPLETED LOG');
 
         if (authContext.currentUser) {
             setUser(authContext.currentUser);
