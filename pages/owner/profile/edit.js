@@ -77,7 +77,7 @@ const EditComponent = (props) => {
                 });
             } else {
                 toaster.push(
-                    <Notification type={"error"} header="Success!" closable>
+                    <Notification type={"error"} header="Warning!" closable>
                         You did'nt upload photo , please select only .jpg and .png images
                     </Notification>, 'topEnd'
                 );
