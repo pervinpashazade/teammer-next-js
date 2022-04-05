@@ -46,7 +46,7 @@ const Home = (props) => {
             setUser(authContext.currentUser);
         };
     }, [authContext.currentUser]);
-
+    console.log(props.jobList)
     return (
         <div>
             <Head>

@@ -63,7 +63,7 @@ function AuthModal(props) {
             //         router.push('/teammer/home')) : router.push("/signup/steps");
 
             // console.log('authContext', authContext);
-
+            setIsOpen(false)
             authContext.setCurrentUser(loginResult.data.user);
 
         } else {
