@@ -16,6 +16,7 @@ import { Cookie, withCookie } from 'next-cookie';
 import getAuth from "../../lib/session";
 import StartUpByCategory from "../../src/components/StartUpByCategory";
 import { useAuth } from "../../Auth";
+import axios from "axios";
 
 const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     <InputGroup {...props} inside>
@@ -33,6 +34,33 @@ const Home = (props) => {
     const [user, setUser] = useState(authContext.currentUse);
 
     const [jobs, setJobs] = useState([]);
+
+    const [positionList, setPositionList] = useState([]);
+    const [jobList, setJobList] = useState([]);
+    const [startupOfWeekList, setStartupOfWeekList] = useState([]);
+
+    useEffect(() => {
+        axios.get(config.BASE_URL + 'positions').then(res => {
+            console.log(res)
+            if (res && res.data.success) {
+                setPositionList(res.data.data.items)
+            };
+        });
+
+        // project.owner => include 500 error
+        // axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position&per_page=6').then(res => {
+        axios.get(config.BASE_URL + 'jobs?include=project,position&per_page=6').then(res => {
+            if (res.data.success) {
+                setJobList(res.data.data.items);
+            };
+        });
+
+        axios.get(config.BASE_URL + 'startup-of-week').then(res => {
+            if (res.data.success) {
+                setStartupOfWeekList(res.data.data);
+            };
+        });
+    }, [])
 
     useEffect(() => {
         console.log('NOT COMPLETED LOG');
@@ -60,17 +88,17 @@ const Home = (props) => {
                     <StartUpByCategory
                         user={user}
                         jobList={props.jobList}
-                        positionList={props.positionList}
+                        positionList={positionList}
                     />
                     <StartUpByCategory
                         user={user}
                         jobList={props.jobList}
-                        positionList={props.positionList}
+                        positionList={positionList}
                     />
                 </div>
                 <div className="col-md-4 mb-4">
                     <StartUpWeek
-                        startupList={props.startup_of_week_list}
+                        startupList={startupOfWeekList}
                     />
                     <StartUpBlog />
                 </div>
@@ -95,33 +123,21 @@ Home.layout = true
 
 export default Home;
 
-export const getServerSideProps = async (context) => {
+// export const getServerSideProps = async (context) => {
 
-    // const auth = getAuth(context);
-    // if (auth !== 2) {
-    //     return {
-    //         redirect: {
-    //             destination: "/login",
-    //             permanent: false,
-    //         },
-    //     };
-    // }
+//     // const auth = getAuth(context);
+//     // if (auth !== 2) {
+//     //     return {
+//     //         redirect: {
+//     //             destination: "/login",
+//     //             permanent: false,
+//     //         },
+//     //     };
+//     // }
 
-    const fetchPositions = await fetch(config.BASE_URL + "positions");
-    const positionsData = await fetchPositions.json();
-
-    const fetchJobList = await fetch(config.BASE_URL + "jobs?include=project,project.owner,position&per_page=6");
-    const jobListData = await fetchJobList.json();
-
-    const fetchWeeklyStartups = await fetch(config.BASE_URL + "startup-of-week");
-    const startup_of_week_list = await fetchWeeklyStartups.json();
-
-    return {
-        props: {
-            protected: false,
-            positionList: positionsData.data.items || [],
-            jobList: jobListData?.data?.items || [],
-            startup_of_week_list: startup_of_week_list.data ? startup_of_week_list.data : [],
-        }
-    }
-}
+//     return {
+//         props: {
+//             protected: false,
+//         }
+//     }
+// }
