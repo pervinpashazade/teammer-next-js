@@ -18,14 +18,10 @@ import { useAuth } from "../../../Auth";
 import axios from 'axios';
 import { getCookie } from '../../../src/helpers/cookie';
 
-// const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
-
 const EditComponent = (props) => {
 
     //
     const authContext = useAuth();
-
-    // console.log(authContext?.currentUser);
 
     const [validationErrors, setValidationErrors] = useState([]);
 
@@ -69,42 +65,42 @@ const EditComponent = (props) => {
         let skillList = [];
         let experienceLevelList = [];
 
-        await axios.get(config.BASE_URL + 'positions').then(res => {
+        await axios.get(config.BASE_URL + 'positions?noPagination=1').then(res => {
             if (res.data.success) {
                 positionList = res.data.data.items;
             };
         });
-        await axios.get(config.BASE_URL + 'project/roles').then(res => {
+        await axios.get(config.BASE_URL + 'project/roles?noPagination=1').then(res => {
             if (res.data.success) {
                 roleList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'project/types').then(res => {
+        await axios.get(config.BASE_URL + 'project/types?noPagination=1').then(res => {
             if (res.data.success) {
                 projectTypeList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'locations').then(res => {
+        await axios.get(config.BASE_URL + 'locations?noPagination=1').then(res => {
             if (res.data.success) {
                 locationList = res.data.data.items;
             };
         });
-        await axios.get(config.BASE_URL + 'job/types').then(res => {
+        await axios.get(config.BASE_URL + 'job/types?noPagination=1').then(res => {
             if (res.data.success) {
                 jobTypeList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'job/payment_types').then(res => {
+        await axios.get(config.BASE_URL + 'job/payment_types?noPagination=1').then(res => {
             if (res.data.success) {
                 paymentTypeList = res.data.data;
             };
         });
-        await axios.get(config.BASE_URL + 'skills').then(res => {
+        await axios.get(config.BASE_URL + 'skills?noPagination=1').then(res => {
             if (res.data.success) {
                 skillList = res.data.data.items;
             };
         });
-        await axios.get(config.BASE_URL + 'experience-levels').then(res => {
+        await axios.get(config.BASE_URL + 'experience-levels?noPagination=1').then(res => {
             if (res.data.success) {
                 experienceLevelList = res.data.data;
             };
@@ -125,11 +121,7 @@ const EditComponent = (props) => {
     React.useEffect(() => {
         getPublicDatas();
 
-        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location', {
-            headers: {
-                'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-            }
-        }).then(res => {
+        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location').then(res => {
             console.log('res data', res.data.data);
             if (res.data.success) {
                 setTeammer({
@@ -155,40 +147,10 @@ const EditComponent = (props) => {
 
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
-    const [userData, setUserData] = useState(props.userData);
-
-    const [userInfo, setUserInfo] = useState({
-        full_name: userData?.full_name && userData?.full_name,
-        positions: userData?.positions && userData?.positions,
-        year_of_experience: userData?.detail?.years_of_experience && userData?.detail?.years_of_experience,
-        skills: userData?.skills && userData?.skills,
-        location: userData?.detail?.location && userData?.detail?.location.id,
-        description: userData?.detail?.about && userData?.detail?.about,
-        cv: userData?.detail?.cv && userData?.detail?.cv,
-        portfolio: userData?.detail?.portfolio && userData?.detail?.portfolio,
-        photo: userData?.detail?.photo && userData?.detail?.photo,
-        experiences: userData?.experiences && userData?.experiences,
-        experience_level: userData?.detail?.experience_level.id && userData?.detail?.experience_level.id
-    });
-
-    const [portfolioUrlList, setPortfolioUrlList] = useState({
-        cvFileName: props.userData?.detail?.cv,
-        cv: '',
-        portfolio: props.userData?.detail?.portfolio
-    });
-
     const photoRef = useRef();
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
-
-    // const getData = async () => {
-    //     const fetchUserInfo = await getFetchData("auth/user?include=skills,positions,experiences,detail.location", props.token);
-    //     setUserInfo({
-    //         ...userInfo,
-    //         experiences: fetchUserInfo.data.experiences
-    //     });
-    // };
 
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);

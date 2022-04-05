@@ -206,6 +206,9 @@ function CardTeammerWorkExperience(props) {
                                     item.location_id && ' / '
                                 }
                                 {
+                                    console.log('item.location !!', item)
+                                }
+                                {
                                     item.location?.id &&
                                         item.location.name ? item.location.name : ''
                                 }
