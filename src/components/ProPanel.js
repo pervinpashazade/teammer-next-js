@@ -1,8 +1,9 @@
 import React from 'react'
-import { Panel } from 'rsuite'
+import {Panel} from 'rsuite'
+import CardStartUp from "./Cards/CardStartUp";
 
 function ProPanel(props) {
-
+    console.log('props', props)
     const {
         title,
         dataList,
@@ -20,10 +21,9 @@ function ProPanel(props) {
             {
                 dataList?.length ?
                     dataList.map((item, index) => {
-                        return <div key={index}>{item.id}</div>
-                    })
-                    :
-                    noDataMessage ? noDataMessage :
+                        console.log(item)
+                        return <CardStartUp key={index} jobId={item.id} title={item.title} logo={item.logo}/>
+                    }) : noDataMessage ? noDataMessage :
                         'You have not yet joined any project'
             }
         </Panel>

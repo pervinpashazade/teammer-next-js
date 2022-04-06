@@ -1302,13 +1302,13 @@ const steps2 = (props) => {
             if (res.data.success) {
                 removeCookie('teammers-type');
                 setCookie('teammers-type', 1);
-                // router.push('/owner/add-to-team');
+                router.push('/owner/add-to-team');
             }
         }).catch(error => {
             if (error.response?.status === 422) {
                 let errors = renderErrorMessages(error.response.data.error.validation);
                 setOwnerResponseErrors(errors);
-            };
+            }
         });
     };
 

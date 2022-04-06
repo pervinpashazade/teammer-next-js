@@ -1,37 +1,43 @@
-import { Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag, toaster, Notification } from "rsuite";
-import React, { useEffect, useState } from "react";
+import {Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag, toaster, Notification} from "rsuite";
+import React, {useEffect, useState} from "react";
 import CardTeammerProfile from "../../src/components/Profile/CardTeammerProfile";
 import axios from "axios";
 import config from "../../src/configuration";
-import getAuth, { getId, getToken } from "../../lib/session";
-import { getFetchData } from "../../lib/fetchData";
-import { Modal } from 'rsuite';
-import { useCookie, withCookie } from "next-cookie";
+import getAuth, {getId, getToken} from "../../lib/session";
+import {getFetchData} from "../../lib/fetchData";
+import {Modal} from 'rsuite';
+import {useCookie, withCookie} from "next-cookie";
 import SearchHome from "../../src/components/SearchHome";
+import {useAuth} from "../../Auth";
 
 const Home = (props) => {
 
     const {
         project_types,
         experience_levels,
-        skills,
-        locations,
-        items,
-        projects,
+        // locations,
+        // items,
+        // projects,
         id,
-        cookie
     } = props;
+    // const project = projects.data.items.map(item => {
+    //     return {
+    //         label: item.title,
+    //         value: item.id
+    //     }
+    // });
 
-    const project = projects.data.items.map(item => {
-        return {
-            label: item.title,
-            value: item.id
-        }
-    });
+    const {currentUser} = useAuth();
 
-    const cookies = useCookie(cookie)
+    const [projectTypes, setProjectTypes] = useState([]);
+    const [experienceLevels, setExperienceLevels] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [locations , setLocations] = useState([]);
+    const [projects , setProjects] = useState([]);
+
+
     const [open, setOpen] = useState(false);
-    const [teammerId , setTeammerId] = useState('')
+    const [teammerId, setTeammerId] = useState('')
     const [teammerName, setTeammerName] = useState('')
     const [firstRender, setFirstRender] = useState(false)
     const [activePage, setActivePage] = useState(1);
@@ -46,7 +52,7 @@ const Home = (props) => {
         locations: []
     });
 
-    const [data, setData] = useState(items)
+    const [data, setData] = useState([])
     const filterFuncation = (key, e, type) => {
         let array = filter[key];
         if (type === "add") {
@@ -63,14 +69,17 @@ const Home = (props) => {
 
     const getJobs = async (e) => {
         if (e) {
-            let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'));
-            setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
-                return {
-                    label: item.position.name,
-                    value: item.id
-                }
-            }))
-            setStartUpName(e)
+            // let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'));
+            axios.get(config.BASE_URL + "users/projects?include=jobs.position")
+                .then(res => {
+                    setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
+                        return {
+                            label: item.position.name,
+                            value: item.id
+                        }
+                    }))
+                    setStartUpName(e)
+                })
         } else {
             setJobs([]);
             setStartUpName('')
@@ -78,7 +87,7 @@ const Home = (props) => {
     };
 
     const submitAddToTeam = async () => {
-        if (id) {
+        if (currentUser && currentUser?.id) {
             axios.post(config.BASE_URL + "jobs/" + jobName + "/add-to-team", {
                 id: teammerId
             }).then(res => {
@@ -114,6 +123,55 @@ const Home = (props) => {
                 setData(res.data.data.items)
             });
     };
+    const getProjectTypes = () => {
+        axios.get(config.BASE_URL + "project/types")
+            .then(res => {
+                setProjectTypes(res.data.data.map(item => {
+                    return {label: item.name, value: item.id}
+                }))
+            })
+    }
+    const getExperienceLevels = () => {
+        axios.get(config.BASE_URL + "experience-levels")
+            .then(res => {
+                setExperienceLevels(res.data.data.map(item => {
+                    return {label: item.name, value: item.id}
+                }))
+            })
+    }
+    const getSkills = () => {
+        axios.get(config.BASE_URL + "skills")
+            .then(res => {
+                setSkills(res.data.data.items.map(item => {
+                    return {label: item.name, value: item.id}
+                }))
+            })
+    }
+    const getLocations = () => {
+        axios.get(config.BASE_URL + "locations")
+            .then(res => {
+                setLocations(res.data.data.items.map(item => {
+                    return {label: item.name, value: item.id}
+                }))
+            })
+    }
+    const getProjects = ()=>{
+        axios.get(config.BASE_URL + "users/projects")
+            .then(res => {
+                setProjects(res.data.data.items.map(item => {
+                    return {
+                        label: item.title,
+                        value: item.id
+                    }
+                }))
+            })
+    }
+    const getUserData = ()=>{
+        axios.get(config.BASE_URL + "teammers?include=detail,skills,positions,experiences,detail.location")
+            .then(res => {
+                setData(res.data.data.items)
+            })
+    }
 
     useEffect(async () => {
         if (firstRender) {
@@ -121,8 +179,16 @@ const Home = (props) => {
         }
         setFirstRender(true)
     }, [activePage, dropdown, filter]);
+    useEffect(() => {
+        getProjectTypes();
+        getProjects();
+        getExperienceLevels();
+        getSkills();
+        getLocations();
+        getUserData();
 
-    const addToTeam = (data , id) => {
+    }, [])
+    const addToTeam = (data, id) => {
         setTeammerId(id)
         setTeammerName(data);
         setOpen(!open);
@@ -131,7 +197,7 @@ const Home = (props) => {
     return (
         <div className="owner-home">
             <div className="owner-banner">
-                <h2>The best future <br />
+                <h2>The best future <br/>
                     Teammers are here 💫</h2>
             </div>
             <div className="home-search">
@@ -141,7 +207,7 @@ const Home = (props) => {
                     {/*    placeholder="Search"*/}
                     {/*    className="search-input"*/}
                     {/*/>*/}
-                    <SearchHome getData={setData} />
+                    <SearchHome getData={setData}/>
                 </div>
             </div>
             <div className="row">
@@ -149,7 +215,7 @@ const Home = (props) => {
                 <div className="col-md-4">
                     <InputPicker
                         size="lg"
-                        data={project_types}
+                        data={projectTypes}
                         value={filter.project_types}
                         onChange={(e) => filterFuncation('project_types', e, 'add')}
                         placeholder="Fields"
@@ -158,16 +224,16 @@ const Home = (props) => {
                     {
                         filter.project_types.length > 0 && filter.project_types.map((item, index) => {
                             return <Tag key={index}
-                                onClose={() => {
-                                    filterFuncation('project_types', item, 'remove')
-                                }
-                                } closable
-                                className="close-tag my-2">{project_types.find(i => i.value === item)?.label}</Tag>
+                                        onClose={() => {
+                                            filterFuncation('project_types', item, 'remove')
+                                        }
+                                        } closable
+                                        className="close-tag my-2">{projectTypes.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                     <InputPicker
                         size="lg"
-                        data={experience_levels}
+                        data={experienceLevels}
                         value={filter.experience_levels}
                         onChange={(e) => filterFuncation('experience_levels', e, 'add')}
                         placeholder="Experience"
@@ -176,11 +242,11 @@ const Home = (props) => {
                     {
                         filter.experience_levels.length > 0 && filter.experience_levels.map((item, index) => {
                             return <Tag key={index}
-                                onClose={() => {
-                                    filterFuncation('experience_levels', item, 'remove')
-                                }
-                                } closable
-                                className="close-tag my-2">{experience_levels.find(i => i.value === item)?.label}</Tag>
+                                        onClose={() => {
+                                            filterFuncation('experience_levels', item, 'remove')
+                                        }
+                                        } closable
+                                        className="close-tag my-2">{experienceLevels.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                     <InputPicker
@@ -194,11 +260,11 @@ const Home = (props) => {
                     {
                         filter.skills.length > 0 && filter.skills.map((item, index) => {
                             return <Tag key={index}
-                                onClose={() => {
-                                    filterFuncation('skills', item, 'remove')
-                                }
-                                } closable
-                                className="close-tag my-2">{skills.find(i => i.value === item)?.label}</Tag>
+                                        onClose={() => {
+                                            filterFuncation('skills', item, 'remove')
+                                        }
+                                        } closable
+                                        className="close-tag my-2">{skills.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                     <InputPicker
@@ -212,11 +278,11 @@ const Home = (props) => {
                     {
                         filter.locations.length > 0 && filter.locations.map((item, index) => {
                             return <Tag key={index}
-                                onClose={() => {
-                                    filterFuncation('locations', item, 'remove')
-                                }
-                                } closable
-                                className="close-tag my-2">{locations.find(i => i.value === item)?.label}</Tag>
+                                        onClose={() => {
+                                            filterFuncation('locations', item, 'remove')
+                                        }
+                                        } closable
+                                        className="close-tag my-2">{locations.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                 </div>
@@ -287,7 +353,7 @@ const Home = (props) => {
                     <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
                     <InputPicker
                         size="lg"
-                        data={project}
+                        data={projects}
                         onChange={(e) => getJobs(e)}
                         placeholder="Name of Startup"
                         className="w-100"
@@ -322,9 +388,9 @@ Home.layout = true;
 
 export default Home;
 
-export const getServerSideProps = async (context) => {
+// export const getServerSideProps = async (context) => {
     // const auth = getAuth(context);
-    const id = getId(context);
+    // const id = getId(context);
     // if (auth !== "1") {
     //     return {
     //         redirect: {
@@ -333,32 +399,30 @@ export const getServerSideProps = async (context) => {
     //         },
     //     };
     // }
-    const project_types = await getFetchData("project/types", getToken(context));
-    const experience_levels = await getFetchData("experience-levels", getToken(context));
-    const skills = await getFetchData("skills", getToken(context));
-    const locations = await getFetchData("locations", getToken(context));
-    const projects = await getFetchData("users/projects", getToken(context));
-
-    const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
-    return {
-        props: {
-            project_types: project_types.data.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            experience_levels: experience_levels.data.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            skills: skills.data.items.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            locations: locations.data.items.map(item => {
-                return { label: item.name, value: item.id }
-            }),
-            projects: projects,
-            items: item.data.items,
-            id: id ? id : null,
-            token: getToken(context),
-            cookie: context.req.headers.cookie || ''
-        }
-    }
-}
+//     const project_types = await getFetchData("project/types", getToken(context));
+//     const experience_levels = await getFetchData("experience-levels", getToken(context));
+//     const skills = await getFetchData("skills", getToken(context));
+//     const locations = await getFetchData("locations", getToken(context));
+//     const projects = await getFetchData("users/projects", getToken(context));
+//     const item = await getFetchData('teammers?include=detail,skills,positions,experiences,detail.location', getToken(context))
+//     console.log('projects', projects);
+//     return {
+//         props: {
+//             project_types: project_types.data.map(item => {
+//                 return {label: item.name, value: item.id}
+//             }),
+//             experience_levels: experience_levels.data.map(item => {
+//                 return {label: item.name, value: item.id}
+//             }),
+//             skills: skills.data.items.map(item => {
+//                 return {label: item.name, value: item.id}
+//             }),
+//             locations: locations.data.items.map(item => {
+//                 return {label: item.name, value: item.id}
+//             }),
+//             projects: projects,
+//             items: item.data.items,
+//             id: id ? id : null
+//         }
+//     }
+// }

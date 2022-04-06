@@ -20,6 +20,7 @@ const CardStartUp = (props) => {
         ownerFullname,
         ownerAvatarUrl,
         onClick,
+        logo
     } = props;
 
     // React.useEffect(() => {
@@ -40,18 +41,16 @@ const CardStartUp = (props) => {
 
         axios.post(config.BASE_URL + 'users/save-item', {id: jobId, type: 'job'})
             .then(res => {
-            console.log('res', res);
-        }).catch(error => console.log('errorres', error.response));
+                console.log('res', res);
+            }).catch(error => console.log('errorres', error.response));
     };
 
     return (
         // <Link href={`/job/${jobId}`} passHref>
         //     <a>
-        <div
-            className="job-card"
-        >
+        <div className="job-card">
             <div onClick={routing} className="logo-wrapper">
-                <h2>LOGO</h2>
+                <h2>Logo</h2>
             </div>
             <div className="_content">
                 <div className="_top">
@@ -96,47 +95,6 @@ const CardStartUp = (props) => {
                     </div>
                 </div>
             </div>
-            {/* <div className="position">
-                        <div className="person">
-                            <div>
-                                <Avatar
-                                    circle
-                                    src={
-                                        ownerAvatarUrl ? ownerAvatarUrl
-                                            :
-                                            "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
-                                    }
-                                />
-                                <p className="name">{ownerFullname}</p>
-                            </div>
-                            <div
-                                className='save-job-icon'
-                                onClick={attackSaveProject}
-                            >
-                                <Image
-                                    src={'/icons/save.svg'}
-                                    alt='img'
-                                    width={12}
-                                    height={24}
-                                    layout='fixed'
-                                />
-                            </div>
-                        </div>
-                        <div className="job-info">
-                            <p>Job Position</p>
-                            <p>{position}</p>
-                        </div>
-                        <div className="job-info">
-                            <p>Name of the startup</p>
-                            <p>
-                                <Link href={`/startup/${startupId}`} passHref>
-                                    <a className="navbar-brand">
-                                        {title}
-                                    </a>
-                                </Link>
-                            </p>
-                        </div>
-                    </div> */}
             <AuthModal isOpen={isOpenLoginModal} setIsOpen={setIsOpenLoginModal}/>
         </div>
         //     </a>

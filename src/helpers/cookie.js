@@ -7,6 +7,7 @@ export function setCookie(name, value, days = 6) {
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
 };
+
 export function getCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
@@ -17,6 +18,7 @@ export function getCookie(name) {
     }
     return null;
 };
+
 export function removeCookie(name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
@@ -34,4 +36,11 @@ export function setAuthCookies(token, user, type, id) {
     setCookie('user', user, 6);
     setCookie('teammers-type', type ? type.toString() : '', 6);
     setCookie('teammers-id', id, 6);
-};
+}
+
+export const clearCookie = () => {
+    removeCookie('teammers-access-token');
+    removeCookie('user');
+    removeCookie('type');
+    removeCookie('teammers-id');
+}

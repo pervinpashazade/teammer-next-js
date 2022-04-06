@@ -3,7 +3,7 @@ import { AiOutlineRight } from 'react-icons/ai';
 import { HiArrowLeft } from 'react-icons/hi';
 import { IconButton } from 'rsuite';
 
-function BreadCrumb() {
+function BreadCrumb({link}) {
     return (
         <div className="breadcrumb-wrapper">
             <div className="goback-btn">

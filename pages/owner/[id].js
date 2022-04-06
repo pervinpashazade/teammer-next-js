@@ -7,8 +7,8 @@ import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerW
 import CardStartUp from '../../src/components/Cards/CardStartUp';
 import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
 import config from '../../src/configuration';
-import { getFetchData } from '../../lib/fetchData';
-import { getToken } from "../../lib/session";
+import {getFetchData} from '../../lib/fetchData';
+import {getToken} from "../../lib/session";
 import ProPanel from '../../src/components/ProPanel';
 import axios from "axios";
 import {useAuth} from "../../Auth";
@@ -16,43 +16,48 @@ import {useRouter} from "next/router";
 
 const ProfileOwner = (props) => {
     const {currentUser} = useAuth();
-    const {
-        joinedProjectList,
-    } = props;
     const router = useRouter();
     const teammerId = Number(router.query.id)
-    const [open , setOpen] = useState(false)
-    // const [teammerId , setTeammerId] = useState('')
+    const [open, setOpen] = useState(false);
     const [teammerName, setTeammerName] = useState('');
     const [startupName, setStartUpName] = useState('');
     const [jobName, setJobName] = useState(0);
     const [jobs, setJobs] = useState([]);
-    const [project , setProject] = useState('');
-    useEffect(()=>{
-        axios.get(config.BASE_URL+"users/projects")
-            .then(res=> setProject(res.data.data.items.map(item => {
-                return {
-                    label: item.title,
-                    value: item.id
-                }
-            })))
-    },[])
+    const [project, setProject] = useState('');
+    const [userData, setUserData] = useState({})
+    useEffect(() => {
+        console.log('router' , router)
+        axios.get(config.BASE_URL + "users/projects")
+            .then(res => setProject(res.data.data.items));
+        axios.get(config.BASE_URL + `users/${props.id}
+        /show?include=detail.experience_level,experiences.location,skills,positions,detail.location`)
+            .then(res => {
+                setUserData(res.data.data);
+                setPortfolioUrlList({
+                    cvFileName: res.data.data?.detail?.cv,
+                    cv: '',
+                    portfolio: res.data.data?.detail?.portfolio
+                })
+            });
+
+
+    }, [])
     React.useEffect(() => {
         // console.clear();
     }, [props]);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [portfolioUrlList, setPortfolioUrlList] = useState({
-        cvFileName: props.userData?.detail.cv,
+        cvFileName: '',
         cv: '',
-        portfolio: props.userData?.detail?.portfolio
+        portfolio: ''
     })
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
     const getJobs = async (e) => {
         if (e) {
-            axios.get(config.BASE_URL+"users/projects?include=jobs.position")
+            axios.get(config.BASE_URL + "users/projects?include=jobs.position")
                 .then(res => {
                     setJobs(res.data.data.items.find(item => item.id === e).jobs.map(item => {
                         return {
@@ -79,7 +84,7 @@ const ProfileOwner = (props) => {
             setStartUpName('')
         }
     };
-    const addToTeam = (data , id) => {
+    const addToTeam = (data, id) => {
         // setTeammerId(id)
         setTeammerName(data);
         setOpen(!open);
@@ -100,37 +105,37 @@ const ProfileOwner = (props) => {
                 setStartUpName('');
             })
                 .catch(error => {
-                toaster.push(
-                    <Notification type={"error"} header="Warning!" closable>
-                        {error.response?.data?.message}
-                    </Notification>, 'topEnd'
-                );
-            })
+                    toaster.push(
+                        <Notification type={"error"} header="Warning!" closable>
+                            {error.response?.data?.message}
+                        </Notification>, 'topEnd'
+                    );
+                })
         }
     }
     return (
         <div className='profile-teammer'>
-            <BreadCrumb />
-            <Banner />
+            <BreadCrumb/>
+            <Banner/>
             <div className="profile-wrapper">
                 <div className="left-side">
                     <CardTeammerProfile
                         props={
                             {
                                 isProfile: false,
-                                full_name: props.userData?.full_name,
-                                photo: props.userData.detail?.photo,
-                                location: props.userData.detail?.location,
-                                skills: props.userData?.skills,
-                                positions: props.userData.positions,
-                                year_of_experience: props.userData.detail?.years_of_experience,
-                                about: props.userData?.detail?.about,
-                                addToTeam : addToTeam
+                                full_name: userData?.full_name,
+                                photo: userData.detail?.photo,
+                                location: userData.detail?.location,
+                                skills: userData?.skills,
+                                positions: userData.positions,
+                                year_of_experience: userData.detail?.years_of_experience,
+                                about: userData?.detail?.about,
+                                addToTeam: addToTeam
                             }
                         }
                     />
                     <CardTeammerWorkExperience
-                        workExperienceList={props.userData?.experiences}
+                        workExperienceList={userData?.experiences}
                         editMode={false}
                         createModal={{
                             isOpen: isOpenCreateModal,
@@ -152,7 +157,7 @@ const ProfileOwner = (props) => {
                     <ProPanel
                         title="Projects joined"
                         noDataMessage="User has not yet joined any project"
-                        dataList={joinedProjectList?.length ? joinedProjectList : []}
+                        dataList={project}
                     />
                 </div>
                 <Modal open={open} onClose={() => {
@@ -201,16 +206,10 @@ ProfileOwner.layout = true;
 
 export default ProfileOwner;
 
-export const getServerSideProps = async (context) => {
-
-    const fetchUserInfo = await getFetchData(`users/${context.params.id}/show?include=detail.experience_level,experiences.location,skills,positions,detail.location`, getToken(context));
-
-    // const joinedProjectList = await getFetchData("users/projects?include=jobs", getToken(context));
-
+export async function getServerSideProps(context){
     return {
-        props: {
-            userData: fetchUserInfo?.data,
-            // joinedProjectList: joinedProjectList,
+        props : {
+            id : context.params.id
         }
     }
 }
