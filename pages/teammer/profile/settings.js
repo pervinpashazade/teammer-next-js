@@ -6,18 +6,35 @@ import { MdModeEdit, MdOutlineWorkOutline } from 'react-icons/md';
 import { RiSettingsLine } from 'react-icons/ri';
 import { FaRegTimesCircle } from 'react-icons/fa';
 import { Avatar, Button, Form } from 'rsuite';
-import { Cookie, withCookie } from 'next-cookie';
 import config from '../../../src/configuration';
-import { getFetchData } from '../../../lib/fetchData';
-import { getToken } from '../../../lib/session';
 import axios from 'axios';
 
 function Setting(props) {
 
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
+    const [isValidUsername, setIsValidUsername] = useState({
+        status: null,
+        message: ''
+    });
+
     const [teammer, setTeammer] = useState({
         email: '',
-        username: '',
-        avatarUrl: '',
+        username: null,
+        avatarUrl: null,
+        // avatarFile: null,
+        // cvFile: null,
+        // cvUrl: null,
+        // full_name: null,
+        // location: null,
+        // positions: [],
+        // experience: '',
+        // experienceLevel: null,
+        // skillList: [],
+        // socialDatas: {},
+        // portfolioList: [],
+        // about: '',
+        // workExperienceList: [],
     });
 
     React.useEffect(() => {
@@ -28,10 +45,68 @@ function Setting(props) {
                     email: res.data.data.email,
                     username: res.data.data.username,
                     avatarUrl: res.data.data.detail.photo,
+                    // cvUrl: res.data.data.detail.cv,
+                    // full_name: res.data.data.full_name,
+                    // location: res.data.data.detail.location,
+                    // positions: res.data.data.positions,
+                    // experienceLevel: res.data.data.detail.experience_level,
+                    // skillList: res.data.data.skills,
+                    // socialDatas: res.data.data.detail.social_accounts,
+                    // portfolioList: res.data.data.detail.portfolio,
+                    // about: res.data.data.detail.about,
+                    // experience: res.data.data.detail.years_of_experience,
+                    // workExperienceList: res.data.data.experiences,
                 });
             };
         });
     }, []);
+
+    const saveChanges = () => {
+
+        console.log('teammer', teammer);
+
+        if (!isValidUsername.status) return;
+
+        let body = {
+            username: teammer.username
+        };
+
+        axios.put(config.BASE_URL + 'users', body).then(res => {
+            if (res.data.success) {
+                setShowSuccessAlert(true);
+            };
+        });
+    };
+
+    const checkUsernameAsync = async (username) => {
+        if (!username?.trim()) {
+            setIsValidUsername({
+                status: false,
+                message: 'Username is required'
+            });
+            return;
+        };
+
+        if (/^[A-z\d_]{5,20}$/i.test(username)) {
+            setIsValidUsername({
+                status: true,
+                message: ''
+            });
+            axios.get(config.BASE_URL + `register/check?type=username&value=${username}`).then(res => {
+                if (!res.data.success) {
+                    setIsValidUsername({
+                        status: false,
+                        message: res.data.message
+                    });
+                };
+            });
+        } else {
+            setIsValidUsername({
+                status: false,
+                message: 'Username is not valid'
+            });
+        };
+    };
 
     return (
         <div className='teammer-profile-edit'>
@@ -94,10 +169,19 @@ function Setting(props) {
                             color="blue"
                             appearance="primary"
                             className='save-btn'
+                            onClick={saveChanges}
                         >
                             Save Changes
                         </Button>
                     </div>
+                    {
+                        showSuccessAlert &&
+                        <div className="w-100">
+                            <div className="alert alert-success">
+                                User information successfully edited.
+                            </div>
+                        </div>
+                    }
                     <div className="user-info-wrapper mb-3">
                         <div className="user-info-form-wrapper">
                             <Form className="row">
@@ -107,9 +191,24 @@ function Setting(props) {
                                         <Form.ControlLabel>Username</Form.ControlLabel>
                                         <Form.Control
                                             name="name"
-                                            placeholder="Enter your username"
                                             value={teammer.username}
+                                            placeholder="Enter your username"
+                                            onChange={value => {
+                                                setTeammer(prevState => {
+                                                    return {
+                                                        ...prevState,
+                                                        username: value
+                                                    };
+                                                });
+                                                checkUsernameAsync(value);
+                                            }}
                                         />
+                                        <div className="validation-errors">
+                                            {
+                                                !isValidUsername.status &&
+                                                <span>{isValidUsername.message}</span>
+                                            }
+                                        </div>
                                     </Form.Group>
                                 </div>
                                 <div className="col-md-12 mb-0">
