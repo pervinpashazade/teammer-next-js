@@ -20,6 +20,7 @@ import {logoutService} from '../../services/Auth/logoutService';
 import {useAuth} from '../../../Auth';
 import axios from "axios";
 import config from "../../configuration";
+import {getCookie} from "../../helpers/cookie";
 
 const CustomComponentUserProfile = ({placement, loading, children, user, context}) => {
     console.log(user);
@@ -325,14 +326,18 @@ const Header = (props) => {
     };
 
     useEffect(() => {
-        if (currentUser) axios.get(config.BASE_URL + "users/notifications?per_page=4")
-            .then(res => {
-                if (res.data.success) {
-                    if (res.data.data?.items) setNotifications(res.data.data.items)
-                }
-            })
+        const token = getCookie('teammers-access-token');
+        const type = getCookie('teammers-type');
+       if(token && type){
+           axios.get(config.BASE_URL + "users/notifications?per_page=4")
+               .then(res => {
+                   if (res.data.success) {
+                       if (res.data.data?.items) setNotifications(res.data.data.items)
+                   }
+               })
+       }
     }, []);
-
+    console.log('notifications', notifications)
     return (
         <div className="header">
             <div className="row">

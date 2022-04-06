@@ -21,10 +21,10 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
 import config, { months, URL_REGEX } from '../../src/configuration';
 // import { useAuth } from '../../Auth';
-import { getCookie, setCookie } from '../../src/helpers/cookie';
+import { getCookie, setCookie ,removeCookie } from '../../src/helpers/cookie';
 import { buildFormData } from '../../src/helpers/buildFormData';
 import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
-
+import {useRouter} from "next/router";
 const steps2 = (props) => {
 
     // const authContext = useAuth();
@@ -40,7 +40,7 @@ const steps2 = (props) => {
         experienceLevelList: [],
         years: [],
     });
-
+    const router = useRouter();
     const editorRef = useRef();
     const [isEditorLoaded, setIsEditorLoaded] = useState(false);
     const { CKEditor, ClassicEditor } = editorRef.current || {};
@@ -69,7 +69,6 @@ const steps2 = (props) => {
             return dialogText;
         };
     }, []);
-
     const getPublicDatas = async () => {
         let positionList = [];
         let roleList = [];
@@ -143,9 +142,9 @@ const steps2 = (props) => {
         });
     };
 
-    const [currentStep, setCurrentStep] = useState(3);
+    const [currentStep, setCurrentStep] = useState(0);
 
-    const [selectedUserType, setSelectedUserType] = useState("2");
+    const [selectedUserType, setSelectedUserType] = useState();
 
     const [isValidOwnerUsername, setIsValidOwnerUsername] = useState({
         status: null,
@@ -1025,8 +1024,6 @@ const steps2 = (props) => {
 
                 //     return;
                 // };
-
-                alert('not valid form');
             };
         };
         // user stype => teammer
@@ -1302,14 +1299,11 @@ const steps2 = (props) => {
         buildFormData(formData, body);
 
         axios.post(config.BASE_URL + "auth/register-complete", formData).then(res => {
-            console.log('steps RESPONSE', res);
-
             if (res.data.success) {
                 removeCookie('teammers-type');
                 setCookie('teammers-type', 1);
-                router.push('/owner/add-to-team');
-            };
-
+                // router.push('/owner/add-to-team');
+            }
         }).catch(error => {
             if (error.response?.status === 422) {
                 let errors = renderErrorMessages(error.response.data.error.validation);

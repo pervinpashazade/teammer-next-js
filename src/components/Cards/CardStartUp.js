@@ -38,7 +38,7 @@ const CardStartUp = (props) => {
     const attackSaveProject = () => {
         if (!jobId) return;
 
-        axios.post(config.BASE_URL + 'users/save-project', {id: jobId, type: 'project'})
+        axios.post(config.BASE_URL + 'users/save-item', {id: jobId, type: 'job'})
             .then(res => {
             console.log('res', res);
         }).catch(error => console.log('errorres', error.response));
