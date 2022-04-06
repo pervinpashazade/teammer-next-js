@@ -21,10 +21,10 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
 import config, { months, URL_REGEX } from '../../src/configuration';
 // import { useAuth } from '../../Auth';
-import { getCookie, setCookie ,removeCookie } from '../../src/helpers/cookie';
+import { getCookie, setCookie, removeCookie } from '../../src/helpers/cookie';
 import { buildFormData } from '../../src/helpers/buildFormData';
 import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 const steps2 = (props) => {
 
     // const authContext = useAuth();
@@ -142,9 +142,9 @@ const steps2 = (props) => {
         });
     };
 
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(3);
 
-    const [selectedUserType, setSelectedUserType] = useState();
+    const [selectedUserType, setSelectedUserType] = useState("1");
 
     const [isValidOwnerUsername, setIsValidOwnerUsername] = useState({
         status: null,
@@ -158,7 +158,7 @@ const steps2 = (props) => {
     const [owner, setOwner] = useState({
         avatarFile: null,
         avatarUrl: null,
-        full_name: null,
+        full_name: getCookie('user'),
         username: null,
         role: null,
     });
@@ -251,7 +251,7 @@ const steps2 = (props) => {
         cvFile: [],
         cvUrl: null,
         username: null,
-        full_name: null,
+        full_name: getCookie('user'),
         location: null,
         positions: [],
         experienceLevel: null,
@@ -266,7 +266,7 @@ const steps2 = (props) => {
         setOwner({
             avatarFile: null,
             avatarUrl: null,
-            full_name: null,
+            full_name: getCookie('user'),
             username: null,
             role: null,
         });
@@ -281,7 +281,7 @@ const steps2 = (props) => {
             cvFile: [],
             cvUrl: null,
             username: null,
-            full_name: null,
+            full_name: getCookie('user'),
             location: null,
             positions: [],
             experienceLevel: null,
@@ -440,8 +440,6 @@ const steps2 = (props) => {
 
         const selectedObj = workExperienceList[index];
 
-        console.log('selected obj', selectedObj);
-
         setSelectedWorkExp({
             position: {
                 id: selectedObj.position?.id || null,
@@ -487,34 +485,60 @@ const steps2 = (props) => {
 
         let validationErrors = [];
 
-        for (const [key, value] of Object.entries(selectedJob)) {
-            if (typeof value === 'string') {
-                if (!value || !value.trim()) {
-                    validationErrors.push({
-                        key: key,
-                        message: 'This field is required'
-                    });
-                };
-            };
-            if (typeof value === 'object') {
-
-                if (key === "start_year" || key === "end_year") {
-                    if (!value.value) {
-                        validationErrors.push({
-                            key: key,
-                            message: `${value.key} field is required`
-                        });
-                    };
-                } else {
-                    if (!value.id) {
-                        validationErrors.push({
-                            key: key,
-                            message: `${value.key} field is required`
-                        });
-                    };
-                };
+        if (!selectedJob.position.id) {
+            validationErrors.push({
+                key: 'position',
+                message: 'Position field is required'
+            });
+        };
+        if (!selectedJob.location.id) {
+            validationErrors.push({
+                key: 'location',
+                message: 'Location field is required'
+            });
+        };
+        if (!selectedJob.type.id) {
+            validationErrors.push({
+                key: 'type',
+                message: 'Job type field is required'
+            });
+        };
+        if (!selectedJob.payment.id) {
+            validationErrors.push({
+                key: 'payment',
+                message: 'Payment field is required'
+            });
+        };
+        if (!selectedJob.salary) {
+            if (selectedJob.payment && selectedJob.payment.name === "paid") {
+                validationErrors.push({
+                    key: 'salary',
+                    message: 'Salary field is required'
+                });
             };
         };
+        if (!selectedJob.period.id) {
+            if (selectedJob.payment && selectedJob.payment.name === "paid") {
+                validationErrors.push({
+                    key: 'period',
+                    message: 'Salary period field is required'
+                });
+            };
+        };
+        if (!selectedJob.experience) {
+            validationErrors.push({
+                key: 'experience',
+                message: 'Experience field is required'
+            });
+        };
+        if (!selectedJob.description) {
+            validationErrors.push({
+                key: 'description',
+                message: 'Description field is required'
+            });
+        };
+
+        console.log('VAL TEST', validationErrors);
 
         setSelectedJobErrors(validationErrors);
 
@@ -526,8 +550,6 @@ const steps2 = (props) => {
     };
 
     const addMorePosition = () => {
-
-        console.log('addMorePosition selcetedJob', selectedJob);
 
         let isValidForm = validateAddPositionForm();
         // if not valid form
@@ -555,8 +577,6 @@ const steps2 = (props) => {
     const editSelectedJob = index => {
 
         const selectedObj = jobList[index];
-
-        console.log('selected obj', selectedObj);
 
         setIsEditSelectedJob({
             status: true,
@@ -600,9 +620,6 @@ const steps2 = (props) => {
     };
 
     const renderFirstStep = () => {
-
-        console.log('teammer', teammer);
-        console.log('owner', owner);
 
         return (
             <div>
@@ -1062,8 +1079,6 @@ const steps2 = (props) => {
                     };
                 });
 
-                console.log('TEAMMER STEP ! LOG', step_1_errors.length);
-
                 if (step_1_errors.length || !isValidTeammerUsername.status) {
                     return false;
                 } else {
@@ -1290,10 +1305,7 @@ const steps2 = (props) => {
             }
         };
 
-        console.log('body ', body);
-
-        // console.log('authContext', authContext);
-        // console.log('getToken', getCookie('teammers-access-token'));
+        // console.log('body ', body);
 
         const formData = new FormData();
         buildFormData(formData, body);
@@ -1325,8 +1337,6 @@ const steps2 = (props) => {
                     step_3: []
                 };
             });
-
-            console.log('state exp', selectedWorkExp);
 
             workExperiences = [
                 ...workExperiences,
@@ -1432,14 +1442,12 @@ const steps2 = (props) => {
             experiences: workExperiences,
         };
 
-        console.log('teammer body', body);
+        // console.log('teammer body', body);
 
         const formData = new FormData();
         buildFormData(formData, body);
 
         axios.post(config.BASE_URL + "auth/register-complete", formData).then(res => {
-            console.log('steps RESPONSE', res);
-
             if (res.data.success) {
                 removeCookie('teammers-type');
                 setCookie('teammers-type', 2);
@@ -2604,7 +2612,7 @@ const steps2 = (props) => {
                                                                                         }
                                                                                     </div>
                                                                                     <Uploader className="upload"
-                                                                                        action=""
+                                                                                        action="/test"
                                                                                         multiple={false}
                                                                                         defaultFileList={
                                                                                             teammer.cvFile?.length ? [teammer.cvFile[0]]
@@ -2783,9 +2791,20 @@ const steps2 = (props) => {
                                                                                 labelKey='name'
                                                                                 onSelect={(id, obj) => {
                                                                                     setSelectedJob(prevState => {
+                                                                                        let isUnpaid = false;
+                                                                                        if (obj.name === "unpaid") {
+                                                                                            isUnpaid = true;
+                                                                                        };
+
                                                                                         return {
                                                                                             ...prevState,
-                                                                                            payment: obj
+                                                                                            payment: obj,
+                                                                                            salary: !isUnpaid ? prevState.salary : '',
+                                                                                            period: !isUnpaid ? prevState.period : {
+                                                                                                id: null,
+                                                                                                name: null,
+                                                                                                key: "Salary period"
+                                                                                            }
                                                                                         };
                                                                                     });
                                                                                 }}
@@ -2805,6 +2824,7 @@ const steps2 = (props) => {
                                                                                     min={0}
                                                                                     placeholder='Salary'
                                                                                     value={selectedJob.salary || ''}
+                                                                                    disabled={selectedJob.payment.name !== "paid"}
                                                                                     onChange={(e) => {
                                                                                         setSelectedJob(prevState => {
                                                                                             return {
@@ -2840,6 +2860,7 @@ const steps2 = (props) => {
                                                                                     valueKey="id"
                                                                                     labelKey='name'
                                                                                     value={selectedJob.period?.id}
+                                                                                    disabled={selectedJob.payment.name !== "paid"}
                                                                                     onSelect={(id, obj) => {
                                                                                         setSelectedJob(prevState => {
                                                                                             return {
