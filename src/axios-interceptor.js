@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {clearCookie, getCookie} from "./helpers/cookie";
+import { logoutService } from './services/Auth/logoutService';
 axios.interceptors.request.use(function (config) {
     // Do something before request is sent
     let accessToken = getCookie('teammers-access-token');
@@ -14,7 +15,7 @@ axios.interceptors.response.use(function (response) {
     const status = error.response ? error.response.status : 401;
     switch (status) {
         case 401:
-            // clearCookie();
+            logoutService();
             break;
         case 422:
             //do something
@@ -25,7 +26,5 @@ axios.interceptors.response.use(function (response) {
             break;
         default:
             return Promise.reject(error);
-
-
     }
 });

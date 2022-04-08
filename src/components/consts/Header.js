@@ -312,7 +312,9 @@ const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
 
 const Header = (props) => {
 
-    const {currentUser, authContext} = useAuth();
+    // const {currentUser, authContext} = useAuth();  // // // ????
+    const  authContext = useAuth();
+    
     const {
         user,
         cookie,

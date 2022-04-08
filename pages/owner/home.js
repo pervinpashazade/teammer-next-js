@@ -158,7 +158,7 @@ const Home = (props) => {
     const getProjects = ()=>{
         axios.get(config.BASE_URL + "users/projects")
             .then(res => {
-                setProjects(res.data.data.items.map(item => {
+                setProjects(res?.data.data.items.map(item => {
                     return {
                         label: item.title,
                         value: item.id

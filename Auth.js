@@ -1,21 +1,22 @@
-import React, {useState, useEffect, useContext, createContext} from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import "./firebase";
-import {useRouter} from "next/router";
-import {getAuth} from 'firebase/auth';
-import {getApps} from "firebase/app";
-import {getCookie, setAuthCookies} from "./src/helpers/cookie";
+import { useRouter } from "next/router";
+import { getAuth } from 'firebase/auth';
+import { getApps } from "firebase/app";
+import { getCookie, setAuthCookies } from "./src/helpers/cookie";
 import axios from "axios";
 import config from "./src/configuration";
-import {getFetchData} from "./lib/fetchData";
+import { getFetchData } from "./lib/fetchData";
 
 const AuthContext = createContext({});
 
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({ children }) => {
 
     const router = useRouter();
     const jwtgetCookie = getCookie('teammers-access-token');
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
     useEffect(async () => {
 
         // const jwtgetCookie = getCookie('teammers-access-token');
@@ -28,12 +29,10 @@ export const AuthProvider = ({children}) => {
 
             if (fetchUserInfo.success) {
                 setCurrentUser(fetchUserInfo.data);
-            }
-            ;
+            };
 
             return;
-        }
-        ;
+        };
 
         if (!getApps().length) return;
 
@@ -44,8 +43,7 @@ export const AuthProvider = ({children}) => {
                 setCurrentUser(null);
                 setLoading(false);
                 return;
-            }
-            ;
+            };
 
             axios.post(config.BASE_URL + 'auth/login-via-firebase', {
                 accessToken: user.accessToken
@@ -65,6 +63,7 @@ export const AuthProvider = ({children}) => {
 
                     setCurrentUser(res.data.data.user);
 
+                    console.log('google login res', res.data);
 
                     if (res.data.data.user.is_complete_registration) {
                         if (res.data.data.user.type === 1) {
@@ -74,11 +73,8 @@ export const AuthProvider = ({children}) => {
                         }
                     } else {
                         router.push("/signup/steps");
-                    }
-                    ;
-
-                }
-                ;
+                    };
+                };
             }).catch(error => {
                 console.log('login-via-firebase error', error);
             });

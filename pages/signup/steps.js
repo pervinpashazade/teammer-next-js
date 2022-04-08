@@ -69,6 +69,7 @@ const steps2 = (props) => {
             return dialogText;
         };
     }, []);
+
     const getPublicDatas = async () => {
         let positionList = [];
         let roleList = [];
@@ -142,7 +143,7 @@ const steps2 = (props) => {
         });
     };
 
-    const [currentStep, setCurrentStep] = useState(3);
+    const [currentStep, setCurrentStep] = useState(2);
 
     const [selectedUserType, setSelectedUserType] = useState("1");
 
@@ -244,11 +245,12 @@ const steps2 = (props) => {
     const ownerImgRef = useRef();
     const startupLogoRef = useRef();
     const teammerImgRef = useRef();
+    const teammerCvRef = useRef();
 
     const [teammer, setTeammer] = useState({
         avatarFile: null,
         avatarUrl: null,
-        cvFile: [],
+        cvFile: null,
         cvUrl: null,
         username: null,
         full_name: getCookie('user'),
@@ -278,7 +280,7 @@ const steps2 = (props) => {
         setTeammer({
             avatarFile: null,
             avatarUrl: null,
-            cvFile: [],
+            cvFile: null,
             cvUrl: null,
             username: null,
             full_name: getCookie('user'),
@@ -663,37 +665,48 @@ const steps2 = (props) => {
     const uploadFile = (event, type) => {
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
-            if (i.type === "image/jpeg" || i.type === "image/png") {
-                if (type === 'owner-avatar') {
-                    setOwner(prevState => {
-                        return {
-                            ...prevState,
-                            avatarFile: i,
-                            avatarUrl: URL.createObjectURL(i)
-                        };
-                    });
-                };
-                if (type === 'startup-logo') {
-                    setStartup(prevState => {
-                        return {
-                            ...prevState,
-                            avatarFile: i,
-                            avatarUrl: URL.createObjectURL(i)
-                        };
-                    });
-                };
-                if (type === 'teammer-avatar') {
-                    setTeammer(prevState => {
-                        return {
-                            ...prevState,
-                            avatarFile: i,
-                            avatarUrl: URL.createObjectURL(i)
-                        };
-                    });
+            if (type !== "cv") {
+                if (i.type === "image/jpeg" || i.type === "image/png") {
+                    if (type === 'owner-avatar') {
+                        setOwner(prevState => {
+                            return {
+                                ...prevState,
+                                avatarFile: i,
+                                avatarUrl: URL.createObjectURL(i)
+                            };
+                        });
+                    };
+                    if (type === 'startup-logo') {
+                        setStartup(prevState => {
+                            return {
+                                ...prevState,
+                                avatarFile: i,
+                                avatarUrl: URL.createObjectURL(i)
+                            };
+                        });
+                    };
+                    if (type === 'teammer-avatar') {
+                        setTeammer(prevState => {
+                            return {
+                                ...prevState,
+                                avatarFile: i,
+                                avatarUrl: URL.createObjectURL(i)
+                            };
+                        });
+                    };
+                } else {
+                    alert('Please select only .jpg and .png images');
                 };
             } else {
-                alert('Please select only .jpg and .png images');
-            };
+                setTeammer(prevState => {
+                    console.log('i', i);
+                    return {
+                        ...prevState,
+                        cvFile: i,
+                        cvUrl: URL.createObjectURL(i)
+                    };
+                });
+            }
         };
     };
 
@@ -1111,7 +1124,7 @@ const steps2 = (props) => {
                         message: 'Skills field is required'
                     });
                 };
-                if (!teammer.cvFile[0]) {
+                if (!teammer.cvFile) {
                     step_2_errors.push({
                         key: "cv",
                         message: "CV field is required"
@@ -1318,6 +1331,7 @@ const steps2 = (props) => {
             }
         }).catch(error => {
             if (error.response?.status === 422) {
+                // bura
                 let errors = renderErrorMessages(error.response.data.error.validation);
                 setOwnerResponseErrors(errors);
             }
@@ -1424,6 +1438,8 @@ const steps2 = (props) => {
             };
         };
 
+        console.log('teammer cv', teammer.cvFile);
+
         let body = {
             type: 2,
             photo: teammer.avatarFile,
@@ -1431,7 +1447,8 @@ const steps2 = (props) => {
             full_name: teammer.full_name,
             positions: teammer.positions.map(item => item.id),
             skills: teammer.skillList.map(item => item.id),
-            cv: teammer.cvFile[0]?.blobFile,
+            // cv: teammer.cvFile[0]?.blobFile,
+            cv: teammer.cvFile,
             detail: {
                 location_id: teammer.location?.id,
                 experience_level_id: teammer.experienceLevel?.id,
@@ -2611,7 +2628,7 @@ const steps2 = (props) => {
                                                                                             })
                                                                                         }
                                                                                     </div>
-                                                                                    <Uploader className="upload"
+                                                                                    {/* <Uploader className="upload"
                                                                                         action="/test"
                                                                                         multiple={false}
                                                                                         defaultFileList={
@@ -2630,16 +2647,52 @@ const steps2 = (props) => {
                                                                                         <button type="button">
                                                                                             Import from Linkedin
                                                                                         </button>
-                                                                                    </Uploader>
-                                                                                    <div className="validation-errors">
+                                                                                    </Uploader> */}
+                                                                                    <div className="upload-avatar-wrapper mb-4">
+                                                                                        <input
+                                                                                            type="file"
+                                                                                            className="d-none"
+                                                                                            ref={teammerCvRef}
+                                                                                            onChange={(e) => uploadFile(e, 'cv')}
+                                                                                        />
+                                                                                        <div>
+                                                                                            <Image
+                                                                                                width={24}
+                                                                                                height={24}
+                                                                                                alt='icon'
+                                                                                                src={'/icons/file.svg'}
+                                                                                            />
+                                                                                            <button
+                                                                                                type='button'
+                                                                                                onClick={() => {
+                                                                                                    teammerCvRef.current.click()
+                                                                                                }}
+                                                                                            >
+                                                                                                Import from Linkedin
+                                                                                            </button>
+                                                                                        </div>
                                                                                         {
-                                                                                            teammerStepValidations.step_2.map((item, index) => {
-                                                                                                if (item.key === "cv") {
-                                                                                                    return <span key={index}>{item.message}</span>
-                                                                                                };
-                                                                                            })
+                                                                                            teammer.cvFile &&
+                                                                                            <div className='mt-2'>
+                                                                                                <a
+                                                                                                    href={teammer.cvUrl ? teammer.cvUrl : ''}
+                                                                                                    target="_blank"
+                                                                                                >
+                                                                                                    {teammer.cvFile.name}
+                                                                                                </a>
+                                                                                            </div>
                                                                                         }
+                                                                                        <div className="validation-errors">
+                                                                                            {
+                                                                                                teammerStepValidations.step_2.map((item, index) => {
+                                                                                                    if (item.key === "cv") {
+                                                                                                        return <span key={index}>{item.message}</span>
+                                                                                                    };
+                                                                                                })
+                                                                                            }
+                                                                                        </div>
                                                                                     </div>
+
                                                                                     <div className="navigation-btn-wrapper">
                                                                                         <Button
                                                                                             type="button"
@@ -2964,7 +3017,9 @@ const steps2 = (props) => {
                                                                         </div>
                                                                         <div className="my-4">
                                                                             {
+                                                                                // console.log('ownerResponseErrors map log', ownerResponseErrors)
                                                                                 ownerResponseErrors.map((item, index) => {
+                                                                                    console.log('map item', item);
                                                                                     return <p
                                                                                         key={index}
                                                                                         className="text-danger font-weight-bold"
