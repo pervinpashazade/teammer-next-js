@@ -143,9 +143,9 @@ const steps2 = (props) => {
         });
     };
 
-    const [currentStep, setCurrentStep] = useState(2);
+    const [currentStep, setCurrentStep] = useState(0);
 
-    const [selectedUserType, setSelectedUserType] = useState("1");
+    const [selectedUserType, setSelectedUserType] = useState();
 
     const [isValidOwnerUsername, setIsValidOwnerUsername] = useState({
         status: null,

@@ -23,11 +23,7 @@ const ProfileTeammer = (props) => {
     }, [props]);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
-    const [portfolioUrlList, setPortfolioUrlList] = useState({
-        cvFileName: props.userData?.detail.cv,
-        cv: '',
-        portfolio: props.userData?.detail?.portfolio
-    })
+    const [portfolioUrlList, setPortfolioUrlList] = useState([])
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };

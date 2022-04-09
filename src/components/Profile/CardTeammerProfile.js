@@ -13,12 +13,10 @@ import { getCookie } from '../../helpers/cookie';
 
 const CardTeammerProfile = ({ props }) => {
     const context = useAuth();
-    console.log(context);
+    // console.log(context);
     const router = useRouter();
     const type = context?.currentUser?.type;
     const {
-        user,
-        viewProfileLink,
         id,
         full_name,
         photo,
@@ -41,18 +39,7 @@ const CardTeammerProfile = ({ props }) => {
         if (!id) return;
         if (type === 1) router.push(`/owner/${id}`);
         else if (type === 2) router.push(`/teammer/${id}`);
-    }
-
-    // React.useEffect(() => {
-    //     // console.log('user log', cookie.get('teammers-type'));
-    //     // setLogedUser({
-    //     //     id: cookie.get('teammers-id'),
-    //     //     teammer_type: cookie.get('teammers-type'),
-    //     // })
-
-    //     console.log('CARD TEAMMER LOG USER => ', user);
-
-    // }, [user]);
+    };
 
     return (
         <div className='profile-card-teammer'>

@@ -1,14 +1,14 @@
-import {Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag, toaster, Notification} from "rsuite";
-import React, {useEffect, useState} from "react";
+import { Button, Input, InputGroup, InputPicker, Dropdown, Pagination, Tag, toaster, Notification } from "rsuite";
+import React, { useEffect, useState } from "react";
 import CardTeammerProfile from "../../src/components/Profile/CardTeammerProfile";
 import axios from "axios";
 import config from "../../src/configuration";
-import getAuth, {getId, getToken} from "../../lib/session";
-import {getFetchData} from "../../lib/fetchData";
-import {Modal} from 'rsuite';
-import {useCookie, withCookie} from "next-cookie";
+import getAuth, { getId, getToken } from "../../lib/session";
+import { getFetchData } from "../../lib/fetchData";
+import { Modal } from 'rsuite';
+import { useCookie, withCookie } from "next-cookie";
 import SearchHome from "../../src/components/SearchHome";
-import {useAuth} from "../../Auth";
+import { useAuth } from "../../Auth";
 
 const Home = (props) => {
 
@@ -27,13 +27,13 @@ const Home = (props) => {
     //     }
     // });
 
-    const {currentUser} = useAuth();
+    const { currentUser } = useAuth();
 
     const [projectTypes, setProjectTypes] = useState([]);
     const [experienceLevels, setExperienceLevels] = useState([]);
     const [skills, setSkills] = useState([]);
-    const [locations , setLocations] = useState([]);
-    const [projects , setProjects] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [projects, setProjects] = useState([]);
 
 
     const [open, setOpen] = useState(false);
@@ -127,7 +127,7 @@ const Home = (props) => {
         axios.get(config.BASE_URL + "project/types")
             .then(res => {
                 setProjectTypes(res.data.data.map(item => {
-                    return {label: item.name, value: item.id}
+                    return { label: item.name, value: item.id }
                 }))
             })
     }
@@ -135,7 +135,7 @@ const Home = (props) => {
         axios.get(config.BASE_URL + "experience-levels")
             .then(res => {
                 setExperienceLevels(res.data.data.map(item => {
-                    return {label: item.name, value: item.id}
+                    return { label: item.name, value: item.id }
                 }))
             })
     }
@@ -143,7 +143,7 @@ const Home = (props) => {
         axios.get(config.BASE_URL + "skills")
             .then(res => {
                 setSkills(res.data.data.items.map(item => {
-                    return {label: item.name, value: item.id}
+                    return { label: item.name, value: item.id }
                 }))
             })
     }
@@ -151,11 +151,11 @@ const Home = (props) => {
         axios.get(config.BASE_URL + "locations")
             .then(res => {
                 setLocations(res.data.data.items.map(item => {
-                    return {label: item.name, value: item.id}
+                    return { label: item.name, value: item.id }
                 }))
             })
     }
-    const getProjects = ()=>{
+    const getProjects = () => {
         axios.get(config.BASE_URL + "users/projects")
             .then(res => {
                 setProjects(res?.data.data.items.map(item => {
@@ -166,7 +166,7 @@ const Home = (props) => {
                 }))
             })
     }
-    const getUserData = ()=>{
+    const getUserData = () => {
         axios.get(config.BASE_URL + "teammers?include=detail,skills,positions,experiences,detail.location")
             .then(res => {
                 setData(res.data.data.items)
@@ -197,7 +197,7 @@ const Home = (props) => {
     return (
         <div className="owner-home">
             <div className="owner-banner">
-                <h2>The best future <br/>
+                <h2>The best future <br />
                     Teammers are here 💫</h2>
             </div>
             <div className="home-search">
@@ -207,7 +207,7 @@ const Home = (props) => {
                     {/*    placeholder="Search"*/}
                     {/*    className="search-input"*/}
                     {/*/>*/}
-                    <SearchHome getData={setData}/>
+                    <SearchHome getData={setData} />
                 </div>
             </div>
             <div className="row">
@@ -224,11 +224,11 @@ const Home = (props) => {
                     {
                         filter.project_types.length > 0 && filter.project_types.map((item, index) => {
                             return <Tag key={index}
-                                        onClose={() => {
-                                            filterFuncation('project_types', item, 'remove')
-                                        }
-                                        } closable
-                                        className="close-tag my-2">{projectTypes.find(i => i.value === item)?.label}</Tag>
+                                onClose={() => {
+                                    filterFuncation('project_types', item, 'remove')
+                                }
+                                } closable
+                                className="close-tag my-2">{projectTypes.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                     <InputPicker
@@ -242,11 +242,11 @@ const Home = (props) => {
                     {
                         filter.experience_levels.length > 0 && filter.experience_levels.map((item, index) => {
                             return <Tag key={index}
-                                        onClose={() => {
-                                            filterFuncation('experience_levels', item, 'remove')
-                                        }
-                                        } closable
-                                        className="close-tag my-2">{experienceLevels.find(i => i.value === item)?.label}</Tag>
+                                onClose={() => {
+                                    filterFuncation('experience_levels', item, 'remove')
+                                }
+                                } closable
+                                className="close-tag my-2">{experienceLevels.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                     <InputPicker
@@ -260,11 +260,11 @@ const Home = (props) => {
                     {
                         filter.skills.length > 0 && filter.skills.map((item, index) => {
                             return <Tag key={index}
-                                        onClose={() => {
-                                            filterFuncation('skills', item, 'remove')
-                                        }
-                                        } closable
-                                        className="close-tag my-2">{skills.find(i => i.value === item)?.label}</Tag>
+                                onClose={() => {
+                                    filterFuncation('skills', item, 'remove')
+                                }
+                                } closable
+                                className="close-tag my-2">{skills.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                     <InputPicker
@@ -278,11 +278,11 @@ const Home = (props) => {
                     {
                         filter.locations.length > 0 && filter.locations.map((item, index) => {
                             return <Tag key={index}
-                                        onClose={() => {
-                                            filterFuncation('locations', item, 'remove')
-                                        }
-                                        } closable
-                                        className="close-tag my-2">{locations.find(i => i.value === item)?.label}</Tag>
+                                onClose={() => {
+                                    filterFuncation('locations', item, 'remove')
+                                }
+                                } closable
+                                className="close-tag my-2">{locations.find(i => i.value === item)?.label}</Tag>
                         })
                     }
                 </div>
@@ -304,19 +304,19 @@ const Home = (props) => {
                             data.map(item => {
                                 return <div className="col-md-12 col-lg-6 mb-5">
                                     <CardTeammerProfile
-                                        isProfile={false}
                                         props={
                                             {
-                                                viewProfileLink: true,
+
                                                 id: item.id,
+                                                isProfile: false,
                                                 full_name: item.full_name,
                                                 photo: item.detail.photo,
-                                                location: item.detail.location?.name + " , " + item.detail.location?.country_code,
+                                                location: item.detail.location,
                                                 skills: item.skills,
                                                 positions: item.positions,
                                                 year_of_experience: item.detail.years_of_experience,
                                                 bio_position: item.bio_position,
-                                                isProfile: false,
+                                                about: item.detail.about,
                                                 isTop: true,
                                                 addToTeam: addToTeam
                                             }

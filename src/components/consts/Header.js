@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from "next/link";
 import {
     Input,
@@ -8,87 +8,23 @@ import {
     Popover,
     Badge,
 } from 'rsuite';
-import {RiArrowRightLine} from 'react-icons/ri';
+import { RiArrowRightLine } from 'react-icons/ri';
 import Image from "next/image";
 import menu from '../../../public/img/menu.png'
 import cancel from '../../../public/img/cancel.png';
 import homeIcon from '../../../public/img/home-icon.png'
 import arrowRight from '../../../public/img/arrow-right 1.png'
-import {withCookie} from 'next-cookie';
-import {useRouter} from "next/router";
-import {logoutService} from '../../services/Auth/logoutService';
-import {useAuth} from '../../../Auth';
+import { withCookie } from 'next-cookie';
+import { useRouter } from "next/router";
+import { logoutService } from '../../services/Auth/logoutService';
+import { useAuth } from '../../../Auth';
 import axios from "axios";
 import config from "../../configuration";
-import {getCookie} from "../../helpers/cookie";
+import { getCookie } from "../../helpers/cookie";
 
-const CustomComponentUserProfile = ({placement, loading, children, user, context}) => {
-    console.log(user);
+const CustomComponentUserProfile = ({ placement, loading, children, user, context }) => {
+    // console.log(user);
     const router = useRouter();
-
-    const renderPopover = () => {
-
-        if (!user) {
-            return <Popover>
-                <p>
-                    <Link href="/login">
-                        <a className="text-dark">Login</a>
-                    </Link>
-                </p>
-            </Popover>
-        }
-        ;
-
-        if (!user.type) {
-            return (
-                <Popover>
-                    <p>
-                        <Link
-                            href="/signup/steps"
-                            passHref
-                        >
-                            <a className="text-dark">Complete registration</a>
-                        </Link>
-                    </p>
-                    <p
-                        style={{
-                            cursor: 'pointer'
-                        }}
-                        onClick={() => logoutService(context, router)}
-                    >
-                        <a className="text-dark">Log out</a>
-                    </p>
-                </Popover>
-            )
-        }
-        ;
-
-        return (
-            <Popover>
-                <p>
-                    <Link
-                        href={
-                            user.type === 1 ? '/owner/home'
-                                : user.type === 2 ?
-                                    '/teammer/home'
-                                    :
-                                    '/login'
-                        }
-                        passHref
-                    >
-                        <a className="text-dark">Home</a>
-                    </Link>
-                    :
-                    <Link
-                        href="/signup/steps"
-                        passHref
-                    >
-                        <a className="text-dark">Complete registration</a>
-                    </Link>
-                </p>
-            </Popover>
-        );
-    };
 
     return <Whisper
         trigger="click"
@@ -120,7 +56,7 @@ const CustomComponentUserProfile = ({placement, loading, children, user, context
                                 <p style={{
                                     cursor: 'pointer'
                                 }}
-                                   onClick={() => logoutService(context, router)}
+                                    onClick={() => logoutService(context, router)}
                                 >
                                     <a className="text-dark">Log out</a>
                                 </p>
@@ -133,7 +69,7 @@ const CustomComponentUserProfile = ({placement, loading, children, user, context
                         <p style={{
                             cursor: 'pointer'
                         }}
-                           onClick={() => logoutService(context, router)}
+                            onClick={() => logoutService(context, router)}
                         >
                             <a className="text-dark">Log out</a>
                         </p>
@@ -145,13 +81,16 @@ const CustomComponentUserProfile = ({placement, loading, children, user, context
         }
     >
         <a className="c-pointer">
-            <Avatar circle
-                    src="https://www.w3schools.com/howto/img_avatar.png"/>
+            <Avatar
+                circle
+                src={user?.detail?.photo ? user.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                alt={user?.username}
+            />
         </a>
     </Whisper>
 };
 
-const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) => {
+const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
     console.log("notification props", props);
     return (
         <Popover ref={ref} {...props}>
@@ -170,13 +109,13 @@ const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) =
                                 height={18}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine/></button>
+                            Show all <button><RiArrowRightLine /></button>
                         </a>
                     </Link>
                 </div>
                 {props.data ? props.data.map((item, index) => <div key={index} className="message-person my-md-2">
                     <div>
-                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png"/>
+                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" />
                     </div>
                     <div className="message-text">
                         <p>{item?.data.message}</p>
@@ -188,7 +127,7 @@ const DefaultPopoverNotification = React.forwardRef(({content, ...props}, ref) =
     );
 });
 
-const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
+const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -203,12 +142,12 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
                                 height={20}
                                 layout='fixed'
                             />
-                            Show all <button><RiArrowRightLine/></button>
+                            Show all <button><RiArrowRightLine /></button>
                         </a>
                     </Link>
                 </div>
                 <div className="message-person">
-                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png"/></div>
+                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" /></div>
                     <div className="message-text">
                         <p>Denis Delton</p>
                         <p>Yeah! I’m interested...</p>
@@ -224,7 +163,7 @@ const DefaultPopoverMessage = React.forwardRef(({content, ...props}, ref) => {
     );
 });
 
-const CustomComponentNotification = ({data, placement, loading, children, count = 0}) => (
+const CustomComponentNotification = ({ data, placement, loading, children, count = 0 }) => (
     <Whisper
         trigger="click"
         placement={placement}
@@ -269,13 +208,13 @@ const CustomComponentNotification = ({data, placement, loading, children, count 
     </Whisper>
 );
 
-const CustomComponentMessage = ({placement, loading, children}) => (
+const CustomComponentMessage = ({ placement, loading, children }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverMessage content={`I am positioned to the ${placement}`}/>
+            <DefaultPopoverMessage content={`I am positioned to the ${placement}`} />
         }
     >
         <li>
@@ -293,9 +232,9 @@ const CustomComponentMessage = ({placement, loading, children}) => (
     </Whisper>
 );
 
-const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
+const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
     <InputGroup {...props} inside>
-        <Input placeholder={placeholder}/>
+        <Input placeholder={placeholder} />
         <InputGroup.Button>
             {/* <img src="/icons/search.svg" /> */}
             <Image
@@ -313,8 +252,8 @@ const CustomInputGroupWidthButton = ({placeholder, ...props}) => (
 const Header = (props) => {
 
     // const {currentUser, authContext} = useAuth();  // // // ????
-    const  authContext = useAuth();
-    
+    const authContext = useAuth();
+
     const {
         user,
         cookie,
@@ -330,16 +269,18 @@ const Header = (props) => {
     useEffect(() => {
         const token = getCookie('teammers-access-token');
         const type = getCookie('teammers-type');
-       if(token && type){
-           axios.get(config.BASE_URL + "users/notifications?per_page=4")
-               .then(res => {
-                   if (res.data.success) {
-                       if (res.data.data?.items) setNotifications(res.data.data.items)
-                   }
-               })
-       }
+        if (token && type) {
+            axios.get(config.BASE_URL + "users/notifications?per_page=4")
+                .then(res => {
+                    if (res.data.success) {
+                        if (res.data.data?.items) setNotifications(res.data.data.items)
+                    }
+                })
+        }
     }, []);
-    console.log('notifications', notifications)
+
+    // console.log('notifications', notifications)
+
     return (
         <div className="header">
             <div className="row">
@@ -401,8 +342,11 @@ const Header = (props) => {
                                             passHref
                                         >
                                             <a>
-                                                <Avatar circle
-                                                        src="https://www.w3schools.com/howto/img_avatar.png"/>
+                                                <Avatar
+                                                    circle
+                                                    src={user?.detail?.photo ? user.detail.photo : "https://www.w3schools.com/howto/img_avatar.png"}
+                                                    alt={user?.username}
+                                                />
                                             </a>
                                         </Link>
                                     </li>

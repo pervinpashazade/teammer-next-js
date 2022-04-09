@@ -16,33 +16,13 @@ function CardTeammerPortfolio(props) {
         setPortfolioUrlList,
         cvUrl,
         full_name,
+        removeCvFunc,
+        uploadCvFunc,
     } = props;
-
-    // React.useEffect(() => {
-    //     console.log('component card props', props);
-    // }, [props]);
-    // console.log(portfolioUrlList)
 
     const [newPortfolioLink, setNewPortfolioLink] = useState('');
 
-    const inputRef = useRef();
-
-    // wrong
-    const uploadFile = (event) => {
-        // console.log(event)
-        if (event.target.files) {
-            let file_extension = event.target.files[0].type.split("/").pop();
-            if (file_extension === "pdf" || file_extension === "doc" || file_extension === "txt") {
-                setPortfolioUrlList({
-                    ...portfolioUrlList,
-                    cvFileName: event.target.files[0].name,
-                    cv: event.target.files[0]
-                })
-            }
-            // console.log(event.target.files[0])
-        }
-    };
-
+    const teammerCvRef = useRef();
 
     return (
         <div className={`resume-card ${classNames ? classNames : ''}`}>
@@ -53,41 +33,75 @@ function CardTeammerPortfolio(props) {
                 }
                 <div className="resume-wrap">
                     <div className="resume">
-                        <span onClick={() => console.log(inputRef)}>
-                            <Image
-                                src={'/icons/file.svg'}
-                                alt='img'
-                                width={24}
-                                height={24}
-                                layout='fixed'
-                            />
-                        </span>
-                        <input
-                            className="d-none"
-                            onChange={uploadFile}
-                            ref={inputRef}
-                            type="file"
-                        />
                         {
-                            cvUrl &&
-                            <a
-                                href={cvUrl}
-                                target="_blank"
-                                download
-                            >
-                                {
-                                    full_name ? full_name : 'CV'
-                                }
-                            </a>
+                            cvUrl ?
+                                <>
+                                    <span>
+                                        <Image
+                                            src={'/icons/file.svg'}
+                                            alt='img'
+                                            width={24}
+                                            height={24}
+                                            layout='fixed'
+                                        />
+                                    </span>
+                                    <a
+                                        href={cvUrl}
+                                        target="_blank"
+                                        // download
+                                    >
+                                        {
+                                            full_name ? full_name : 'CV'
+                                        }
+                                    </a>
+                                </>
+                                :
+                                <div className="upload-avatar-wrapper mb-4">
+                                    <input
+                                        type="file"
+                                        className="d-none"
+                                        ref={teammerCvRef}
+                                        onChange={e => {
+                                            if (uploadCvFunc) {
+                                                uploadCvFunc(e);
+                                            };
+                                        }}
+                                    />
+                                    <div>
+                                        <Image
+                                            width={24}
+                                            height={24}
+                                            alt='icon'
+                                            src={'/icons/file.svg'}
+                                        />
+                                        <button
+                                            type='button'
+                                            onClick={() => {
+                                                teammerCvRef.current.click()
+                                            }}
+                                        >
+                                            Import from Linkedin
+                                        </button>
+                                    </div>
+                                    {/* <div className="validation-errors">
+                                        {
+                                            teammerStepValidations.step_2.map((item, index) => {
+                                                if (item.key === "cv") {
+                                                    return <span key={index}>{item.message}</span>
+                                                };
+                                            })
+                                        }
+                                    </div> */}
+                                </div>
                         }
                     </div>
                     <div className="action-buttons">
                         {
                             editMode ?
                                 <>
-                                    <span
+                                    {/* <span
                                         className="c-pointer"
-                                        onClick={() => inputRef.current.click()}
+                                        onClick={() => teammerCvRef.current.click()}
                                     >
                                         <Image
                                             src={'/icons/link.svg'}
@@ -96,20 +110,28 @@ function CardTeammerPortfolio(props) {
                                             height={16}
                                             layout='fixed'
                                         />
-                                    </span>
-                                    <IconButton
-                                        size="sm"
-                                        className='bg-transparent ml-2'
-                                        icon={
-                                            <Image
-                                                src={'/icons/trash.svg'}
-                                                alt='img'
-                                                width={16}
-                                                height={16}
-                                                layout='fixed'
-                                            />
-                                        }
-                                    />
+                                    </span> */}
+                                    {
+                                        cvUrl && removeCvFunc &&
+                                        <IconButton
+                                            size="sm"
+                                            className='bg-transparent ml-2'
+                                            icon={
+                                                <Image
+                                                    src={'/icons/trash.svg'}
+                                                    alt='img'
+                                                    width={16}
+                                                    height={16}
+                                                    layout='fixed'
+                                                />
+                                            }
+                                            onClick={() => {
+                                                if (window.confirm("Are you sure remove CV file ?")) {
+                                                    removeCvFunc();
+                                                };
+                                            }}
+                                        />
+                                    }
                                 </>
                                 :
                                 <IconButton
@@ -132,38 +154,35 @@ function CardTeammerPortfolio(props) {
             <div className="card-content">
                 <ul>
                     {
-                        console.log(portfolioUrlList)
+                        portfolioUrlList?.map((item, index) => {
+                            return (
+                                <li
+                                    key={index}
+                                    className="d-flex justify-content-between align-items-center"
+                                >
+                                    <a href={item} target="_blank">{item}</a>
+                                    <IconButton
+                                        size="sm"
+                                        className='bg-transparent ml-2'
+                                        icon={
+                                            <span onClick={() => {
+                                                setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))
+                                            }}
+                                            >
+                                                <Image
+                                                    src={'/icons/trash.svg'}
+                                                    alt='img'
+                                                    width={16}
+                                                    height={16}
+                                                    layout='fixed'
+                                                />
+                                            </span>
+                                        }
+                                    />
+                                </li>
+                            )
+                        })
                     }
-                    {/*{*/}
-                    {/*    portfolioUrlList.map((item, index) => {*/}
-                    {/*        return (*/}
-                    {/*            <li*/}
-                    {/*                key={index}*/}
-                    {/*                className="d-flex justify-content-between align-items-center"*/}
-                    {/*            >*/}
-                    {/*                <a href={item} target="_blank">{item}</a>*/}
-                    {/*                <IconButton*/}
-                    {/*                    size="sm"*/}
-                    {/*                    className='bg-transparent ml-2'*/}
-                    {/*                    icon={*/}
-                    {/*                        <span onClick={() => {*/}
-                    {/*                            setPortfolioUrlList(portfolioUrlList.filter(i => i !== item))*/}
-                    {/*                        }}*/}
-                    {/*                        >*/}
-                    {/*                            <Image*/}
-                    {/*                                src={'/icons/trash.svg'}*/}
-                    {/*                                alt='img'*/}
-                    {/*                                width={16}*/}
-                    {/*                                height={16}*/}
-                    {/*                                layout='fixed'*/}
-                    {/*                            />*/}
-                    {/*                        </span>*/}
-                    {/*                    }*/}
-                    {/*                />*/}
-                    {/*            </li>*/}
-                    {/*        )*/}
-                    {/*    })*/}
-                    {/*}*/}
                 </ul>
             </div>
             {
@@ -191,7 +210,7 @@ function CardTeammerPortfolio(props) {
                                 />
                             }
                             onClick={() => {
-                                if (!URL_REGEX.test(newPortfolioLink)) return;
+                                // if (!/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(newPortfolioLink)) return;
 
                                 if (portfolioUrlList.some(item => item !== newPortfolioLink) && newPortfolioLink.trim()) {
                                     let arr = portfolioUrlList;

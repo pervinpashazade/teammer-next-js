@@ -200,7 +200,6 @@ const ProfileTeammer = (props) => {
                     <CardTeammerProfile
                         props={
                             {
-                                user: teammer,
                                 isProfile: true,
                                 full_name: teammer.full_name,
                                 photo: teammer.avatarUrl,
@@ -235,7 +234,7 @@ const ProfileTeammer = (props) => {
                     <div className="portfolio-wrapper">
                         <h5>CV and Portfolio</h5>
                         <CardTeammerPortfolio
-                            portfolioUrlList={props.userData?.detail?.portfolio}
+                            portfolioUrlList={teammer.portfolioList}
                         />
                     </div>
                     <div className="custom-devider"></div>

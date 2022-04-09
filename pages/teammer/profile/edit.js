@@ -350,6 +350,12 @@ const EditComponent = (props) => {
                 message: 'Location field is required'
             });
         };
+        if (!teammer.cvFile && !teammer.cvUrl) {
+            validationErrors.push({
+                key: 'cv',
+                message: 'CV field is required'
+            });
+        };
 
         setValidationErrors(validationErrors);
 
@@ -388,16 +394,16 @@ const EditComponent = (props) => {
             }),
         };
 
-        if (teammer.avatarFile) {
-            body.photo = teammer.avatarFile
-        };
+        // if (teammer.avatarFile) {
+        //     body.photo = teammer.avatarFile
+        // };
 
         if (teammer.avatarFile) {
             body.photo = teammer.avatarFile;
         };
-        // if (teammer.cvFile) {
-        //     body.cv = teammer.cvFile;
-        // };
+        if (teammer.cvFile) {
+            body.cv = teammer.cvFile;
+        };
 
         // console.log('EDIT BODY', body);
 
@@ -437,10 +443,10 @@ const EditComponent = (props) => {
         // }
 
         if (teammer.avatarFile || teammer.cvFile) {
-            body['_method'] = 'PUT';
+            body._method = 'PUT';
             let formdata = new FormData();
-            let data = buildFormData(formdata, body);
-            axios.post(config.BASE_URL + 'users', data, {
+            buildFormData(formdata, body);
+            axios.post(config.BASE_URL + 'users', formdata, {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie('teammers-access-token')
                 }
@@ -479,19 +485,15 @@ const EditComponent = (props) => {
         let body = {
             company: data.companyName,
             position_id: data.position.id,
-            location_id: data.position.id,
+            location_id: data.location.id,
             start_date: `${data.start_month?.id < 10 ? '0' + data.start_month?.id : data.start_month?.id}-${data.start_year?.id}`,
         }
 
         if (data.end_month?.id && data.end_year?.id) {
-            body.start_date = `${data.start_month?.id < 10 ? '0' + data.start_month?.id : data.start_month?.id}-${data.start_year?.id}`;
+            body.end_date = `${data.end_month?.id < 10 ? '0' + data.end_month?.id : data.end_month?.id}-${data.end_year?.id}`;
         };
 
-        axios.post(config.BASE_URL + "experiences", body, {
-            headers: {
-                'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-            }
-        }).then(res => {
+        axios.post(config.BASE_URL + "experiences", body).then(res => {
             if (res.data.success) {
                 delete data.isCurrnet;
                 setTeammer(prevState => {
@@ -509,6 +511,33 @@ const EditComponent = (props) => {
 
     const editWorkExperience = data => {
         alert('edit work exp');
+    };
+
+    const removeCvFunc = () => {
+        setTeammer(prevState => {
+            return {
+                ...prevState,
+                cvFile: null,
+                cvUrl: null
+            }
+        })
+    };
+
+    const uploadCvFunc = event => {
+        if (event.target.files && event.target.files[0]) {
+            const i = event.target.files[0];
+            // if (i.type === "image/jpeg" || i.type === "image/png") {
+            setTeammer(prevState => {
+                return {
+                    ...prevState,
+                    cvFile: i,
+                    cvUrl: URL.createObjectURL(i)
+                };
+            });
+            // } else {
+            //     alert('Please select only .jpg and .png images');
+            // };
+        };
     };
 
     return (
@@ -581,6 +610,14 @@ const EditComponent = (props) => {
                                 Save Changes
                             </Button>
                         </div>
+                        {
+                            validationErrors.find(x => x.key === "cv") &&
+                            <div className="w-100">
+                                <div className="alert alert-danger">
+                                    {validationErrors.find(x => x.key === "cv").message}
+                                </div>
+                            </div>
+                        }
                         {
                             showSuccessAlert &&
                             <div className="w-100">
@@ -781,6 +818,7 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Experience"
+                                                cleanable={false}
                                                 value={teammer.experienceLevel?.id}
                                                 data={publicDatas.experienceLevelList}
                                                 valueKey="id"
@@ -807,6 +845,7 @@ const EditComponent = (props) => {
                                                 size="md"
                                                 className="w-100"
                                                 placeholder="Location"
+                                                cleanable={false}
                                                 value={teammer.location?.id}
                                                 data={publicDatas.locationList}
                                                 valueKey="id"
@@ -860,6 +899,8 @@ const EditComponent = (props) => {
                             full_name={teammer.full_name}
                             portfolioUrlList={teammer.portfolioList}
                             setPortfolioUrlList={setTeammerPortfolio}
+                            removeCvFunc={removeCvFunc}
+                            uploadCvFunc={uploadCvFunc}
                         />
                         <CardTeammerWorkExperience
                             workExperienceList={teammer.workExperienceList}
