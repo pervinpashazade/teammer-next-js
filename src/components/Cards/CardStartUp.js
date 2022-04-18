@@ -27,15 +27,18 @@ const CardStartUp = (props) => {
     //     console.log('jobId', jobId);
     // }, [props]);
     const {currentUser} = useAuth();
+    
     const routing = () => {
         router.push(`/job/${jobId}`)
     }
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
+
     const checkSave = () => {
         if (currentUser) {
             attackSaveProject()
         } else setIsOpenLoginModal(true)
     }
+
     const attackSaveProject = () => {
         if (!jobId) return;
 

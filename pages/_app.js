@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AuthProvider } from '../Auth';
-import { wrapper } from "../src/store/redux-store";
 import Layout from "../src/components/common/Layout";
 import 'rsuite/dist/rsuite.min.css';
 import '../styles/bootstrap/bootstrap.scss';
 import '../styles/style.scss';
 import "../firebase.js";
-import CheckAuthentication from "../src/containers/CheckAuthentication";
 import withAuth from "../hooks/withAuth";
 import "../src/axios-interceptor";
 import { useRouter } from "next/router";
+import ChatProvider from "../src/contexts/ChatProvider";
+
 function MyApp({
     Component,
     pageProps: { session, ...pageProps },
@@ -17,20 +17,20 @@ function MyApp({
 
     const router = useRouter();
 
-    React.useEffect(() => {
+    useEffect(() => {
         document.body.classList.toggle('overflow-hidden', router.pathname === "/signup/steps");
     }, [router.pathname]);
 
     return (
         <AuthProvider>
-            <CheckAuthentication>
+            <ChatProvider>
                 {
                     Component.layout ?
                         <Layout>
                             <Component {...pageProps} />
                         </Layout> : <Component {...pageProps} />
                 }
-            </CheckAuthentication>
+            </ChatProvider>
         </AuthProvider>
     )
 };

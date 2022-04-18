@@ -84,21 +84,6 @@ export const AuthProvider = ({ children }) => {
 
     }, []);
 
-    // // wrong
-    // useEffect(() => {
-    //     if (currentUser) {
-    //         if (currentUser.type === 1) {
-    //             // router.push("/owner/home");
-    //         } else if (currentUser.type === 2) {
-    //             // router.push("/teammer/home");
-    //         } else {
-    //             // router.push("/signup/steps");
-    //         };
-    //     } else {
-    //         // console.log('AuthComponent js Not Auth');
-    //     };
-    // }, [currentUser]);
-
     return <AuthContext.Provider
         value={{
             currentUser,

@@ -79,7 +79,7 @@ const EditComponent = (props) => {
         });
         await axios.get(config.BASE_URL + 'locations?noPagination=1').then(res => {
             if (res.data.success) {
-                locationList = res.data.data.items;
+                locationList = res.data.data;
             };
         });
         await axios.get(config.BASE_URL + 'job/types?noPagination=1').then(res => {

@@ -7,7 +7,7 @@ const withAuth = (WrappedComponent) => {
         if (typeof window !== "undefined") {
             const accessToken = getCookie('teammers-access-token');
             const roleType = getCookie('teammers-type'); // null , 1 or 2
-            console.log(router.pathname);
+            // console.log(router.pathname);
             if (!accessToken && (router.pathname.includes("owner") || router.pathname.includes("teammer") ||
                 router.pathname.includes("steps"))) {
                 router.push('/login');

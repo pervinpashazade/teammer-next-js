@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
 
     React.useEffect(() => {
         setUser(authContext.currentUser);
-    }, [authContext.currentUser])
+    }, [authContext.currentUser]);
 
     return (
         <div className="container">

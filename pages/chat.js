@@ -10,6 +10,8 @@ import Image from 'next/image';
 import config, { NEXT_URL } from '../src/configuration';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import { useChat } from '../src/contexts/ChatProvider';
+import { getCookie } from '../src/helpers/cookie';
 
 const CustomSearchButton = ({ placeholder, ...props }, icon) => (
     <InputGroup {...props} inside>
@@ -20,42 +22,19 @@ const CustomSearchButton = ({ placeholder, ...props }, icon) => (
     </InputGroup>
 );
 
-function Chat(props) {
+function Chat() {
 
     const router = useRouter();
+
+    const { chat } = useChat();
 
     const [user, setUser] = useState(null);
     const [conversationList, setConversationList] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null);
 
-    useEffect(async () => {
-        const fetchUser = await fetch(NEXT_URL + 'api/auth');
-        const resObj = await fetchUser.json();
-
-        console.log('chat page log', resObj);
-
-        if (resObj?.success) {
-            setUser(resObj.user);
-
-            const fetchConversation = await fetch(config.BASE_URL + 'conversations?include=messages,members,unreadMessages', {
-                method: 'GET',
-                headers: {
-                    'Authorization': resObj.user.token,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-            });
-            const conversationResponse = await fetchConversation.json();
-
-            if (conversationResponse.success) {
-                setConversationList(conversationResponse.data.items)
-            }
-
-            // console.log('conversationList', conversationResponse.data.items);
-
-        } else {
-            router.push('/login')
-        };
-    }, []);
+    useEffect(() => {
+        setConversationList(chat)
+    }, [chat]);
 
     useEffect(() => {
         console.log('selected conversation', selectedConversation);
@@ -87,210 +66,210 @@ function Chat(props) {
     };
 
     return (
-        user ?
-            <div className="chat">
-                <div className="breadcrumb-wrapper">
-                    <div className="goback-btn">
-                        <IconButton
-                            size="lg"
-                            icon={<HiArrowLeft />}
-                            className="goback-btn"
-                        />
-                        <span>Go back</span>
-                    </div>
-                    <div className="custom-breadcrumb">
-                        <span>Home</span>
-                        <span className='breadcrumb-icon'>
-                            <AiOutlineRight />
-                        </span>
-                        <span className='active'>
-                            Chat
-                        </span>
-                    </div>
+        <div className="chat">
+            <div className="breadcrumb-wrapper">
+                <div className="goback-btn">
+                    <IconButton
+                        size="lg"
+                        icon={<HiArrowLeft />}
+                        className="goback-btn"
+                    />
+                    <span>Go back</span>
                 </div>
-                <div className="chat-wrapper">
-                    <div className="wrapper-top">
-                        <div className="chat-left-side-top">
-                            <span>Inbox</span>
-                        </div>
-                        {
-                            selectedConversation &&
-                            <div className="chat-right-side-top">
-                                {
-                                    selectedConversation.members.map((item) => {
-                                        if (item.id !== user.id) {
-                                            return <>
-                                                <div className="user-profile">
-                                                    <Avatar
-                                                        circle
-                                                        src={item.detail.photo}
-                                                        alt="profile photo"
-                                                    />
-                                                    <span>{item.full_name}</span>
-                                                </div>
-                                                <Image
-                                                    className='chat-settings-btn'
-                                                    src={'/icons/settings.svg'}
-                                                    alt='settings svg icon'
-                                                    width={24}
-                                                    height={24}
+                <div className="custom-breadcrumb">
+                    <span>Home</span>
+                    <span className='breadcrumb-icon'>
+                        <AiOutlineRight />
+                    </span>
+                    <span className='active'>
+                        Chat
+                    </span>
+                </div>
+            </div>
+            <div className="chat-wrapper">
+                <div className="wrapper-top">
+                    <div className="chat-left-side-top">
+                        <span>Inbox</span>
+                    </div>
+                    {
+                        selectedConversation &&
+                        <div className="chat-right-side-top">
+                            {
+                                selectedConversation.members.map((item) => {
+                                    if (item.id !== Number(getCookie("teammers-id"))) {
+                                        return <>
+                                            <div className="user-profile">
+                                                <Avatar
+                                                    circle
+                                                    src={item.detail.photo}
+                                                    alt="profile photo"
                                                 />
-                                            </>
-                                        }
+                                                <span>{item.full_name}</span>
+                                            </div>
+                                            <Image
+                                                className='chat-settings-btn'
+                                                src={'/icons/settings.svg'}
+                                                alt='settings svg icon'
+                                                width={24}
+                                                height={24}
+                                            />
+                                        </>
+                                    }
+                                })
+                            }
+                        </div>
+                    }
+                </div>
+                <div className="wrapper-body">
+                    <div className="chat-left-side">
+                        <div className="select-wrap">
+                            <Checkbox
+                                className='check-select-all'
+                            >
+                                Select all
+                            </Checkbox>
+                            <IconButton
+                                size="sm"
+                                className="select-action-btn"
+                                icon={
+                                    <Image
+                                        src={'/icons/3dot.svg'}
+                                        alt='dots'
+                                        width={24}
+                                        height={24}
+                                    />
+                                }
+                            />
+                        </div>
+                        <div className="message-list-wrapper">
+                            <CustomSearchButton
+                                size="lg"
+                                placeholder="Search"
+                                className="search-input"
+                            />
+                            <ul className="message-list">
+                                {/* here !!! */}
+                                {
+                                    conversationList.map((item, index) => {
+
+                                        let lastMessage = {};
+                                        let lastMessageSender = null;
+
+                                        if (item.messages.length) {
+                                            lastMessage = item.messages[item.messages.length - 1]
+                                        };
+
+                                        let isOwnMessage = lastMessage.from === Number(getCookie("teammers-id"));
+
+                                        if (!isOwnMessage) {
+                                            lastMessageSender = item.members.find(x => x.id === lastMessage.from);
+                                        };
+
+                                        // console.log('last message', lastMessage);
+
+                                        return lastMessage ? <li
+                                            key={index}
+                                            className="item"
+                                            onClick={() => setSelectedConversation(item)}
+                                        >
+                                            <Checkbox
+                                                className='check-select-all'
+                                            />
+                                            <div className="content">
+                                                <Avatar
+                                                    circle
+                                                    src={
+                                                        lastMessage.from === Number(getCookie("teammers-id")) ?
+                                                            "https://www.w3schools.com/howto/img_avatar.png"
+                                                            :
+                                                            lastMessageSender.detail.photo
+                                                    }
+                                                    className='user-avatar'
+                                                    alt="user photo"
+                                                />
+                                                <div className="message unread">
+                                                    <span>
+                                                        {
+                                                            item.members.map((item) => {
+                                                                if (item.id !== Number(getCookie("teammers-id"))) {
+                                                                    return item.full_name + ' '
+                                                                }
+                                                            })
+                                                        }
+                                                    </span>
+                                                    <p>
+                                                        {
+                                                            lastMessage.from === Number(getCookie("teammers-id")) ?
+                                                                "You: "
+                                                                :
+                                                                ''
+                                                        }
+                                                        {
+                                                            lastMessage.body?.length > 23 ?
+                                                                lastMessage.body.slice(0, 20) + '...'
+                                                                :
+                                                                lastMessage.body
+                                                        }
+                                                    </p>
+                                                </div>
+                                                <span className='date'>
+                                                    {/* Aug 23, 2021 */}
+                                                    {lastMessage.updated_at}
+                                                </span>
+                                            </div>
+                                        </li> : null
                                     })
                                 }
-                            </div>
-                        }
-                    </div>
-                    <div className="wrapper-body">
-                        <div className="chat-left-side">
-                            <div className="select-wrap">
-                                <Checkbox
-                                    className='check-select-all'
-                                >
-                                    Select all
-                                </Checkbox>
-                                <IconButton
-                                    size="sm"
-                                    className="select-action-btn"
-                                    icon={
-                                        <Image
-                                            src={'/icons/3dot.svg'}
-                                            alt='dots'
-                                            width={24}
-                                            height={24}
+                                <li className="item">
+                                    <Checkbox
+                                        className='check-select-all'
+                                    />
+                                    <div className="content">
+                                        <Avatar
+                                            circle
+                                            src="/img/avatar1.png"
+                                            className='user-avatar'
+                                            alt="user photo"
                                         />
-                                    }
-                                />
-                            </div>
-                            <div className="message-list-wrapper">
-                                <CustomSearchButton
-                                    size="lg"
-                                    placeholder="Search"
-                                    className="search-input"
-                                />
-                                <ul className="message-list">
-                                    {
-                                        conversationList.map((item, index) => {
-
-                                            let lastMessage = {};
-                                            let lastMessageSender = null;
-
-                                            if (item.messages.length) {
-                                                lastMessage = item.messages[item.messages.length - 1]
-                                            };
-
-                                            let isOwnMessage = lastMessage.from === user.id;
-
-                                            if (!isOwnMessage) {
-                                                lastMessageSender = item.members.find(x => x.id === lastMessage.from);
-                                            };
-
-                                            // console.log('last message', lastMessage);
-
-                                            return lastMessage ? <li
-                                                key={index}
-                                                className="item"
-                                                onClick={() => setSelectedConversation(item)}
-                                            >
-                                                <Checkbox
-                                                    className='check-select-all'
-                                                />
-                                                <div className="content">
-                                                    <Avatar
-                                                        circle
-                                                        src={
-                                                            lastMessage.from === user.id ?
-                                                                "https://www.w3schools.com/howto/img_avatar.png"
-                                                                :
-                                                                lastMessageSender.detail.photo
-                                                        }
-                                                        className='user-avatar'
-                                                        alt="user photo"
-                                                    />
-                                                    <div className="message unread">
-                                                        <span>
-                                                            {
-                                                                item.members.map((item) => {
-                                                                    if (item.id !== user.id) {
-                                                                        return item.full_name + ' '
-                                                                    }
-                                                                })
-                                                            }
-                                                        </span>
-                                                        <p>
-                                                            {
-                                                                lastMessage.from === user.id ?
-                                                                    "You: "
-                                                                    :
-                                                                    ''
-                                                            }
-                                                            {
-                                                                lastMessage.body?.length > 23 ?
-                                                                    lastMessage.body.slice(0, 20) + '...'
-                                                                    :
-                                                                    lastMessage.body
-                                                            }
-                                                        </p>
-                                                    </div>
-                                                    <span className='date'>
-                                                        {/* Aug 23, 2021 */}
-                                                        {lastMessage.updated_at}
-                                                    </span>
-                                                </div>
-                                            </li> : null
-                                        })
-                                    }
-                                    <li className="item">
-                                        <Checkbox
-                                            className='check-select-all'
-                                        />
-                                        <div className="content">
-                                            <Avatar
-                                                circle
-                                                src="/img/avatar1.png"
-                                                className='user-avatar'
-                                                alt="user photo"
-                                            />
-                                            <div className="message unread">
-                                                <span>Denis Delton</span>
-                                                <p>Yeah! I’m interested...</p>
-                                            </div>
-                                            <span className='date'>Aug 23, 2021</span>
+                                        <div className="message unread">
+                                            <span>Denis Delton</span>
+                                            <p>Yeah! I’m interested...</p>
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        {
-                            selectedConversation &&
-                            <div className="chat-inner">
-                                <div className="chat-area">
-                                    {/*  STATIC !!!! message list date start */}
-                                    <div className="message-date">
-                                        <span>
-                                            Aug 23, 2021
-                                        </span>
+                                        <span className='date'>Aug 23, 2021</span>
                                     </div>
-                                    {/* message list date end */}
-                                    {/* messages list start */}
-                                    {
-                                        selectedConversation.messages.map((item, index) => {
-                                            let isOwnMessage = item.from === user.id;
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {
+                        selectedConversation &&
+                        <div className="chat-inner">
+                            <div className="chat-area">
+                                {/*  STATIC !!!! message list date start */}
+                                <div className="message-date">
+                                    <span>
+                                        Aug 23, 2021
+                                    </span>
+                                </div>
+                                {/* message list date end */}
+                                {/* messages list start */}
+                                {
+                                    selectedConversation.messages.map((item, index) => {
+                                        let isOwnMessage = item.from === Number(getCookie("teammers-id"));
 
-                                            return <div
-                                                key={index}
-                                                className={`message ${isOwnMessage ? 'sent' : 'received'}`}
-                                            >
-                                                <div className="content">
-                                                    {
-                                                        item.body
-                                                    }
-                                                </div>
+                                        return <div
+                                            key={index}
+                                            className={`message ${isOwnMessage ? 'sent' : 'received'}`}
+                                        >
+                                            <div className="content">
+                                                {
+                                                    item.body
+                                                }
                                             </div>
-                                        })
-                                    }
-                                    {/* <div className="message sent">
+                                        </div>
+                                    })
+                                }
+                                {/* <div className="message sent">
                                     <div className="content">
                                         Hello!
                                         We are engaged in the design and development of web and mobile applications. Now I am looking for an experienced UX/UI designer for our team.
@@ -308,30 +287,28 @@ function Chat(props) {
                                         Yeah! I’m interested
                                     </div>
                                 </div> */}
-                                    {/* messages list end */}
-                                </div>
-                                {/* message input */}
-                                <Form
-                                    className='chat-form'
-                                    onSubmit={(condition, event) => { sendMessage(event) }}
-                                >
-                                    <Input
-                                        name='text'
-                                        placeholder="Enter your message here..."
-                                    />
-                                    <Button
-                                        type='submit'
-                                    >
-                                        <RiSendPlaneFill />
-                                    </Button>
-                                </Form>
+                                {/* messages list end */}
                             </div>
-                        }
-                    </div>
+                            {/* message input */}
+                            <Form
+                                className='chat-form'
+                                onSubmit={(condition, event) => { sendMessage(event) }}
+                            >
+                                <Input
+                                    name='text'
+                                    placeholder="Enter your message here..."
+                                />
+                                <Button
+                                    type='submit'
+                                >
+                                    <RiSendPlaneFill />
+                                </Button>
+                            </Form>
+                        </div>
+                    }
                 </div>
             </div>
-            :
-            'no data'
+        </div>
     )
 }
 

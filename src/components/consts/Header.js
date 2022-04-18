@@ -21,6 +21,7 @@ import { useAuth } from '../../../Auth';
 import axios from "axios";
 import config from "../../configuration";
 import { getCookie } from "../../helpers/cookie";
+import { useChat } from '../../contexts/ChatProvider';
 
 const CustomComponentUserProfile = ({ placement, loading, children, user, context }) => {
     // console.log(user);
@@ -91,7 +92,7 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
 };
 
 const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
-    console.log("notification props", props);
+    // console.log("notification props", props);
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -128,6 +129,9 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
 });
 
 const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
+
+    const router = useRouter();
+
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -146,18 +150,46 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
                         </a>
                     </Link>
                 </div>
-                <div className="message-person">
-                    <div><Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" /></div>
-                    <div className="message-text">
-                        <p>Denis Delton</p>
-                        <p>Yeah! I’m interested...</p>
-                    </div>
-                    <div className="date">
-                        <p>
-                            Aug 23, 2021
-                        </p>
-                    </div>
-                </div>
+                {
+                    props.data?.length > 0 ?
+                        props.data.map(item =>
+                            <div
+                                key={item.id}
+                                className="message-person"
+                                onClick={() => router.push("/chat")}
+                            >
+                                <div>
+                                    <Avatar
+                                        circle
+                                        src={
+                                            item.avatar ? item.avatar
+                                                :
+                                                "https://www.w3schools.com/howto/img_avatar.png"
+                                        }
+                                    />
+                                </div>
+                                <div className="message-text">
+                                    <p>{item.title}</p>
+                                    {
+                                        item.lastMessage &&
+                                        <p>
+                                            {item.lastMessage.isOwn && 'You: '}
+                                            {item.lastMessage.content}
+                                        </p>
+                                    }
+                                </div>
+                                <div className="date">
+                                    <p>
+                                        {/* Aug 23, 2021 */}
+                                        {item.created_at}
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                        :
+                        'no data'
+                }
+
             </div>
         </Popover>
     );
@@ -208,13 +240,15 @@ const CustomComponentNotification = ({ data, placement, loading, children, count
     </Whisper>
 );
 
-const CustomComponentMessage = ({ placement, loading, children }) => (
+const CustomComponentMessage = ({ data, placement, loading, children }) => (
     <Whisper
         trigger="click"
         placement={placement}
         controlId={`control-id-${placement}`}
         speaker={
-            <DefaultPopoverMessage content={`I am positioned to the ${placement}`} />
+            <DefaultPopoverMessage
+                data={data}
+            />
         }
     >
         <li>
@@ -251,12 +285,14 @@ const CustomInputGroupWidthButton = ({ placeholder, ...props }) => (
 
 const Header = (props) => {
 
-    // const {currentUser, authContext} = useAuth();  // // // ????
     const authContext = useAuth();
+
+    const { lastMessageList } = useChat();
+
+    console.log('lastMessageList', lastMessageList);
 
     const {
         user,
-        cookie,
     } = props;
 
     const [isOpen, setIsOpen] = useState(false)
@@ -297,18 +333,19 @@ const Header = (props) => {
                                         quality={100}
                                     />
                                 </a>
-                                <a className="ml-md-0 ml-4"><Link href="/">
-                                    <a className="navbar-brand">
-                                        <Image
-                                            src={'/LogoHeader.svg'}
-                                            alt='logo'
-                                            width={136}
-                                            height={18}
-                                            quality={100}
-                                            layout="fixed"
-                                        />
-                                    </a>
-                                </Link>
+                                <a className="ml-md-0 ml-4">
+                                    <Link href="/">
+                                        <a className="navbar-brand">
+                                            <Image
+                                                src={'/LogoHeader.svg'}
+                                                alt='logo'
+                                                width={136}
+                                                height={18}
+                                                quality={100}
+                                                layout="fixed"
+                                            />
+                                        </a>
+                                    </Link>
                                 </a>
                             </div>
                             <div className="d-block d-md-none">
@@ -323,6 +360,7 @@ const Header = (props) => {
                                         <CustomComponentMessage
                                             placement="bottomEnd"
                                             loading={loading}
+                                            data={lastMessageList}
                                         />
                                     </a>
                                     <li className="nav-item">
@@ -385,6 +423,7 @@ const Header = (props) => {
                                 <CustomComponentMessage
                                     placement="bottomEnd"
                                     loading={loading}
+                                    data={lastMessageList}
                                 />
                                 {
                                     <li className="nav-item">
