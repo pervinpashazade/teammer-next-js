@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
-import { URL_REGEX } from '../../configuration';
+import {URL_REGEX} from '../../configuration';
 import Link from 'next/link';
-import { Button, IconButton, Input, InputPicker, Modal, Notification, toaster } from 'rsuite';
+import {Button, IconButton, Input, InputPicker, Modal, Notification, toaster} from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import axios from "axios";
 import config from "../../configuration";
@@ -64,7 +64,8 @@ function CardTeammerPortfolio(props) {
                                         onChange={e => {
                                             if (uploadCvFunc) {
                                                 uploadCvFunc(e);
-                                            };
+                                            }
+                                            ;
                                         }}
                                     />
                                     <div>
@@ -128,7 +129,8 @@ function CardTeammerPortfolio(props) {
                                             onClick={() => {
                                                 if (window.confirm("Are you sure remove CV file ?")) {
                                                     removeCvFunc();
-                                                };
+                                                }
+                                                ;
                                             }}
                                         />
                                     }
@@ -154,7 +156,7 @@ function CardTeammerPortfolio(props) {
             <div className="card-content">
                 <ul>
                     {
-                        portfolioUrlList?.map((item, index) => {
+                        portfolioUrlList.portfolio.length > 0 && portfolioUrlList?.portfolio?.map((item, index) => {
                             return (
                                 <li
                                     key={index}
@@ -217,7 +219,8 @@ function CardTeammerPortfolio(props) {
                                     arr.push(newPortfolioLink);
                                     setPortfolioUrlList(arr);
                                     setNewPortfolioLink('')
-                                };
+                                }
+                                ;
                             }}
                         />
                     </div>

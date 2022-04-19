@@ -4,6 +4,6 @@ module.exports = {
     esmExternals: false
   },
   images : {
-    domains : ['https://teammers-media.s3.amazonaws.com/']
+    domains : ['teammers-media.s3.amazonaws.com']
   }
 }

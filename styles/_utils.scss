@@ -1176,11 +1176,12 @@
 }
 
 .notifications {
-  h4{
+  h4 {
     font-size: 24px;
     line-height: 29px;
     margin: 30px 0px;
   }
+
   table {
     width: 100%;
     box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
@@ -1188,6 +1189,7 @@
 
   thead {
     border-bottom: 1px solid #D1D1D1;
+
     th {
       padding: 24px;
       font-size: 12px;
@@ -1197,10 +1199,12 @@
   }
 
   tbody {
-    tr{
+    tr {
       border-bottom: 1px solid #EAEAEA;
+
       td {
         padding: 12px 24px;
+
         span.active {
           width: 9px;
           height: 9px;
@@ -1209,16 +1213,78 @@
           background-color: #2A6FFF;
           cursor: pointer;
         }
-        span.deactive{
+
+        span.deactive {
           background-color: white;
           border: 2px solid #D1D1D1;
           cursor: pointer;
         }
-        .message{
+
+        .message {
           font-size: 14px;
           line-height: 17px;
         }
       }
     }
+  }
+}
+
+.startups {
+  h2 {
+    font-size: 24px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 50px;
+  }
+
+  .startup-div {
+    width: 100%;
+    min-height: 160px;
+    border-radius: 12px;
+    background-color: #fff;
+    margin-bottom: 1rem;
+    box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
+    cursor: pointer;
+    padding: 15px;
+    position: relative;
+
+    .rounded-full {
+      border-radius: 50%;
+    }
+
+    h3 {
+      font-size: 24px;
+      color: #020C40;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .startup-image {
+      position: absolute;
+      right: 7%;
+      top: -15%;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 1px solid #EAEAEA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .choose-startup {
+    @include check-all(20px);
+  }
+}
+
+.job-create-ck-editor {
+  padding-top: 20px;
+  .ck.ck-reset.ck-editor.ck-rounded-corners {
+    max-width: 100% !important;
   }
 }

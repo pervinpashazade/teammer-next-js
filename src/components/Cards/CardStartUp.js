@@ -20,7 +20,8 @@ const CardStartUp = (props) => {
         ownerFullname,
         ownerAvatarUrl,
         onClick,
-        logo
+        logo,
+        isStartup
     } = props;
 
     // React.useEffect(() => {
@@ -29,7 +30,7 @@ const CardStartUp = (props) => {
     const {currentUser} = useAuth();
     
     const routing = () => {
-        router.push(`/job/${jobId}`)
+        router.push(`/${isStartup ? "startup" : "job"}/${jobId}`)
     }
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
 

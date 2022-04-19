@@ -22,7 +22,7 @@ function ProPanel(props) {
                 dataList?.length ?
                     dataList.map((item, index) => {
                         console.log(item)
-                        return <CardStartUp key={index} jobId={item.id} title={item.title} logo={item.logo}/>
+                        return <CardStartUp isStartup={true} key={index} jobId={item.id} title={item.title} logo={item.logo}/>
                     }) : noDataMessage ? noDataMessage :
                         'You have not yet joined any project'
             }

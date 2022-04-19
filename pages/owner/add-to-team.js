@@ -1,17 +1,92 @@
 import Head from "next/head";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile'
-import {IconButton} from "rsuite";
+import {Button, IconButton, InputPicker, Modal, Notification, toaster} from "rsuite";
 import {HiArrowLeft} from "react-icons/hi";
 import Link from 'next/link';
 import getAuth from "../../lib/session";
 import config from "../../src/configuration";
 import {getFetchData} from "../../lib/fetchData";
 import {getToken} from "../../lib/session";
+import axios from "axios";
+import {useAuth} from "../../Auth";
 
 const AddToTeam = (props) => {
     const {items} = props.data;
-    console.log(items);
+    const { currentUser } = useAuth();
+    const [projects, setProjects] = useState([]);
+    const [jobs, setJobs] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [teammerId, setTeammerId] = useState('');
+    const [teammerName, setTeammerName] = useState('');
+    const [startupName, setStartUpName] = useState('');
+    const [jobName, setJobName] = useState(0);
+    const getProjects = () => {
+        axios.get(config.BASE_URL + "users/projects")
+            .then(res => {
+                setProjects(res?.data.data.items.map(item => {
+                    return {
+                        label: item.title,
+                        value: item.id
+                    }
+                }))
+            })
+    }
+    useEffect(() => {
+        getProjects();
+    }, [])
+    const getJobs = async (e) => {
+        if (e) {
+            // let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'));
+            axios.get(config.BASE_URL + "users/projects?include=jobs.position")
+                .then(res => {
+                    console.log(res)
+                    if (res.data.success) {
+                        setJobs(res.data.data.items.find(item => item.id === e).jobs.map(item => {
+                            return {
+                                label: item.position.name,
+                                value: item.id
+                            }
+                        }))
+                        setStartUpName(e)
+                    }
+
+                })
+        } else {
+            setJobs([]);
+            setStartUpName('')
+        }
+    };
+    const addToTeam = (data, id) => {
+        setTeammerId(id)
+        setTeammerName(data);
+        setOpen(!open);
+    };
+    const submitAddToTeam = async () => {
+        if (currentUser && currentUser?.id) {
+            axios.post(config.BASE_URL + "jobs/" + jobName + "/add-to-team", {
+                id: teammerId
+            }).then(res => {
+                console.log('adks')
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        New Teammer added!
+                    </Notification>, 'topEnd'
+                );
+                setOpen(!open);
+                setJobName(0);
+                setJobs([]);
+                setTeammerId('');
+                setStartUpName('');
+            }).catch(error => {
+                toaster.push(
+                    <Notification type={"error"} header="Warning!" closable>
+                        {error.response.data.message}
+                    </Notification>, 'topEnd'
+                );
+            })
+        }
+    }
     return (
         <div className="owner">
             <Head>
@@ -45,6 +120,8 @@ const AddToTeam = (props) => {
                 {
                     items.map(item => <div className="col-md-4"><CardTeammerProfile props={
                         {
+                            id: item.id,
+                            isProfile: false,
                             full_name: item.full_name,
                             photo: item.detail.photo,
                             location: item.detail.location.name + " , " + item.detail.location.country_code,
@@ -52,12 +129,52 @@ const AddToTeam = (props) => {
                             positions: item.positions,
                             year_of_experience: item.detail.years_of_experience,
                             bio_position: item.bio_position,
+                            about: item.detail?.about,
+                            addToTeam: addToTeam
                         }
                     } isProfile={false}/></div>)
                 }
                 {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
                 {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
                 {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
+                <Modal open={open} onClose={() => {
+                    setOpen(!open);
+                    setTeammerId('')
+                }}>
+                    <Modal.Header>
+                        <Modal.Title>Add to team</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
+                        <InputPicker
+                            size="lg"
+                            data={projects}
+                            onChange={(e) => getJobs(e)}
+                            placeholder="Name of Startup"
+                            className="w-100"
+                        />
+                        <InputPicker
+                            size="lg"
+                            disabled={jobs.length === 0}
+                            data={jobs}
+                            value={jobName}
+                            onChange={(e) => setJobName(e)}
+                            placeholder="Position"
+                            className="w-100 mt-3"
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={() => {
+                            setOpen(!open);
+                            setTeammerId('')
+                        }} appearance="subtle">
+                            Cancel
+                        </Button>
+                        <Button onClick={() => submitAddToTeam()} appearance="primary" disabled={!jobName}>
+                            Ok
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </div>
     )

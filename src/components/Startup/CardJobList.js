@@ -12,6 +12,7 @@ const CardJobList = (props) => {
         jobList,
         classNames,
         showStartupDetails,
+        setIsOpen
     } = props;
     // React.useEffect(() => {
     //     console.clear();
@@ -26,6 +27,7 @@ const CardJobList = (props) => {
                             <h4>{title}</h4>
                             <Button
                                 className='btn-add'
+                                onClick={setIsOpen}
                             >
                                 <Image
                                     src={'/icons/plus.svg'}

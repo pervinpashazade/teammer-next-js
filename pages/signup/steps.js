@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../../src/components/consts/NotAuth/Header';
@@ -14,17 +14,18 @@ import {
     Tag,
     Uploader,
 } from 'rsuite';
-import { AiOutlineEdit } from 'react-icons/ai';
-import { MdModeEditOutline } from 'react-icons/md';
-import { BsPlusLg } from 'react-icons/bs';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import {AiOutlineEdit} from 'react-icons/ai';
+import {MdModeEditOutline} from 'react-icons/md';
+import {BsPlusLg} from 'react-icons/bs';
+import {FaRegTrashAlt} from 'react-icons/fa';
 import axios from 'axios';
-import config, { months, URL_REGEX } from '../../src/configuration';
+import config, {months, URL_REGEX} from '../../src/configuration';
 // import { useAuth } from '../../Auth';
-import { getCookie, setCookie, removeCookie } from '../../src/helpers/cookie';
-import { buildFormData } from '../../src/helpers/buildFormData';
-import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
-import { useRouter } from "next/router";
+import {getCookie, setCookie, removeCookie} from '../../src/helpers/cookie';
+import {buildFormData} from '../../src/helpers/buildFormData';
+import {renderErrorMessages} from '../../src/helpers/renderErrorMessages';
+import {useRouter} from "next/router";
+
 const steps2 = (props) => {
 
     // const authContext = useAuth();
@@ -43,7 +44,7 @@ const steps2 = (props) => {
     const router = useRouter();
     const editorRef = useRef();
     const [isEditorLoaded, setIsEditorLoaded] = useState(false);
-    const { CKEditor, ClassicEditor } = editorRef.current || {};
+    const {CKEditor, ClassicEditor} = editorRef.current || {};
 
     const [ownerResponseErrors, setOwnerResponseErrors] = useState([]);
     const [teammerResponseErrors, setTeammerResponseErrors] = useState([]);
@@ -83,42 +84,50 @@ const steps2 = (props) => {
         await axios.get(config.BASE_URL + 'positions?noPagination=1').then(res => {
             if (res.data.success) {
                 positionList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'project/roles?noPagination=1').then(res => {
             if (res.data.success) {
                 roleList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'project/types?noPagination=1').then(res => {
             if (res.data.success) {
                 projectTypeList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'locations?noPagination=1').then(res => {
             if (res.data.success) {
                 locationList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'job/types?noPagination=1').then(res => {
             if (res.data.success) {
                 jobTypeList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'job/payment_types?noPagination=1').then(res => {
             if (res.data.success) {
                 paymentTypeList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'skills?noPagination=1').then(res => {
             if (res.data.success) {
                 skillList = res.data.data;
-            };
+            }
+            ;
         });
         await axios.get(config.BASE_URL + 'experience-levels?noPagination=1').then(res => {
             if (res.data.success) {
                 experienceLevelList = res.data.data;
-            };
+            }
+            ;
         });
 
         let yearArr = [];
@@ -128,7 +137,8 @@ const steps2 = (props) => {
                 id: i,
                 name: `${i}`,
             });
-        };
+        }
+        ;
 
         setPublicDatas({
             positionList: positionList,
@@ -389,8 +399,10 @@ const steps2 = (props) => {
                         key: key,
                         message: 'This field is required'
                     });
-                };
-            };
+                }
+                ;
+            }
+            ;
             if (typeof value === 'object') {
 
                 // if (key === "end_month") return;
@@ -401,9 +413,12 @@ const steps2 = (props) => {
                         key: key,
                         message: `${value.key} field is required`
                     });
-                };
-            };
-        };
+                }
+                ;
+            }
+            ;
+        }
+        ;
 
         setSelectedWorkExpErrors(validationErrors);
 
@@ -411,7 +426,8 @@ const steps2 = (props) => {
             return false;
         } else {
             return true;
-        };
+        }
+        ;
     };
 
     const addMoreExperience = () => {
@@ -419,7 +435,8 @@ const steps2 = (props) => {
         // if not valid form
         if (!isValidForm) {
             return;
-        };
+        }
+        ;
 
         if (!isEditSelectedWorkExp.status && isEditSelectedWorkExp.index < 0) {
             setWorkExperienceList(prevState => {
@@ -433,7 +450,8 @@ const steps2 = (props) => {
                 status: false,
                 index: -1
             });
-        };
+        }
+        ;
 
         resetSelectedWorkExp();
     };
@@ -492,53 +510,63 @@ const steps2 = (props) => {
                 key: 'position',
                 message: 'Position field is required'
             });
-        };
+        }
+        ;
         if (!selectedJob.location.id) {
             validationErrors.push({
                 key: 'location',
                 message: 'Location field is required'
             });
-        };
+        }
+        ;
         if (!selectedJob.type.id) {
             validationErrors.push({
                 key: 'type',
                 message: 'Job type field is required'
             });
-        };
+        }
+        ;
         if (!selectedJob.payment.id) {
             validationErrors.push({
                 key: 'payment',
                 message: 'Payment field is required'
             });
-        };
+        }
+        ;
         if (!selectedJob.salary) {
             if (selectedJob.payment && selectedJob.payment.name === "paid") {
                 validationErrors.push({
                     key: 'salary',
                     message: 'Salary field is required'
                 });
-            };
-        };
+            }
+            ;
+        }
+        ;
         if (!selectedJob.period.id) {
             if (selectedJob.payment && selectedJob.payment.name === "paid") {
                 validationErrors.push({
                     key: 'period',
                     message: 'Salary period field is required'
                 });
-            };
-        };
+            }
+            ;
+        }
+        ;
         if (!selectedJob.experience) {
             validationErrors.push({
                 key: 'experience',
                 message: 'Experience field is required'
             });
-        };
+        }
+        ;
         if (!selectedJob.description) {
             validationErrors.push({
                 key: 'description',
                 message: 'Description field is required'
             });
-        };
+        }
+        ;
 
         console.log('VAL TEST', validationErrors);
 
@@ -548,7 +576,8 @@ const steps2 = (props) => {
             return false;
         } else {
             return true;
-        };
+        }
+        ;
     };
 
     const addMorePosition = () => {
@@ -557,7 +586,8 @@ const steps2 = (props) => {
         // if not valid form
         if (!isValidForm) {
             return;
-        };
+        }
+        ;
 
         if (!isEditSelectedJob.status && isEditSelectedJob.index < 0) {
             setJobList(prevState => {
@@ -571,7 +601,8 @@ const steps2 = (props) => {
                 status: false,
                 index: -1
             });
-        };
+        }
+        ;
 
         resetSelectedJob();
     };
@@ -652,7 +683,8 @@ const steps2 = (props) => {
                         onClick={() => {
                             if (selectedUserType) {
                                 setCurrentStep(1);
-                            };
+                            }
+                            ;
                         }}
                     >
                         Next
@@ -675,7 +707,8 @@ const steps2 = (props) => {
                                 avatarUrl: URL.createObjectURL(i)
                             };
                         });
-                    };
+                    }
+                    ;
                     if (type === 'startup-logo') {
                         setStartup(prevState => {
                             return {
@@ -684,7 +717,8 @@ const steps2 = (props) => {
                                 avatarUrl: URL.createObjectURL(i)
                             };
                         });
-                    };
+                    }
+                    ;
                     if (type === 'teammer-avatar') {
                         setTeammer(prevState => {
                             return {
@@ -693,10 +727,12 @@ const steps2 = (props) => {
                                 avatarUrl: URL.createObjectURL(i)
                             };
                         });
-                    };
+                    }
+                    ;
                 } else {
                     alert('Please select only .jpg and .png images');
-                };
+                }
+                ;
             } else {
                 setTeammer(prevState => {
                     console.log('i', i);
@@ -707,7 +743,8 @@ const steps2 = (props) => {
                     };
                 });
             }
-        };
+        }
+        ;
     };
 
     const getSocialDatas = (e) => {
@@ -717,7 +754,8 @@ const steps2 = (props) => {
 
         for (let [key, value] of formData.entries()) {
             data[key] = value;
-        };
+        }
+        ;
 
         return data;
     };
@@ -741,7 +779,8 @@ const steps2 = (props) => {
                     portfolioList: [...prevState.portfolioList.filter(item => item !== itemLink)]
                 };
             });
-        };
+        }
+        ;
     };
 
     const confirm_step_3 = (socialDatas) => {
@@ -756,7 +795,8 @@ const steps2 = (props) => {
 
         if (validateStep(2)) {
             setCurrentStep(3);
-        };
+        }
+        ;
     };
 
     const [teammerStepValidations, setTeammerStepValidations] = useState({
@@ -775,7 +815,8 @@ const steps2 = (props) => {
         if (!userType || !currentStep) {
             setCurrentStep(0);
             return false;
-        };
+        }
+        ;
 
         if (/^[A-z\d_]{5,20}$/i.test(username)) {
             if (userType === "1") {
@@ -783,13 +824,15 @@ const steps2 = (props) => {
                     status: true,
                     message: ''
                 });
-            };
+            }
+            ;
             if (userType === "2") {
                 setIsValidTeammerUsername({
                     status: true,
                     message: ''
                 });
-            };
+            }
+            ;
             axios.get(config.BASE_URL + `register/check?type=username&value=${username}`).then(res => {
                 if (!res.data.success) {
                     if (userType === "1") {
@@ -797,27 +840,32 @@ const steps2 = (props) => {
                             status: false,
                             message: res.data.message
                         });
-                    };
+                    }
+                    ;
                     if (userType === "2") {
                         setIsValidTeammerUsername({
                             status: false,
                             message: res.data.message
                         });
-                    };
+                    }
+                    ;
                 } else {
                     if (userType === "1") {
                         setIsValidOwnerUsername({
                             status: true,
                             message: res.data.message
                         });
-                    };
+                    }
+                    ;
                     if (userType === "2") {
                         setIsValidTeammerUsername({
                             status: true,
                             message: res.data.message
                         });
-                    };
-                };
+                    }
+                    ;
+                }
+                ;
             });
         } else {
             if (userType === "1") {
@@ -825,21 +873,25 @@ const steps2 = (props) => {
                     status: false,
                     message: 'Username is not valid'
                 });
-            };
+            }
+            ;
             if (userType === "2") {
                 setIsValidTeammerUsername({
                     status: false,
                     message: 'Username is not valid'
                 });
-            };
-        };
+            }
+            ;
+        }
+        ;
     };
 
     const validateStep = () => {
         if (!selectedUserType || !currentStep) {
             setCurrentStep(0);
             return false;
-        };
+        }
+        ;
 
         // user stype => owner
         if (selectedUserType === "1") {
@@ -856,25 +908,29 @@ const steps2 = (props) => {
                         key: 'avatarFile',
                         message: 'Avatar field is required'
                     });
-                };
+                }
+                ;
                 if (!owner.full_name?.trim()) {
                     step_1_errors.push({
                         key: 'full_name',
                         message: 'Fullname field is required'
                     });
-                };
+                }
+                ;
                 if (!owner.username?.trim()) {
                     step_1_errors.push({
                         key: 'username',
                         message: 'Username field is required'
                     });
-                };
+                }
+                ;
                 if (!owner.role) {
                     step_1_errors.push({
                         key: 'role',
                         message: 'Role field is required'
                     });
-                };
+                }
+                ;
 
                 setOwnerStepValidations(prevState => {
                     return {
@@ -887,8 +943,10 @@ const steps2 = (props) => {
                     return false;
                 } else {
                     return true;
-                };
-            };
+                }
+                ;
+            }
+            ;
             if (currentStep === 2) {
 
                 // TEST MODE !!!
@@ -902,25 +960,29 @@ const steps2 = (props) => {
                         key: 'avatarFile',
                         message: 'Logo field is required'
                     });
-                };
+                }
+                ;
                 if (!startup.title?.trim()) {
                     step_2_errors.push({
                         key: 'title',
                         message: 'Title field is required'
                     });
-                };
+                }
+                ;
                 if (!startup.type) {
                     step_2_errors.push({
                         key: 'type',
                         message: 'Startup type field is required'
                     });
-                };
+                }
+                ;
                 if (!startup.description) {
                     step_2_errors.push({
                         key: 'description',
                         message: 'Description field is required'
                     });
-                };
+                }
+                ;
 
                 setOwnerStepValidations(prevState => {
                     return {
@@ -933,8 +995,10 @@ const steps2 = (props) => {
                     return false;
                 } else {
                     return true;
-                };
-            };
+                }
+                ;
+            }
+            ;
             if (currentStep === 3) {
                 // OWNER FINAL STEP
                 let step_3_errors = [];
@@ -955,7 +1019,8 @@ const steps2 = (props) => {
                     });
 
                     return;
-                };
+                }
+                ;
 
                 if (!jobList.length && !isValidForm) {
                     step_3_errors.push({
@@ -970,7 +1035,8 @@ const steps2 = (props) => {
                     });
 
                     return;
-                };
+                }
+                ;
 
                 submitOwnerData();
 
@@ -1054,8 +1120,10 @@ const steps2 = (props) => {
 
                 //     return;
                 // };
-            };
-        };
+            }
+            ;
+        }
+        ;
         // user stype => teammer
         if (selectedUserType === "2") {
             if (currentStep === 1) {
@@ -1071,19 +1139,22 @@ const steps2 = (props) => {
                         key: 'full_name',
                         message: 'Fullname field is required'
                     });
-                };
+                }
+                ;
                 if (!teammer.username?.trim()) {
                     step_1_errors.push({
                         key: 'username',
                         message: 'Username field is required'
                     });
-                };
+                }
+                ;
                 if (!teammer.location) {
                     step_1_errors.push({
                         key: 'location',
                         message: 'Location field is required'
                     });
-                };
+                }
+                ;
 
                 setTeammerStepValidations(prevState => {
                     return {
@@ -1096,8 +1167,10 @@ const steps2 = (props) => {
                     return false;
                 } else {
                     return true;
-                };
-            };
+                }
+                ;
+            }
+            ;
             if (currentStep === 2) {
 
                 // TEST MODE !!!
@@ -1111,19 +1184,22 @@ const steps2 = (props) => {
                         key: 'positions',
                         message: 'Position field is required'
                     });
-                };
+                }
+                ;
                 if (!teammer.experienceLevel) {
                     step_2_errors.push({
                         key: 'experienceLevel',
                         message: 'Experience level field is required'
                     });
-                };
+                }
+                ;
                 if (!teammer.skillList.length) {
                     step_2_errors.push({
                         key: 'skillList',
                         message: 'Skills field is required'
                     });
-                };
+                }
+                ;
                 if (!teammer.cvFile) {
                     step_2_errors.push({
                         key: "cv",
@@ -1138,7 +1214,8 @@ const steps2 = (props) => {
                         key: 'step_2_final',
                         message: 'You must add at least 1 job position'
                     });
-                };
+                }
+                ;
 
                 setTeammerStepValidations(prevState => {
                     return {
@@ -1151,8 +1228,10 @@ const steps2 = (props) => {
                     return false;
                 } else {
                     return true;
-                };
-            };
+                }
+                ;
+            }
+            ;
             if (currentStep === 3) {
 
                 // final step
@@ -1167,13 +1246,15 @@ const steps2 = (props) => {
                         key: 'avatarFile',
                         message: 'Avatar field is required'
                     });
-                };
+                }
+                ;
                 if (!teammer.about?.trim()) {
                     step_3_errors.push({
                         key: 'about',
                         message: 'Description field is required'
                     });
-                };
+                }
+                ;
 
                 setTeammerStepValidations(prevState => {
                     return {
@@ -1186,9 +1267,12 @@ const steps2 = (props) => {
                     return false;
                 } else {
                     return true;
-                };
-            };
-        };
+                }
+                ;
+            }
+            ;
+        }
+        ;
     };
 
     const submitOwnerData = () => {
@@ -1218,7 +1302,8 @@ const steps2 = (props) => {
                     description: selectedJob.description
                 }
             ];
-        };
+        }
+        ;
 
         // // v3
         if (jobList.length) {
@@ -1242,7 +1327,8 @@ const steps2 = (props) => {
                     description: item.description
                 };
             });
-        };
+        }
+        ;
 
         // // v5 (list & new job )
         if (jobList.length && !isEditSelectedJob) {
@@ -1286,7 +1372,8 @@ const steps2 = (props) => {
                     description: selectedJob.description
                 }
             ];
-        };
+        }
+        ;
 
         // let jobs = jobList.map(item => {
         //     return {
@@ -1364,7 +1451,8 @@ const steps2 = (props) => {
                         "-" + selectedWorkExp.end_year?.id,
                 }
             ];
-        };
+        }
+        ;
 
         // // v3
         if (workExperienceList.length) {
@@ -1387,7 +1475,8 @@ const steps2 = (props) => {
                         "-" + item.end_year?.id,
                 };
             });
-        };
+        }
+        ;
 
         // // v5 (list & new job )
         if (workExperienceList.length && !isEditSelectedWorkExp) {
@@ -1428,15 +1517,18 @@ const steps2 = (props) => {
                         "-" + selectedWorkExp.end_year?.id,
                 }
             ];
-        };
+        }
+        ;
 
         let socialAccounts = [];
 
         for (const [key, value] of Object.entries(teammer.socialDatas)) {
             if (value) {
-                socialAccounts.push({ [key]: value });
-            };
-        };
+                socialAccounts.push({[key]: value});
+            }
+            ;
+        }
+        ;
 
         console.log('teammer cv', teammer.cvFile);
 
@@ -1469,20 +1561,22 @@ const steps2 = (props) => {
                 removeCookie('teammers-type');
                 setCookie('teammers-type', 2);
                 router.push('/teammer/subscribe')
-            };
+            }
+            ;
 
         }).catch(error => {
             if (error.response?.status === 422) {
                 let errors = renderErrorMessages(error.response.data.error.validation);
                 setTeammerResponseErrors(errors);
-            };
+            }
+            ;
         });
     };
 
     return (
         <div className="container">
             <div className="not-auth-layout steps">
-                <Header />
+                <Header/>
                 <div className="row">
                     <div className="col-md-6">
                         <div className="left">
@@ -1514,12 +1608,12 @@ const steps2 = (props) => {
                                                     <>
                                                         Which one defines you?
                                                         {currentStep > 0 &&
-                                                            <Button
-                                                                className="btn-edit-step"
-                                                                onClick={() => editStep(0)}
-                                                            >
-                                                                <AiOutlineEdit />
-                                                            </Button>
+                                                        <Button
+                                                            className="btn-edit-step"
+                                                            onClick={() => editStep(0)}
+                                                        >
+                                                            <AiOutlineEdit/>
+                                                        </Button>
                                                         }
                                                     </>
                                                 }
@@ -1544,13 +1638,13 @@ const steps2 = (props) => {
                                                     <>
                                                         Contact Information
                                                         {currentStep > 1 &&
-                                                            <Button
-                                                                className="btn-edit-step"
-                                                                onClick={() => editStep(1)
-                                                                }
-                                                            >
-                                                                <AiOutlineEdit />
-                                                            </Button>
+                                                        <Button
+                                                            className="btn-edit-step"
+                                                            onClick={() => editStep(1)
+                                                            }
+                                                        >
+                                                            <AiOutlineEdit/>
+                                                        </Button>
                                                         }
                                                     </>
                                                 }
@@ -1636,8 +1730,10 @@ const steps2 = (props) => {
                                                                             {
                                                                                 ownerStepValidations.step_1.map((item, index) => {
                                                                                     if (item.key === "avatarFile") {
-                                                                                        return <span key={index}>{item.message}</span>
-                                                                                    };
+                                                                                        return <span
+                                                                                            key={index}>{item.message}</span>
+                                                                                    }
+                                                                                    ;
                                                                                 })
                                                                             }
                                                                         </div>
@@ -1685,8 +1781,10 @@ const steps2 = (props) => {
                                                                                 {
                                                                                     ownerStepValidations.step_1.map((item, index) => {
                                                                                         if (item.key === "username") {
-                                                                                            return <span key={index}>{item.message}</span>
-                                                                                        };
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
+                                                                                        }
+                                                                                        ;
                                                                                     })
                                                                                 }
                                                                                 {
@@ -1701,8 +1799,10 @@ const steps2 = (props) => {
                                                                                 {
                                                                                     teammerStepValidations.step_1.map((item, index) => {
                                                                                         if (item.key === "username") {
-                                                                                            return <span key={index}>{item.message}</span>
-                                                                                        };
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
+                                                                                        }
+                                                                                        ;
                                                                                     })
                                                                                 }
                                                                                 {
@@ -1753,14 +1853,18 @@ const steps2 = (props) => {
                                                                                 selectedUserType === "1" ?
                                                                                     ownerStepValidations.step_1.map((item, index) => {
                                                                                         if (item.key === "full_name") {
-                                                                                            return <span key={index}>{item.message}</span>
-                                                                                        };
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
+                                                                                        }
+                                                                                        ;
                                                                                     })
                                                                                     :
                                                                                     teammerStepValidations.step_1.map((item, index) => {
                                                                                         if (item.key === "full_name") {
-                                                                                            return <span key={index}>{item.message}</span>
-                                                                                        };
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
+                                                                                        }
+                                                                                        ;
                                                                                     })
                                                                             }
                                                                         </div>
@@ -1768,7 +1872,8 @@ const steps2 = (props) => {
                                                                     {
                                                                         selectedUserType === "1" ?
                                                                             <Form.Group>
-                                                                                <Form.ControlLabel>Roles in Startup</Form.ControlLabel>
+                                                                                <Form.ControlLabel>Roles in
+                                                                                    Startup</Form.ControlLabel>
                                                                                 <InputPicker
                                                                                     size="lg"
                                                                                     name="role"
@@ -1799,8 +1904,10 @@ const steps2 = (props) => {
                                                                                     {
                                                                                         ownerStepValidations.step_1.map((item, index) => {
                                                                                             if (item.key === "role") {
-                                                                                                return <span key={index}>{item.message}</span>
-                                                                                            };
+                                                                                                return <span
+                                                                                                    key={index}>{item.message}</span>
+                                                                                            }
+                                                                                            ;
                                                                                         })
                                                                                     }
                                                                                 </div>
@@ -1831,8 +1938,10 @@ const steps2 = (props) => {
                                                                                     {
                                                                                         teammerStepValidations.step_1.map((item, index) => {
                                                                                             if (item.key === "location") {
-                                                                                                return <span key={index}>{item.message}</span>
-                                                                                            };
+                                                                                                return <span
+                                                                                                    key={index}>{item.message}</span>
+                                                                                            }
+                                                                                            ;
                                                                                         })
                                                                                     }
                                                                                 </div>
@@ -1850,7 +1959,8 @@ const steps2 = (props) => {
                                                                             onClick={() => {
                                                                                 if (validateStep(1)) {
                                                                                     setCurrentStep(2);
-                                                                                };
+                                                                                }
+                                                                                ;
                                                                             }}
                                                                         >
                                                                             Next
@@ -1876,7 +1986,7 @@ const steps2 = (props) => {
                                                                         className="btn-edit-step"
                                                                         onClick={() => editStep(2)}
                                                                     >
-                                                                        <AiOutlineEdit />
+                                                                        <AiOutlineEdit/>
                                                                     </Button>
                                                                 }
                                                             </>
@@ -1945,7 +2055,8 @@ const steps2 = (props) => {
                                                                         :
                                                                         <div>
                                                                             <Form>
-                                                                                <div className="upload-avatar-wrapper mb-4">
+                                                                                <div
+                                                                                    className="upload-avatar-wrapper mb-4">
                                                                                     <input
                                                                                         type="file"
                                                                                         className="d-none"
@@ -1967,18 +2078,22 @@ const steps2 = (props) => {
                                                                                             Upload Logo
                                                                                         </button>
                                                                                     </div>
-                                                                                    <div className="validation-errors mb-4">
+                                                                                    <div
+                                                                                        className="validation-errors mb-4">
                                                                                         {
                                                                                             ownerStepValidations.step_2.map((item, index) => {
                                                                                                 if (item.key === "avatarFile") {
-                                                                                                    return <span key={index}>{item.message}</span>
-                                                                                                };
+                                                                                                    return <span
+                                                                                                        key={index}>{item.message}</span>
+                                                                                                }
+                                                                                                ;
                                                                                             })
                                                                                         }
                                                                                     </div>
                                                                                 </div>
                                                                                 <Form.Group controlId="title">
-                                                                                    <Form.ControlLabel>Startup Title</Form.ControlLabel>
+                                                                                    <Form.ControlLabel>Startup
+                                                                                        Title</Form.ControlLabel>
                                                                                     <Form.Control
                                                                                         type="text"
                                                                                         name="title"
@@ -1997,14 +2112,17 @@ const steps2 = (props) => {
                                                                                         {
                                                                                             ownerStepValidations.step_2.map((item, index) => {
                                                                                                 if (item.key === "title") {
-                                                                                                    return <span key={index}>{item.message}</span>
-                                                                                                };
+                                                                                                    return <span
+                                                                                                        key={index}>{item.message}</span>
+                                                                                                }
+                                                                                                ;
                                                                                             })
                                                                                         }
                                                                                     </div>
                                                                                 </Form.Group>
                                                                                 <Form className="Group">
-                                                                                    <Form.ControlLabel>Startup type</Form.ControlLabel>
+                                                                                    <Form.ControlLabel>Startup
+                                                                                        type</Form.ControlLabel>
                                                                                     <InputPicker
                                                                                         size="lg"
                                                                                         name="type"
@@ -2031,24 +2149,28 @@ const steps2 = (props) => {
                                                                                             });
                                                                                         }}
                                                                                     />
-                                                                                    <div className="validation-errors mb-4">
+                                                                                    <div
+                                                                                        className="validation-errors mb-4">
                                                                                         {
                                                                                             ownerStepValidations.step_2.map((item, index) => {
                                                                                                 if (item.key === "type") {
-                                                                                                    return <span key={index}>{item.message}</span>
-                                                                                                };
+                                                                                                    return <span
+                                                                                                        key={index}>{item.message}</span>
+                                                                                                }
+                                                                                                ;
                                                                                             })
                                                                                         }
                                                                                     </div>
                                                                                 </Form>
                                                                                 <Form.Group className="mt-2">
-                                                                                    <Form.ControlLabel>Description about startup</Form.ControlLabel>
+                                                                                    <Form.ControlLabel>Description about
+                                                                                        startup</Form.ControlLabel>
                                                                                     {
                                                                                         isEditorLoaded ?
                                                                                             <CKEditor
                                                                                                 name={"name"}
                                                                                                 editor={ClassicEditor}
-                                                                                                style={{ maxWidth: "400px" }}
+                                                                                                style={{maxWidth: "400px"}}
                                                                                                 data={startup.description}
                                                                                                 onChange={(event, editor) => {
                                                                                                     const data = editor.getData();
@@ -2063,12 +2185,15 @@ const steps2 = (props) => {
                                                                                             :
                                                                                             ''
                                                                                     }
-                                                                                    <div className="validation-errors mb-4">
+                                                                                    <div
+                                                                                        className="validation-errors mb-4">
                                                                                         {
                                                                                             ownerStepValidations.step_2.map((item, index) => {
                                                                                                 if (item.key === "description") {
-                                                                                                    return <span key={index}>{item.message}</span>
-                                                                                                };
+                                                                                                    return <span
+                                                                                                        key={index}>{item.message}</span>
+                                                                                                }
+                                                                                                ;
                                                                                             })
                                                                                         }
                                                                                     </div>
@@ -2085,7 +2210,8 @@ const steps2 = (props) => {
                                                                                     onClick={() => {
                                                                                         if (validateStep(2)) {
                                                                                             setCurrentStep(3);
-                                                                                        };
+                                                                                        }
+                                                                                        ;
                                                                                     }}
                                                                                 >
                                                                                     Next
@@ -2104,12 +2230,12 @@ const steps2 = (props) => {
                                                             <>
                                                                 Position details
                                                                 {currentStep > 2 &&
-                                                                    <Button
-                                                                        className="btn-edit-step"
-                                                                        onClick={() => editStep(2)}
-                                                                    >
-                                                                        <AiOutlineEdit />
-                                                                    </Button>
+                                                                <Button
+                                                                    className="btn-edit-step"
+                                                                    onClick={() => editStep(2)}
+                                                                >
+                                                                    <AiOutlineEdit/>
+                                                                </Button>
                                                                 }
                                                             </>
                                                         }
@@ -2184,7 +2310,8 @@ const steps2 = (props) => {
                                                                                                 ]
                                                                                             };
                                                                                         });
-                                                                                    };
+                                                                                    }
+                                                                                    ;
                                                                                 }}
                                                                             />
                                                                             {
@@ -2211,32 +2338,34 @@ const steps2 = (props) => {
                                                                                 {
                                                                                     teammerStepValidations.step_2.map((item, index) => {
                                                                                         if (item.key === "positions") {
-                                                                                            return <span key={index}>{item.message}</span>
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
                                                                                         }
                                                                                     })
                                                                                 }
                                                                             </div>
                                                                             <InputPicker size="lg"
-                                                                                className="w-100 my-2"
-                                                                                placeholder="Experience Level"
-                                                                                data={publicDatas.experienceLevelList}
-                                                                                value={teammer.experienceLevel?.id || null}
-                                                                                valueKey="id"
-                                                                                labelKey='name'
-                                                                                onSelect={(id, obj) => {
-                                                                                    setTeammer(prevState => {
-                                                                                        return {
-                                                                                            ...prevState,
-                                                                                            experienceLevel: obj
-                                                                                        };
-                                                                                    });
-                                                                                }}
+                                                                                         className="w-100 my-2"
+                                                                                         placeholder="Experience Level"
+                                                                                         data={publicDatas.experienceLevelList}
+                                                                                         value={teammer.experienceLevel?.id || null}
+                                                                                         valueKey="id"
+                                                                                         labelKey='name'
+                                                                                         onSelect={(id, obj) => {
+                                                                                             setTeammer(prevState => {
+                                                                                                 return {
+                                                                                                     ...prevState,
+                                                                                                     experienceLevel: obj
+                                                                                                 };
+                                                                                             });
+                                                                                         }}
                                                                             />
                                                                             <div className="validation-errors">
                                                                                 {
                                                                                     teammerStepValidations.step_2.map((item, index) => {
                                                                                         if (item.key === "experienceLevel") {
-                                                                                            return <span key={index}>{item.message}</span>
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
                                                                                         }
                                                                                     })
                                                                                 }
@@ -2260,7 +2389,8 @@ const steps2 = (props) => {
                                                                                                 ]
                                                                                             };
                                                                                         });
-                                                                                    };
+                                                                                    }
+                                                                                    ;
                                                                                 }}
                                                                             />
                                                                             {
@@ -2287,7 +2417,8 @@ const steps2 = (props) => {
                                                                                 {
                                                                                     teammerStepValidations.step_2.map((item, index) => {
                                                                                         if (item.key === "skillList") {
-                                                                                            return <span key={index}>{item.message}</span>
+                                                                                            return <span
+                                                                                                key={index}>{item.message}</span>
                                                                                         }
                                                                                     })
                                                                                 }
@@ -2298,24 +2429,29 @@ const steps2 = (props) => {
                                                                                     workExperienceList.map((item, index) =>
                                                                                         <div key={index}>
                                                                                             <p>
-                                                                                                <span className="from-date">
+                                                                                                <span
+                                                                                                    className="from-date">
                                                                                                     {item.start_month?.name} {item.start_year?.name}
                                                                                                 </span>
-                                                                                                <span className="to-date"> - {item.end_month?.name} {item.end_year?.name}</span>
+                                                                                                <span
+                                                                                                    className="to-date"> - {item.end_month?.name} {item.end_year?.name}</span>
                                                                                             </p>
-                                                                                            <div className="edit-header">
-                                                                                                <div className="job-title">
+                                                                                            <div
+                                                                                                className="edit-header">
+                                                                                                <div
+                                                                                                    className="job-title">
                                                                                                     <h3>{item.position?.name}</h3>
                                                                                                     <p>{item.companyName} / {item.location?.name}</p>
                                                                                                 </div>
-                                                                                                <button onClick={() => editWorkExperience(index)}>
-                                                                                                    <MdModeEditOutline />
+                                                                                                <button
+                                                                                                    onClick={() => editWorkExperience(index)}>
+                                                                                                    <MdModeEditOutline/>
                                                                                                 </button>
                                                                                             </div>
                                                                                         </div>
                                                                                     )
                                                                                 }
-                                                                                <hr className="mt-0" />
+                                                                                <hr className="mt-0"/>
                                                                                 <div className="job-section">
                                                                                     <div className="job-divs">
                                                                                         <h4>Position</h4>
@@ -2336,7 +2472,8 @@ const steps2 = (props) => {
                                                                                                 });
                                                                                             }}
                                                                                         />
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'position')?.message
@@ -2358,7 +2495,8 @@ const steps2 = (props) => {
                                                                                                 });
                                                                                             }}
                                                                                         />
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'companyName')?.message
@@ -2385,7 +2523,8 @@ const steps2 = (props) => {
                                                                                                 });
                                                                                             }}
                                                                                         />
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'location')?.message
@@ -2395,7 +2534,8 @@ const steps2 = (props) => {
                                                                                     </div>
                                                                                     <div className="job-divs">
                                                                                         <h4>Start date</h4>
-                                                                                        <div className="d-flex justify-content-between">
+                                                                                        <div
+                                                                                            className="d-flex justify-content-between">
                                                                                             <InputPicker
                                                                                                 size="lg"
                                                                                                 style={{
@@ -2437,14 +2577,16 @@ const steps2 = (props) => {
                                                                                                 }}
                                                                                             />
                                                                                         </div>
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'start_month')?.message
                                                                                                 }
                                                                                             </span>
                                                                                         </div>
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'start_year')?.message
@@ -2454,7 +2596,8 @@ const steps2 = (props) => {
                                                                                     </div>
                                                                                     <div className="job-divs">
                                                                                         <h4>End date</h4>
-                                                                                        <div className="d-flex justify-content-between">
+                                                                                        <div
+                                                                                            className="d-flex justify-content-between">
                                                                                             <InputPicker
                                                                                                 size="lg"
                                                                                                 style={{
@@ -2496,14 +2639,16 @@ const steps2 = (props) => {
                                                                                                 }}
                                                                                             />
                                                                                         </div>
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'end_month')?.message
                                                                                                 }
                                                                                             </span>
                                                                                         </div>
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             <span>
                                                                                                 {
                                                                                                     selectedWorkExpErrors.find(x => x.key === 'end_year')?.message
@@ -2516,7 +2661,7 @@ const steps2 = (props) => {
                                                                                     className="add-more-experience"
                                                                                     onClick={addMoreExperience}
                                                                                 >
-                                                                                    <BsPlusLg className="mr-2" />
+                                                                                    <BsPlusLg className="mr-2"/>
                                                                                     {
                                                                                         !isEditSelectedWorkExp.status ?
                                                                                             'Add More Experience'
@@ -2525,7 +2670,7 @@ const steps2 = (props) => {
                                                                                     }
                                                                                 </button>
                                                                             </div>
-                                                                            <hr />
+                                                                            <hr/>
                                                                             <div className="portfolio">
                                                                                 <h3>Portfolio</h3>
                                                                                 {
@@ -2542,7 +2687,7 @@ const steps2 = (props) => {
                                                                                                     portfolioFunction('remove', item);
                                                                                                 }}
                                                                                             >
-                                                                                                <FaRegTrashAlt />
+                                                                                                <FaRegTrashAlt/>
                                                                                             </Button>
                                                                                         </div>
                                                                                     )
@@ -2557,10 +2702,10 @@ const steps2 = (props) => {
                                                                                     <Button
                                                                                         onClick={() => portfolioFunction('add')}
                                                                                     >
-                                                                                        <BsPlusLg className="mr-2 " />
+                                                                                        <BsPlusLg className="mr-2 "/>
                                                                                     </Button>
                                                                                 </div>
-                                                                                <hr />
+                                                                                <hr/>
                                                                             </div>
                                                                             <div className="step_form">
                                                                                 <h3>Social media accounts</h3>
@@ -2600,7 +2745,7 @@ const steps2 = (props) => {
                                                                                         <Form.Control
                                                                                             name="behance"
                                                                                             type="url"
-                                                                                            placeholder="http://www.behance.net/margaretbrown" />
+                                                                                            placeholder="http://www.behance.net/margaretbrown"/>
                                                                                     </Form.Group>
                                                                                     <Form.Group
                                                                                         controlId="dribble">
@@ -2608,7 +2753,7 @@ const steps2 = (props) => {
                                                                                         <Form.Control
                                                                                             name="dribble"
                                                                                             type="url"
-                                                                                            placeholder="http://www.dribble.com/margaretbrown" />
+                                                                                            placeholder="http://www.dribble.com/margaretbrown"/>
                                                                                     </Form.Group>
                                                                                     <Form.Group
                                                                                         controlId="linkedin">
@@ -2623,8 +2768,10 @@ const steps2 = (props) => {
                                                                                         {
                                                                                             teammerStepValidations.step_2.map((item, index) => {
                                                                                                 if (item.key === "step_2_final") {
-                                                                                                    return <span key={index}>{item.message}</span>
-                                                                                                };
+                                                                                                    return <span
+                                                                                                        key={index}>{item.message}</span>
+                                                                                                }
+                                                                                                ;
                                                                                             })
                                                                                         }
                                                                                     </div>
@@ -2648,7 +2795,8 @@ const steps2 = (props) => {
                                                                                             Import from Linkedin
                                                                                         </button>
                                                                                     </Uploader> */}
-                                                                                    <div className="upload-avatar-wrapper mb-4">
+                                                                                    <div
+                                                                                        className="upload-avatar-wrapper mb-4">
                                                                                         <input
                                                                                             type="file"
                                                                                             className="d-none"
@@ -2682,18 +2830,22 @@ const steps2 = (props) => {
                                                                                                 </a>
                                                                                             </div>
                                                                                         }
-                                                                                        <div className="validation-errors">
+                                                                                        <div
+                                                                                            className="validation-errors">
                                                                                             {
                                                                                                 teammerStepValidations.step_2.map((item, index) => {
                                                                                                     if (item.key === "cv") {
-                                                                                                        return <span key={index}>{item.message}</span>
-                                                                                                    };
+                                                                                                        return <span
+                                                                                                            key={index}>{item.message}</span>
+                                                                                                    }
+                                                                                                    ;
                                                                                                 })
                                                                                             }
                                                                                         </div>
                                                                                     </div>
 
-                                                                                    <div className="navigation-btn-wrapper">
+                                                                                    <div
+                                                                                        className="navigation-btn-wrapper">
                                                                                         <Button
                                                                                             type="button"
                                                                                             onClick={() => setCurrentStep(1)}
@@ -2724,25 +2876,25 @@ const steps2 = (props) => {
                                                             <div className='step-form'>
                                                                 {
                                                                     jobList.length > 0 && jobList.map((item, index) =>
-                                                                        item.position && (
-                                                                            <div key={index}>
-                                                                                <div
-                                                                                    className="edit-header d-flex justify-content-between align-items-baseline"
-                                                                                >
-                                                                                    <div className="job-title">
-                                                                                        <h5>Position: {' '}{' '}</h5>
+                                                                            item.position && (
+                                                                                <div key={index}>
+                                                                                    <div
+                                                                                        className="edit-header d-flex justify-content-between align-items-baseline"
+                                                                                    >
+                                                                                        <div className="job-title">
+                                                                                            <h5>Position: {' '}{' '}</h5>
+                                                                                        </div>
+                                                                                        <p>
+                                                                                            {item.position.name}
+                                                                                        </p>
+                                                                                        <MdModeEditOutline
+                                                                                            className='c-pointer'
+                                                                                            onClick={() => editSelectedJob(index)}
+                                                                                        />
                                                                                     </div>
-                                                                                    <p>
-                                                                                        {item.position.name}
-                                                                                    </p>
-                                                                                    <MdModeEditOutline
-                                                                                        className='c-pointer'
-                                                                                        onClick={() => editSelectedJob(index)}
-                                                                                    />
+                                                                                    <hr/>
                                                                                 </div>
-                                                                                <hr />
-                                                                            </div>
-                                                                        )
+                                                                            )
                                                                     )
                                                                 }
                                                                 <div className="position_details">
@@ -2847,7 +2999,8 @@ const steps2 = (props) => {
                                                                                         let isUnpaid = false;
                                                                                         if (obj.name === "unpaid") {
                                                                                             isUnpaid = true;
-                                                                                        };
+                                                                                        }
+                                                                                        ;
 
                                                                                         return {
                                                                                             ...prevState,
@@ -2871,7 +3024,8 @@ const steps2 = (props) => {
                                                                             </div>
                                                                         </Form.Group>
                                                                         <Form.Group>
-                                                                            <div className='d-flex justify-content-between align-items-baseline'>
+                                                                            <div
+                                                                                className='d-flex justify-content-between align-items-baseline'>
                                                                                 <Input
                                                                                     type="number"
                                                                                     min={0}
@@ -2940,7 +3094,8 @@ const steps2 = (props) => {
                                                                             </div>
                                                                         </Form.Group>
                                                                         <Form.Group>
-                                                                            <Form.ControlLabel>Years of experience</Form.ControlLabel>
+                                                                            <Form.ControlLabel>Years of
+                                                                                experience</Form.ControlLabel>
                                                                             <InputNumber
                                                                                 min={0}
                                                                                 max={50}
@@ -2964,7 +3119,8 @@ const steps2 = (props) => {
                                                                             </div>
                                                                         </Form.Group>
                                                                         <Form.Group>
-                                                                            <Form.ControlLabel>Description about Job Position</Form.ControlLabel>
+                                                                            <Form.ControlLabel>Description about Job
+                                                                                Position</Form.ControlLabel>
                                                                             {
                                                                                 isEditorLoaded ?
                                                                                     <CKEditor
@@ -2998,7 +3154,7 @@ const steps2 = (props) => {
                                                                             className="add-more-experience"
                                                                             onClick={addMorePosition}
                                                                         >
-                                                                            <BsPlusLg className="mr-2" />
+                                                                            <BsPlusLg className="mr-2"/>
                                                                             {
                                                                                 !isEditSelectedWorkExp.status ?
                                                                                     'Add New Job Position'
@@ -3010,8 +3166,10 @@ const steps2 = (props) => {
                                                                             {
                                                                                 ownerStepValidations.step_3.map((item, index) => {
                                                                                     if (item.key === "final") {
-                                                                                        return <span key={index}>{item.message}</span>
-                                                                                    };
+                                                                                        return <span
+                                                                                            key={index}>{item.message}</span>
+                                                                                    }
+                                                                                    ;
                                                                                 })
                                                                             }
                                                                         </div>
@@ -3041,7 +3199,8 @@ const steps2 = (props) => {
                                                                                 onClick={() => {
                                                                                     if (validateStep(3)) {
                                                                                         submitOwnerData();
-                                                                                    };
+                                                                                    }
+                                                                                    ;
                                                                                 }}
                                                                             >
                                                                                 Submit
@@ -3126,14 +3285,15 @@ const steps2 = (props) => {
                                                                         onClick={() => {
                                                                             if (validateStep(3)) {
                                                                                 submitTeammerData();
-                                                                            };
+                                                                            }
+                                                                            ;
                                                                         }}
                                                                     >
                                                                         Submit
                                                                     </Button>
                                                                 </div>
                                                             </div>
-                                                        } />
+                                                        }/>
                                             }
                                         </Steps>
                                     </div>
@@ -3142,8 +3302,8 @@ const steps2 = (props) => {
                         </div>
                     </div>
                 </div>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }
 
