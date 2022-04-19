@@ -16,12 +16,20 @@ const ChatProvider = ({ children }) => {
     const [lastMessageList, setLastMessageList] = useState([]);
 
     const createMessage = (message) => {
-        setChat(prevState => {
-            return {
-                ...prevState,
-                message
-            }
-        })
+        if (!message) return;
+
+        let selectedConversation = chat.find(x => x.id === message.conversation_id);
+
+        selectedConversation.messages.push(message);
+
+        if (selectedConversation) {
+            setChat(prevState => {
+                return [
+                    ...prevState.filter(x => x.id !== selectedConversation.id),
+                    selectedConversation
+                ]
+            })
+        };
     };
 
     useEffect(() => {
@@ -31,7 +39,7 @@ const ChatProvider = ({ children }) => {
         // // last 5 conversation
         let last_conversations = chat.slice(Math.max(chat.length - 5, 0));
 
-        console.log('CONVERSATION LSIT [ 0 ]', last_conversations[0]);
+        // console.log('CONVERSATION LSIT [ 0 ]', last_conversations[0]);
 
         let arr = last_conversations.map(item => {
 
@@ -48,7 +56,7 @@ const ChatProvider = ({ children }) => {
                 title: member_names,
                 avatar: members[0]?.detail?.photo,
                 lastMessage: {
-                    isOwn: lastMessage.from === currentUserId,
+                    isOwn: lastMessage?.from === currentUserId,
                     content: lastMessage?.body,
                 }
             }
@@ -71,16 +79,22 @@ const ChatProvider = ({ children }) => {
         socket.on('message', message => {
             console.log('socket message', message);
             setChat(prevState => {
-                console.log('on message set obj', [...prevState, message]);
+                // console.log('on message set obj', [...prevState, message]);
 
                 let conversation = prevState.find(x => x.id === message.conversation_id);
 
-                if (conversation) {
-                    conversation.messages.push(message);
+                if (conversation && !conversation.messages.some(x => x.id === message.id)) {
+                    conversation.messages.push(message)
                 };
 
+                console.log('ON MESSAGE TEST', [
+                    ...prevState.filter(x => x.id !== conversation.id),
+                    conversation
+                ]);
+                // console.log('conversation', conversation);
+
                 return [
-                    ...prevState,
+                    ...prevState.filter(x => x.id !== conversation.id),
                     conversation
                 ]
             })

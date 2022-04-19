@@ -1,7 +1,6 @@
 .chat {
     .chat-wrapper {
         width: 100%;
-        overflow: hidden;
         background: #ffffff;
         box-shadow: 0px 33px 72px rgba(162, 173, 195, 0.2);
         border-radius: 12px;
@@ -49,9 +48,11 @@
             .chat-left-side {
                 width: 35%;
                 min-width: 35%;
+                border-right: 1px solid #d1d1d1;
+                height: 100%;
+                overflow: auto;
                 .select-wrap {
                     padding: 12px 32px;
-                    border-right: 1px solid #d1d1d1;
                     border-bottom: 1px solid #d1d1d1;
                     display: flex;
                     align-items: center;
@@ -73,7 +74,6 @@
                 }
                 .message-list-wrapper {
                     padding: 12px 25px 0px 18px;
-                    border-right: 1px solid #d1d1d1;
                     .search-input {
                         // width: 199px !important;
                         border-radius: 12px;
@@ -105,8 +105,6 @@
                     ul.message-list {
                         margin: 0;
                         padding: 0px 0px 30px 0px;
-                        height: 450px;
-                        overflow-y: scroll;
 
                         li.item {
                             list-style-type: none;
@@ -187,6 +185,7 @@
                 }
             }
             .chat-inner {
+                width: 65%;
                 .chat-area {
                     position: relative;
                     width: 100%;

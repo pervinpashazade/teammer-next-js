@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Avatar, Button, Checkbox, Dropdown, Form, IconButton, Input, InputGroup } from 'rsuite';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Avatar, Button, Checkbox, Form, IconButton, Input, InputGroup } from 'rsuite';
 import { HiArrowLeft } from 'react-icons/hi';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { AiOutlineRight } from 'react-icons/ai';
 import { RiSendPlaneFill } from 'react-icons/ri';
-import { FaArrowRight } from 'react-icons/fa';
-import { List } from 'rsuite';
 import Image from 'next/image';
-import config, { NEXT_URL } from '../src/configuration';
+import config from '../src/configuration';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useChat } from '../src/contexts/ChatProvider';
@@ -26,14 +23,31 @@ function Chat() {
 
     const router = useRouter();
 
-    const { chat } = useChat();
+    const formRef = useRef();
+    const setMessageRef = useCallback(node => {
+        if (node) {
+            node.scrollIntoView({ smooth: true })
+        }
+    }, []);
+
+    const {
+        chat,
+        createMessage,
+    } = useChat();
 
     const [user, setUser] = useState(null);
     const [conversationList, setConversationList] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null);
 
+    // // // mount
     useEffect(() => {
-        setConversationList(chat)
+        if (router.query.selectedConversationId && chat) {
+            setSelectedConversation(chat.find(x => x.id === Number(router.query.selectedConversationId)))
+        };
+    }, [router.query.selectedConversationId]);
+
+    useEffect(() => {
+        setConversationList(chat);
     }, [chat]);
 
     useEffect(() => {
@@ -46,22 +60,20 @@ function Chat() {
 
         let data = new FormData(e.target);
         let body = {};
+
         for (let [key, value] of data.entries()) {
             body[key] = value.trim();
         }
-        console.log('e body', body);
 
         if (body.text) {
             axios.post(config.BASE_URL + `conversations/${selectedConversation.id}/messages`, {
                 body: body.text
-            }, {
-                headers: {
-                    'Authorization': user?.token
+            }).then(res => {
+                formRef.current.root.reset();
+                if (res.data.success) {
+                    createMessage(res.data.data)
                 }
-            })
-                .then(res => {
-                    console.log('send message res', res);
-                });
+            });
         };
     };
 
@@ -179,10 +191,10 @@ function Chat() {
                                                 <Avatar
                                                     circle
                                                     src={
-                                                        lastMessage.from === Number(getCookie("teammers-id")) ?
+                                                        lastMessage?.from === Number(getCookie("teammers-id")) ?
                                                             "https://www.w3schools.com/howto/img_avatar.png"
                                                             :
-                                                            lastMessageSender.detail.photo
+                                                            lastMessageSender?.detail.photo
                                                     }
                                                     className='user-avatar'
                                                     alt="user photo"
@@ -220,7 +232,7 @@ function Chat() {
                                         </li> : null
                                     })
                                 }
-                                <li className="item">
+                                {/* <li className="item">
                                     <Checkbox
                                         className='check-select-all'
                                     />
@@ -237,7 +249,7 @@ function Chat() {
                                         </div>
                                         <span className='date'>Aug 23, 2021</span>
                                     </div>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                     </div>
@@ -256,12 +268,15 @@ function Chat() {
                                 {
                                     selectedConversation.messages.map((item, index) => {
                                         let isOwnMessage = item.from === Number(getCookie("teammers-id"));
-
+                                        let isLastMessage = selectedConversation.messages.length - 1 === index;
                                         return <div
+                                            ref={isLastMessage ? setMessageRef : null}
                                             key={index}
                                             className={`message ${isOwnMessage ? 'sent' : 'received'}`}
                                         >
-                                            <div className="content">
+                                            <div
+                                                className="content"
+                                            >
                                                 {
                                                     item.body
                                                 }
@@ -293,6 +308,7 @@ function Chat() {
                             <Form
                                 className='chat-form'
                                 onSubmit={(condition, event) => { sendMessage(event) }}
+                                ref={formRef}
                             >
                                 <Input
                                     name='text'
