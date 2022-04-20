@@ -150,13 +150,20 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
                         </a>
                     </Link>
                 </div>
+                {/* here */}
                 {
                     props.data?.length > 0 ?
                         props.data.map(item =>
                             <div
                                 key={item.id}
                                 className="message-person"
-                                onClick={() => router.push("/chat")}
+                                // onClick={() => router.push("/chat")}
+                                onClick={() => router.push({
+                                    pathname: '/chat',
+                                    query: {
+                                        selectedConversationId: item.id
+                                    }
+                                }, "/chat")}
                             >
                                 <div>
                                     <Avatar
@@ -288,8 +295,6 @@ const Header = (props) => {
     const authContext = useAuth();
 
     const { lastMessageList } = useChat();
-
-    console.log('lastMessageList', lastMessageList);
 
     const {
         user,
