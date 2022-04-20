@@ -16,8 +16,9 @@ axios.interceptors.response.use(function (response) {
     switch (status) {
         case 401:
             clearCookie();
-            document.location.replace('/')
-            // logoutService();
+            //  bug loop reload
+            // // document.location.replace('/')
+            // // logoutService();
             break;
         case 422:
             //do something
