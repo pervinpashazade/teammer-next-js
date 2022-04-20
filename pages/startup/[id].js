@@ -16,7 +16,8 @@ import {useRouter} from "next/router";
 
 function Startup(props) {
     const [startupData, setStartUpData] = useState([]);
-    const [startupJobList, setStartupJobList] = useState([])
+    const [startupJobList, setStartupJobList] = useState([]);
+    const [validate, setValidate] = useState(false);
     const [lists, setLists] = useState({
         salary_periods: [],
         positions: [],
@@ -100,10 +101,18 @@ function Startup(props) {
         })
     }, []);
     const submitJobCreate = () => {
-        axios.post(config.BASE_URL + `projects/${router.query.id}/jobs` , jobData)
-            .then(res => {
-                console.log(res)
-            })
+        if(Object.entries(jobData).every(([key , value])=> value)){
+            axios.post(config.BASE_URL + `projects/${router.query.id}/jobs`, jobData)
+                .then(res => {
+                    console.log(res)
+                    getStartupJobList();
+                    setIsOpen(false);
+
+                })
+        }
+        else{
+            setValidate(true)
+        }
     }
     return (
         <div className='profile-startup'>
@@ -223,6 +232,11 @@ function Startup(props) {
                                             })
                                         }}
                                     />
+                                    {(validate && !jobData.position_id) &&
+                                    <div className="validation-errors mt-0">Job position
+                                        is
+                                        required
+                                    </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 mb-4">
@@ -242,6 +256,11 @@ function Startup(props) {
                                             })
                                         }}
                                     />
+                                    {(validate && !jobData.location_id) &&
+                                    <div className="validation-errors mt-0">Location
+                                        is
+                                        required
+                                    </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 mb-4">
@@ -261,6 +280,11 @@ function Startup(props) {
                                             })
                                         }}
                                     />
+                                    {(validate && !jobData.payment_type_id) &&
+                                    <div className="validation-errors mt-0">Payment
+                                        is
+                                        required
+                                    </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 mb-4">
@@ -280,6 +304,11 @@ function Startup(props) {
                                             })
                                         }}
                                     />
+                                    {(validate && !jobData.type_id) &&
+                                    <div className="validation-errors mt-0">Project type
+                                        is
+                                        required
+                                    </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 d-flex align-items-center mb-4">
@@ -293,6 +322,11 @@ function Startup(props) {
                                         })}
                                         value={jobData.salary}
                                     />
+                                    {(validate && !jobData.salary) &&
+                                    <div className="validation-errors mt-0">Salary
+                                        is
+                                        required
+                                    </div>}
                                 </div>
                                 <div className="col-md-4 pr-0" controlId="location">
                                     <Form.ControlLabel>Salary period</Form.ControlLabel>
@@ -311,6 +345,11 @@ function Startup(props) {
                                             })
                                         }}
                                     />
+                                    {(validate && !jobData.salary_period) &&
+                                    <div className="validation-errors mt-0">Salary period
+                                        is
+                                        required
+                                    </div>}
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -327,6 +366,11 @@ function Startup(props) {
                                         type="number"
                                         min="0"
                                     />
+                                    {(validate && !jobData.years_of_experience) &&
+                                    <div className="validation-errors mt-0">Years of experience
+                                        is
+                                        required
+                                    </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 job-create-ck-editor">
@@ -352,6 +396,11 @@ function Startup(props) {
                                         :
                                         ''
                                 }
+                                {(validate && !jobData.description) &&
+                                <div className="validation-errors mt-0">Description
+                                    is
+                                    required
+                                </div>}
                             </div>
                         </Form>
                     </Modal.Body>

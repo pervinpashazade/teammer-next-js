@@ -53,9 +53,6 @@ const Home = (props) => {
                 <title>Teammer</title>
                 <meta name="description" content="Teammer application" />
             </Head>
-            {
-                console.log(jobList)
-            }
             <Content
                 positionList={positionList}
                 jobList={jobList}
