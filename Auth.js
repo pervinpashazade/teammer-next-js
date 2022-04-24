@@ -13,13 +13,15 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
 
     const router = useRouter();
-    const jwtgetCookie = getCookie('teammers-access-token');
+    // const jwtgetCookie = getCookie('teammers-access-token');
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(async () => {
 
-        // const jwtgetCookie = getCookie('teammers-access-token');
+        console.log('TEST => !');
+
+        const jwtgetCookie = getCookie('teammers-access-token');
 
         if (jwtgetCookie) {
             const fetchUserInfo = await getFetchData(

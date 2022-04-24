@@ -9,6 +9,7 @@ import withAuth from "../hooks/withAuth";
 import "../src/axios-interceptor";
 import { useRouter } from "next/router";
 import ChatProvider from "../src/contexts/ChatProvider";
+import { firebaseMessaging } from "../firebase.js";
 
 function MyApp({
     Component,
@@ -16,6 +17,10 @@ function MyApp({
 }) {
 
     const router = useRouter();
+
+    useEffect(() => {
+        firebaseMessaging();
+    }, []);
 
     useEffect(() => {
         document.body.classList.toggle('overflow-hidden', router.pathname === "/signup/steps");

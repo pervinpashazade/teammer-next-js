@@ -1,15 +1,22 @@
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import LogoFooter from '../../../public/LogoFooter.svg';
 import FeedbackModal from '../Modals/FeedbackModal.js'
+import { useRouter } from "next/router";
 
 const Footer = () => {
+
+    const router = useRouter();
 
     const [isOpenFeedbackModal, setIsOpenFeedbackModal] = useState(false);
 
     const toggleFeedbackModal = () => {
         setIsOpenFeedbackModal(!isOpenFeedbackModal);
+    }
+
+    if (router.pathname === "/chat") {
+        return null
     }
 
     return (
@@ -117,7 +124,7 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/">
+                            <Link href="https://medium.com/@teammers.com">
                                 <a>
                                     Blog
                                 </a>

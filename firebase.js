@@ -16,11 +16,12 @@ initializeApp({
     databaseURL: 'https://firstapp-5cfcd-default-rtdb.firebaseio.com',
 });
 
-
-
 // };
 
 export const firebaseMessaging = () => {
+
+    console.log('firebaseMessaging FIREBASE JS');
+
     try {
         const messaging = getMessaging();
 
@@ -60,8 +61,14 @@ export const firebaseMessaging = () => {
         onMessage(messaging, ({ notification, data }) => {
             alert('Noification');
 
+            console.clear();
+
+            console.log('NOTIFICATION messaging => ', messaging);
+            console.log('notification notification => ', notification);
+            console.log('notification data => ', data);
+
             if (data?.event === "message") {
-                console.log('message notification', JSON.parse(data.message));
+                console.log('TEAMMERS message notification', JSON.parse(data.message));
             };
 
             // console.log(data, notification);

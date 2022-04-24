@@ -156,7 +156,7 @@ function CardTeammerPortfolio(props) {
             <div className="card-content">
                 <ul>
                     {
-                        portfolioUrlList.portfolio.length > 0 && portfolioUrlList?.portfolio?.map((item, index) => {
+                        portfolioUrlList.portfolio?.length > 0 && portfolioUrlList?.portfolio?.map((item, index) => {
                             return (
                                 <li
                                     key={index}

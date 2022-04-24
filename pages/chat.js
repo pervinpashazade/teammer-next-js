@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Avatar, Button, Checkbox, Form, IconButton, Input, InputGroup } from 'rsuite';
+import { Avatar, Button, Checkbox, Form, IconButton, Input, InputGroup, Notification, toaster } from 'rsuite';
 import { HiArrowLeft } from 'react-icons/hi';
 import { AiOutlineRight } from 'react-icons/ai';
 import { RiSendPlaneFill } from 'react-icons/ri';
@@ -72,7 +72,13 @@ function Chat() {
                 formRef.current.root.reset();
                 if (res.data.success) {
                     createMessage(res.data.data)
-                }
+                };
+            }).catch(err => {
+                toaster.push(
+                    <Notification type={"error"} header="Oopss!" closable>
+                        {err.response?.data?.message}
+                    </Notification>, 'topEnd'
+                );
             });
         };
     };

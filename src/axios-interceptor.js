@@ -12,6 +12,9 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
+
+    // console.log('INTERCEPTOR ERROR =>', error.response);
+
     const status = error.response ? error.response.status : 401;
     switch (status) {
         case 401:
@@ -20,6 +23,9 @@ axios.interceptors.response.use(function (response) {
             // // document.location.replace('/')
             // // logoutService();
             break;
+        case 400:
+            return Promise.reject(error)
+            break
         case 422:
             //do something
             return Promise.reject(error);

@@ -1,18 +1,24 @@
-import React, {useState} from 'react';
-import {Avatar, Button, Notification, Panel, Tag, toaster} from 'rsuite';
+import React, { useState } from 'react';
+import { Avatar, Button, Notification, Panel, Tag, toaster } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
-import {getFetchData} from '../../lib/fetchData';
-import {getToken} from "../../lib/session";
+import { getFetchData } from '../../lib/fetchData';
+import { getToken } from "../../lib/session";
 import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
-import config, {NEXT_URL} from '../../src/configuration';
+import config, { NEXT_URL } from '../../src/configuration';
 import AuthModal from '../../src/components/Modals/AuthModal';
-import {useAuth} from "../../Auth";
+import { useAuth } from "../../Auth";
+import { useRouter } from "next/router";
+import { useChat } from '../../src/contexts/ChatProvider';
 
 function Startup(props) {
+
+    const router = useRouter();
+
+    const { chat } = useChat();
 
     const {
         fetchJobData,
@@ -20,7 +26,8 @@ function Startup(props) {
         startupJobList,
         similarJobList,
     } = props;
-    const {currentUser} = useAuth();
+
+    const { currentUser } = useAuth();
     const [jobData, setJobData] = useState(fetchJobData);
     const [token, setToken] = useState('');
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
@@ -29,7 +36,8 @@ function Startup(props) {
         const fetchUser = await fetch(NEXT_URL + 'api/auth');
         const resObj = await fetchUser.json();
         setToken(resObj?.user?.token);
-    }, [])
+    }, []);
+
     React.useEffect(() => {
         console.log('props job', jobData);
         setJobData(fetchJobData);
@@ -44,6 +52,44 @@ function Startup(props) {
                     setJobData(res.data.data);
                 }
             })
+    };
+
+    const sendMessage = () => {
+        if (!jobData?.project?.owner?.id || !chat) return;
+
+        // find conversation with job owner
+        const conversation = chat.find(conversation => conversation.members.find(member => member.id === jobData.project.owner.id));
+
+        if (conversation) {
+            router.push(
+                {
+                    pathname: '/chat',
+                    query: {
+                        selectedConversationId: conversation.id
+                    }
+                }, '/chat'
+            );
+
+            return;
+        };
+
+        newConversationRequest(jobData.project.owner.id);
+    };
+
+    const newConversationRequest = userId => {
+        if (!userId) return;
+
+        axios.post(config.BASE_URL + 'conversations', {
+            to: userId
+        }).then(res => {
+            if (res.data.success) {
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        Conversation request successfully sent!
+                    </Notification>, 'topEnd'
+                );
+            };
+        })
     }
 
     const applyToJob = () => {
@@ -118,8 +164,8 @@ function Startup(props) {
     return (
         <>
             <div className='profile-job'>
-                <BreadCrumb/>
-                <Banner/>
+                <BreadCrumb />
+                <Banner />
                 <div className="profile-wrapper">
                     <div className="content">
                         <div className="row">
@@ -211,9 +257,6 @@ function Startup(props) {
                             </ul>
                             <div className="btn-wrapper">
                                 {
-                                    console.error('salam men burdayam', jobData)
-                                }
-                                {
                                     jobData?.self_request ?
                                         jobData.self_request.request_from === 2 ?
                                             <Button
@@ -234,6 +277,7 @@ function Startup(props) {
                                 }
                                 <Button
                                     appearance="primary"
+                                    onClick={sendMessage}
                                 >
                                     <Image
                                         src={'/icons/envelope_white.svg'}
@@ -278,7 +322,10 @@ export default Startup;
 
 export const getServerSideProps = async (context) => {
     // main datas
-    const jobData = await getFetchData(`jobs/${context.params.id}?include=project,position,location,type`, getToken(context));
+    const jobData = await getFetchData(
+        `jobs/${context.params.id}?include=project,position,location,type,project.owner`,
+        getToken(context)
+    );
     let similarJobs = [];
     let startupJobs = [];
 
@@ -290,7 +337,7 @@ export const getServerSideProps = async (context) => {
     if (jobData?.data?.project?.id) {
         startupJobs = startupJobList.data?.items?.filter(x => x.id !== jobData.data.id) || []
     }
-    ;
+
     // startup other jobs end
 
     // similar job list start
