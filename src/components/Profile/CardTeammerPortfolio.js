@@ -1,11 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import {URL_REGEX} from '../../configuration';
-import Link from 'next/link';
-import {Button, IconButton, Input, InputPicker, Modal, Notification, toaster} from 'rsuite';
-import ActionLink from '../Lib/ActionLink';
-import axios from "axios";
-import config from "../../configuration";
+import { IconButton, Input } from 'rsuite';
 
 function CardTeammerPortfolio(props) {
     const {
@@ -48,7 +43,7 @@ function CardTeammerPortfolio(props) {
                                     <a
                                         href={cvUrl}
                                         target="_blank"
-                                        // download
+                                    // download
                                     >
                                         {
                                             full_name ? full_name : 'CV'
@@ -57,42 +52,38 @@ function CardTeammerPortfolio(props) {
                                 </>
                                 :
                                 <div className="upload-avatar-wrapper mb-4">
-                                    <input
-                                        type="file"
-                                        className="d-none"
-                                        ref={teammerCvRef}
-                                        onChange={e => {
-                                            if (uploadCvFunc) {
-                                                uploadCvFunc(e);
-                                            }
-                                            ;
-                                        }}
-                                    />
-                                    <div>
-                                        <Image
-                                            width={24}
-                                            height={24}
-                                            alt='icon'
-                                            src={'/icons/file.svg'}
-                                        />
-                                        <button
-                                            type='button'
-                                            onClick={() => {
-                                                teammerCvRef.current.click()
-                                            }}
-                                        >
-                                            Import from Linkedin
-                                        </button>
-                                    </div>
-                                    {/* <div className="validation-errors">
-                                        {
-                                            teammerStepValidations.step_2.map((item, index) => {
-                                                if (item.key === "cv") {
-                                                    return <span key={index}>{item.message}</span>
-                                                };
-                                            })
-                                        }
-                                    </div> */}
+                                    {
+                                        editMode &&
+                                        <>
+                                            <input
+                                                type="file"
+                                                className="d-none"
+                                                ref={teammerCvRef}
+                                                onChange={e => {
+                                                    if (uploadCvFunc) {
+                                                        uploadCvFunc(e);
+                                                    }
+                                                    ;
+                                                }}
+                                            />
+                                            <div>
+                                                <Image
+                                                    width={24}
+                                                    height={24}
+                                                    alt='icon'
+                                                    src={'/icons/file.svg'}
+                                                />
+                                                <button
+                                                    type='button'
+                                                    onClick={() => {
+                                                        teammerCvRef.current.click()
+                                                    }}
+                                                >
+                                                    Import from Linkedin
+                                                </button>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                         }
                     </div>

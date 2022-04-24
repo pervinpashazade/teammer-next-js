@@ -13,7 +13,7 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
 
-    // console.log('INTERCEPTOR ERROR =>', error.response);
+    console.log('INTERCEPTOR ERROR =>', error.response);
 
     const status = error.response ? error.response.status : 401;
     switch (status) {

@@ -19,8 +19,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(async () => {
 
-        console.log('TEST => !');
-
         const jwtgetCookie = getCookie('teammers-access-token');
 
         if (jwtgetCookie) {

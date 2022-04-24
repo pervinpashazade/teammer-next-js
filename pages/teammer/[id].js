@@ -17,13 +17,19 @@ const ProfileTeammer = (props) => {
         joinedProjectList,
     } = props;
 
+
+    const [teammer, setTeammer] = useState({
+
+    })
+
     React.useEffect(() => {
         // console.clear();
-        console.log('view teammer props', props);
+        console.log('view teammer props', props.userData);
     }, [props]);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [portfolioUrlList, setPortfolioUrlList] = useState([])
+
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
@@ -63,8 +69,11 @@ const ProfileTeammer = (props) => {
                     <div className="portfolio-wrapper">
                         <h5>CV and Portfolio</h5>
                         <CardTeammerPortfolio
+                            // cvUrl={teammer.cvUrl}
+                            // full_name={teammer.full_name}
+                            // portfolioUrlList={teammer.portfolioList}
                             portfolioUrlList={portfolioUrlList}
-                            setPortfolioUrlList={setPortfolioUrlList}
+                        // setPortfolioUrlList={setPortfolioUrlList}
                         />
                     </div>
                     <div className="custom-devider"></div>

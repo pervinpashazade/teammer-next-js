@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Panel } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
@@ -22,10 +22,11 @@ const ProfileTeammer = (props) => {
 
     const [joinedProjectList, setJoinedProjectList] = useState([]);
 
-    React.useEffect(() => {
+    // // mount
+    useEffect(() => {
         getPublicDatas();
         axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location').then(res => {
-            console.log('res data', res.data.data);
+            console.log('TEAMMER RES DATA =>', res.data.data);
             if (res.data.success) {
                 setTeammer({
                     avatarUrl: res.data.data.detail.photo,
@@ -45,11 +46,14 @@ const ProfileTeammer = (props) => {
             };
         });
         axios.get(config.BASE_URL + 'users/joined-jobs').then(res => {
-            console.log('res data', res.data.data);
             if (res.data.success) {
+                // console.log('TEAMMER JOINED JOBS =>', res.data.data.items);
                 setJoinedProjectList(res.data.data.items);
             };
         });
+        // axios.get(config.BASE_URL + 'users/saved-projects').then(res => {
+        //     console.log('SAVED JOB RES => ', res);
+        // })
     }, []);
 
     // React.useEffect(() => {
@@ -183,8 +187,6 @@ const ProfileTeammer = (props) => {
                 setIsOpenCreateModal(false);
             };
         });
-
-        // console.log('SUBMIT DATA', data);
     };
 
     const editWorkExperience = data => {
@@ -234,6 +236,8 @@ const ProfileTeammer = (props) => {
                     <div className="portfolio-wrapper">
                         <h5>CV and Portfolio</h5>
                         <CardTeammerPortfolio
+                            cvUrl={teammer.cvUrl}
+                            full_name={teammer.full_name}
                             portfolioUrlList={teammer.portfolioList}
                         />
                     </div>

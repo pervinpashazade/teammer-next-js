@@ -20,8 +20,6 @@ initializeApp({
 
 export const firebaseMessaging = () => {
 
-    console.log('firebaseMessaging FIREBASE JS');
-
     try {
         const messaging = getMessaging();
 
@@ -34,18 +32,19 @@ export const firebaseMessaging = () => {
                     const storeToken = localStorage.getItem("pus_token");
                     if (!storeToken || storeToken !== currentToken) {
 
-                        console.log('FIREBASE TOKEN !', currentToken)
+                        // console.log('FIREBASE TOKEN !', currentToken)
 
-                        console.log('firebase connected!')
+                        console.log('firebase connected!');
+                        
                         // "1 - push token, 2-email",
                         axios.post(config.BASE_URL + 'notification/subscribe', {
                             "type": "1",
                             "value": currentToken
                         }).then(res => {
-                            console.log('firebsae connect res', res);
-                            if (res.data.success) {
+                            // console.log('firebsae connect res', res);
+                            // if (res.data.success) {
 
-                            };
+                            // };
                         });
                     }
                 } else {

@@ -85,7 +85,7 @@ function Chat() {
 
     return (
         <div className="chat">
-            <div className="breadcrumb-wrapper">
+            {/* <div className="breadcrumb-wrapper">
                 <div className="goback-btn">
                     <IconButton
                         size="lg"
@@ -103,7 +103,7 @@ function Chat() {
                         Chat
                     </span>
                 </div>
-            </div>
+            </div> */}
             <div className="chat-wrapper">
                 <div className="wrapper-top">
                     <div className="chat-left-side-top">
