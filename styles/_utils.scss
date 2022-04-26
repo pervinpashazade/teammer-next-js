@@ -187,7 +187,8 @@
       }
 
       .bg-icon-wrapper {
-        min-height: 165px;
+        position: relative;
+        min-height: 220px;
       }
     }
   }
@@ -195,15 +196,18 @@
   .right {
     height: 99vh;
     overflow: scroll;
-    scrollbar-width: none; /* For Firefox */
+    scrollbar-width: none;
+    /* For Firefox */
     -ms-overflow-style: none;
 
     &::-webkit-scrollbar {
-      width: 0px; /* For Chrome, Safari, and Opera */
+      width: 0px;
+      /* For Chrome, Safari, and Opera */
     }
 
     .inner {
       padding-top: 92px;
+      padding-left: 3rem;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -522,6 +526,29 @@
     .right {
       .inner {
         align-items: flex-start;
+      }
+    }
+  }
+
+
+
+  // here
+  &.login {
+    .left {
+      .bg-icon-wrapper {
+        &:first-child {
+          img {
+            &.bg-icon_right {
+              position: absolute;
+              right: -25px;
+              bottom: 10px;
+            }
+          }
+        }
+
+        &:last-child {
+          background-color: red;
+        }
       }
     }
   }
@@ -1159,7 +1186,7 @@
     font-size: 13px;
   }
 
-  & + button {
+  &+button {
     background-color: $primary-color !important;
     border-radius: $button-radius-72 !important;
     padding: 15px 24px 17px 24px !important;
@@ -1284,6 +1311,7 @@
 
 .job-create-ck-editor {
   padding-top: 20px;
+
   .ck.ck-reset.ck-editor.ck-rounded-corners {
     max-width: 100% !important;
   }
