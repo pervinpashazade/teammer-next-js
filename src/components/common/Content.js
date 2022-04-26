@@ -22,8 +22,6 @@ const Content = (props) => {
 
     const [jobs, setJobs] = useState([]);
 
-    console.log('1111');
-
     useEffect(() => {
         setUser(authContext.currentUser);
 

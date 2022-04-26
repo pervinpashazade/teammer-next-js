@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Image from "next/image";
-import {Avatar, Button} from "rsuite"
+import { Avatar, Button, Notification, toaster } from "rsuite"
 import axios from 'axios';
 import config from '../../configuration';
 import Link from 'next/link';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import AuthModal from "../Modals/AuthModal";
-import {useAuth} from "../../../Auth";
+import { useAuth } from "../../../Auth";
 
 const CardStartUp = (props) => {
 
@@ -15,38 +15,62 @@ const CardStartUp = (props) => {
     const {
         jobId,
         startupId,
+        isSaved,
         title,
         position,
         ownerFullname,
         ownerAvatarUrl,
-        onClick,
         logo,
-        isStartup
+        isStartup,
+        unsaveFunction,
     } = props;
 
     // React.useEffect(() => {
     //     console.log('jobId', jobId);
     // }, [props]);
-    const {currentUser} = useAuth();
-    
+    const { currentUser } = useAuth();
+
     const routing = () => {
         router.push(`/${isStartup ? "startup" : "job"}/${jobId}`)
     }
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
 
     const checkSave = () => {
-        if (currentUser) {
+        if (!currentUser) {
+            setIsOpenLoginModal(true);
+            return;
+        };
+
+        if (!isSaved) {
             attackSaveProject()
-        } else setIsOpenLoginModal(true)
-    }
+        } else {
+            unSaveProject();
+        };
+    };
 
     const attackSaveProject = () => {
         if (!jobId) return;
-
-        axios.post(config.BASE_URL + 'users/save-item', {id: jobId, type: 'job'})
+        axios.post(config.BASE_URL + 'users/save-item', { id: jobId, type: 'job' })
             .then(res => {
-                console.log('res', res);
+                // console.log('res', res);
+                toaster.push(
+                    <Notification type={"success"} header="Success" closable>
+                        <span className='font-weight-bold'>{title}</span> added to saved jobs!
+                    </Notification>, 'topEnd'
+                );
             }).catch(error => console.log('errorres', error.response));
+    };
+
+    const unSaveProject = () => {
+        if (!jobId) return;
+        axios.post(config.BASE_URL + 'users/unsave-project', { id: jobId, type: 'job' }).then(res => {
+            // console.log('res', res);
+            toaster.push(
+                <Notification type={"info"} header="Attention" closable>
+                    <span className='font-weight-bold'>{title}</span> removed from saved jobs!
+                </Notification>, 'topEnd'
+            );
+        }).catch(error => console.log('errorres', error.response));
     };
 
     return (
@@ -99,7 +123,7 @@ const CardStartUp = (props) => {
                     </div>
                 </div>
             </div>
-            <AuthModal isOpen={isOpenLoginModal} setIsOpen={setIsOpenLoginModal}/>
+            <AuthModal isOpen={isOpenLoginModal} setIsOpen={setIsOpenLoginModal} />
         </div>
         //     </a>
         // </Link>

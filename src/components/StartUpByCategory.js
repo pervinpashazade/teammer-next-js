@@ -1,29 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import CardStartUp from "./Cards/CardStartUp";
 import { Button } from 'rsuite';
-import Link from 'next/link'
-import StartUpWeek from "./StartUpWeek";
-import StartUpBlog from "./StartUpBlog";
-import { useSelector } from "react-redux";
-import { Cookie, withCookie } from 'next-cookie';
-import config from "../configuration";
+import Link from 'next/link';
 
 const StartUpByCategory = (props) => {
 
     const {
         user,
-        cookie,
         jobList,
-        positionList,
     } = props;
-
-    const [userType, setUserType] = useState(
-        cookie.get('teammers-type') ? cookie.get('teammers-type') : ''
-    );
-
-    // React.useEffect(() => {
-    //     console.log('StartUpByCategory User', user);
-    // }, [user])
 
     return (
         <div className="startup-category">
@@ -41,11 +26,11 @@ const StartUpByCategory = (props) => {
                                         <CardStartUp
                                             jobId={item.id}
                                             startupId={item.project_id}
+                                            isSaved={item.kept ? true : false}
                                             title={item.project?.title}
                                             ownerFullname={item.project?.owner?.full_name}
                                             ownerAvatarUrl={item.project?.owner?.detail?.photo}
-                                            position={positionList.find(x => x.id === item.position_id)?.name}
-                                            onClick={() => alert(item.id)}
+                                            position={item.position?.name}
                                         />
                                     </div>
                                 })
@@ -89,4 +74,4 @@ const StartUpByCategory = (props) => {
     )
 }
 
-export default withCookie(StartUpByCategory);
+export default StartUpByCategory;

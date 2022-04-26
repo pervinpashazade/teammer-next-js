@@ -18,7 +18,6 @@ const Home = (props) => {
 
     useEffect(() => {
         axios.get(config.BASE_URL + 'positions').then(res => {
-            console.log(res)
             if (res && res.data.success) {
                 setPositionList(res.data.data.items)
             };
@@ -40,13 +39,11 @@ const Home = (props) => {
     }, []);
 
     useEffect(() => {
-        // console.log('NOT COMPLETED LOG');
-
         if (authContext.currentUser) {
             setUser(authContext.currentUser);
         };
     }, [authContext.currentUser]);
-    console.log(props.jobList)
+    
     return (
         <div>
             <Head>

@@ -35,17 +35,10 @@ const Home = (props) => {
 
     const [jobs, setJobs] = useState([]);
 
-    const [positionList, setPositionList] = useState([]);
     const [jobList, setJobList] = useState([]);
     const [startupOfWeekList, setStartupOfWeekList] = useState([]);
 
     useEffect(() => {
-        axios.get(config.BASE_URL + 'positions').then(res => {
-            if (res && res.data.success) {
-                setPositionList(res.data.data.items)
-            };
-        });
-
         axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position,kept&per_page=6').then(res => {
             if (res.data.success) {
                 setJobList(res.data.data.items);
@@ -84,12 +77,10 @@ const Home = (props) => {
                     <StartUpByCategory
                         user={user}
                         jobList={jobList}
-                        positionList={positionList}
                     />
                     <StartUpByCategory
                         user={user}
                         jobList={jobList}
-                        positionList={positionList}
                     />
                 </div>
                 <div className="col-md-4 mb-4">
