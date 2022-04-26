@@ -169,14 +169,16 @@
       background: #fff;
 
       .title {
+        position: relative;
         text-align: center;
         color: #020c40;
 
         h2 {
           font-weight: 600;
-          font-size: 48px;
+          // font-size: 48px;
+          font-size: 40px;
           line-height: 60px;
-          margin-bottom: 2rem;
+          margin-bottom: 1rem;
         }
 
         p {
@@ -535,21 +537,106 @@
   // here
   &.login {
     .left {
-      .bg-icon-wrapper {
-        &:first-child {
-          img {
-            &.bg-icon_right {
+      .bg-wrapper {
+        .title {
+          h2 {
+            &::before {
+              content: '';
               position: absolute;
-              right: -25px;
-              bottom: 10px;
+              top: -25px;
+              left: 55px;
+              width: 10px;
+              height: 10px;
+              background: #A7ECF4;
+              border-radius: 50%;
             }
           }
         }
 
-        &:last-child {
-          background-color: red;
+        .bg-icon-wrapper {
+          &:first-child {
+            .ellipse {
+              width: 71px;
+              height: 71px;
+              border-radius: 50%;
+              border: 2px solid #2A6FFF;
+
+              position: absolute;
+              top: 42px;
+              left: 57px;
+            }
+
+            img {
+              position: absolute;
+
+              &.bg-icon_middle {
+                right: 208px;
+                top: 84px;
+              }
+
+              &.bg-icon_right {
+                right: -25px;
+                bottom: 10px;
+              }
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              top: 47px;
+              left: 209px;
+              width: 7px;
+              height: 7px;
+              background: #FFD15A;
+              border-radius: 50%;
+            }
+
+            &::after {
+              content: '';
+              position: absolute;
+              top: 46px;
+              right: 144px;
+              width: 10px;
+              height: 10px;
+              background: #88A4FC;
+              border-radius: 50%;
+            }
+          }
+
+          &:last-child {
+            img {
+              position: absolute;
+
+              &.bg-icon_left {
+                left: -10px;
+                bottom: 65px;
+              }
+
+              &.bg-icon_middle {
+                right: 74px;
+                bottom: 79px;
+              }
+
+              &.bg-icon_right {
+                right: 44px;
+                bottom: 46px;
+              }
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 221px;
+              bottom: 60px;
+              width: 10px;
+              height: 10px;
+              background: #A7ECF4;
+              border-radius: 50%;
+            }
+          }
         }
       }
+
     }
   }
 }

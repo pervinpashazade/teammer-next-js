@@ -159,6 +159,12 @@ const Login = (props) => {
                         <div className="left">
                             <div className="bg-wrapper">
                                 <div className="bg-icon-wrapper">
+                                    <div className="ellipse"></div>
+                                    <img
+                                        alt="teammers"
+                                        src="/img/home.png"
+                                        className="bg-icon_middle"
+                                    />
                                     <img
                                         alt="teammers"
                                         src="/img/head_bg.png"
@@ -169,7 +175,23 @@ const Login = (props) => {
                                     <h2>🖖 Welcome back</h2>
                                     <p>We’ve glad to see you again!</p>
                                 </div>
-                                <div className="bg-icon-wrapper"></div>
+                                <div className="bg-icon-wrapper">
+                                    <img
+                                        alt="teammers"
+                                        src="/img/arrow_bg.png"
+                                        className="bg-icon_left"
+                                    />
+                                    <img
+                                        alt="teammers"
+                                        src="/img/half-ellipse_up.png"
+                                        className="bg-icon_middle"
+                                    />
+                                    <img
+                                        alt="teammers"
+                                        src="/img/cat.png"
+                                        className="bg-icon_right"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
