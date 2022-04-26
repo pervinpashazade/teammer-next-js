@@ -163,10 +163,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 
     .bg-wrapper {
       width: 100%;
       background: #fff;
+      border-radius: 12px;
+      box-shadow: 0px 53px 52px rgba(195, 184, 162, 0.2);
 
       .title {
         position: relative;
@@ -178,7 +181,7 @@
           // font-size: 48px;
           font-size: 40px;
           line-height: 60px;
-          margin-bottom: 1rem;
+          margin-bottom: 2rem;
         }
 
         p {
@@ -190,7 +193,7 @@
 
       .bg-icon-wrapper {
         position: relative;
-        min-height: 220px;
+        min-height: 147px;
       }
     }
   }
@@ -532,9 +535,6 @@
     }
   }
 
-
-
-  // here
   &.login {
     .left {
       .bg-wrapper {
@@ -554,6 +554,8 @@
         }
 
         .bg-icon-wrapper {
+          min-height: 220px;
+
           &:first-child {
             .ellipse {
               width: 71px;
@@ -631,6 +633,97 @@
               width: 10px;
               height: 10px;
               background: #A7ECF4;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  &.register {
+    .left {
+      .bg-wrapper {
+        .title {
+          z-index: 999;
+
+          ._icon-left {
+            position: absolute;
+            left: 70px;
+            bottom: 65px;
+            z-index: -1;
+          }
+
+          ._icon-right {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            z-index: -1;
+          }
+
+          p {
+            padding: 0px 3rem;
+          }
+        }
+
+        .bg-icon-wrapper {
+          &:first-child {
+            img {
+              position: absolute;
+              top: 19px;
+              left: 136px;
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              top: 64px;
+              left: 17px;
+              width: 8px;
+              height: 8px;
+              background: #A7ECF4;
+              border-radius: 50%;
+            }
+
+            &::after {
+              content: '';
+              position: absolute;
+              top: 60px;
+              right: 81px;
+              width: 10px;
+              height: 10px;
+              background: #A7ECF4;
+              border-radius: 50%;
+            }
+          }
+
+          &:last-child {
+            img {
+              position: absolute;
+              right: 0;
+              bottom: -30px;
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 58px;
+              bottom: 62px;
+              width: 10px;
+              height: 10px;
+              background: #88A4FC;
+              border-radius: 50%;
+            }
+
+            &::after {
+              content: '';
+              position: absolute;
+              left: 234px;
+              bottom: 65px;
+              width: 7px;
+              height: 7px;
+              background: #FFD15A;
               border-radius: 50%;
             }
           }

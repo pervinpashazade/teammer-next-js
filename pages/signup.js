@@ -186,19 +186,6 @@ const Signup = (props) => {
                 authContext.setCurrentUser(res.data.data.user);
 
                 router.push("/signup/steps");
-
-                // await createUserWithEmailAndPassword(firebaseAuth, body.email, body.password).then((userCredential) => {
-                //     // Signed in 
-                //     // const user = userCredential.user;
-
-                //     // console.log('userCredential.user', user);
-                //     // ...
-                // })
-                //     .catch((error) => {
-                //         const errorCode = error.code;
-                //         const errorMessage = error.message;
-                //         // ..
-                //     });
             };
 
         }).catch(error => {
@@ -234,14 +221,41 @@ const Signup = (props) => {
                     <div className="col-md-6">
                         <div className="left">
                             <div className="bg-wrapper">
-                                <div className="bg-icon-wrapper"></div>
+                                <div className="bg-icon-wrapper">
+                                    <img
+                                        alt="teammers"
+                                        src="/img/ghost.png"
+                                    />
+                                </div>
                                 <div className="title">
-                                    <h2>Join your dream team in Minutes.</h2>
+                                    <h2>
+                                        Join your dream
+                                        <img
+                                            alt="startup"
+                                            src="/img/startup.png"
+                                        />
+                                        team in Minutes.
+                                    </h2>
                                     <p>
                                         Connect with your future teammates from all over the world.
                                     </p>
+                                    <img
+                                        alt="teammers"
+                                        src="/img/ellipse-half_up.svg"
+                                        className="_icon-left"
+                                    />
+                                    <img
+                                        alt="teammers"
+                                        src="/img/ellipse-star.svg"
+                                        className="_icon-right"
+                                    />
                                 </div>
-                                <div className="bg-icon-wrapper"></div>
+                                <div className="bg-icon-wrapper">
+                                    <img
+                                        alt="teammers"
+                                        src="/img/head_bg_2.png"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
