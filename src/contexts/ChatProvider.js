@@ -103,7 +103,7 @@ const ChatProvider = ({ children }) => {
 
     // // mount
     useEffect(() => {
-        if (getCookie("teammers-access-token")) {
+        if (getCookie("teammers-access-token") && getCookie("teammers-type")) {
             axios.get(config.BASE_URL + 'conversations?include=messages,members,unreadMessages').then(res => {
                 if (res.data.success) {
                     setChat(res.data.data.items);
@@ -112,7 +112,7 @@ const ChatProvider = ({ children }) => {
 
             connectSocket();
         };
-    }, [getCookie("teammers-access-token")]);
+    }, [getCookie("teammers-access-token"), getCookie("teammers-type")]);
 
     return (
         <ChatContext.Provider

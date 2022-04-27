@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '../../src/components/consts/NotAuth/Header';
@@ -14,21 +14,18 @@ import {
     Tag,
     Uploader,
 } from 'rsuite';
-import {AiOutlineEdit} from 'react-icons/ai';
-import {MdModeEditOutline} from 'react-icons/md';
-import {BsPlusLg} from 'react-icons/bs';
-import {FaRegTrashAlt} from 'react-icons/fa';
+import { AiOutlineEdit } from 'react-icons/ai';
+import { MdModeEditOutline } from 'react-icons/md';
+import { BsPlusLg } from 'react-icons/bs';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
-import config, {months, URL_REGEX} from '../../src/configuration';
-// import { useAuth } from '../../Auth';
-import {getCookie, setCookie, removeCookie} from '../../src/helpers/cookie';
-import {buildFormData} from '../../src/helpers/buildFormData';
-import {renderErrorMessages} from '../../src/helpers/renderErrorMessages';
-import {useRouter} from "next/router";
+import config, { months, URL_REGEX } from '../../src/configuration';
+import { getCookie, setCookie, removeCookie } from '../../src/helpers/cookie';
+import { buildFormData } from '../../src/helpers/buildFormData';
+import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
+import { useRouter } from "next/router";
 
 const steps2 = (props) => {
-
-    // const authContext = useAuth();
 
     const [publicDatas, setPublicDatas] = useState({
         positionList: [],
@@ -44,7 +41,7 @@ const steps2 = (props) => {
     const router = useRouter();
     const editorRef = useRef();
     const [isEditorLoaded, setIsEditorLoaded] = useState(false);
-    const {CKEditor, ClassicEditor} = editorRef.current || {};
+    const { CKEditor, ClassicEditor } = editorRef.current || {};
 
     const [ownerResponseErrors, setOwnerResponseErrors] = useState([]);
     const [teammerResponseErrors, setTeammerResponseErrors] = useState([]);
@@ -1524,7 +1521,7 @@ const steps2 = (props) => {
 
         for (const [key, value] of Object.entries(teammer.socialDatas)) {
             if (value) {
-                socialAccounts.push({[key]: value});
+                socialAccounts.push({ [key]: value });
             }
             ;
         }
@@ -1576,19 +1573,51 @@ const steps2 = (props) => {
     return (
         <div className="container">
             <div className="not-auth-layout steps">
-                <Header/>
+                <Header />
                 <div className="row">
                     <div className="col-md-6">
                         <div className="left">
                             <div className="bg-wrapper">
-                                <div className="bg-icon-wrapper"></div>
+                                <div className="bg-icon-wrapper">
+                                    <img
+                                        alt="teammers"
+                                        src="/img/victory_icon.png"
+                                        className="bg-icon_left"
+                                    />
+                                    <img
+                                        alt="teammers"
+                                        src="/img/circle_bg_check.png"
+                                        className="bg-icon_middle"
+                                    />
+                                    <img
+                                        alt="teammers"
+                                        src="/img/half-ellipse_right.png"
+                                        className="bg-icon_right"
+                                    />
+                                </div>
                                 <div className="title">
-                                    <h2>Join your dream team in Minutes.</h2>
+                                    <h2>Tell us more about yourself</h2>
                                     <p>
                                         Connect with your future teammates from all over the world.
                                     </p>
+                                    <img
+                                        alt="teammers"
+                                        src="/img/ellipse-half_up.svg"
+                                        className="_icon-left"
+                                    />
                                 </div>
-                                <div className="bg-icon-wrapper"></div>
+                                <div className="bg-icon-wrapper">
+                                    <img
+                                        alt="teammers"
+                                        src="/img/arrow-table.png"
+                                        className="bg-icon_left"
+                                    />
+                                    <img
+                                        alt="teammers"
+                                        src="/img/icon_glasses.png"
+                                        className="bg-icon_right"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1608,12 +1637,12 @@ const steps2 = (props) => {
                                                     <>
                                                         Which one defines you?
                                                         {currentStep > 0 &&
-                                                        <Button
-                                                            className="btn-edit-step"
-                                                            onClick={() => editStep(0)}
-                                                        >
-                                                            <AiOutlineEdit/>
-                                                        </Button>
+                                                            <Button
+                                                                className="btn-edit-step"
+                                                                onClick={() => editStep(0)}
+                                                            >
+                                                                <AiOutlineEdit />
+                                                            </Button>
                                                         }
                                                     </>
                                                 }
@@ -1638,13 +1667,13 @@ const steps2 = (props) => {
                                                     <>
                                                         Contact Information
                                                         {currentStep > 1 &&
-                                                        <Button
-                                                            className="btn-edit-step"
-                                                            onClick={() => editStep(1)
-                                                            }
-                                                        >
-                                                            <AiOutlineEdit/>
-                                                        </Button>
+                                                            <Button
+                                                                className="btn-edit-step"
+                                                                onClick={() => editStep(1)
+                                                                }
+                                                            >
+                                                                <AiOutlineEdit />
+                                                            </Button>
                                                         }
                                                     </>
                                                 }
@@ -1986,7 +2015,7 @@ const steps2 = (props) => {
                                                                         className="btn-edit-step"
                                                                         onClick={() => editStep(2)}
                                                                     >
-                                                                        <AiOutlineEdit/>
+                                                                        <AiOutlineEdit />
                                                                     </Button>
                                                                 }
                                                             </>
@@ -2170,7 +2199,7 @@ const steps2 = (props) => {
                                                                                             <CKEditor
                                                                                                 name={"name"}
                                                                                                 editor={ClassicEditor}
-                                                                                                style={{maxWidth: "400px"}}
+                                                                                                style={{ maxWidth: "400px" }}
                                                                                                 data={startup.description}
                                                                                                 onChange={(event, editor) => {
                                                                                                     const data = editor.getData();
@@ -2230,12 +2259,12 @@ const steps2 = (props) => {
                                                             <>
                                                                 Position details
                                                                 {currentStep > 2 &&
-                                                                <Button
-                                                                    className="btn-edit-step"
-                                                                    onClick={() => editStep(2)}
-                                                                >
-                                                                    <AiOutlineEdit/>
-                                                                </Button>
+                                                                    <Button
+                                                                        className="btn-edit-step"
+                                                                        onClick={() => editStep(2)}
+                                                                    >
+                                                                        <AiOutlineEdit />
+                                                                    </Button>
                                                                 }
                                                             </>
                                                         }
@@ -2345,20 +2374,20 @@ const steps2 = (props) => {
                                                                                 }
                                                                             </div>
                                                                             <InputPicker size="lg"
-                                                                                         className="w-100 my-2"
-                                                                                         placeholder="Experience Level"
-                                                                                         data={publicDatas.experienceLevelList}
-                                                                                         value={teammer.experienceLevel?.id || null}
-                                                                                         valueKey="id"
-                                                                                         labelKey='name'
-                                                                                         onSelect={(id, obj) => {
-                                                                                             setTeammer(prevState => {
-                                                                                                 return {
-                                                                                                     ...prevState,
-                                                                                                     experienceLevel: obj
-                                                                                                 };
-                                                                                             });
-                                                                                         }}
+                                                                                className="w-100 my-2"
+                                                                                placeholder="Experience Level"
+                                                                                data={publicDatas.experienceLevelList}
+                                                                                value={teammer.experienceLevel?.id || null}
+                                                                                valueKey="id"
+                                                                                labelKey='name'
+                                                                                onSelect={(id, obj) => {
+                                                                                    setTeammer(prevState => {
+                                                                                        return {
+                                                                                            ...prevState,
+                                                                                            experienceLevel: obj
+                                                                                        };
+                                                                                    });
+                                                                                }}
                                                                             />
                                                                             <div className="validation-errors">
                                                                                 {
@@ -2445,13 +2474,13 @@ const steps2 = (props) => {
                                                                                                 </div>
                                                                                                 <button
                                                                                                     onClick={() => editWorkExperience(index)}>
-                                                                                                    <MdModeEditOutline/>
+                                                                                                    <MdModeEditOutline />
                                                                                                 </button>
                                                                                             </div>
                                                                                         </div>
                                                                                     )
                                                                                 }
-                                                                                <hr className="mt-0"/>
+                                                                                <hr className="mt-0" />
                                                                                 <div className="job-section">
                                                                                     <div className="job-divs">
                                                                                         <h4>Position</h4>
@@ -2661,7 +2690,7 @@ const steps2 = (props) => {
                                                                                     className="add-more-experience"
                                                                                     onClick={addMoreExperience}
                                                                                 >
-                                                                                    <BsPlusLg className="mr-2"/>
+                                                                                    <BsPlusLg className="mr-2" />
                                                                                     {
                                                                                         !isEditSelectedWorkExp.status ?
                                                                                             'Add More Experience'
@@ -2670,7 +2699,7 @@ const steps2 = (props) => {
                                                                                     }
                                                                                 </button>
                                                                             </div>
-                                                                            <hr/>
+                                                                            <hr />
                                                                             <div className="portfolio">
                                                                                 <h3>Portfolio</h3>
                                                                                 {
@@ -2687,7 +2716,7 @@ const steps2 = (props) => {
                                                                                                     portfolioFunction('remove', item);
                                                                                                 }}
                                                                                             >
-                                                                                                <FaRegTrashAlt/>
+                                                                                                <FaRegTrashAlt />
                                                                                             </Button>
                                                                                         </div>
                                                                                     )
@@ -2702,10 +2731,10 @@ const steps2 = (props) => {
                                                                                     <Button
                                                                                         onClick={() => portfolioFunction('add')}
                                                                                     >
-                                                                                        <BsPlusLg className="mr-2 "/>
+                                                                                        <BsPlusLg className="mr-2 " />
                                                                                     </Button>
                                                                                 </div>
-                                                                                <hr/>
+                                                                                <hr />
                                                                             </div>
                                                                             <div className="step_form">
                                                                                 <h3>Social media accounts</h3>
@@ -2745,7 +2774,7 @@ const steps2 = (props) => {
                                                                                         <Form.Control
                                                                                             name="behance"
                                                                                             type="url"
-                                                                                            placeholder="http://www.behance.net/margaretbrown"/>
+                                                                                            placeholder="http://www.behance.net/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group
                                                                                         controlId="dribble">
@@ -2753,7 +2782,7 @@ const steps2 = (props) => {
                                                                                         <Form.Control
                                                                                             name="dribble"
                                                                                             type="url"
-                                                                                            placeholder="http://www.dribble.com/margaretbrown"/>
+                                                                                            placeholder="http://www.dribble.com/margaretbrown" />
                                                                                     </Form.Group>
                                                                                     <Form.Group
                                                                                         controlId="linkedin">
@@ -2876,25 +2905,25 @@ const steps2 = (props) => {
                                                             <div className='step-form'>
                                                                 {
                                                                     jobList.length > 0 && jobList.map((item, index) =>
-                                                                            item.position && (
-                                                                                <div key={index}>
-                                                                                    <div
-                                                                                        className="edit-header d-flex justify-content-between align-items-baseline"
-                                                                                    >
-                                                                                        <div className="job-title">
-                                                                                            <h5>Position: {' '}{' '}</h5>
-                                                                                        </div>
-                                                                                        <p>
-                                                                                            {item.position.name}
-                                                                                        </p>
-                                                                                        <MdModeEditOutline
-                                                                                            className='c-pointer'
-                                                                                            onClick={() => editSelectedJob(index)}
-                                                                                        />
+                                                                        item.position && (
+                                                                            <div key={index}>
+                                                                                <div
+                                                                                    className="edit-header d-flex justify-content-between align-items-baseline"
+                                                                                >
+                                                                                    <div className="job-title">
+                                                                                        <h5>Position: {' '}{' '}</h5>
                                                                                     </div>
-                                                                                    <hr/>
+                                                                                    <p>
+                                                                                        {item.position.name}
+                                                                                    </p>
+                                                                                    <MdModeEditOutline
+                                                                                        className='c-pointer'
+                                                                                        onClick={() => editSelectedJob(index)}
+                                                                                    />
                                                                                 </div>
-                                                                            )
+                                                                                <hr />
+                                                                            </div>
+                                                                        )
                                                                     )
                                                                 }
                                                                 <div className="position_details">
@@ -3154,7 +3183,7 @@ const steps2 = (props) => {
                                                                             className="add-more-experience"
                                                                             onClick={addMorePosition}
                                                                         >
-                                                                            <BsPlusLg className="mr-2"/>
+                                                                            <BsPlusLg className="mr-2" />
                                                                             {
                                                                                 !isEditSelectedWorkExp.status ?
                                                                                     'Add New Job Position'
@@ -3286,14 +3315,13 @@ const steps2 = (props) => {
                                                                             if (validateStep(3)) {
                                                                                 submitTeammerData();
                                                                             }
-                                                                            ;
                                                                         }}
                                                                     >
                                                                         Submit
                                                                     </Button>
                                                                 </div>
                                                             </div>
-                                                        }/>
+                                                        } />
                                             }
                                         </Steps>
                                     </div>
