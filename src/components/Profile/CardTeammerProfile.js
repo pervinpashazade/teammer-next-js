@@ -140,9 +140,12 @@ const CardTeammerProfile = ({ props }) => {
                             layout='fixed'
                         />
                         <span className='ml-2'>
-                            {positions?.map(item => {
-                                return item.name + " / "
-                            })}
+                            {
+                                positions?.map(item => {
+                                    // return item.name + " / "
+                                    return item.name
+                                })
+                            }
                         </span>
                     </div>
                     <div className='_info-wrap'>

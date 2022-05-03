@@ -117,11 +117,7 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/">
-                                <a>
-                                    Explore
-                                </a>
-                            </Link>
+                            <span>Explore</span>
                         </li>
                         <li>
                             <Link href="https://medium.com/@teammers.com">
@@ -131,11 +127,7 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/">
-                                <a>
-                                    Company
-                                </a>
-                            </Link>
+                            <span>Company</span>
                         </li>
                         <li>
                             <Link href="/app" passHref>

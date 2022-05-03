@@ -1,9 +1,13 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 import { AiOutlineRight } from 'react-icons/ai';
 import { HiArrowLeft } from 'react-icons/hi';
 import { IconButton } from 'rsuite';
 
-function BreadCrumb({link}) {
+function BreadCrumb({ link }) {
+
+    const router = useRouter();
+
     return (
         <div className="breadcrumb-wrapper">
             <div className="goback-btn">
@@ -11,17 +15,18 @@ function BreadCrumb({link}) {
                     size="lg"
                     icon={<HiArrowLeft />}
                     className="goback-btn"
+                    onClick={() => router.back()}
                 />
                 <span>Go back</span>
             </div>
             <div className="custom-breadcrumb">
-                <span>Home</span>
-                <span className='breadcrumb-icon'>
+                {/* <span>Home</span> */}
+                {/* <span className='breadcrumb-icon'>
                     <AiOutlineRight />
-                </span>
-                <span className='active'>
+                </span> */}
+                {/* <span className='active'>
                     Profile
-                </span>
+                </span> */}
             </div>
         </div>
     )

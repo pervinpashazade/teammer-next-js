@@ -12,20 +12,19 @@ import {
     RadioGroup,
     Steps,
     Tag,
-    Uploader,
 } from 'rsuite';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { MdModeEditOutline } from 'react-icons/md';
 import { BsPlusLg } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import axios from 'axios';
-import config, { months, URL_REGEX } from '../../src/configuration';
+import config, { months } from '../../src/configuration';
 import { getCookie, setCookie, removeCookie } from '../../src/helpers/cookie';
 import { buildFormData } from '../../src/helpers/buildFormData';
 import { renderErrorMessages } from '../../src/helpers/renderErrorMessages';
 import { useRouter } from "next/router";
 
-const steps2 = (props) => {
+const steps2 = () => {
 
     const [publicDatas, setPublicDatas] = useState({
         positionList: [],
@@ -1226,9 +1225,7 @@ const steps2 = (props) => {
                 } else {
                     return true;
                 }
-                ;
             }
-            ;
             if (currentStep === 3) {
 
                 // final step
@@ -1244,14 +1241,12 @@ const steps2 = (props) => {
                         message: 'Avatar field is required'
                     });
                 }
-                ;
                 if (!teammer.about?.trim()) {
                     step_3_errors.push({
                         key: 'about',
                         message: 'Description field is required'
                     });
                 }
-                ;
 
                 setTeammerStepValidations(prevState => {
                     return {
@@ -1265,11 +1260,8 @@ const steps2 = (props) => {
                 } else {
                     return true;
                 }
-                ;
             }
-            ;
         }
-        ;
     };
 
     const submitOwnerData = () => {
@@ -1300,7 +1292,6 @@ const steps2 = (props) => {
                 }
             ];
         }
-        ;
 
         // // v3
         if (jobList.length) {
@@ -1325,7 +1316,6 @@ const steps2 = (props) => {
                 };
             });
         }
-        ;
 
         // // v5 (list & new job )
         if (jobList.length && !isEditSelectedJob) {
@@ -1370,7 +1360,6 @@ const steps2 = (props) => {
                 }
             ];
         }
-        ;
 
         // let jobs = jobList.map(item => {
         //     return {
@@ -1449,7 +1438,6 @@ const steps2 = (props) => {
                 }
             ];
         }
-        ;
 
         // // v3
         if (workExperienceList.length) {
@@ -1515,7 +1503,6 @@ const steps2 = (props) => {
                 }
             ];
         }
-        ;
 
         let socialAccounts = [];
 
@@ -1523,11 +1510,9 @@ const steps2 = (props) => {
             if (value) {
                 socialAccounts.push({ [key]: value });
             }
-            ;
         }
-        ;
 
-        console.log('teammer cv', teammer.cvFile);
+        // console.log('teammer cv', teammer.cvFile);
 
         let body = {
             type: 2,
@@ -1912,6 +1897,7 @@ const steps2 = (props) => {
                                                                                     valueKey="id"
                                                                                     labelKey="name"
                                                                                     data={publicDatas.roleList}
+                                                                                    cleanable={false}
                                                                                     onSelect={(id, obj) => {
                                                                                         setOwner(prevState => {
                                                                                             return {
@@ -2161,6 +2147,7 @@ const steps2 = (props) => {
                                                                                         valueKey="id"
                                                                                         labelKey="name"
                                                                                         value={startup.type?.id || null}
+                                                                                        cleanable={false}
                                                                                         onSelect={(id, obj) => {
                                                                                             setStartup(prevState => {
                                                                                                 return {
@@ -2328,6 +2315,7 @@ const steps2 = (props) => {
                                                                                 value={null}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
+                                                                                cleanable={false}
                                                                                 onSelect={(e, obj) => {
                                                                                     if (e && !teammer.positions.some(item => item.id === e)) {
                                                                                         setTeammer(prevState => {
@@ -2380,6 +2368,7 @@ const steps2 = (props) => {
                                                                                 value={teammer.experienceLevel?.id || null}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
+                                                                                cleanable={false}
                                                                                 onSelect={(id, obj) => {
                                                                                     setTeammer(prevState => {
                                                                                         return {
@@ -2407,6 +2396,7 @@ const steps2 = (props) => {
                                                                                 value={null}
                                                                                 valueKey="id"
                                                                                 labelKey='name'
+                                                                                cleanable={false}
                                                                                 onSelect={(id, obj) => {
                                                                                     if (id && !teammer.skillList.some(item => item.id === id)) {
                                                                                         setTeammer(prevState => {
@@ -2492,6 +2482,7 @@ const steps2 = (props) => {
                                                                                             value={selectedWorkExp.position?.id}
                                                                                             valueKey="id"
                                                                                             labelKey="name"
+                                                                                            cleanable={false}
                                                                                             onSelect={(id, obj) => {
                                                                                                 setSelectedWorkExp(prevState => {
                                                                                                     return {
@@ -2543,6 +2534,7 @@ const steps2 = (props) => {
                                                                                             value={selectedWorkExp.location?.id}
                                                                                             valueKey="id"
                                                                                             labelKey='name'
+                                                                                            cleanable={false}
                                                                                             onSelect={(id, obj) => {
                                                                                                 setSelectedWorkExp(prevState => {
                                                                                                     return {
@@ -2576,6 +2568,7 @@ const steps2 = (props) => {
                                                                                                 valueKey="id"
                                                                                                 labelKey='name'
                                                                                                 value={selectedWorkExp.start_month?.id}
+                                                                                                cleanable={false}
                                                                                                 onSelect={(id, obj) => {
                                                                                                     setSelectedWorkExp(prevState => {
                                                                                                         return {
@@ -2596,6 +2589,7 @@ const steps2 = (props) => {
                                                                                                 value={selectedWorkExp.start_year?.id}
                                                                                                 valueKey="id"
                                                                                                 labelKey='name'
+                                                                                                cleanable={false}
                                                                                                 onSelect={(id, obj) => {
                                                                                                     setSelectedWorkExp(prevState => {
                                                                                                         return {
@@ -3097,6 +3091,7 @@ const steps2 = (props) => {
                                                                                     labelKey='name'
                                                                                     value={selectedJob.period?.id}
                                                                                     disabled={selectedJob.payment.name !== "paid"}
+                                                                                    cleanable={selectedJob.payment.name !== "paid"}
                                                                                     onSelect={(id, obj) => {
                                                                                         setSelectedJob(prevState => {
                                                                                             return {

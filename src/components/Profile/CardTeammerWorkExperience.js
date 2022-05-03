@@ -192,9 +192,6 @@ function CardTeammerWorkExperience(props) {
             <ul className="experience-wrapper">
                 {
                     workExperienceList?.map((item, index) => {
-
-                        console.log('EXP ITEM => ', item);
-
                         return <li key={index}>
                             <span className="date">
                                 {item.start_date}
@@ -254,7 +251,6 @@ function CardTeammerWorkExperience(props) {
                                             end_year: endDate?.year ?? null,
                                             isCurrent: item.current,
                                         });
-                                        console.log('SELECTED ITEM', item);
                                         editModal.toggle();
                                     }}
                                 />

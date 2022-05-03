@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { Avatar, Button, Notification, Panel, Tag, toaster } from 'rsuite';
+import { Avatar, Button, Modal, Notification, Tag, toaster } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
 import { getFetchData } from '../../lib/fetchData';
 import { getToken } from "../../lib/session";
-import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
+// import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
-import config, { NEXT_URL } from '../../src/configuration';
+import config from '../../src/configuration';
 import AuthModal from '../../src/components/Modals/AuthModal';
 import { useAuth } from "../../Auth";
 import { useRouter } from "next/router";
 import { useChat } from '../../src/contexts/ChatProvider';
+import { getCookie } from '../../src/helpers/cookie';
 
 function Startup(props) {
 
@@ -22,24 +23,18 @@ function Startup(props) {
 
     const {
         fetchJobData,
-        logo,
+        // logo,
         startupJobList,
         similarJobList,
     } = props;
 
     const { currentUser } = useAuth();
     const [jobData, setJobData] = useState(fetchJobData);
-    const [token, setToken] = useState('');
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
-
-    React.useEffect(async () => {
-        const fetchUser = await fetch(NEXT_URL + 'api/auth');
-        const resObj = await fetchUser.json();
-        setToken(resObj?.user?.token);
-    }, []);
+    const [isOpenConfirmCancelModal, setIsOpenConfirmCancelModal] = useState(false);
 
     React.useEffect(() => {
-        console.log('props job', jobData);
+        // console.log('props job', jobData);
         setJobData(fetchJobData);
     }, [fetchJobData]);
 
@@ -56,6 +51,34 @@ function Startup(props) {
 
     const sendMessage = () => {
         if (!jobData?.project?.owner?.id || !chat) return;
+
+        if (!getCookie("teammers-access-token")) {
+            setIsOpenLoginModal(true);
+            return;
+        };
+
+        if (getCookie("teammers-access-token") && !getCookie("teammers-type")) {
+            toaster.push(
+                <Notification
+                    type={"warning"}
+                    header="Oopss!"
+                    closable
+                >
+                    <p>
+                        Please, complete your registration information.
+                        <Button
+                            className='ml-2'
+                            onClick={() => router.push("/signup/steps")}
+                        >
+                            Complete registration
+                        </Button>
+                    </p>
+
+                </Notification>, 'topEnd'
+            );
+
+            return;
+        }
 
         // find conversation with job owner
         const conversation = chat.find(conversation => conversation.members.find(member => member.id === jobData.project.owner.id));
@@ -96,8 +119,36 @@ function Startup(props) {
 
         if (!jobData) return;
 
-        if (token) {
-            axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`, null).then(res => {
+        if (!getCookie("teammers-access-token")) {
+            setIsOpenLoginModal(true);
+            return;
+        };
+
+        if (getCookie("teammers-access-token") && !getCookie("teammers-type")) {
+            toaster.push(
+                <Notification
+                    type={"warning"}
+                    header="Oopss!"
+                    closable
+                >
+                    <p>
+                        Please, complete your registration information.
+                        <Button
+                            className='ml-2'
+                            onClick={() => router.push("/signup/steps")}
+                        >
+                            Complete registration
+                        </Button>
+                    </p>
+
+                </Notification>, 'topEnd'
+            );
+
+            return;
+        }
+
+        if (getCookie("teammers-access-token")) {
+            axios.post(config.BASE_URL + `jobs/${jobData.id}/apply`).then(res => {
                 if (res.data.success) {
                     toaster.push(
                         <Notification
@@ -112,7 +163,6 @@ function Startup(props) {
                     );
                     getData();
                 }
-                ;
             })
                 .catch(err => {
                     if (err.response?.status === 422) {
@@ -128,21 +178,34 @@ function Startup(props) {
                             </Notification>, 'topEnd'
                         );
                     }
+                    if (err.response?.status === 400) {
+                        toaster.push(
+                            <Notification
+                                type={"warning"}
+                                header="Oopss!"
+                                closable
+                            >
+                                <p>
+                                    Please, complete your registration information.
+                                    <Button
+                                        className='ml-2'
+                                        onClick={() => router.push("/signup/steps")}
+                                    >
+                                        Complete registration
+                                    </Button>
+                                </p>
+
+                            </Notification>, 'topEnd'
+                        );
+                    }
                 })
-        } else {
-            setIsOpenLoginModal(true);
         }
-        ;
     };
 
     const rejectApplicationToJob = () => {
         if (!jobData) return;
         if (!jobData.self_request) return;
-        axios.post(config.BASE_URL + `team-requests/${jobData.self_request.id}/reject`, null, {
-            headers: {
-                "Authorization": token
-            }
-        }).then(res => {
+        axios.post(config.BASE_URL + `team-requests/${jobData.self_request.id}/reject`).then(res => {
             if (res.data.success) {
                 getData();
                 toaster.push(
@@ -156,8 +219,8 @@ function Startup(props) {
                         </p>
                     </Notification>, 'topEnd'
                 );
+                setIsOpenConfirmCancelModal(false);
             }
-            ;
         });
     };
 
@@ -261,12 +324,12 @@ function Startup(props) {
                                         jobData.self_request.request_from === 2 ?
                                             <Button
                                                 appearance="primary"
-                                                onClick={rejectApplicationToJob}
+                                                onClick={() => setIsOpenConfirmCancelModal(true)}
                                             >
                                                 Cancel application
                                             </Button>
                                             :
-                                            '1'
+                                            '_'
                                         :
                                         <Button
                                             appearance="primary"
@@ -312,6 +375,34 @@ function Startup(props) {
                 isOpen={isOpenLoginModal}
                 setIsOpen={setIsOpenLoginModal}
             />
+            {/* confirm cancel application modal */}
+            <Modal
+                size='sm'
+                open={isOpenConfirmCancelModal}
+                className='info-modal _auth'
+                onClose={() => setIsOpenConfirmCancelModal(!isOpenConfirmCancelModal)}
+                overflow={false}
+            >
+                <Modal.Header>
+                    <Modal.Title>Are you sure cancel your application?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="_modal-footer">
+                        <Button
+                            onClick={() => setIsOpenConfirmCancelModal(false)}
+                        >
+                            No, go back
+                        </Button>
+                        <Button
+                            onClick={() => rejectApplicationToJob()}
+                        >
+                            Yes, cancel
+                        </Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Panel } from 'rsuite';
+// import { Panel } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
 import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
 import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerWorkExperience';
-import CardStartUp from '../../src/components/Cards/CardStartUp';
+// import CardStartUp from '../../src/components/Cards/CardStartUp';
 import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
 import config from '../../src/configuration';
 import ProPanel from '../../src/components/ProPanel';
 // import { useAuth } from '../../Auth';
 import axios from 'axios';
 
-const ProfileTeammer = (props) => {
+const ProfileTeammer = () => {
 
     // const authContext = useAuth();
 

@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import config from "../../src/configuration";
 import Image from "next/image";
 import Banner from "../../src/components/Lib/Banner";
 import Link from "next/link";
-import {RiArrowRightLine} from "react-icons/ri";
-import {IconButton, Pagination} from "rsuite";
-import {HiArrowLeft} from "react-icons/hi";
-import {AiOutlineRight} from "react-icons/ai";
+import { RiArrowRightLine } from "react-icons/ri";
+import { IconButton, Pagination } from "rsuite";
+import { HiArrowLeft } from "react-icons/hi";
+import { AiOutlineRight } from "react-icons/ai";
+import BreadCrumb from "../../src/components/Lib/BreadCrumb";
 
 
 const Startups = () => {
@@ -44,29 +45,9 @@ const Startups = () => {
     console.log(startups, types)
     return <div className="startups">
         <Banner
-            styles={{marginBottom: '2.5rem'}}
+            styles={{ marginBottom: '2.5rem' }}
         />
-        <div className="breadcrumb-wrapper">
-            <Link href="/owner/home">
-                <div className="goback-btn" style={{cursor: 'pointer'}}>
-                    <IconButton
-                        size="lg"
-                        icon={<HiArrowLeft/>}
-                        className="goback-btn"
-                    />
-                    <span>Go back</span>
-                </div>
-            </Link>
-            <div className="custom-breadcrumb">
-                <span>Home</span>
-                <span className='breadcrumb-icon'>
-                    <AiOutlineRight/>
-                </span>
-                <span className='active'>
-                    Startups
-                </span>
-            </div>
-        </div>
+        <BreadCrumb />
         <h2>My Startups</h2>
         <div className="row mb-3">
             {
@@ -87,9 +68,9 @@ const Startups = () => {
                                 }
                             </div>
                             <div className="choose-startup">
-                                <Link href={"/startup/"+item.id} className="showAll">
+                                <Link href={"/startup/" + item.id} className="showAll">
                                     <a>
-                                        Choose startup <button><RiArrowRightLine/></button>
+                                        Choose startup <button><RiArrowRightLine /></button>
                                     </a>
                                 </Link>
                             </div>

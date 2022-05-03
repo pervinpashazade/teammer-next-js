@@ -179,6 +179,16 @@ div.icon-btn-wrapper {
       padding: 0px !important;
 
       li {
+        span {
+          font-size: 14px;
+          text-decoration: none;
+          line-height: 17px;
+          font-weight: 600;
+          color: $text-color-primary;
+          transition: 0.8s;
+          margin-right: 32px;
+        }
+
         a:not(.icons) {
           font-size: 14px;
           text-decoration: none;
