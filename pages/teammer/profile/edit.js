@@ -64,7 +64,7 @@ const EditComponent = (props) => {
 
         await axios.get(config.BASE_URL + 'positions?noPagination=1').then(res => {
             if (res.data.success) {
-                positionList = res.data.data.items;
+                positionList = res.data.data;
             };
         });
         await axios.get(config.BASE_URL + 'project/roles?noPagination=1').then(res => {
@@ -94,7 +94,7 @@ const EditComponent = (props) => {
         });
         await axios.get(config.BASE_URL + 'skills?noPagination=1').then(res => {
             if (res.data.success) {
-                skillList = res.data.data.items;
+                skillList = res.data.data;
             };
         });
         await axios.get(config.BASE_URL + 'experience-levels?noPagination=1').then(res => {
@@ -118,8 +118,8 @@ const EditComponent = (props) => {
     React.useEffect(() => {
         getPublicDatas();
 
-        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location').then(res => {
-            console.log('res data', res.data.data);
+        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences.location,detail.location').then(res => {
+            // console.log('res data', res.data.data);
             if (res.data.success) {
                 setTeammer({
                     avatarUrl: res.data.data.detail.photo,
@@ -446,23 +446,15 @@ const EditComponent = (props) => {
             body._method = 'PUT';
             let formdata = new FormData();
             buildFormData(formdata, body);
-            axios.post(config.BASE_URL + 'users', formdata, {
-                headers: {
-                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-                }
-            }).then(res => {
-                console.log('edit res', res);
+            axios.post(config.BASE_URL + 'users', formdata).then(res => {
+                // console.log('edit res', res);
                 if (res.data.success) {
                     setShowSuccessAlert(true);
                 };
             });
         } else {
-            axios.put(config.BASE_URL + 'users', body, {
-                headers: {
-                    'Authorization': 'Bearer ' + getCookie('teammers-access-token')
-                }
-            }).then(res => {
-                console.log('edit res', res);
+            axios.put(config.BASE_URL + 'users', body).then(res => {
+                // console.log('edit res', res);
                 if (res.data.success) {
                     setShowSuccessAlert(true);
                 };
@@ -510,7 +502,52 @@ const EditComponent = (props) => {
     };
 
     const editWorkExperience = data => {
-        alert('edit work exp');
+        // console.log('data', data);
+
+        if (!data) return;
+
+        let body = {
+            company: data.companyName,
+            position_id: data.position?.id,
+            location_id: data.location?.id,
+            start_date: `${data.start_month?.id < 10 ? '0' + data.start_month?.id : data.start_month?.id}-${data.start_year?.id}`,
+        }
+
+        if (data.end_month?.id && data.end_year?.id) {
+            body.end_date = `${data.end_month?.id < 10 ? '0' + data.end_month?.id : data.end_month?.id}-${data.end_year?.id}`;
+        };
+
+        // console.log('EDIT DATA =>', body);
+
+        axios.put(config.BASE_URL + `experiences/${data.id}`, body).then(res => {
+            if (res.data.success) {
+                // console.log('edit res test', res.data.data);
+
+                let updatedData = {
+                    id: res.data.data.id,
+                    company: res.data.data.company,
+                    start_date: res.data.data.start_date,
+                    end_date: res.data.data.end_date,
+                    current: res.data.data.current,
+                    location: data.location,
+                    location_id: data.location?.id,
+                    position: data.position,
+                    position_id: data.position?.id,
+                }
+
+                setTeammer(prevState => {
+                    return {
+                        ...prevState,
+                        workExperienceList: [
+                            ...prevState.workExperienceList.filter(x => x.id !== data.id),
+                            updatedData,
+                        ]
+                    }
+                });
+
+                setIsOpenEditModal(false);
+            };
+        });
     };
 
     const removeCvFunc = () => {

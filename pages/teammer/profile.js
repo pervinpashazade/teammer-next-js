@@ -21,12 +21,13 @@ const ProfileTeammer = (props) => {
     // const [user, setUser] = useState();
 
     const [joinedProjectList, setJoinedProjectList] = useState([]);
+    const [savedProjectList, setSavedProjectList] = useState([]);
 
     // // mount
     useEffect(() => {
         getPublicDatas();
-        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences,detail.location').then(res => {
-            console.log('TEAMMER RES DATA =>', res.data.data);
+        axios.get(config.BASE_URL + 'auth/user?include=skills,positions,experiences.location,detail.location').then(res => {
+            // console.log('TEAMMER RES DATA =>', res.data.data);
             if (res.data.success) {
                 setTeammer({
                     avatarUrl: res.data.data.detail.photo,
@@ -51,9 +52,14 @@ const ProfileTeammer = (props) => {
                 setJoinedProjectList(res.data.data.items);
             };
         });
-        // axios.get(config.BASE_URL + 'users/saved-projects').then(res => {
-        //     console.log('SAVED JOB RES => ', res);
-        // })
+        axios.get(config.BASE_URL + 'users/saved-items').then(res => {
+            // axios.get(config.BASE_URL + 'users/saved-items?include=project').then(res => {
+            // console.log('SAVED JOB RES => ', res);
+            if (res.data.success) {
+                // need pagination
+                setSavedProjectList(res.data.data.items)
+            }
+        })
     }, []);
 
     // React.useEffect(() => {
@@ -102,7 +108,7 @@ const ProfileTeammer = (props) => {
 
         await axios.get(config.BASE_URL + 'positions?noPagination=1').then(res => {
             if (res.data.success) {
-                positionList = res.data.data.items;
+                positionList = res.data.data;
             };
         });
         await axios.get(config.BASE_URL + 'project/roles?noPagination=1').then(res => {
@@ -117,7 +123,7 @@ const ProfileTeammer = (props) => {
         });
         await axios.get(config.BASE_URL + 'locations?noPagination=1').then(res => {
             if (res.data.success) {
-                locationList = res.data.data.items;
+                locationList = res.data.data;
             };
         });
         await axios.get(config.BASE_URL + 'job/types?noPagination=1').then(res => {
@@ -190,7 +196,52 @@ const ProfileTeammer = (props) => {
     };
 
     const editWorkExperience = data => {
-        alert('edit work exp');
+        // console.log('data', data);
+
+        if (!data) return;
+
+        let body = {
+            company: data.companyName,
+            position_id: data.position?.id,
+            location_id: data.location?.id,
+            start_date: `${data.start_month?.id < 10 ? '0' + data.start_month?.id : data.start_month?.id}-${data.start_year?.id}`,
+        }
+
+        if (data.end_month?.id && data.end_year?.id) {
+            body.end_date = `${data.end_month?.id < 10 ? '0' + data.end_month?.id : data.end_month?.id}-${data.end_year?.id}`;
+        };
+
+        // console.log('EDIT DATA =>', body);
+
+        axios.put(config.BASE_URL + `experiences/${data.id}`, body).then(res => {
+            if (res.data.success) {
+                // console.log('edit res test', res.data.data);
+
+                let updatedData = {
+                    id: res.data.data.id,
+                    company: res.data.data.company,
+                    start_date: res.data.data.start_date,
+                    end_date: res.data.data.end_date,
+                    current: res.data.data.current,
+                    location: data.location,
+                    location_id: data.location?.id,
+                    position: data.position,
+                    position_id: data.position?.id,
+                }
+
+                setTeammer(prevState => {
+                    return {
+                        ...prevState,
+                        workExperienceList: [
+                            ...prevState.workExperienceList.filter(x => x.id !== data.id),
+                            updatedData,
+                        ]
+                    }
+                });
+
+                setIsOpenEditModal(false);
+            };
+        });
     };
 
     return (
@@ -245,37 +296,13 @@ const ProfileTeammer = (props) => {
                     <ProPanel
                         title="Projects joined"
                         noDataMessage="You have not yet joined any project"
-                        dataList={joinedProjectList?.length ? joinedProjectList : []}
+                        dataList={joinedProjectList}
                     />
-                    {/* <ProPanel
+                    <ProPanel
                         title="Saved projects"
                         noDataMessage="You have not yet saved any project"
-                        dataList={joinedProjectList?.length ? joinedProjectList : []}
-                    /> */}
-                    <Panel
-                        bordered
-                        collapsible
-                        defaultExpanded
-                        className='panel-joined'
-                        header="Saved projects"
-                    >
-                        <div className="w-100">
-                            <div className="row">
-                                <div className="col-md-6 mb-4">
-                                    <CardStartUp />
-                                </div>
-                                <div className="col-md-6 mb-4">
-                                    <CardStartUp />
-                                </div>
-                                <div className="col-md-6 mb-4">
-                                    <CardStartUp />
-                                </div>
-                                <div className="col-md-6 mb-4">
-                                    <CardStartUp />
-                                </div>
-                            </div>
-                        </div>
-                    </Panel>
+                        dataList={savedProjectList}
+                    />
                 </div>
             </div>
         </div>
