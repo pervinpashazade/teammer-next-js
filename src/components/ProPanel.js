@@ -3,6 +3,7 @@ import { Panel } from 'rsuite'
 import CardStartUp from "./Cards/CardStartUp";
 
 function ProPanel(props) {
+    console.log(props)
     const {
         title,
         dataList,
@@ -26,9 +27,9 @@ function ProPanel(props) {
                             <CardStartUp
                                 key={item.id}
                                 isStartup={isStartup}
-                                jobId={item.saveable.id}
-                                title={item.saveable.title}
-                                logo={item.saveable.logo}
+                                jobId={item.id}
+                                title={item.title}
+                                logo={item.logo}
                             />
                         )
                     }) : noDataMessage ? noDataMessage :

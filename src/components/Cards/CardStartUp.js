@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Image from "next/image";
-import { Avatar, Button, Notification, toaster } from "rsuite"
+import {Avatar, Button, Notification, toaster} from "rsuite"
 import axios from 'axios';
 import config from '../../configuration';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import AuthModal from "../Modals/AuthModal";
-import { useAuth } from "../../../Auth";
+import {useAuth} from "../../../Auth";
 
 const CardStartUp = (props) => {
 
@@ -28,7 +28,7 @@ const CardStartUp = (props) => {
     // React.useEffect(() => {
     //     console.log('jobId', jobId);
     // }, [props]);
-    const { currentUser } = useAuth();
+    const {currentUser} = useAuth();
 
     const routing = () => {
         router.push(`/${isStartup ? "startup" : "job"}/${jobId}`)
@@ -39,18 +39,20 @@ const CardStartUp = (props) => {
         if (!currentUser) {
             setIsOpenLoginModal(true);
             return;
-        };
+        }
+        ;
 
         if (!isSaved) {
             attackSaveProject()
         } else {
             unSaveProject();
-        };
+        }
+        ;
     };
 
     const attackSaveProject = () => {
         if (!jobId) return;
-        axios.post(config.BASE_URL + 'users/save-item', { id: jobId, type: 'job' })
+        axios.post(config.BASE_URL + 'users/save-item', {id: jobId, type: 'job'})
             .then(res => {
                 // console.log('res', res);
                 toaster.push(
@@ -63,7 +65,7 @@ const CardStartUp = (props) => {
 
     const unSaveProject = () => {
         if (!jobId) return;
-        axios.post(config.BASE_URL + 'users/unsave-project', { id: jobId, type: 'job' }).then(res => {
+        axios.post(config.BASE_URL + 'users/unsave-project', {id: jobId, type: 'job'}).then(res => {
             // console.log('res', res);
             toaster.push(
                 <Notification type={"info"} header="Attention" closable>
@@ -89,7 +91,7 @@ const CardStartUp = (props) => {
                             src={
                                 ownerAvatarUrl ? ownerAvatarUrl
                                     :
-                                    "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
+                                    logo ? logo : "https://avatars2.githubusercontent.com/u/12592949?s=460&v=4"
                             }
                         />
                         <p className="name">{ownerFullname}</p>
@@ -123,7 +125,7 @@ const CardStartUp = (props) => {
                     </div>
                 </div>
             </div>
-            <AuthModal isOpen={isOpenLoginModal} setIsOpen={setIsOpenLoginModal} />
+            <AuthModal isOpen={isOpenLoginModal} setIsOpen={setIsOpenLoginModal}/>
         </div>
         //     </a>
         // </Link>
