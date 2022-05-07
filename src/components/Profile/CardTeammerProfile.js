@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router'
+import React, {useState} from 'react';
+import {useRouter} from 'next/router'
 import {
     Avatar,
     Button,
@@ -8,10 +8,10 @@ import {
 } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import Image from 'next/image';
-import { useAuth } from "../../../Auth";
-import { getCookie } from '../../helpers/cookie';
+import {useAuth} from "../../../Auth";
+import {getCookie} from '../../helpers/cookie';
 
-const CardTeammerProfile = ({ props }) => {
+const CardTeammerProfile = ({props}) => {
     const context = useAuth();
     // console.log(context);
     const router = useRouter();
@@ -27,7 +27,9 @@ const CardTeammerProfile = ({ props }) => {
         skills,
         positions,
         isProfile,
-        addToTeam
+        addToTeam,
+        self_request,
+        removeFromTeam
     } = props;
 
     const [loggedUser, setLogedUser] = useState({
@@ -174,7 +176,15 @@ const CardTeammerProfile = ({ props }) => {
                 {
                     !isProfile && loggedUser?.teammer_type === "1" &&
                     <div className="d-flex justify-content-around profile-buttons pt-3">
-                        <Button onClick={() => addToTeam(full_name, id)}>Add to team</Button>
+                        {<Button
+                            onClick={() => {
+                                if (self_request?.status === 1 || !self_request) {
+                                    addToTeam(full_name, id)
+                                } else if (self_request?.status === 0) {
+                                    removeFromTeam(self_request?.id);
+                                }
+                            }}>{self_request?.status === 0 ? 'Remove from team' :
+                            'Add to team'}</Button>}
                         <Button>
                             <Image
                                 src={'/icons/envelope_white.svg'}

@@ -11,22 +11,6 @@ import SearchHome from "../../src/components/SearchHome";
 import {useAuth} from "../../Auth";
 
 const Home = (props) => {
-
-    const {
-        project_types,
-        experience_levels,
-        // locations,
-        // items,
-        // projects,
-        id,
-    } = props;
-    // const project = projects.data.items.map(item => {
-    //     return {
-    //         label: item.title,
-    //         value: item.id
-    //     }
-    // });
-
     const {currentUser} = useAuth();
 
     const [projectTypes, setProjectTypes] = useState([]);
@@ -34,7 +18,7 @@ const Home = (props) => {
     const [skills, setSkills] = useState([]);
     const [locations, setLocations] = useState([]);
     const [projects, setProjects] = useState([]);
-    const [portfolioUrlList , setPortfolioUrlList] = useState([])
+    const [portfolioUrlList, setPortfolioUrlList] = useState([])
 
     const [open, setOpen] = useState(false);
     const [teammerId, setTeammerId] = useState('')
@@ -87,18 +71,27 @@ const Home = (props) => {
             setStartUpName('')
         }
     };
-
+    const removeFromTeam = (id) => {
+        console.log(id)
+        if (id) {
+            axios.post(config.BASE_URL + "team-requests/" + id + "/reject",{})
+                .then(res => {
+                    console.log(res);
+                    getData();
+                })
+        }
+    }
     const submitAddToTeam = async () => {
         if (currentUser && currentUser?.id) {
             axios.post(config.BASE_URL + "jobs/" + jobName + "/add-to-team", {
                 id: teammerId
             }).then(res => {
-                console.log('adks')
                 toaster.push(
                     <Notification type={"success"} header="Success!" closable>
                         New Teammer added!
                     </Notification>, 'topEnd'
                 );
+                getData();
                 setOpen(!open);
                 setJobName(0);
                 setJobs([]);
@@ -120,9 +113,9 @@ const Home = (props) => {
         if (filter.experience_levels.length > 0) link = link + "&filter[experience]=" + filter.experience_levels.toString();
         if (filter.locations.length > 0) link = link + "&filter[location]=" + filter.locations.toString();
         axios.get(config.BASE_URL +
-            'teammers?include=detail,skills,positions,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
+            'teammers?include=detail,skills,positions,self_request,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
             .then(res => {
-                console.log(res.data)
+                console.log('data', res.data.data.items)
                 setData(res.data.data.items)
             });
     };
@@ -170,7 +163,7 @@ const Home = (props) => {
             })
     }
     const getUserData = () => {
-        axios.get(config.BASE_URL + "teammers?include=detail,skills,positions,experiences,detail.location")
+        axios.get(config.BASE_URL + "teammers?include=detail,skills,positions,self_request,experiences,detail.location")
             .then(res => {
                 setData(res.data.data.items)
             })
@@ -323,9 +316,10 @@ const Home = (props) => {
                                                 about: item.detail.about,
                                                 isTop: true,
                                                 addToTeam: addToTeam,
-                                                portfolioUrlList : portfolioUrlList,
-                                                setPortfolioUrlList : setPortfolioUrlList
-
+                                                removeFromTeam: removeFromTeam,
+                                                portfolioUrlList: portfolioUrlList,
+                                                setPortfolioUrlList: setPortfolioUrlList,
+                                                self_request: item.self_request
                                             }
                                         }
                                     />

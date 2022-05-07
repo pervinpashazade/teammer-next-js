@@ -20,12 +20,12 @@ const withAuth = (WrappedComponent) => {
                 return null;
             } else if (accessToken && roleType === "1" && (!router.pathname.includes("owner") && !router.pathname.includes("job") &&
                 !router.pathname.includes("chat")&& !router.pathname.includes("notifications") &&
-                !router.pathname.includes("startup"))) {
+                !router.pathname.includes("startup") && !router.pathname.includes("payment"))) {
                 router.push("/owner/home");
                 return null;
             } else if (accessToken && roleType === "2" && (!router.pathname.includes("teammer") && !router.pathname.includes("job") &&
                 !router.pathname.includes("chat") && !router.pathname.includes("notifications") &&
-                !router.pathname.includes("startup"))) {
+                !router.pathname.includes("startup") || !router.pathname.includes("payment"))) {
                 router.push("/teammer/home");
                 return null;
             }
