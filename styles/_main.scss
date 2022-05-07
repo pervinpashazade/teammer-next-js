@@ -1339,6 +1339,8 @@ div.icon-btn-wrapper {
         justify-content: center;
         padding: 0px 21px;
         margin-bottom: 2.5rem;
+        position: relative;
+        z-index: 99;
 
         ._top-left {
           display: flex;
