@@ -35,11 +35,15 @@ function Chat() {
         createMessage,
     } = useChat();
 
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [conversationList, setConversationList] = useState([]);
     const [selectedConversation, setSelectedConversation] = useState(null);
 
     // // // mount
+    // useEffect(() => {
+
+    // }, [])
+
     useEffect(() => {
         if (router.query.selectedConversationId && chat) {
             setSelectedConversation(chat.find(x => x.id === Number(router.query.selectedConversationId)))
@@ -180,10 +184,14 @@ function Chat() {
                                         let isOwnMessage = lastMessage.from === Number(getCookie("teammers-id"));
 
                                         if (!isOwnMessage) {
-                                            lastMessageSender = item.members.find(x => x.id === lastMessage.from);
-                                        };
 
-                                        // console.log('last message', lastMessage);
+                                            if (lastMessage?.from) {
+                                                lastMessageSender = item.members.find(x => x.id === lastMessage.from);
+                                            } else {
+                                                lastMessageSender = item.members.find(x => x.id !== Number(getCookie("teammers-id")))
+                                            }
+
+                                        };
 
                                         return lastMessage ? <li
                                             key={index}
@@ -202,6 +210,7 @@ function Chat() {
                                                             :
                                                             lastMessageSender?.detail.photo
                                                     }
+                                                    // src="https://www.w3schools.com/howto/img_avatar.png"
                                                     className='user-avatar'
                                                     alt="user photo"
                                                 />
@@ -264,11 +273,11 @@ function Chat() {
                         <div className="chat-inner">
                             <div className="chat-area">
                                 {/*  STATIC !!!! message list date start */}
-                                <div className="message-date">
+                                {/* <div className="message-date">
                                     <span>
                                         Aug 23, 2021
                                     </span>
-                                </div>
+                                </div> */}
                                 {/* message list date end */}
                                 {/* messages list start */}
                                 {
