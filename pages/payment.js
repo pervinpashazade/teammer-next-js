@@ -1,19 +1,19 @@
 import Link from "next/link";
-import React, {useState} from "react";
-import {Button, ButtonToolbar, Checkbox, Divider, Form, IconButton, Input, Radio, RadioGroup, Toggle} from "rsuite";
+import React, { useState } from "react";
+import { Button, ButtonToolbar, Checkbox, Divider, Form, IconButton, Input, Radio, RadioGroup, Toggle } from "rsuite";
 import config from "../src/configuration";
 import axios from "axios";
-import {useDispatch} from "react-redux";
-import {useRouter} from 'next/router'
+import { useDispatch } from "react-redux";
+import { useRouter } from 'next/router'
 import Image from "next/image";
-import {HiArrowLeft} from "react-icons/hi";
+import { HiArrowLeft } from "react-icons/hi";
 
 const Payment = () => {
 
     const [check, setCheck] = useState('card');
     const [isActiveAnnualy, setIsActiveAnnualy] = useState(false);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const router = useRouter()
     const login_form = (event) => {
         let data = new FormData(event.target);
@@ -52,9 +52,9 @@ const Payment = () => {
                 backgroundImage: "url('/img/pay-pal.svg')"
             }}>
                 <h2 className="font-weight-bold text-center">
-                    <span style={{fontSize : '40px !important'}}>Get more from Teammers</span>
+                    <span style={{ fontSize: '40px !important' }}>Get more from Teammers</span>
                 </h2>
-                <p className="text-center">Start using the full functionality <br/> right now</p>
+                <p className="text-center">Start using the full functionality <br /> right now</p>
             </div>
             <div className="form">
                 <h2>Subscribe</h2>
@@ -120,7 +120,7 @@ const Payment = () => {
                     </div>
                 </div>
 
-                <h3 style={{fontSize: '32px', fontWeight: '600'}} className="my-4">Payments Details</h3>
+                <h3 style={{ fontSize: '32px', fontWeight: '600' }} className="my-4">Payments Details</h3>
                 <RadioGroup name="list" value={check} inline>
                     <Radio value="card" onChange={setCheck}>New Card</Radio>
                     <Radio value="pay-pal" onChange={setCheck}><Image
@@ -133,24 +133,24 @@ const Payment = () => {
                 <div className="card-details d-flex justify-content-between">
                     <div>
                         <p>Card Number</p>
-                        <Input className="p-3" type="number" placeholder="1234 1234 1234 1234"/>
+                        <Input className="p-3" type="number" placeholder="1234 1234 1234 1234" />
                     </div>
                     <div>
                         <p>Postal Code</p>
-                        <Input className="p-3" type="number" placeholder="1234"/>
+                        <Input className="p-3" type="number" placeholder="1234" />
                     </div>
                 </div>
                 <div className="card-details d-flex justify-content-between">
                     <div>
                         <p>Expiration Date</p>
-                        <Input className="p-3" type="number" placeholder="MM/YYYY"/>
+                        <Input className="p-3" type="number" placeholder="MM/YYYY" />
                     </div>
                     <div>
                         <p>CVV</p>
-                        <Input className="p-3" type="number" placeholder="123"/>
+                        <Input className="p-3" type="number" placeholder="123" />
                     </div>
                 </div>
-                <Divider/>
+                <Divider />
 
                 <div className="total">
                     <p className="d-flex justify-content-between"><span>Subtotal</span> <span>$6.00</span></p>

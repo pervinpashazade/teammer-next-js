@@ -38,7 +38,7 @@ function Startup(props) {
         // console.log('props job', jobData);
         setJobData(fetchJobData);
     }, [fetchJobData]);
-    console.log('currentUser', currentUser)
+    
     const getData = async () => {
         if (!currentUser) setIsOpenLoginModal(true)
         if (!jobData) return;
@@ -57,7 +57,6 @@ function Startup(props) {
             setIsOpenLoginModal(true);
             return;
         }
-        ;
 
         if (getCookie("teammers-access-token") && !getCookie("teammers-type")) {
             toaster.push(
@@ -119,8 +118,9 @@ function Startup(props) {
         })
     }
 
-    const applyToJob = () => {
+    console.log('JOB DATA =>', jobData);
 
+    const applyToJob = () => {
         if (!jobData) return;
 
         if (!getCookie("teammers-access-token")) {

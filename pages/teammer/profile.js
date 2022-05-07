@@ -52,7 +52,7 @@ const ProfileTeammer = () => {
                 setJoinedProjectList(res.data.data.items);
             };
         });
-        axios.get(config.BASE_URL + 'users/saved-items').then(res => {
+        axios.get(config.BASE_URL + 'users/saved-items?include=saveable.project,saveable.location,saveable.position').then(res => {
             // axios.get(config.BASE_URL + 'users/saved-items?include=project').then(res => {
             // console.log('SAVED JOB RES => ', res);
             if (res.data.success) {
@@ -299,6 +299,7 @@ const ProfileTeammer = () => {
                         dataList={joinedProjectList}
                     />
                     <ProPanel
+                        isSaved={true}
                         title="Saved projects"
                         noDataMessage="You have not yet saved any project"
                         dataList={savedProjectList}
