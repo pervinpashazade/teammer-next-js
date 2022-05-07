@@ -68,18 +68,6 @@ const ProfileOwner = (props) => {
                     }))
                     setStartUpName(e)
                 })
-            // axios.get(config.BASE_URL+"users/projects?include=jobs.position")
-            //     .then(res => {
-            //         setJobs(res.data.items.find(item => item.id === e).jobs.map(item => {
-            //             return {
-            //                 label: item.position.name,
-            //                 value: item.id
-            //             }
-            //         }))
-            //         setStartUpName(e)
-            //     })
-            // let res = await getFetchData("users/projects?include=jobs.position", cookies.get('teammers-access-token'));
-
         } else {
             setJobs([]);
             setStartUpName('')
