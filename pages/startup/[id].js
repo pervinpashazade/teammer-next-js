@@ -1,18 +1,18 @@
-import React, {useRef, useState} from 'react';
-import {Button, Form, InputPicker, Modal, Panel} from 'rsuite';
+import React, { useRef, useState } from 'react';
+import { Button, Form, InputPicker, Modal, Panel } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
-import {getFetchData} from '../../lib/fetchData';
-import {getToken} from "../../lib/session";
+// import { getFetchData } from '../../lib/fetchData';
+// import { getToken } from "../../lib/session";
 import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Link from 'next/link';
 import HomeSlider from '../../src/components/HomeSlider';
 import Image from 'next/image';
 import CardOwnStartupList from '../../src/components/Startup/CardOwnStartupList';
-import config, {NEXT_URL} from '../../src/configuration';
+import config, { NEXT_URL } from '../../src/configuration';
 import axios from "axios";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 function Startup(props) {
     const [startupData, setStartUpData] = useState([]);
@@ -38,7 +38,7 @@ function Startup(props) {
     const router = useRouter();
     const editorRef = useRef();
     const [isEditorLoaded, setIsEditorLoaded] = useState(false);
-    const {CKEditor, ClassicEditor} = editorRef.current || {};
+    const { CKEditor, ClassicEditor } = editorRef.current || {};
 
     const [userId, setUserId] = useState(null);
     const [type, setType] = useState('');
@@ -79,12 +79,12 @@ function Startup(props) {
             axios.get(config.BASE_URL + "positions?noPagination=1"),
 
         ]).then(([
-                     locations,
-                     project_types,
-                     payment_types,
-                     salary_periods,
-                     positions,
-                 ]) => {
+            locations,
+            project_types,
+            payment_types,
+            salary_periods,
+            positions,
+        ]) => {
             let salary_periods_array = Object.entries(salary_periods.data.data).map(([key, value]) => {
                 return {
                     name: key,
@@ -101,7 +101,7 @@ function Startup(props) {
         })
     }, []);
     const submitJobCreate = () => {
-        if(Object.entries(jobData).every(([key , value])=> value)){
+        if (Object.entries(jobData).every(([key, value]) => value)) {
             axios.post(config.BASE_URL + `projects/${router.query.id}/jobs`, jobData)
                 .then(res => {
                     console.log(res)
@@ -110,14 +110,14 @@ function Startup(props) {
 
                 })
         }
-        else{
+        else {
             setValidate(true)
         }
     }
     return (
         <div className='profile-startup'>
-            <BreadCrumb/>
-            <Banner/>
+            <BreadCrumb />
+            <Banner />
             <div className="profile-wrapper">
                 <div className="content">
                     <div className="startup-title">
@@ -147,7 +147,7 @@ function Startup(props) {
                     {
                         userId === startupData?.owner?.id &&
                         <>
-                            <hr/>
+                            <hr />
                             {/*slider*/}
                             <div className="row">
                                 <div className="col-md-12">
@@ -168,10 +168,10 @@ function Startup(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-12">
-                                    <HomeSlider/>
+                                    <HomeSlider />
                                 </div>
                             </div>
-                            <hr/>
+                            <hr />
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="component-header v1">
@@ -233,10 +233,10 @@ function Startup(props) {
                                         }}
                                     />
                                     {(validate && !jobData.position_id) &&
-                                    <div className="validation-errors mt-0">Job position
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Job position
+                                            is
+                                            required
+                                        </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 mb-4">
@@ -257,10 +257,10 @@ function Startup(props) {
                                         }}
                                     />
                                     {(validate && !jobData.location_id) &&
-                                    <div className="validation-errors mt-0">Location
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Location
+                                            is
+                                            required
+                                        </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 mb-4">
@@ -281,10 +281,10 @@ function Startup(props) {
                                         }}
                                     />
                                     {(validate && !jobData.payment_type_id) &&
-                                    <div className="validation-errors mt-0">Payment
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Payment
+                                            is
+                                            required
+                                        </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 mb-4">
@@ -305,10 +305,10 @@ function Startup(props) {
                                         }}
                                     />
                                     {(validate && !jobData.type_id) &&
-                                    <div className="validation-errors mt-0">Project type
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Project type
+                                            is
+                                            required
+                                        </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 d-flex align-items-center mb-4">
@@ -323,10 +323,10 @@ function Startup(props) {
                                         value={jobData.salary}
                                     />
                                     {(validate && !jobData.salary) &&
-                                    <div className="validation-errors mt-0">Salary
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Salary
+                                            is
+                                            required
+                                        </div>}
                                 </div>
                                 <div className="col-md-4 pr-0" controlId="location">
                                     <Form.ControlLabel>Salary period</Form.ControlLabel>
@@ -346,10 +346,10 @@ function Startup(props) {
                                         }}
                                     />
                                     {(validate && !jobData.salary_period) &&
-                                    <div className="validation-errors mt-0">Salary period
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Salary period
+                                            is
+                                            required
+                                        </div>}
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -367,10 +367,10 @@ function Startup(props) {
                                         min="0"
                                     />
                                     {(validate && !jobData.years_of_experience) &&
-                                    <div className="validation-errors mt-0">Years of experience
-                                        is
-                                        required
-                                    </div>}
+                                        <div className="validation-errors mt-0">Years of experience
+                                            is
+                                            required
+                                        </div>}
                                 </Form.Group>
                             </div>
                             <div className="col-md-12 job-create-ck-editor">
@@ -397,10 +397,10 @@ function Startup(props) {
                                         ''
                                 }
                                 {(validate && !jobData.description) &&
-                                <div className="validation-errors mt-0">Description
-                                    is
-                                    required
-                                </div>}
+                                    <div className="validation-errors mt-0">Description
+                                        is
+                                        required
+                                    </div>}
                             </div>
                         </Form>
                     </Modal.Body>
