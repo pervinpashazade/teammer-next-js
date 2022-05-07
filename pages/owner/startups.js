@@ -42,7 +42,6 @@ const Startups = () => {
         }
         setFirstRender(true)
     }, [activePage]);
-    console.log(startups, types)
     return <div className="startups">
         <Banner
             styles={{ marginBottom: '2.5rem' }}

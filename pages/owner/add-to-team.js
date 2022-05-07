@@ -12,8 +12,9 @@ import axios from "axios";
 import {useAuth} from "../../Auth";
 
 const AddToTeam = (props) => {
-    const {items} = props.data;
-    const { currentUser } = useAuth();
+    // const {items} = props.data;
+    const {currentUser} = useAuth();
+    const [items, setItems] = useState([])
     const [projects, setProjects] = useState([]);
     const [jobs, setJobs] = useState([]);
     const [open, setOpen] = useState(false);
@@ -21,6 +22,16 @@ const AddToTeam = (props) => {
     const [teammerName, setTeammerName] = useState('');
     const [startupName, setStartUpName] = useState('');
     const [jobName, setJobName] = useState(0);
+    const removeFromTeam = (id) => {
+        console.log(id)
+        if (id) {
+            axios.post(config.BASE_URL + "team-requests/" + id + "/reject", {})
+                .then(res => {
+                    console.log(res);
+                    getData();
+                })
+        }
+    }
     const getProjects = () => {
         axios.get(config.BASE_URL + "users/projects")
             .then(res => {
@@ -32,8 +43,16 @@ const AddToTeam = (props) => {
                 }))
             })
     }
+    const getData = () => {
+        axios.get(config.BASE_URL +
+            'teammers?include=detail,skills,positions,self_request,experiences,detail.location&per_page=3')
+            .then(res => {
+                setItems(res.data.data.items)
+            });
+    };
     useEffect(() => {
         getProjects();
+        getData()
     }, [])
     const getJobs = async (e) => {
         if (e) {
@@ -73,6 +92,7 @@ const AddToTeam = (props) => {
                         New Teammer added!
                     </Notification>, 'topEnd'
                 );
+                getData();
                 setOpen(!open);
                 setJobName(0);
                 setJobs([]);
@@ -130,13 +150,12 @@ const AddToTeam = (props) => {
                             year_of_experience: item.detail.years_of_experience,
                             bio_position: item.bio_position,
                             about: item.detail?.about,
-                            addToTeam: addToTeam
+                            self_request: item.self_request,
+                            addToTeam: addToTeam,
+                            removeFromTeam: removeFromTeam
                         }
                     } isProfile={false}/></div>)
                 }
-                {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
-                {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
-                {/*<div className="col-md-4"><CardTeammerProfile isProfile={false}/></div>*/}
                 <Modal open={open} onClose={() => {
                     setOpen(!open);
                     setTeammerId('')
@@ -185,7 +204,7 @@ export const getServerSideProps = async (context) => {
     const auth = getAuth(context);
     if (auth === "1") {
         return {
-            props: getFetchData('teammers?include=detail,skills,positions,experiences,detail.location&per_page=3', getToken(context))
+            props: getFetchData('teammers?include=detail,skills,positions,self_request,experiences,detail.location&per_page=3', getToken(context))
         }
     } else if (auth !== "1")
         return {
