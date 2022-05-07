@@ -38,7 +38,7 @@ function Startup(props) {
         // console.log('props job', jobData);
         setJobData(fetchJobData);
     }, [fetchJobData]);
-    
+
     const getData = async () => {
         if (!currentUser) setIsOpenLoginModal(true)
         if (!jobData) return;
@@ -324,7 +324,7 @@ function Startup(props) {
                                 }
                             </ul>
                             <div className="btn-wrapper">
-                                {
+                                {(currentUser && currentUser.type !== 1) && <span>{
                                     jobData?.self_request ?
                                         jobData.self_request.request_from === 2 ?
                                             <Button
@@ -342,7 +342,7 @@ function Startup(props) {
                                         >
                                             Apply
                                         </Button>
-                                }
+                                }</span>}
                                 <Button
                                     appearance="primary"
                                     onClick={sendMessage}
