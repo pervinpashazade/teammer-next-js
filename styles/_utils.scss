@@ -836,6 +836,107 @@
 
     }
   }
+
+  &.payment {
+    .left {
+      .bg-wrapper {
+        .title {
+          h2 {
+            &::before {
+              content: '';
+              position: absolute;
+              top: -25px;
+              left: 55px;
+              width: 10px;
+              height: 10px;
+              background: #A7ECF4;
+              border-radius: 50%;
+            }
+          }
+        }
+
+        .bg-icon-wrapper {
+          min-height: 147px;
+
+          &:first-child {
+            .ellipse {
+              width: 71px;
+              height: 71px;
+              border-radius: 50%;
+              border: 2px solid #2A6FFF;
+
+              position: absolute;
+              top: 42px;
+              left: 57px;
+            }
+
+            img {
+              position: absolute;
+
+              &.bg-icon_middle {
+                right: 208px;
+                top: 84px;
+              }
+
+              &.bg-icon_right {
+                right: -25px;
+                bottom: 0px;
+              }
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              top: 47px;
+              left: 209px;
+              width: 7px;
+              height: 7px;
+              background: #FFD15A;
+              border-radius: 50%;
+            }
+
+            &::after {
+              content: '';
+              position: absolute;
+              top: 46px;
+              right: 144px;
+              width: 10px;
+              height: 10px;
+              background: #88A4FC;
+              border-radius: 50%;
+            }
+          }
+
+          &:last-child {
+            img {
+              position: absolute;
+
+              &.bg-icon_left {
+                left: 53px;
+                bottom: 91px;
+              }
+
+              &.bg-icon_right {
+                right: 66px;
+                bottom: 61px;
+              }
+            }
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 221px;
+              bottom: 60px;
+              width: 10px;
+              height: 10px;
+              background: #A7ECF4;
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .upload-avatar-wrapper {
@@ -918,7 +1019,9 @@
     justify-content: center;
     padding: 0px 21px;
     margin-bottom: 2.5rem;
-
+    position: relative;
+    z-index: 99;
+    
     ._top-left {
       display: flex;
       align-items: center;
