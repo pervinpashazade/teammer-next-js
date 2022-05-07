@@ -10,6 +10,8 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^32.0.0",
     "@ckeditor/ckeditor5-react": "^3.0.3",
+    "@stripe/react-stripe-js": "^1.7.2",
+    "@stripe/stripe-js": "^1.29.0",
     "axios": "^0.24.0",
     "express": "^4.17.3",
     "firebase": "^9.6.3",
