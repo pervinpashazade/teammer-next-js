@@ -1,5 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
 
+@keyframes loading {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+.startLoading {
+  //opacity: 0.2;
+  z-index: -1;
+  animation: loading 2s infinite;
+  //.loader {
+  //  position: absolute;
+  //  top: 50%;
+  //  left: 50%;
+  //}
+}
+
 @import "variable";
 @import "utils";
 @import "chat";

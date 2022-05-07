@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
-import { Avatar, Button, Modal, Notification, Tag, toaster } from 'rsuite';
+import React, {useState} from 'react';
+import {Avatar, Button, Modal, Notification, Tag, toaster} from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
-import { getFetchData } from '../../lib/fetchData';
-import { getToken } from "../../lib/session";
+import {getFetchData} from '../../lib/fetchData';
+import {getToken} from "../../lib/session";
 // import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
 import config from '../../src/configuration';
 import AuthModal from '../../src/components/Modals/AuthModal';
-import { useAuth } from "../../Auth";
-import { useRouter } from "next/router";
-import { useChat } from '../../src/contexts/ChatProvider';
-import { getCookie } from '../../src/helpers/cookie';
+import {useAuth} from "../../Auth";
+import {useRouter} from "next/router";
+import {useChat} from '../../src/contexts/ChatProvider';
+import {getCookie} from '../../src/helpers/cookie';
+import Link from 'next/link';
 
 function Startup(props) {
 
     const router = useRouter();
 
-    const { chat } = useChat();
+    const {chat} = useChat();
 
     const {
         fetchJobData,
@@ -28,7 +29,7 @@ function Startup(props) {
         similarJobList,
     } = props;
 
-    const { currentUser } = useAuth();
+    const {currentUser} = useAuth();
     const [jobData, setJobData] = useState(fetchJobData);
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
     const [isOpenConfirmCancelModal, setIsOpenConfirmCancelModal] = useState(false);
@@ -37,7 +38,7 @@ function Startup(props) {
         // console.log('props job', jobData);
         setJobData(fetchJobData);
     }, [fetchJobData]);
-
+    console.log('currentUser', currentUser)
     const getData = async () => {
         if (!currentUser) setIsOpenLoginModal(true)
         if (!jobData) return;
@@ -55,7 +56,8 @@ function Startup(props) {
         if (!getCookie("teammers-access-token")) {
             setIsOpenLoginModal(true);
             return;
-        };
+        }
+        ;
 
         if (getCookie("teammers-access-token") && !getCookie("teammers-type")) {
             toaster.push(
@@ -94,7 +96,8 @@ function Startup(props) {
             );
 
             return;
-        };
+        }
+        ;
 
         newConversationRequest(jobData.project.owner.id);
     };
@@ -111,7 +114,8 @@ function Startup(props) {
                         Conversation request successfully sent!
                     </Notification>, 'topEnd'
                 );
-            };
+            }
+            ;
         })
     }
 
@@ -122,7 +126,8 @@ function Startup(props) {
         if (!getCookie("teammers-access-token")) {
             setIsOpenLoginModal(true);
             return;
-        };
+        }
+        ;
 
         if (getCookie("teammers-access-token") && !getCookie("teammers-type")) {
             toaster.push(
@@ -227,8 +232,8 @@ function Startup(props) {
     return (
         <>
             <div className='profile-job'>
-                <BreadCrumb />
-                <Banner />
+                <BreadCrumb/>
+                <Banner/>
                 <div className="profile-wrapper">
                     <div className="content">
                         <div className="row">
@@ -353,7 +358,8 @@ function Startup(props) {
                         </div>
                         <div className='startup-description'>
                             <h4 className='_title'>About this requirement</h4>
-                            {jobData?.description}
+                            {/*{jobData?.description}*/}
+                            <div dangerouslySetInnerHTML={{__html: jobData?.description}}></div>
                         </div>
                     </div>
                     <div className="right-side">
@@ -368,6 +374,10 @@ function Startup(props) {
                             jobList={similarJobList}
                             showStartupDetails
                         />
+                        {(currentUser && currentUser.type === 1) &&
+                        <a className="newstartup-button"
+                           onClick={() => router.push("/owner/create-startup")}> Add New Startup
+                        </a>}
                     </div>
                 </div>
             </div>

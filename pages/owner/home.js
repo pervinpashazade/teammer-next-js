@@ -122,6 +122,7 @@ const Home = (props) => {
         axios.get(config.BASE_URL +
             'teammers?include=detail,skills,positions,experiences,detail.location&per_page=' + dropdown + '&page=' + activePage + link)
             .then(res => {
+                console.log(res.data)
                 setData(res.data.data.items)
             });
     };

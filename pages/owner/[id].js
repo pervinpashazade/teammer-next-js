@@ -26,16 +26,17 @@ const ProfileOwner = (props) => {
     const [project, setProject] = useState([]);
     const [userData, setUserData] = useState({})
     useEffect(() => {
-        console.log('router' , router)
+        console.log('router', router)
         axios.get(config.BASE_URL + "users/projects")
             .then(res => {
-                if(res.data.success){
+                if (res.data.success) {
                     setProject(res.data.data.items)
                 }
             });
-        axios.get(config.BASE_URL + `users/${props.id}
-        /show?include=detail.experience_level,experiences.location,skills,positions,detail.location`)
+        axios.get(config.BASE_URL +
+            `users/${props.id}/show?include=detail.experience_level,experiences.location,skills,positions,detail.location`)
             .then(res => {
+                console.log(res.data)
                 setUserData(res.data.data);
                 setPortfolioUrlList({
                     cvFileName: res.data.data?.detail?.cv,
@@ -46,17 +47,12 @@ const ProfileOwner = (props) => {
 
 
     }, [])
-    React.useEffect(() => {
-        // console.clear();
-    }, [props]);
-
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [portfolioUrlList, setPortfolioUrlList] = useState({
         cvFileName: '',
         cv: '',
         portfolio: ''
     });
-
     const toggleCreateModal = () => {
         setIsOpenCreateModal(!isOpenCreateModal);
     };
@@ -175,10 +171,12 @@ const ProfileOwner = (props) => {
                         <p>Do you want to add <strong>{teammerName}</strong> to your Team?</p>
                         <InputPicker
                             size="lg"
-                            data={project.map(item => {return {
-                                label: item.title,
-                                value: item.id
-                            }})}
+                            data={project.map(item => {
+                                return {
+                                    label: item.title,
+                                    value: item.id
+                                }
+                            })}
                             onChange={(e) => getJobs(e)}
                             placeholder="Name of Startup"
                             className="w-100"
@@ -214,10 +212,10 @@ ProfileOwner.layout = true;
 
 export default ProfileOwner;
 
-export async function getServerSideProps(context){
+export async function getServerSideProps(context) {
     return {
-        props : {
-            id : context.params.id
+        props: {
+            id: context.params.id
         }
     }
 }
