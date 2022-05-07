@@ -157,6 +157,7 @@ function Setting(props) {
                                         <Form.Control
                                             name="email"
                                             type='email'
+                                            disabled={true}
                                             placeholder="Enter your email"
                                             value={owner.email}
                                             onChange={(e) => setData('email', e)}
