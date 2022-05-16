@@ -62,7 +62,9 @@ const ChatProvider = ({ children }) => {
             }
         });
 
-        setLastMessageList(arr)
+        setLastMessageList(arr);
+
+        // console.log('CHAT LIST =>', chat);
     }, [chat]);
 
     const connectSocket = () => {

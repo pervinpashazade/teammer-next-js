@@ -22,6 +22,7 @@ import axios from "axios";
 import config from "../../configuration";
 import { getCookie } from "../../helpers/cookie";
 import { useChat } from '../../contexts/ChatProvider';
+import { useNotification } from '../../contexts/NotificationProvider';
 
 const CustomComponentUserProfile = ({ placement, loading, children, user, context }) => {
     // console.log(user);
@@ -294,6 +295,8 @@ const Header = (props) => {
 
     const authContext = useAuth();
 
+    const { notifications } = useNotification();
+
     const { lastMessageList } = useChat();
 
     const {
@@ -301,24 +304,12 @@ const Header = (props) => {
     } = props;
 
     const [isOpen, setIsOpen] = useState(false)
-    const [loading, setLoading] = React.useState(false);
-    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(false);
     const toggleMenu = () => {
         setIsOpen(!isOpen)
     };
 
-    useEffect(() => {
-        const token = getCookie('teammers-access-token');
-        const type = getCookie('teammers-type');
-        if (token && type) {
-            axios.get(config.BASE_URL + "users/notifications?per_page=4")
-                .then(res => {
-                    if (res.data.success) {
-                        if (res.data.data?.items) setNotifications(res.data.data.items)
-                    }
-                })
-        }
-    }, []);
+    console.log('TEST =>', notifications);
 
     // console.log('notifications', notifications)
 
@@ -357,7 +348,7 @@ const Header = (props) => {
                                 <ul className="d-flex justify-content-between align-items-center">
                                     <CustomComponentNotification
                                         data={notifications}
-                                        count={user?.unread_notifications_count}
+                                        count={user?.unread_notificationList_count}
                                         loading={loading}
                                         placement="bottomEnd"
                                     />
@@ -421,7 +412,7 @@ const Header = (props) => {
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
                                 <CustomComponentNotification
                                     data={notifications}
-                                    count={user?.unread_notifications_count}
+                                    count={user?.unread_notificationList_count}
                                     loading={loading}
                                     placement="bottomEnd"
                                 />
