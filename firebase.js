@@ -60,14 +60,19 @@ export const firebaseMessaging = () => {
         onMessage(messaging, ({ notification, data }) => {
             alert('Noification');
 
-            console.clear();
+            // console.clear();
 
-            console.log('NOTIFICATION messaging => ', messaging);
-            console.log('notification notification => ', notification);
-            console.log('notification data => ', data);
+            // console.log('NOTIFICATION messaging => ', messaging);
+            // console.log('notification notification => ', notification);
+            // console.log('notification data => ', data);
 
             if (data?.event === "message") {
-                console.log('TEAMMERS message notification', JSON.parse(data.message));
+                // console.log('TEAMMERS message notification', JSON.parse(data.message));
+            };
+
+            if (data?.event === "push") {
+                console.log('TEST => 1', data);
+                console.log('TEST => 1', JSON.parse(data.data));
             };
 
             // console.log(data, notification);

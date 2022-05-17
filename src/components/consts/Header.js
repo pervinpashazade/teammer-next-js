@@ -7,6 +7,7 @@ import {
     Whisper,
     Popover,
     Badge,
+    Button,
 } from 'rsuite';
 import { RiArrowRightLine } from 'react-icons/ri';
 import Image from "next/image";
@@ -92,8 +93,9 @@ const CustomComponentUserProfile = ({ placement, loading, children, user, contex
     </Whisper>
 };
 
-const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref) => {
+const DefaultPopoverNotification = React.forwardRef(({ content, data, actions, ...props }, ref) => {
     // console.log("notification props", props);
+
     return (
         <Popover ref={ref} {...props}>
             <div className="notification">
@@ -115,15 +117,40 @@ const DefaultPopoverNotification = React.forwardRef(({ content, ...props }, ref)
                         </a>
                     </Link>
                 </div>
-                {props.data ? props.data.map((item, index) => <div key={index} className="message-person my-md-2">
-                    <div>
-                        <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" />
-                    </div>
-                    <div className="message-text">
-                        <p>{item?.data.message}</p>
-                        <p>2 min ago</p>
-                    </div>
-                </div>) : ''}
+                {data?.length ? data.map((item, index) => {
+                    return (
+                        <div key={index} className="message-person my-md-2">
+                            <div>
+                                <Avatar circle src="https://www.w3schools.com/howto/img_avatar.png" />
+                            </div>
+                            <div className="message-text">
+                                <p>{item.message}</p>
+                                <p>2 min ago</p>
+                                {
+                                    item.type &&
+                                        item.type === "join_request" &&
+                                        actions?.acceptJoinRequest && actions?.declineJoinRequest ?
+                                        <div className='_actions'>
+                                            <Button
+                                                color='primary'
+                                                onClick={() => actions.acceptJoinRequest(item)}
+                                            >
+                                                Accept
+                                            </Button>
+                                            <Button
+                                                color='danger'
+                                                onClick={() => actions.declineJoinRequest(item)}
+                                            >
+                                                Decline
+                                            </Button>
+                                        </div>
+                                        :
+                                        ''
+                                }
+                            </div>
+                        </div>
+                    )
+                }) : ''}
             </div>
         </Popover>
     );
@@ -203,7 +230,7 @@ const DefaultPopoverMessage = React.forwardRef(({ content, ...props }, ref) => {
     );
 });
 
-const CustomComponentNotification = ({ data, placement, loading, children, count = 0 }) => (
+const CustomComponentNotification = ({ data, placement, loading, children, count, actions }) => (
     <Whisper
         trigger="click"
         placement={placement}
@@ -211,12 +238,12 @@ const CustomComponentNotification = ({ data, placement, loading, children, count
         speaker={
             <DefaultPopoverNotification
                 data={data}
-                content={`I am positioned to the ${placement}`}
+                actions={actions}
             />
         }
     >
         {
-            count > 0 ?
+            count ?
                 <Badge content={count} color="blue">
                     <li>
                         <div className="c-pointer">
@@ -295,7 +322,10 @@ const Header = (props) => {
 
     const authContext = useAuth();
 
-    const { notifications } = useNotification();
+    const {
+        unReadCount,
+        unReadNotifications
+    } = useNotification();
 
     const { lastMessageList } = useChat();
 
@@ -309,9 +339,15 @@ const Header = (props) => {
         setIsOpen(!isOpen)
     };
 
-    console.log('TEST =>', notifications);
+    const acceptJoinRequest = (item) => {
+        alert('accept Join Request')
+    }
 
-    // console.log('notifications', notifications)
+    const declineJoinRequest = (item) => {
+        alert('decline Join Request')
+    }
+
+    console.log('Notification API =>', unReadNotifications);
 
     return (
         <div className="header">
@@ -347,7 +383,7 @@ const Header = (props) => {
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
                                     <CustomComponentNotification
-                                        data={notifications}
+                                        data={unReadNotifications}
                                         count={user?.unread_notificationList_count}
                                         loading={loading}
                                         placement="bottomEnd"
@@ -411,10 +447,14 @@ const Header = (props) => {
                             </div>
                             <ul className="navbar-nav navbar-right ml-auto d-flex align-items-center">
                                 <CustomComponentNotification
-                                    data={notifications}
-                                    count={user?.unread_notificationList_count}
-                                    loading={loading}
                                     placement="bottomEnd"
+                                    loading={loading}
+                                    count={unReadCount}
+                                    data={unReadNotifications}
+                                    actions={{
+                                        acceptJoinRequest: acceptJoinRequest,
+                                        declineJoinRequest: declineJoinRequest,
+                                    }}
                                 />
                                 <CustomComponentMessage
                                     placement="bottomEnd"

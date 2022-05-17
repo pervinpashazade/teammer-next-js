@@ -9,30 +9,32 @@ export const useNotification = () => useContext(NotificationContext);
 
 const NotificationProvider = ({ children }) => {
 
-    const [notifications, setNotifications] = useState([]);
+    const [unReadNotifications, setUnReadNotifications] = useState([]);
+    const [unReadCount, setUnReadCount] = useState(null);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const currentUserId = Number(getCookie("teammers-id"))
+    //     const currentUserId = Number(getCookie("teammers-id"))
 
-        // // last 5 conversation
-        let last_notifications = notifications.slice(Math.max(notifications.length - 5, 0));
+    //     // // last 5 conversation
+    //     let last_notifications = unReadNotifications.slice(Math.max(unReadNotifications.length - 5, 0));
 
-    }, [notifications]);
+    // }, [unReadNotifications]);
 
     // // mount
     useEffect(() => {
         if (getCookie("teammers-access-token") && getCookie("teammers-type")) {
             // axios.get(config.BASE_URL + 'conversations?include=messages,members,unreadMessages').then(res => {
             //     if (res.data.success) {
-            //         setNotifications(res.data.data.items);
+            //         setUnReadNotifications(res.data.data.items);
             //     }
             // });
-            axios.get(config.BASE_URL + "users/notifications?per_page=5")
+            axios.get(config.BASE_URL + "users/notifications?filter[is_read]=false&per_page=5")
                 .then(res => {
                     if (res.data.success) {
                         if (res.data.data?.items) {
-                            setNotifications(res.data.data.items)
+                            setUnReadNotifications(res.data.data.items.map(item => item.data))
+                            setUnReadCount(res.data.data.total)
                         }
                     }
                 })
@@ -42,7 +44,8 @@ const NotificationProvider = ({ children }) => {
     return (
         <NotificationContext.Provider
             value={{
-                notifications,
+                unReadCount,
+                unReadNotifications,
             }}
         >
             {children}

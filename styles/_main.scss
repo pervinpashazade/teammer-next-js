@@ -255,6 +255,17 @@ div.icon-btn-wrapper {
         color: #7c7c7c;
         margin: 0px;
       }
+
+      ._actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        button {
+          margin-right: .75rem;
+          margin-bottom: .75rem;
+        }
+      }
     }
 
     .date {

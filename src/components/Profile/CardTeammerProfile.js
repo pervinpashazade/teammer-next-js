@@ -186,6 +186,7 @@ const CardTeammerProfile = ({props}) => {
                             }}>{self_request?.status === 0 ? 'Remove from team' :
                             'Add to team'}</Button>}
                         <Button>
+                            test
                             <Image
                                 src={'/icons/envelope_white.svg'}
                                 alt='img'
