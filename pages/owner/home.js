@@ -298,7 +298,6 @@ const Home = (props) => {
                     <div className="row mt-5">
                         {data.length > 0 ?
                             data.map(item => {
-                                console.log(item)
                                 return <div className="col-md-12 col-lg-6 mb-5">
                                     <CardTeammerProfile
                                         props={
@@ -386,7 +385,7 @@ const Home = (props) => {
 };
 
 Home.layout = true;
-
+Home.privateRouting = "owner"
 export default Home;
 
 // export const getServerSideProps = async (context) => {

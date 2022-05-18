@@ -25,13 +25,8 @@ function Setting(props) {
     const [validation, setValidation] = useState(false);
     const [validaiton422, setValidation422] = useState({})
     useEffect(() => {
-        axios.get(config.BASE_URL + "auth/user?include=project,skills,positions,experiences,detail.location", {
-            headers: {
-                Authorization: "Bearer " + getCookie('teammers-access-token')
-            }
-        })
+        axios.get(config.BASE_URL + "auth/user?include=project,skills,positions,experiences,detail.location")
             .then(res => {
-                console.log(res);
                 setOwner({
                     ...owner,
                     username: res.data?.data?.username,
@@ -48,25 +43,33 @@ function Setting(props) {
         })
     }
     const saveChanges = () => {
-        if (owner.password.trim() !== owner.new_password.trim()) {
-            setValidation(true)
-        } else {
-            let data = {};
-            if(owner.password.length > 0) {
-                data['password'] = owner.password;
-                data['email'] = owner.email;
-                data['username'] = owner.username;
-            }
-            axios.put(config.BASE_URL + "users", data)
-                .then(res => {
-                    console.log(res);
-                    setValidation422({})
-                })
-                .catch((error) => {
-                    setValidation422(validation_422(error));
-                })
-            setValidation(false)
+        let data = {};
+
+        if (owner.username.length > 0) {
+            
         }
+
+
+        if (owner.password.trim() !== owner.new_password.trim() && (owner.password.length > 0 || owner.new_password.length > 0)) {
+            setValidation(true);
+            data['password'] = owner.password;
+        } else if (owner.username.length > 0) {
+
+            // if(owner.password.length > 0) {
+            // data['password'] = owner.password;
+            // data['email'] = owner.email;
+            data['username'] = owner.username;
+            setValidation(false)
+            // }
+        } else if (owner.username.length === 0) setValidation(true)
+        axios.put(config.BASE_URL + "users", data)
+            .then(res => {
+                console.log(res);
+                setValidation422({})
+            })
+            .catch((error) => {
+                setValidation422(validation_422(error));
+            })
     }
     return (
         <div className='teammer-profile-edit'>
@@ -143,6 +146,7 @@ function Setting(props) {
                                         <Form.ControlLabel>Username</Form.ControlLabel>
                                         <Form.Control
                                             name="name"
+                                            className={(owner.username.length === 0 && validation) ? 'login-border-color' : ''}
                                             placeholder="Enter your username"
                                             value={owner.username}
                                             onChange={(e) => setData('username', e)}

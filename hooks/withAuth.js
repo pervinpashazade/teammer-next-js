@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 
 const withAuth = (WrappedComponent) => {
     return (props) => {
+        console.log('WrappedComponent' , WrappedComponent , props)
         const router = useRouter();
         if (typeof window !== "undefined") {
             const accessToken = getCookie('teammers-access-token');

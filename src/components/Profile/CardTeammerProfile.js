@@ -39,7 +39,7 @@ const CardTeammerProfile = ({props}) => {
 
     const viewProfile = () => {
         if (!id) return;
-        if (type === 1) router.push(`/owner/${id}`);
+        if (type === 1) router.push(`/owner/team/${id}`);
         else if (type === 2) router.push(`/teammer/${id}`);
     };
 
