@@ -33,6 +33,9 @@ axios.interceptors.response.use(function (response) {
         case 429:
             // do something
             break;
+        case 500:
+            alert('Unexpected error accoured')
+            break;
         default:
             return Promise.reject(error);
     }

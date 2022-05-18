@@ -11,7 +11,7 @@ import {getToken} from "../../lib/session";
 import axios from "axios";
 import {useAuth} from "../../Auth";
 
-const AddToTeam = (props) => {
+const AddToTeam = () => {
     // const {items} = props.data;
     const {currentUser} = useAuth();
     const [items, setItems] = useState([])

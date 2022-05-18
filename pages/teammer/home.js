@@ -42,7 +42,7 @@ const Home = (props) => {
         axios.get(config.BASE_URL + 'jobs?include=project,project.owner,position,kept&per_page=6').then(res => {
             if (res.data.success) {
                 setJobList(res.data.data.items);
-                console.log('job test', res.data.data.items);
+                // console.log('job test', res.data.data.items);
             };
         });
 

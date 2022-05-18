@@ -1,26 +1,26 @@
-import React, {useState} from 'react';
-import {Avatar, Button, Modal, Notification, Tag, toaster} from 'rsuite';
+import React, { useState } from 'react';
+import { Avatar, Button, Modal, Notification, Tag, toaster } from 'rsuite';
 import BreadCrumb from '../../src/components/Lib/BreadCrumb';
 import Banner from '../../src/components/Lib/Banner';
-import {getFetchData} from '../../lib/fetchData';
-import {getToken} from "../../lib/session";
+import { getFetchData } from '../../lib/fetchData';
+import { getToken } from "../../lib/session";
 // import CardStartupProfile from '../../src/components/Startup/CardStartupProfile';
 import CardJobList from '../../src/components/Startup/CardJobList';
 import Image from 'next/image';
 import axios from 'axios';
 import config from '../../src/configuration';
 import AuthModal from '../../src/components/Modals/AuthModal';
-import {useAuth} from "../../Auth";
-import {useRouter} from "next/router";
-import {useChat} from '../../src/contexts/ChatProvider';
-import {getCookie} from '../../src/helpers/cookie';
+import { useAuth } from "../../Auth";
+import { useRouter } from "next/router";
+import { useChat } from '../../src/contexts/ChatProvider';
+import { getCookie } from '../../src/helpers/cookie';
 import Link from 'next/link';
 
 function Startup(props) {
 
     const router = useRouter();
 
-    const {chat} = useChat();
+    const { chat } = useChat();
 
     const {
         fetchJobData,
@@ -29,7 +29,7 @@ function Startup(props) {
         similarJobList,
     } = props;
 
-    const {currentUser} = useAuth();
+    const { currentUser } = useAuth();
     const [jobData, setJobData] = useState(fetchJobData);
     const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
     const [isOpenConfirmCancelModal, setIsOpenConfirmCancelModal] = useState(false);
@@ -116,9 +116,9 @@ function Startup(props) {
             }
             ;
         })
-    }
+    };
 
-    console.log('JOB DATA =>', jobData);
+    // console.log('JOB DATA =>', jobData);
 
     const applyToJob = () => {
         if (!jobData) return;
@@ -232,8 +232,8 @@ function Startup(props) {
     return (
         <>
             <div className='profile-job'>
-                <BreadCrumb/>
-                <Banner/>
+                <BreadCrumb />
+                <Banner />
                 <div className="profile-wrapper">
                     <div className="content">
                         <div className="row">
@@ -359,7 +359,7 @@ function Startup(props) {
                         <div className='startup-description'>
                             <h4 className='_title'>About this requirement</h4>
                             {/*{jobData?.description}*/}
-                            <div dangerouslySetInnerHTML={{__html: jobData?.description}}></div>
+                            <div dangerouslySetInnerHTML={{ __html: jobData?.description }}></div>
                         </div>
                     </div>
                     <div className="right-side">
@@ -375,9 +375,9 @@ function Startup(props) {
                             showStartupDetails
                         />
                         {(currentUser && currentUser.type === 1) &&
-                        <a className="newstartup-button"
-                           onClick={() => router.push("/owner/create-startup")}> Add New Startup
-                        </a>}
+                            <a className="newstartup-button"
+                                onClick={() => router.push("/owner/create-startup")}> Add New Startup
+                            </a>}
                     </div>
                 </div>
             </div>
@@ -446,12 +446,10 @@ export const getServerSideProps = async (context) => {
     if (jobData?.data?.position?.id) {
         postion_id = jobData.data.position.id;
     }
-    ;
     const filteredSimilarJobList = await getFetchData(`jobs?filter[position_id]=${postion_id}&include=project,project.type,position&per_page=5`);
     if (jobData?.data?.id && filteredSimilarJobList?.data?.items) {
         similarJobs = filteredSimilarJobList.data.items.filter(x => x.id !== jobData.data.id)
     }
-    ;
     // similar job list end
 
     return {

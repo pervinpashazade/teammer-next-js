@@ -1,26 +1,51 @@
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Button, ButtonToolbar, Checkbox, Divider, Form, IconButton, Input, Radio, RadioGroup, Toggle } from "rsuite";
+import { IconButton, Toggle } from "rsuite";
 import config from "../src/configuration";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { useRouter } from 'next/router'
 import Image from "next/image";
 import { HiArrowLeft } from "react-icons/hi";
 import Header from "../src/components/consts/NotAuth/Header";
+import { Elements, PaymentElement } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 const Payment = () => {
 
     const router = useRouter();
 
+    const stripe = null;
+    const options = {
+        clientSecret: '',
+    };
+    const elements = null;
+
     const [isActiveAnnualy, setIsActiveAnnualy] = useState(false);
+    const [paymentData, setPaymentData] = useState(null);
 
     // // mount
     useEffect(() => {
         axios.get(config.BASE_URL + 'subscriptions').then(res => {
             console.log('res', res);
+            if (res.data.success) {
+                setPaymentData(res.data.data);
+                if (res.data.data.stripe_key) {
+                    connectStripe(res.data.data.stripe_key, res.data.data.stripe_key);
+                }
+            }
         })
     }, [])
+
+    const connectStripe = async (stripeKey, intent) => {
+        stripe = await loadStripe(stripeKey);
+
+        // elements = stripe.elements({
+        //     clientSecret: intent.client_secret,
+        // });
+
+        options.clientSecret = intent.client_secret;
+
+        // console.log('stripe', stripe);
+    }
 
     return (
         <div className="container">
@@ -141,35 +166,13 @@ const Payment = () => {
                                             </div>
                                         </div>
                                         <h1 style={{ fontSize: '32px' }}>Payments Details</h1>
-
                                     </div>
-                                    <Form onSubmit={(condition, event) => {
-                                        signup_form(event)
-                                    }}>
-                                        <Form.Group
-                                            controlId="full_name"
-                                            // className={!formValidation.fullname.length ? '' : 'not-valid'}
-                                            className={'not-valid'}
-                                        >
-                                            <Form.ControlLabel>Full Name</Form.ControlLabel>
-                                            <Form.Control
-                                                name="full_name"
-                                                type="text"
-                                                placeholder="Full Name"
-                                                onBlur={e => handleChangeFullname(e.target.value)}
-                                            />
-                                            {/* {
-                                                formValidation.fullname.length > 0 &&
-                                                <div className="validation-errors">
-                                                    {
-                                                        formValidation.fullname.map((item, index) => {
-                                                            return <span key={index}>{item}</span>
-                                                        })
-                                                    }
-                                                </div>
-                                            } */}
-                                        </Form.Group>
-                                    </Form>
+                                    <Elements stripe={stripe} options={options}>
+                                        <form>
+                                            <PaymentElement />
+                                            <button>Submit</button>
+                                        </form>
+                                    </Elements>
                                 </div>
                             </div>
                         </div>

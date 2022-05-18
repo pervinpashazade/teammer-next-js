@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {useRouter} from 'next/router'
+import React, { useState } from 'react';
+import { useRouter } from 'next/router'
 import {
     Avatar,
     Button,
@@ -8,10 +8,10 @@ import {
 } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import Image from 'next/image';
-import {useAuth} from "../../../Auth";
-import {getCookie} from '../../helpers/cookie';
+import { useAuth } from "../../../Auth";
+import { getCookie } from '../../helpers/cookie';
 
-const CardTeammerProfile = ({props}) => {
+const CardTeammerProfile = ({ props }) => {
     const context = useAuth();
     // console.log(context);
     const router = useRouter();
@@ -41,6 +41,72 @@ const CardTeammerProfile = ({props}) => {
         if (!id) return;
         if (type === 1) router.push(`/owner/team/${id}`);
         else if (type === 2) router.push(`/teammer/${id}`);
+    };
+
+    const sendMessage = () => {
+        if (!jobData?.project?.owner?.id || !chat) return;
+
+        if (!getCookie("teammers-access-token")) {
+            setIsOpenLoginModal(true);
+            return;
+        }
+
+        if (getCookie("teammers-access-token") && !getCookie("teammers-type")) {
+            toaster.push(
+                <Notification
+                    type={"warning"}
+                    header="Oopss!"
+                    closable
+                >
+                    <p>
+                        Please, complete your registration information.
+                        <Button
+                            className='ml-2'
+                            onClick={() => router.push("/signup/steps")}
+                        >
+                            Complete registration
+                        </Button>
+                    </p>
+
+                </Notification>, 'topEnd'
+            );
+
+            return;
+        }
+
+        // find conversation with job owner
+        const conversation = chat.find(conversation => conversation.members.find(member => member.id === jobData.project.owner.id));
+
+        if (conversation) {
+            router.push(
+                {
+                    pathname: '/chat',
+                    query: {
+                        selectedConversationId: conversation.id
+                    }
+                }, '/chat'
+            );
+
+            return;
+        }
+
+        newConversationRequest(jobData.project.owner.id);
+    };
+
+    const newConversationRequest = userId => {
+        if (!userId) return;
+
+        axios.post(config.BASE_URL + 'conversations', {
+            to: userId
+        }).then(res => {
+            if (res.data.success) {
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        Conversation request successfully sent!
+                    </Notification>, 'topEnd'
+                );
+            }
+        })
     };
 
     return (
@@ -184,8 +250,11 @@ const CardTeammerProfile = ({props}) => {
                                     removeFromTeam(self_request?.id);
                                 }
                             }}>{self_request?.status === 0 ? 'Remove from team' :
-                            'Add to team'}</Button>}
-                        <Button>
+                                'Add to team'}</Button>}
+                        <Button
+                            appearance="primary"
+                            onClick={sendMessage}
+                        >
                             <Image
                                 src={'/icons/envelope_white.svg'}
                                 alt='img'
