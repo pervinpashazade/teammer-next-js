@@ -79,7 +79,7 @@ const ChatProvider = ({ children }) => {
         });
 
         socket.on('message', message => {
-            console.log('socket message', message);
+            // console.log('socket message', message);
             setChat(prevState => {
                 // console.log('on message set obj', [...prevState, message]);
 

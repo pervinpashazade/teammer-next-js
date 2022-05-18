@@ -8,6 +8,8 @@ import {
     Popover,
     Badge,
     Button,
+    Notification,
+    toaster,
 } from 'rsuite';
 import { RiArrowRightLine } from 'react-icons/ri';
 import Image from "next/image";
@@ -340,14 +342,36 @@ const Header = (props) => {
     };
 
     const acceptJoinRequest = (item) => {
-        alert('accept Join Request')
+        if (!item?.request_id) return;
+
+        axios.post(config.BASE_URL + `team-requests/${item?.request_id}/accept`).then(res => {
+            // console.log('res accept', res);
+            if (res?.data.success) {
+                toaster.push(
+                    <Notification type={"success"} header="Success!" closable>
+                        Team request successfully accepted
+                    </Notification>, 'topEnd'
+                );
+            }
+        });
     }
 
     const declineJoinRequest = (item) => {
-        alert('decline Join Request')
+        if (!item?.request_id) return;
+
+        axios.post(config.BASE_URL + `team-requests/${item?.request_id}/reject`).then(res => {
+            // console.log('res  REJECT', res);
+            if (res?.data.success) {
+                toaster.push(
+                    <Notification type={"info"} header="Success!" closable>
+                        Team request declined
+                    </Notification>, 'topEnd'
+                );
+            }
+        });
     }
 
-    console.log('Notification API =>', unReadNotifications);
+    // console.log('Notification API =>', unReadNotifications);
 
     return (
         <div className="header">

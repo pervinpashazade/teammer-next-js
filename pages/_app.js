@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import ChatProvider from "../src/contexts/ChatProvider";
 import { firebaseMessaging } from "../firebase.js";
 import NotificationProvider from "../src/contexts/NotificationProvider";
+import { getMessaging, onMessage } from "firebase/messaging";
 
 function MyApp({
     Component,
@@ -24,8 +25,12 @@ function MyApp({
     const stopLoading = () => {
         setLoading(false)
     }
+
+
     useEffect(() => {
+
         firebaseMessaging();
+
         router.events.on('routeChangeStart', startLoading);
         router.events.on('routeChangeComplete', stopLoading);
         return () => {

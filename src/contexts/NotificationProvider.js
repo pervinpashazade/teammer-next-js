@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios";
 import { getCookie } from '../helpers/cookie';
 import config from '../configuration';
+import { getMessaging, onMessage } from 'firebase/messaging';
+// import sound from "../../public/sound/notification_sound.wav";
 
 const NotificationContext = React.createContext();
 
@@ -12,23 +14,41 @@ const NotificationProvider = ({ children }) => {
     const [unReadNotifications, setUnReadNotifications] = useState([]);
     const [unReadCount, setUnReadCount] = useState(null);
 
-    // useEffect(() => {
+    const messaging = getMessaging();
 
-    //     const currentUserId = Number(getCookie("teammers-id"))
+    const audio = new Audio("/sound/notification_sound.wav");
 
-    //     // // last 5 conversation
-    //     let last_notifications = unReadNotifications.slice(Math.max(unReadNotifications.length - 5, 0));
+    onMessage(messaging, ({ data }) => {
 
-    // }, [unReadNotifications]);
+        audio.play();
+
+        if (data?.event === "push" && data.data) {
+            receiveNotification(JSON.parse(data.data));
+        };
+
+    });
+
+    const receiveNotification = data => {
+        if (!data) return;
+
+
+        let arr = [data, ...unReadNotifications];
+        arr.pop();
+
+        console.log("TEST ARRRR 1", arr);
+
+        // let reversedArr = arr.pop();
+
+        setUnReadNotifications(arr);
+
+        setUnReadCount(prevState => prevState + 1)
+    };
+
+    // console.log('unReadNotifications !!!!!! =>', unReadNotifications);
 
     // // mount
     useEffect(() => {
         if (getCookie("teammers-access-token") && getCookie("teammers-type")) {
-            // axios.get(config.BASE_URL + 'conversations?include=messages,members,unreadMessages').then(res => {
-            //     if (res.data.success) {
-            //         setUnReadNotifications(res.data.data.items);
-            //     }
-            // });
             axios.get(config.BASE_URL + "users/notifications?filter[is_read]=false&per_page=5")
                 .then(res => {
                     if (res.data.success) {
