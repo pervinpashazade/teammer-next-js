@@ -4,17 +4,26 @@ import {
     Avatar,
     Button,
     IconButton,
-    Tag
+    Notification,
+    Tag,
+    toaster
 } from 'rsuite';
 import ActionLink from '../Lib/ActionLink';
 import Image from 'next/image';
 import { useAuth } from "../../../Auth";
 import { getCookie } from '../../helpers/cookie';
+import { useChat } from '../../contexts/ChatProvider';
+import axios from 'axios';
+import config from '../../configuration';
 
 const CardTeammerProfile = ({ props }) => {
+
     const context = useAuth();
-    // console.log(context);
+
+    const { chat } = useChat();
+
     const router = useRouter();
+
     const type = context?.currentUser?.type;
     const {
         id,
@@ -44,7 +53,7 @@ const CardTeammerProfile = ({ props }) => {
     };
 
     const sendMessage = () => {
-        if (!jobData?.project?.owner?.id || !chat) return;
+        if (!id || !chat) return;
 
         if (!getCookie("teammers-access-token")) {
             setIsOpenLoginModal(true);
@@ -75,7 +84,7 @@ const CardTeammerProfile = ({ props }) => {
         }
 
         // find conversation with job owner
-        const conversation = chat.find(conversation => conversation.members.find(member => member.id === jobData.project.owner.id));
+        const conversation = chat.find(conversation => conversation.members.find(member => member.id === id));
 
         if (conversation) {
             router.push(
@@ -90,7 +99,7 @@ const CardTeammerProfile = ({ props }) => {
             return;
         }
 
-        newConversationRequest(jobData.project.owner.id);
+        newConversationRequest(id);
     };
 
     const newConversationRequest = userId => {

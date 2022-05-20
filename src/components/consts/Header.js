@@ -127,7 +127,9 @@ const DefaultPopoverNotification = React.forwardRef(({ content, data, actions, .
                             </div>
                             <div className="message-text">
                                 <p>{item.message}</p>
-                                <p>2 min ago</p>
+                                <p>
+                                    {/* 2 min ago */}
+                                </p>
                                 {
                                     item.type &&
                                         item.type === "join_request" &&
@@ -147,7 +149,24 @@ const DefaultPopoverNotification = React.forwardRef(({ content, data, actions, .
                                             </Button>
                                         </div>
                                         :
-                                        ''
+                                        item.type === "conversation_request" &&
+                                            actions?.acceptConversation && actions?.rejectConversation ?
+                                            <div className='_actions'>
+                                                <Button
+                                                    color='primary'
+                                                    onClick={() => actions.acceptConversation(item)}
+                                                >
+                                                    Accept
+                                                </Button>
+                                                <Button
+                                                    color='danger'
+                                                    onClick={() => actions.rejectConversation(item)}
+                                                >
+                                                    Reject
+                                                </Button>
+                                            </div>
+                                            :
+                                            ''
                                 }
                             </div>
                         </div>
@@ -341,10 +360,10 @@ const Header = (props) => {
         setIsOpen(!isOpen)
     };
 
-    const acceptJoinRequest = (item) => {
+    const acceptJoinRequest = item => {
         if (!item?.request_id) return;
 
-        axios.post(config.BASE_URL + `team-requests/${item?.request_id}/accept`).then(res => {
+        axios.post(config.BASE_URL + `team-requests/${item.request_id}/accept`).then(res => {
             // console.log('res accept', res);
             if (res?.data.success) {
                 toaster.push(
@@ -356,10 +375,40 @@ const Header = (props) => {
         });
     }
 
-    const declineJoinRequest = (item) => {
+    const declineJoinRequest = item => {
         if (!item?.request_id) return;
 
-        axios.post(config.BASE_URL + `team-requests/${item?.request_id}/reject`).then(res => {
+        axios.post(config.BASE_URL + `team-requests/${item.request_id}/reject`).then(res => {
+            // console.log('res  REJECT', res);
+            if (res?.data.success) {
+                toaster.push(
+                    <Notification type={"info"} header="Success!" closable>
+                        Team request declined
+                    </Notification>, 'topEnd'
+                );
+            }
+        });
+    }
+
+    const acceptConversation = item => {
+        if (!item?.conversation_id) return;
+
+        axios.put(config.BASE_URL + `conversations/${item.conversation_id}/accept`).then(res => {
+            // console.log('res accept', res);
+            if (res?.data.success) {
+                toaster.push(
+                    <Notification type={"info"} header="Success!" closable>
+                        Conversation request successfully accepted
+                    </Notification>, 'topEnd'
+                );
+            }
+        });
+    }
+
+    const rejectConversation = item => {
+        if (!item?.conversation_id) return;
+
+        axios.post(config.BASE_URL + `team-requests/${item.conversation_id}/reject`).then(res => {
             // console.log('res  REJECT', res);
             if (res?.data.success) {
                 toaster.push(
@@ -407,10 +456,16 @@ const Header = (props) => {
                             <div className="d-block d-md-none">
                                 <ul className="d-flex justify-content-between align-items-center">
                                     <CustomComponentNotification
-                                        data={unReadNotifications}
-                                        count={user?.unread_notificationList_count}
-                                        loading={loading}
                                         placement="bottomEnd"
+                                        loading={loading}
+                                        count={unReadCount}
+                                        data={unReadNotifications}
+                                        actions={{
+                                            acceptJoinRequest: acceptJoinRequest,
+                                            declineJoinRequest: declineJoinRequest,
+                                            acceptConversation: acceptConversation,
+                                            rejectConversation: rejectConversation,
+                                        }}
                                     />
                                     <a className="mx-3">
                                         <CustomComponentMessage
@@ -478,6 +533,8 @@ const Header = (props) => {
                                     actions={{
                                         acceptJoinRequest: acceptJoinRequest,
                                         declineJoinRequest: declineJoinRequest,
+                                        acceptConversation: acceptConversation,
+                                        rejectConversation: rejectConversation,
                                     }}
                                 />
                                 <CustomComponentMessage

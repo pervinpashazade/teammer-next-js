@@ -31,9 +31,12 @@ const NotificationProvider = ({ children }) => {
     const receiveNotification = data => {
         if (!data) return;
 
+        let arr = [];
+        arr = [data, ...unReadNotifications];
 
-        let arr = [data, ...unReadNotifications];
-        arr.pop();
+        if (arr.length > 5) {
+            arr.pop();
+        }
 
         console.log("TEST ARRRR 1", arr);
 
@@ -44,7 +47,7 @@ const NotificationProvider = ({ children }) => {
         setUnReadCount(prevState => prevState + 1)
     };
 
-    // console.log('unReadNotifications !!!!!! =>', unReadNotifications);
+    console.log('unReadNotifications !!!!!! =>', unReadNotifications);
 
     // // mount
     useEffect(() => {
