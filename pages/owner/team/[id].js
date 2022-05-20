@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {Button, InputPicker, Modal, Notification, Panel, toaster} from 'rsuite';
-import BreadCrumb from '../../src/components/Lib/BreadCrumb';
-import Banner from '../../src/components/Lib/Banner';
-import CardTeammerProfile from '../../src/components/Profile/CardTeammerProfile';
-import CardTeammerWorkExperience from '../../src/components/Profile/CardTeammerWorkExperience';
-import CardStartUp from '../../src/components/Cards/CardStartUp';
-import CardTeammerPortfolio from '../../src/components/Profile/CardTeammerPortfolio';
-import config from '../../src/configuration';
-import {getFetchData} from '../../lib/fetchData';
-import {getToken} from "../../lib/session";
-import ProPanel from '../../src/components/ProPanel';
+import BreadCrumb from '../../../src/components/Lib/BreadCrumb';
+import Banner from '../../../src/components/Lib/Banner';
+import CardTeammerProfile from '../../../src/components/Profile/CardTeammerProfile';
+import CardTeammerWorkExperience from '../../../src/components/Profile/CardTeammerWorkExperience';
+import CardStartUp from '../../../src/components/Cards/CardStartUp';
+import CardTeammerPortfolio from '../../../src/components/Profile/CardTeammerPortfolio';
+import config from '../../../src/configuration';
+import {getFetchData} from '../../../lib/fetchData';
+import {getToken} from "../../../lib/session";
+import ProPanel from '../../../src/components/ProPanel';
 import axios from "axios";
-import {useAuth} from "../../Auth";
+import {useAuth} from "../../../Auth";
 import {useRouter} from "next/router";
 
 const ProfileOwner = (props) => {
@@ -33,8 +33,21 @@ const ProfileOwner = (props) => {
                     setProject(res.data.data.items)
                 }
             });
+        getUserData();
+    }, []);
+    const removeFromTeam = (id) => {
+        console.log(id)
+        if (id) {
+            axios.post(config.BASE_URL + "team-requests/" + id + "/reject", {})
+                .then(res => {
+                    console.log(res);
+                    getUserData();
+                })
+        }
+    }
+    const getUserData = () => {
         axios.get(config.BASE_URL +
-            `users/${props.id}/show?include=detail.experience_level,experiences.location,skills,positions,detail.location`)
+            `users/${props.id}/show?include=detail.experience_level,self_request,experiences.location,skills,positions,detail.location`)
             .then(res => {
                 console.log(res.data)
                 setUserData(res.data.data);
@@ -44,9 +57,7 @@ const ProfileOwner = (props) => {
                     portfolio: res.data.data?.detail?.portfolio
                 })
             });
-
-
-    }, [])
+    }
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false);
     const [portfolioUrlList, setPortfolioUrlList] = useState({
         cvFileName: '',
@@ -92,6 +103,7 @@ const ProfileOwner = (props) => {
                 setJobName(0);
                 setJobs([]);
                 setStartUpName('');
+                getUserData();
             })
                 .catch(error => {
                     toaster.push(
@@ -119,6 +131,8 @@ const ProfileOwner = (props) => {
                                 positions: userData.positions,
                                 year_of_experience: userData.detail?.years_of_experience,
                                 about: userData?.detail?.about,
+                                self_request: userData.self_request,
+                                removeFromTeam : removeFromTeam,
                                 addToTeam: addToTeam
                             }
                         }
